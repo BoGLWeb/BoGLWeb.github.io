@@ -807,7 +807,6 @@ C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\blazor.boot.json
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\staticwebassets.build.json
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\staticwebassets.development.json
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
-C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\scopedcss\bundle\BoGLWeb.styles.css
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\scopedcss\projectbundle\BoGLWeb.bundle.scp.css
 C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\obj\Debug\net6.0\service-worker\service-worker.js

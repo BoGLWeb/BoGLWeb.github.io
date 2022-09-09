@@ -73,7 +73,7 @@
       "url": "sample-data\/weather.json"
     },
     {
-      "hash": "sha256-Or\/Db1D\/hZ0jAfReT3n9wuuxGs6f0g\/3LJF279ctMSs=",
+      "hash": "sha256-Jgged9uGUS0CklW58mguDZjb76oaMwZEiMGZ3HSdNRI=",
       "url": "BoGLWeb.styles.css"
     },
     {
@@ -873,11 +873,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-S2zBgxJDO4UPXNtuLBordmlza3SPdVgZKHwf+szAxbE=",
+      "hash": "sha256-WyIqeFqqhxlctI2XVGY9D9SlXTger+OyCdfqbND3abs=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-y4clJ2HnPjneP8bRzTjD9eI8YmRa4fYCHSS6+o+ZacQ=",
+      "hash": "sha256-C3EeCFV3JAxBOGhQuupg3iJnkLqksGPI9+9he+QJZi0=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -885,7 +885,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-V9a5TsL+0wdQl8orhedK+S\/CbdMOgnWlHqVEddXNtCA=",
+      "hash": "sha256-rHRxwNY6x8N+QwxnFqSSfhljXGWx1S1lsGM1aAPNk4I=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -937,5 +937,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "dMi\/neHc"
+  "version": "WdOX4O+p"
 };

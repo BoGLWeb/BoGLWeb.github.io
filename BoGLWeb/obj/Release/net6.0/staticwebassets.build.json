@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "C20JVIfjx7Cf8W8n4KvBWrwLPm877t/scxswrHCFHi8=",
+  "Hash": "yuKDY+piQsKQT0F3qKiDph0xC4v3AkY7BmHIO1ntKdw=",
   "Source": "BoGLWeb",
   "BasePath": "/",
   "Mode": "Root",
@@ -7104,40 +7104,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\bin\\Release\\net6.0\\wwwroot\\_framework\\System.IO.Compression.Brotli.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\bundle\\BoGLWeb.styles.css",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\bundle\\",
-      "BasePath": "/",
-      "RelativePath": "BoGLWeb.styles.css",
-      "AssetKind": "All",
-      "AssetMode": "CurrentProject",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ApplicationBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\bundle\\BoGLWeb.styles.css"
-    },
-    {
-      "Identity": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\projectbundle\\BoGLWeb.bundle.scp.css",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\projectbundle\\",
-      "BasePath": "/",
-      "RelativePath": "BoGLWeb.bundle.scp.css",
-      "AssetKind": "All",
-      "AssetMode": "Reference",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ProjectBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\scopedcss\\projectbundle\\BoGLWeb.bundle.scp.css"
     },
     {
       "Identity": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\Release\\net6.0\\service-worker\\service-worker.js",

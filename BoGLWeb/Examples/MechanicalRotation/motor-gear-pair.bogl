@@ -1,0 +1,53 @@
+[Header]
+panX 0
+panY 0
+zoom 1
+
+[Elements]
+{
+	name System_O_PM_Motor
+	x -358.09999999999997
+	y -161.17999999999995
+	modifiers {
+	}
+}
+{
+	name System_MR_Shaft
+	x -196.5
+	y -172.67999999999995
+	modifiers {
+		STIFFNESS
+	}
+}
+{
+	name System_MR_Gear
+	x -36.299999999999955
+	y -111.87999999999994
+	modifiers {
+		FRICTION
+		INERTIA
+	}
+}
+{
+	name System_MR_Gear
+	x 113.70000000000005
+	y -111.87999999999994
+	modifiers {
+		FRICTION
+		INERTIA
+	}
+}
+
+[Arcs]
+{
+	element1 2
+	element2 3
+}
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}

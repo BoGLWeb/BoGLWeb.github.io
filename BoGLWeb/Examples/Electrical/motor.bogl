@@ -1,0 +1,104 @@
+[Header]
+panX -187.14436974789908
+panY -21.547428571428668
+zoom 0.7999999999999997
+
+[Elements]
+{
+	name System_E_Current_Input
+	x -187.10000000000002
+	y 41.32000000000005
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -96.10000000000002
+	y -55.77999999999997
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 61.5
+	y -36.279999999999916
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 24.80000000000001
+	y 37.32000000000011
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 59.099999999999966
+	y 190.12
+	modifiers {
+	}
+}
+{
+	name System_E_Transformer
+	x 218.95639097744368
+	y 33.70496240601483
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 375.02781954887234
+	y -6.366466165413726
+	modifiers {
+	}
+}
+{
+	name System_O_PM_Motor
+	x 485.45639097744413
+	y 99.34781954887217
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 3
+}
+{
+	element1 4
+	element2 3
+}
+{
+	element1 4
+	element2 0
+}
+{
+	element1 5
+	element2 2
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 7
+	element2 5
+}
+{
+	element1 7
+	element2 6
+}
