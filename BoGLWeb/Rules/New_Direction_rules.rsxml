@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>new_direction_attempt.grxml</string>
+    <string>new_direction_flipother.grxml</string>
+    <string>new_direction_flip.grxml</string>
+    <string>new_direction_rule2.grxml</string>
+  </ruleFileNames>
+  <name>New_Direction_rules</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>Stop</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

@@ -1,0 +1,292 @@
+[Header]
+panX -159.34500502765212
+panY 155.87934080298805
+zoom 0.5499999999999995
+
+[Elements]
+{
+	name System_E_Voltage_Input
+	x -275.70000000000005
+	y -155.07999999999987
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -206.3285714285716
+	y -376.33714285714285
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -90.21428571428572
+	y -456.40857142857135
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x -96.4000000000002
+	y -309.70857142857136
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 102.8176470588237
+	y 37.408702147525446
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x 72.67478991596658
+	y 151.6944164332399
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 71.96050420168069
+	y -242.66272642390334
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 46.81764705882358
+	y -370.5912978524749
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 103.9605042016808
+	y -578.6627264239036
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 334.81764705882364
+	y -566.0198692810466
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 441.10336134453775
+	y -585.5198692810466
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 482.53193277310896
+	y -388.87701213818923
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 283.3890756302522
+	y -464.37701213818934
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 280.7462184873951
+	y -370.59129785247495
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 198.81764705882352
+	y -377.44844070961784
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 121.10336134453786
+	y -374.01986928104645
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 414.5319327731091
+	y -387.16272642390356
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 422.92021116138824
+	y 31.59917833800182
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 376.9202111613878
+	y -113.9008216619984
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 378.920211161388
+	y -301.90082166199863
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 414.920211161388
+	y -190.4008216619983
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 544.9202111613882
+	y -413.90082166199875
+	modifiers {
+	}
+}
+{
+	name System_E_Voltage_Input
+	x 652.9202111613885
+	y -304.40082166199875
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 700.9202111613885
+	y -402.40082166199863
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 3
+	element2 1
+}
+{
+	element1 4
+	element2 0
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 6
+	element2 4
+}
+{
+	element1 7
+	element2 2
+}
+{
+	element1 7
+	element2 3
+}
+{
+	element1 9
+	element2 8
+}
+{
+	element1 10
+	element2 9
+}
+{
+	element1 11
+	element2 10
+}
+{
+	element1 12
+	element2 14
+}
+{
+	element1 13
+	element2 14
+}
+{
+	element1 8
+	element2 15
+}
+{
+	element1 14
+	element2 15
+}
+{
+	element1 6
+	element2 15
+}
+{
+	element1 7
+	element2 15
+}
+{
+	element1 16
+	element2 12
+}
+{
+	element1 16
+	element2 13
+}
+{
+	element1 17
+	element2 4
+}
+{
+	element1 19
+	element2 16
+}
+{
+	element1 20
+	element2 19
+}
+{
+	element1 18
+	element2 20
+}
+{
+	element1 17
+	element2 18
+}
+{
+	element1 16
+	element2 11
+}
+{
+	element1 21
+	element2 11
+}
+{
+	element1 23
+	element2 21
+}
+{
+	element1 22
+	element2 23
+}
+{
+	element1 17
+	element2 22
+}

@@ -11,29 +11,29 @@ build_property.EnableTrimAnalyzer = true
 build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = BoGLWeb
 build_property.RootNamespace = BoGLWeb
-build_property.ProjectDir = C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\
+build_property.ProjectDir = C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb\BoGLWeb\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Admin\Documents\BoGLWeb\BoGLWeb
+build_property.MSBuildProjectDirectory = C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb\BoGLWeb
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/App.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb/BoGLWeb/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/Pages/Index.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb/BoGLWeb/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/_Imports.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb/BoGLWeb/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/Shared/MainLayout.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb/BoGLWeb/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-8vt6731u30
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/Shared/NavMenu.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb/BoGLWeb/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-4i8nsd1hgu
