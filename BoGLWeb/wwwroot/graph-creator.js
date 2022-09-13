@@ -23,9 +23,6 @@ document.onload = (async function (d3, saveAs, Blob) {
 
     waitForElm('#graph')
 
-    let settings = {
-        appendElSpec: "#graph"
-    };
     // define graphcreator object
     let GraphCreator = function (svg, nodes, edges) {
         var thisGraph = this;
@@ -79,8 +76,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         // displayed when dragging between nodes
         thisGraph.dragLine = svgG.append('svg:path')
             .attr('class', 'link dragline hidden')
-            .attr('d', 'M0,0L0,0')
-            .style('marker-end', 'url(#mark-end-arrow)');
+            .attr('d', 'M0,0L0,0');
 
         // svg nodes and edges
         thisGraph.paths = svgG.append("g").selectAll("g");
@@ -379,8 +375,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         });
         var paths = thisGraph.paths;
         // update existing paths
-        paths.style('marker-end', 'url(#end-arrow)')
-            .classed(consts.selectedClass, function (d) {
+        paths.classed(consts.selectedClass, function (d) {
                 return d === state.selectedEdge;
             })
             .attr("d", function (d) {
@@ -390,7 +385,6 @@ document.onload = (async function (d3, saveAs, Blob) {
         // add new paths
         paths.enter()
             .append("path")
-            .style('marker-end', 'url(#end-arrow)')
             .classed("link", true)
             .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
@@ -434,7 +428,6 @@ document.onload = (async function (d3, saveAs, Blob) {
 
         let index = 0;
 
-        // make circle object
         let group = newGs.append("g");
         group.attr('id', 'group_' + index)
             .classed('draggable', true)
@@ -444,17 +437,14 @@ document.onload = (async function (d3, saveAs, Blob) {
         let box = group.append('rect');
         box.attr('width', '60px')
             .attr('height', '60px')
-            .attr('x', '30px')
-            .attr('y', (30 + index * 70) + 'px')
+            .attr('x', '-30px')
+            .attr('y', '-30px')
             .attr('style', 'fill:rgb(255, 255, 255);stroke-width:2;stroke:rgb(0,0,0)');
         let image = group.append('image');
         image.attr('href', function (d, i) { return d.img; })
-            .attr('x', '35px')
-            .attr('id', 'image_' + index)
-            .on('load', function (a,) {
-                let imgHeight = image[0][0].getBoundingClientRect().height;
-                image.attr('y', (30 + index * 70 + ((60 - imgHeight) / 2)) + 'px');
-            });
+            .attr('x', '-25px')
+            .attr('y', '-10px')
+            .attr('id', 'image_' + index);
         if (index == 2) {
             image.attr('height', '50px')
                 .attr('x', '50px');
