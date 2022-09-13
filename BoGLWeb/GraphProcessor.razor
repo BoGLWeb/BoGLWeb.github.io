@@ -41,15 +41,17 @@
 
 
     public async void loadRuleSets() {
+        List<string> ruleSetPaths = new List<string>();
         HttpClient client = new HttpClient();
-        HttpResponseMessage response = await client.GetAsync("localhost:5006/Rules/RuleSetPaths.txt");
+        HttpResponseMessage response = await client.GetAsync("http://localhost:5006/Rules/RuleSetPaths.txt");
         string fileContent = await response.Content.ReadAsStringAsync();
         using (StringReader sr = new StringReader(fileContent)) {
             string? line = null;
             while ((line = sr.ReadLine()) != null) {
                 Console.WriteLine("Loaded Rule");
                 Console.WriteLine(line);
-            }
+                ruleSetPaths.Add(line);
+        }
         }
     }
 
