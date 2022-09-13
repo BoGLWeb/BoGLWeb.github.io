@@ -1,0 +1,59 @@
+﻿@inject HttpClient Http;
+@page "/graphtest"
+@using GraphSynth.Representation
+
+
+<h3>Component</h3>
+<PageTitle>TestApp</PageTitle>
+<h1>Hello</h1>
+
+<button @onclick="loadRuleSet">Load Rules</button>
+
+@code {
+        public ruleSet systemToBondGraph = null;
+        public ruleSet directionRuleSet = null;
+        public ruleSet directionRuleSet2 = null;
+        public ruleSet directionRuleSet3 = null;
+        public ruleSet simplificationRuleset = null;
+        public ruleSet simplificationRuleset2 = null;
+        public ruleSet newCausalityMethodRuleset = null;
+        public ruleSet newCausalityMethodRuleset_2 = null;
+        public ruleSet newCausalityMethodRuleset_3 = null;
+        public ruleSet iNVDMarkerRules = null;
+        public ruleSet iNVDMarkerRules_2 = null;
+        public ruleSet calibrationNewRuleset = null;
+        public ruleSet calibrationNewRuleset_2 = null;
+        public ruleSet rFlagCleanRuleset = null;
+        public ruleSet iCFixTotalRuleset = null;
+        public ruleSet transformerFlipRuleset = null;
+        public ruleSet transformerFlipRuleset2 = null;
+        public ruleSet clean23Ruleset = null;
+
+        public ruleSet solidworksRuleset = null;
+
+        public ruleSet state_Ruleset_1 = null;
+        public ruleSet state_Ruleset_2 = null;
+        public ruleSet state_Ruleset_3 = null;
+        public ruleSet state_FormatGraph = null;
+        public ruleSet state_Sum_Remove = null;
+        public ruleSet state_FormatForSum = null;
+        public ruleSet state_Sum_AddLabels = null;
+
+
+        public async void loadRuleSet() {
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("localhost:5006/Rules/BondGraphRuleset.rsxml");
+            string fileContent = await response.Content.ReadAsStringAsync();
+            using (StringReader sr = new StringReader(fileContent)) {
+                string? line = null;
+                while((line = sr.ReadLine()) != null) {
+                    Console.WriteLine(line);
+                }
+            }
+        }
+
+
+        public void processGraph() {
+
+        }
+}

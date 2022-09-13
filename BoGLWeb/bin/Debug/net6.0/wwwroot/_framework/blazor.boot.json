@@ -199,16 +199,16 @@
       "mscorlib.dll": "sha256-TYLzIm125RbnX9+RAPqJnwZhd6CnQpJcrjiMpJfZ720=",
       "netstandard.dll": "sha256-HhuK9zDkd1N7hODAEiNJ11VF8T54IgrM6hZfLHmHdqM=",
       "System.Private.CoreLib.dll": "sha256-dXaTqyg1PnXPiSwywpic1PVrd7P8Vb5tN0i0\/urdt3E=",
-      "BoGLWeb.dll": "sha256-RLbI5CuS5+DiueLtDfIQ7H1vdRBYYsKfh\/5YATPSzrs="
+      "BoGLWeb.dll": "sha256-tHCL0mrQivJ7CDJxSyXkhcz5YHFy990V5DalyXCirQg="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "BoGLWeb.pdb": "sha256-3gXOAYOVnnvSDkJBNri9XaACGuVGlQg8OeqJby1Kymo="
+      "BoGLWeb.pdb": "sha256-tsNTmTnN5BSBRrASNJvABp3E99H+7ZOXNsiN6fkhY3k="
     },
     "runtime": {
-      "dotnet.6.0.8.pwypv4423s.js": "sha256-WT60vnXnQtCNURE40qo+XSL1o4iYFvABy0NVaFhm7MI=",
+      "dotnet.6.0.8.7wxfzf25ky.js": "sha256-WT60vnXnQtCNURE40qo+XSL1o4iYFvABy0NVaFhm7MI=",
       "dotnet.timezones.blat": "sha256-2NJf++ql6UnbRRdYWEir6MxH58bYGWDEqofII\/z+Xmo=",
       "dotnet.wasm": "sha256-y0gwhQ7a6FTinj6R6HEA3SlRDb\/iL70a56PEGpKbt\/8=",
       "icudt.dat": "sha256-Zuq0dWAsBm6\/2lSOsz7+H9PvFaRn61KIXHMMwXDfvyE=",
