@@ -315,12 +315,6 @@ document.onload = (async function (d3, saveAs, Blob) {
         if (state.justScaleTransGraph) {
             // dragged not clicked
             state.justScaleTransGraph = false;
-        } else if (state.graphMouseDown && d3.event.shiftKey) {
-            // make new node
-            var xycoords = d3.mouse(thisGraph.svgG.node()),
-                d = { img: 'images/damper.png', id: thisGraph.idct++, x: xycoords[0], y: xycoords[1] };
-            thisGraph.nodes.push(d);
-            thisGraph.updateGraph();
         } else if (state.shiftNodeDrag) {
             // dragged from node
             state.shiftNodeDrag = false;
@@ -496,12 +490,16 @@ document.onload = (async function (d3, saveAs, Blob) {
         .attr('y', '10px')
         .attr('style', 'fill:rgb(220,220,220)');
 
-    function makeImage(link, index) {
+    function makeElementSource(link, index, thisGraph) {
         var group = svg.append('g')
             .attr('id', 'group_' + index)
-            .classed('draggable', true)
             .attr('index', index)
-            .attr('untouched', true);
+            .on('mousedown', function () {
+                var xycoords = d3.mouse(thisGraph.svgG.node()),
+                    d = { img: link, id: thisGraph.idct++, x: xycoords[0], y: xycoords[1] };
+                thisGraph.nodes.push(d);
+                thisGraph.updateGraph();
+            });
         var box = group.append('rect');
         box.attr('width', '60px')
             .attr('height', '60px')
@@ -521,55 +519,15 @@ document.onload = (async function (d3, saveAs, Blob) {
         document.getElementById("image_" + index).addEventListener('load', function () {
             let imgHeight = image[0][0].getBoundingClientRect().height;
             image.attr('y', (30 + index * 70 + ((60 - imgHeight) / 2)) + 'px');
-            cloneHandleSVG(svg, index);
         });
         return group;
     }
 
-    function cloneHandleSVG(parent, index) {
-        const source = document.getElementById("group_" + index);
-        const clone = source.cloneNode(true);
-        parent[0][0].appendChild(clone);
-        createDraggable(clone);
-    }
-
-    var selectedElement = false;
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', endDrag);
-
-    function drag(evt) {
-        if (selectedElement) {
-            evt.preventDefault();
-            let posX = evt.pageX;
-            let posY = evt.pageY;
-            selectedElement.setAttributeNS(null, "transform", "translate(" + (posX - 60) + ", " + (posY - 100 - selectedElement.getAttributeNS(null, "index") * 70) + ")");
-        }
-    }
-
-    function endDrag(evt) {
-        evt.preventDefault();
-        selectedElement = null;
-    }
-
-    function createDraggable(element) {
-        element.addEventListener('mousedown', startDrag);
-
-        function startDrag(evt) {
-            if (evt.target.parentElement.classList.contains('draggable')) {
-                selectedElement = evt.target.parentElement;
-                if (selectedElement.getAttributeNS(null, "untouched")) {
-                    cloneHandleSVG(svg, selectedElement.getAttributeNS(null, "index"));
-                    selectedElement.setAttributeNS(null, "untouched", false);
-                }
-            }
-        }
-    }
-
-    makeImage('images/damper.png', 0);
-    makeImage('images/force_input.png', 1);
-    makeImage('images/gravity.png', 2);
-    makeImage('images/ground.png', 3);
-    makeImage('images/mass.png', 4);
-    makeImage('images/spring.png', 5);
-    makeImage('images/velocity_input.png', 6);
+    makeElementSource('images/damper.png', 0, graph);
+    makeElementSource('images/force_input.png', 1, graph);
+    makeElementSource('images/gravity.png', 2, graph);
+    makeElementSource('images/ground.png', 3, graph);
+    makeElementSource('images/mass.png', 4, graph);
+    makeElementSource('images/spring.png', 5, graph);
+    makeElementSource('images/velocity_input.png', 6, graph);
 })(window.d3, window.saveAs, window.Blob);
