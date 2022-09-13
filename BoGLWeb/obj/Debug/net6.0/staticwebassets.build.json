@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YHUp6XKhJBhSdgO6GhtLWeLlMrf6hv/ilUJueAMt7g4=",
+  "Hash": "9w6wN0vpMGtmC0NptigqAT1yzezNGzh0RDbFeT0HmOI=",
   "Source": "BoGLWeb",
   "BasePath": "/",
   "Mode": "Root",
@@ -18732,6 +18732,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Rules\\Rules_ORIG\\VoltageRule.grxml"
+    },
+    {
+      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb\\BoGLWeb\\wwwroot\\Rules\\RuleSetPaths.txt",
+      "SourceId": "BoGLWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb\\BoGLWeb\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "Rules/RuleSetPaths.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Rules\\RuleSetPaths.txt"
     },
     {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb\\BoGLWeb\\wwwroot\\Rules\\SAMERule.grxml",
