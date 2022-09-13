@@ -2,8 +2,41 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<script suppress-error="BL9992" type="module" src="graph-creator.js"></script>
 
-Welcome to your new app.
-
-<Button Type="@ButtonType.Primary">Ant Design Button</Button>
+<body>
+    <div class="page">
+        <main>
+            <Menu Selectable=false Mode=MenuMode.Horizontal>
+                <SubMenu title="File">
+                    <MenuItem Key="setting:1">New</MenuItem>
+                    <MenuItem Key="setting:2">Open</MenuItem>
+                    <MenuItem Key="setting:3">Save</MenuItem>
+                    <MenuItem Key="setting:4">Save As</MenuItem>
+                    <MenuItem Key="setting:5">Export as Image</MenuItem>
+                    <MenuItem Key="setting:6">Exit</MenuItem>
+                </SubMenu>
+                <SubMenu title="Edit">
+                    <MenuItem Key="setting:1">Cut</MenuItem>
+                    <MenuItem Key="setting:2">Copy</MenuItem>
+                    <MenuItem Key="setting:3">Paste</MenuItem>
+                    <MenuItem Key="setting:4">Undo</MenuItem>
+                    <MenuItem Key="setting:5">Redo</MenuItem>
+                    <MenuItem Key="setting:6">Delete</MenuItem>
+                </SubMenu>
+                <SubMenu title="Help">
+                    <MenuItem Key="setting:1"><Checkbox>Confirm deleting many items</Checkbox></MenuItem>
+                    <MenuItem Key="setting:2">Tutorial</MenuItem>
+                    <MenuItem Key="setting:3">Example Files</MenuItem>
+                    <MenuItem Key="setting:4">Report Bugs</MenuItem>
+                    <MenuItem Key="setting:5">About BoGL</MenuItem>
+                </SubMenu>
+            </Menu>
+            <div id="graph">
+                <div id="toolbox">
+                    <input type="file" id="hidden-file-upload"><input id="upload-input" type="image" title="upload graph" src="upload-icon.png" alt="upload graph"> <input type="image" id="download-input" title="download graph" src="download-icon.png" alt="download graph"> <input type="image" id="delete-graph" title="delete graph" src="trash-icon.png" alt="delete graph">
+                </div>
+            </div>
+        </main>
+    </div>
+</body>

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\graph-creator.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
@@ -19,6 +23,110 @@
 
   <ItemGroup>
     <None Remove=".gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\graph-creator.js" />
+    <None Include="wwwroot\css\app.css" />
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css" />
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+    <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\README.md" />
+    <None Include="wwwroot\favicon.ico" />
+    <None Include="wwwroot\gsap-public\esm\.DS_Store" />
+    <None Include="wwwroot\gsap-public\esm\all.js" />
+    <None Include="wwwroot\gsap-public\esm\CSSPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\CSSRulePlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\CustomEase.js" />
+    <None Include="wwwroot\gsap-public\esm\Draggable.js" />
+    <None Include="wwwroot\gsap-public\esm\EaselPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\EasePack.js" />
+    <None Include="wwwroot\gsap-public\esm\Flip.js" />
+    <None Include="wwwroot\gsap-public\esm\gsap-core.js" />
+    <None Include="wwwroot\gsap-public\esm\index.js" />
+    <None Include="wwwroot\gsap-public\esm\MotionPathPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\Observer.js" />
+    <None Include="wwwroot\gsap-public\esm\PixiPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\ScrollToPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\ScrollTrigger.js" />
+    <None Include="wwwroot\gsap-public\esm\TextPlugin.js" />
+    <None Include="wwwroot\gsap-public\esm\utils\matrix.js" />
+    <None Include="wwwroot\gsap-public\esm\utils\paths.js" />
+    <None Include="wwwroot\gsap-public\esm\utils\strings.js" />
+    <None Include="wwwroot\gsap-public\minified\.DS_Store" />
+    <None Include="wwwroot\gsap-public\minified\CSSRulePlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\CSSRulePlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\CustomEase.min.js" />
+    <None Include="wwwroot\gsap-public\minified\CustomEase.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\Draggable.min.js" />
+    <None Include="wwwroot\gsap-public\minified\Draggable.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\EaselPlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\EaselPlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\EasePack.min.js" />
+    <None Include="wwwroot\gsap-public\minified\EasePack.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\Flip.min.js" />
+    <None Include="wwwroot\gsap-public\minified\Flip.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\gsap.min.js" />
+    <None Include="wwwroot\gsap-public\minified\gsap.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\MotionPathPlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\MotionPathPlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\Observer.min.js" />
+    <None Include="wwwroot\gsap-public\minified\Observer.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\PixiPlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\PixiPlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\ScrollToPlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\ScrollToPlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\ScrollTrigger.min.js" />
+    <None Include="wwwroot\gsap-public\minified\ScrollTrigger.min.js.map" />
+    <None Include="wwwroot\gsap-public\minified\TextPlugin.min.js" />
+    <None Include="wwwroot\gsap-public\minified\TextPlugin.min.js.map" />
+    <None Include="wwwroot\gsap-public\src\.DS_Store" />
+    <None Include="wwwroot\gsap-public\src\all.js" />
+    <None Include="wwwroot\gsap-public\src\CSSPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\CSSRulePlugin.js" />
+    <None Include="wwwroot\gsap-public\src\CustomEase.js" />
+    <None Include="wwwroot\gsap-public\src\Draggable.js" />
+    <None Include="wwwroot\gsap-public\src\EaselPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\EasePack.js" />
+    <None Include="wwwroot\gsap-public\src\Flip.js" />
+    <None Include="wwwroot\gsap-public\src\gsap-core.js" />
+    <None Include="wwwroot\gsap-public\src\index.js" />
+    <None Include="wwwroot\gsap-public\src\MotionPathPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\Observer.js" />
+    <None Include="wwwroot\gsap-public\src\PixiPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\ScrollToPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\ScrollTrigger.js" />
+    <None Include="wwwroot\gsap-public\src\TextPlugin.js" />
+    <None Include="wwwroot\gsap-public\src\utils\matrix.js" />
+    <None Include="wwwroot\gsap-public\src\utils\paths.js" />
+    <None Include="wwwroot\gsap-public\src\utils\strings.js" />
+    <None Include="wwwroot\gsap-public\umd\.DS_Store" />
+    <None Include="wwwroot\gsap-public\umd\all.js" />
+    <None Include="wwwroot\gsap-public\umd\CSSRulePlugin.js" />
+    <None Include="wwwroot\gsap-public\umd\CustomEase.js" />
+    <None Include="wwwroot\gsap-public\umd\Draggable.js" />
+    <None Include="wwwroot\gsap-public\umd\EaselPlugin.js" />
+    <None Include="wwwroot\gsap-public\umd\EasePack.js" />
+    <None Include="wwwroot\gsap-public\umd\Flip.js" />
+    <None Include="wwwroot\gsap-public\umd\gsap.js" />
+    <None Include="wwwroot\gsap-public\umd\MotionPathPlugin.js" />
+    <None Include="wwwroot\gsap-public\umd\Observer.js" />
+    <None Include="wwwroot\gsap-public\umd\PixiPlugin.js" />
+    <None Include="wwwroot\gsap-public\umd\ScrollToPlugin.js" />
+    <None Include="wwwroot\gsap-public\umd\ScrollTrigger.js" />
+    <None Include="wwwroot\gsap-public\umd\TextPlugin.js" />
+    <None Include="wwwroot\icon-192.png" />
+    <None Include="wwwroot\icon-512.png" />
+    <None Include="wwwroot\index.html" />
+    <None Include="wwwroot\service-worker.js" />
+    <None Include="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
 </Project>
