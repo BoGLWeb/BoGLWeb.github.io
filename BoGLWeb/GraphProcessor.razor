@@ -41,6 +41,8 @@
     public ruleSet state_FormatForSum = null;
     public ruleSet state_Sum_AddLabels = null;
 
+    Dictionary<string, ruleSet> ruleSetMap = new Dictionary<string, ruleSet>();
+
 
     public async void loadRuleSets() {
         List<string> ruleSetPaths = new List<string>();
@@ -62,7 +64,7 @@
         foreach (string str in ruleSetPaths) {
             HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006" + str);
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
-            systemToBondGraph = (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent);
+            ruleSetMap.Add(str.Substring(6), (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
             //TODO make this use multiple grammar rules
             var numRules = systemToBondGraph.ruleFileNames.Count;
             string ruleDir = systemToBondGraph.rulesDir;
