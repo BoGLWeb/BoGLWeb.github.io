@@ -21,6 +21,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         });
     }
 
+    // check if this is needed
     waitForElm('#graph')
 
     // define graphcreator object
@@ -437,14 +438,17 @@ document.onload = (async function (d3, saveAs, Blob) {
         let image = group.append('image');
         image.attr('href', function (d, i) { return d.img; })
             .attr('x', '-25px')
-            .attr('y', '-10px')
-            .attr('id', 'image_' + index);
-        if (index == 2) {
+            .attr('y', '-25px')
+            .attr('id', 'image_' + index)
+            .attr('preserveAspectRatio', 'xMidYMid meet')
+            .attr('height', '50px')
+            .attr('width', '50px');
+        /*if (index == 2) {
             image.attr('height', '50px')
                 .attr('x', '50px');
         } else {
             image.attr('width', '50px');
-        }
+        }*/
 
         // remove old nodes
         thisGraph.circles.exit().remove();
@@ -480,7 +484,6 @@ document.onload = (async function (d3, saveAs, Blob) {
         .attr("height", height);
     var graph = new GraphCreator(svg, nodes, edges);
     graph.setIdCt(2);
-    graph.updateGraph();
 
     // BoGL specific
     svg.append('rect')
@@ -530,4 +533,6 @@ document.onload = (async function (d3, saveAs, Blob) {
     makeElementSource('images/mass.png', 4, graph);
     makeElementSource('images/spring.png', 5, graph);
     makeElementSource('images/velocity_input.png', 6, graph);
+
+    graph.updateGraph();
 })(window.d3, window.saveAs, window.Blob);
