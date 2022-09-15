@@ -5,12 +5,16 @@
       "url": "css\/app.css"
     },
     {
-      "hash": "sha256-z8OR40MowJ8GgK6P89Y+hiJK5+cclzFHzLhFQLL92bg=",
+      "hash": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7\/p4nS6D\/0=",
       "url": "css\/bootstrap\/bootstrap.min.css"
     },
     {
       "hash": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=",
       "url": "css\/bootstrap\/bootstrap.min.css.map"
+    },
+    {
+      "hash": "sha256-cWg6ZsSJ419jHl+pxl+70zA1c6e65bXCViiNbatZsR4=",
+      "url": "css\/graph-creator.css"
     },
     {
       "hash": "sha256-jA4J4h\/k76zVxbFKEaWwFKJccmO0voOQ1DbUW+5YNlI=",
@@ -49,352 +53,8 @@
       "url": "css\/open-iconic\/README.md"
     },
     {
-      "hash": "sha256-OHqR67H1fIi\/QOh5NXTnL8Qiodv2pUu6lnSehyO45fs=",
-      "url": "download-icon.png"
-    },
-    {
       "hash": "sha256-Jtxf9L+5ITKRc1gIRl4VbUpGkRNfOBXjYTdhJD4facM=",
       "url": "favicon.ico"
-    },
-    {
-      "hash": "sha256-crYqBaXsLOqZroYpTuoOam0zpsDX1VYlxTr9eNp1CYM=",
-      "url": "graph-creator.css"
-    },
-    {
-      "hash": "sha256-gaowvR5RY6j8w3fXpbsjq0FOz3x\/N8Fs+jU3qRfMn1w=",
-      "url": "gsap-public\/docs-link.html"
-    },
-    {
-      "hash": "sha256-s17b\/c9hDXCiGj4BI9xSBjy+qzsJShrZsRUPiYJcsxg=",
-      "url": "gsap-public\/esm\/.DS_Store"
-    },
-    {
-      "hash": "sha256-GqSz4Mcr2MCezcH37BjWk7P61Ih8ZOjYWnfa9bKh8Bo=",
-      "url": "gsap-public\/esm\/all.js"
-    },
-    {
-      "hash": "sha256-8gMXhW8XteT1lBIct26BvlJU4SvZwrJobFWuHQLfOHU=",
-      "url": "gsap-public\/esm\/CSSPlugin.js"
-    },
-    {
-      "hash": "sha256-t9xP6LhkmGjhd424ZI9dl+4p6pdyLAWUNVYovumw9EM=",
-      "url": "gsap-public\/esm\/CSSRulePlugin.js"
-    },
-    {
-      "hash": "sha256-xRzfoVgshwUC4S396psMBYb+t8pKV76rasCBeXfQCF0=",
-      "url": "gsap-public\/esm\/CustomEase.js"
-    },
-    {
-      "hash": "sha256-ui8+G1P\/mUk+l48MDzSGjPMAKTQd750irT9Nfco8vgQ=",
-      "url": "gsap-public\/esm\/Draggable.js"
-    },
-    {
-      "hash": "sha256-jVC0ALSqgO5cHY9AZmF2G\/zE78mzcY1PECGJHQv\/Kek=",
-      "url": "gsap-public\/esm\/EaselPlugin.js"
-    },
-    {
-      "hash": "sha256-XXobTm8dEz03Wkq\/xoRzehEKfb\/xy8rsRLHAiWMbRk4=",
-      "url": "gsap-public\/esm\/EasePack.js"
-    },
-    {
-      "hash": "sha256-ciAGAqumqwsNmPTuIu9u2nld5os+jZd7UFJD3YDjXoY=",
-      "url": "gsap-public\/esm\/Flip.js"
-    },
-    {
-      "hash": "sha256-9sa5KXsWONjZX+OrTOHYdgdITPOg0dgF2bo2b5F1uHc=",
-      "url": "gsap-public\/esm\/gsap-core.js"
-    },
-    {
-      "hash": "sha256-aH+Oixtsb\/uFmNI++C4LG\/7pRUW2lo5whoXQT7Sx9zg=",
-      "url": "gsap-public\/esm\/index.js"
-    },
-    {
-      "hash": "sha256-Zeifnrw5myuN1rwqx0s+UoiiO3b3QbvEM7bbucTp1BM=",
-      "url": "gsap-public\/esm\/MotionPathPlugin.js"
-    },
-    {
-      "hash": "sha256-E83PyvfIQLVtwmGglymKlK\/8Q33xJXt5tTZkG\/26REI=",
-      "url": "gsap-public\/esm\/Observer.js"
-    },
-    {
-      "hash": "sha256-j3uYppIiK+poOjL0QSPrhJIJGODxJi86DPIhtZJOIqk=",
-      "url": "gsap-public\/esm\/PixiPlugin.js"
-    },
-    {
-      "hash": "sha256-K6eKUdIPcSiCmuz0+lzinTebeS83a5yhcrQb+UwKP\/M=",
-      "url": "gsap-public\/esm\/ScrollToPlugin.js"
-    },
-    {
-      "hash": "sha256-05kD55E\/9FmtWEUfbX5I3wXiOWLEVSzZQcKkM3lET50=",
-      "url": "gsap-public\/esm\/ScrollTrigger.js"
-    },
-    {
-      "hash": "sha256-40YLrWbHtzhB5yvvIyeBG8HgB6bb+ibdszXHD1D7K3c=",
-      "url": "gsap-public\/esm\/TextPlugin.js"
-    },
-    {
-      "hash": "sha256-oujhjyfGdj2qRNGxHdYf6BeTELQhEvPwscPquwvCCow=",
-      "url": "gsap-public\/esm\/utils\/matrix.js"
-    },
-    {
-      "hash": "sha256-J80+UwlzuhrQ8SSfkQ07wMMdP12KlJ+8MxzmAtWHw4Q=",
-      "url": "gsap-public\/esm\/utils\/paths.js"
-    },
-    {
-      "hash": "sha256-eMSV3PYWR1HjFcLRDjSXFuQK8MqMpQt3oaHmBMxulLc=",
-      "url": "gsap-public\/esm\/utils\/strings.js"
-    },
-    {
-      "hash": "sha256-iLYmyn8movDkHypEjtIOZAE\/rYQIiIUw+Eq2gBzb1Nk=",
-      "url": "gsap-public\/getting-started-link.html"
-    },
-    {
-      "hash": "sha256-1lFlJ5EFymdzGAUAaI30vcaaLHt3F1LwpG7xILf9jsM=",
-      "url": "gsap-public\/minified\/.DS_Store"
-    },
-    {
-      "hash": "sha256-mKVi8DTok6zwuPmRG0HiiGJC3EbbIDyi0r8ltgipeZ0=",
-      "url": "gsap-public\/minified\/CSSRulePlugin.min.js"
-    },
-    {
-      "hash": "sha256-chwsz82ix6xyrGQj4Pacs6f5TVUhHydhQe+YS7w8sYc=",
-      "url": "gsap-public\/minified\/CSSRulePlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-0eQ2v5C75X4p7Fnel4SVGP91AO7MtlPJzTvE5nGYaUQ=",
-      "url": "gsap-public\/minified\/CustomEase.min.js"
-    },
-    {
-      "hash": "sha256-rowEHFs6BFypExWeR93i3iNlGifcfTAm2XgHg38qSJg=",
-      "url": "gsap-public\/minified\/CustomEase.min.js.map"
-    },
-    {
-      "hash": "sha256-cVfQLZnKCoLIgRGPwofN2tZjUyMrEfraDHfFsh7W1DE=",
-      "url": "gsap-public\/minified\/Draggable.min.js"
-    },
-    {
-      "hash": "sha256-PPEn91xPLlrmCBebVfkDbA6V9SfRW8RzR0daSL5SBzc=",
-      "url": "gsap-public\/minified\/Draggable.min.js.map"
-    },
-    {
-      "hash": "sha256-vd\/eqw0RdJ16wOqR\/k+Jm5KPSgpkc6oJ4wCxPIAVRA0=",
-      "url": "gsap-public\/minified\/EaselPlugin.min.js"
-    },
-    {
-      "hash": "sha256-\/YMSG\/XiuRtuVmZdvex24KYqHaAJ7UvrAaPv8V\/PKG0=",
-      "url": "gsap-public\/minified\/EaselPlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-WBIOULy93NDTQtzCwZk5+0kANBCf3hgDc8a2DAoh9v8=",
-      "url": "gsap-public\/minified\/EasePack.min.js"
-    },
-    {
-      "hash": "sha256-Dlkizt6ZEwJdZRqJUBDA\/FP5863Zrnw2JaWsQtJvaAI=",
-      "url": "gsap-public\/minified\/EasePack.min.js.map"
-    },
-    {
-      "hash": "sha256-8rEpwVjyzA+zIMYu+qAhFGqSKtzKAQf8kBaIbRdzdSs=",
-      "url": "gsap-public\/minified\/Flip.min.js"
-    },
-    {
-      "hash": "sha256-MpBJLOXR2zzDdPK8y0nbPytznbiZYzDrkNV5xg11pQQ=",
-      "url": "gsap-public\/minified\/Flip.min.js.map"
-    },
-    {
-      "hash": "sha256-0WoQjB0DfUj3RAjo3zICIzBWuRiFUJLr9wLIek36ICQ=",
-      "url": "gsap-public\/minified\/gsap.min.js"
-    },
-    {
-      "hash": "sha256-YKybRKs7JISzzeDkrGPSVc9uKVgRI+ixIZT1i\/sg1L4=",
-      "url": "gsap-public\/minified\/gsap.min.js.map"
-    },
-    {
-      "hash": "sha256-zeTgDuGO+FqRKjqHgw2Ue8btJoqZOByX3nQ1rq6dXNg=",
-      "url": "gsap-public\/minified\/MotionPathPlugin.min.js"
-    },
-    {
-      "hash": "sha256-GDtwxN+nZpO3jFDSEwxBFpgrGKd8JgKL5tnej7cIgRY=",
-      "url": "gsap-public\/minified\/MotionPathPlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-1u9KkNywO97G2eMgW1Zn+fqZOG+2IPypId2zheZGDew=",
-      "url": "gsap-public\/minified\/Observer.min.js"
-    },
-    {
-      "hash": "sha256-35uBqAGxjTKGzhqg6zpLsb0xS+23PEGAVwMlUYFgsYM=",
-      "url": "gsap-public\/minified\/Observer.min.js.map"
-    },
-    {
-      "hash": "sha256-JuRI\/SLmTsJ6JGJbOMHQRaCbL0\/BPMOC9heEj0NH4VQ=",
-      "url": "gsap-public\/minified\/PixiPlugin.min.js"
-    },
-    {
-      "hash": "sha256-SVnJIf3cWFOzmmoCz0HoMtswcEJawzjPhlmrVvd2fOs=",
-      "url": "gsap-public\/minified\/PixiPlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-r+VCkGoJXhK33s5ZYQmKdo9iDBVqPwqXFFMBWK+kXN0=",
-      "url": "gsap-public\/minified\/ScrollToPlugin.min.js"
-    },
-    {
-      "hash": "sha256-s5V9l4J3PbNfdAWP5ltNH9DcC2IQE9LsjKWPvyzs4Eg=",
-      "url": "gsap-public\/minified\/ScrollToPlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-0y8wMAVZSnZ6CUr89VCG+OsmU3gzepegleI3Bf5o5dE=",
-      "url": "gsap-public\/minified\/ScrollTrigger.min.js"
-    },
-    {
-      "hash": "sha256-9tkfb\/Gq+Zggz5glQw0uN1btFMVmPr6As1ljppPSVu4=",
-      "url": "gsap-public\/minified\/ScrollTrigger.min.js.map"
-    },
-    {
-      "hash": "sha256-EXrcFGdvbTTU7cozwiqTlMGZe82lDag5Vzsz55TH6yk=",
-      "url": "gsap-public\/minified\/TextPlugin.min.js"
-    },
-    {
-      "hash": "sha256-7zuoNK+LBn7epejV7aBm74sDfNoT8vr4UbYHFRyNRRo=",
-      "url": "gsap-public\/minified\/TextPlugin.min.js.map"
-    },
-    {
-      "hash": "sha256-y\/r0xL0d+J92+V7QnmT7pISU7dBh9WGhEkNgX6\/Uvgg=",
-      "url": "gsap-public\/src\/.DS_Store"
-    },
-    {
-      "hash": "sha256-JI3sq+TZk924i+uLj0hlWPdqgJWhD1N\/CrlruFeUkh8=",
-      "url": "gsap-public\/src\/all.js"
-    },
-    {
-      "hash": "sha256-NT+ygQJlBdzUnOa7XBnw4t6MUA4uYGL\/kfdB8638eVw=",
-      "url": "gsap-public\/src\/CSSPlugin.js"
-    },
-    {
-      "hash": "sha256-7+m3Zv82W5bggC+B0YCuzKMdgwXMRGj67b0udSwJogo=",
-      "url": "gsap-public\/src\/CSSRulePlugin.js"
-    },
-    {
-      "hash": "sha256-8I5eFdqVq\/f3AA2x50fWuQt+Al13YxPws8utX6+1y6s=",
-      "url": "gsap-public\/src\/CustomEase.js"
-    },
-    {
-      "hash": "sha256-ovSTY\/egvd0rQVGeWvxKwlS5IjmyqC+QwjiRYlxtXkA=",
-      "url": "gsap-public\/src\/Draggable.js"
-    },
-    {
-      "hash": "sha256-C+UBnqfAUTULcpVMYZsYG7r\/p0OJxc0RClxb3Vxkhps=",
-      "url": "gsap-public\/src\/EaselPlugin.js"
-    },
-    {
-      "hash": "sha256-+w8feI9oPw7BbMqXrKBDUcoRG9hcufZkxfCq7xpTgbE=",
-      "url": "gsap-public\/src\/EasePack.js"
-    },
-    {
-      "hash": "sha256-qbaamlh0GILpcHM57iUnj1ixN0W8sMuNLr1+FquQgRM=",
-      "url": "gsap-public\/src\/Flip.js"
-    },
-    {
-      "hash": "sha256-gttfj4DpJtQ8H3R5tDNkKh4T+024ivKhLhUkQHxL6KY=",
-      "url": "gsap-public\/src\/gsap-core.js"
-    },
-    {
-      "hash": "sha256-96UjGQiuC3wQ6YuLLdpNBOXdIWEWnbBGA5G0aPShZ9I=",
-      "url": "gsap-public\/src\/index.js"
-    },
-    {
-      "hash": "sha256-Nh3m1RmzjKvxCvlCUjGMyjpV28UsE7UzUNkL9l\/L\/5U=",
-      "url": "gsap-public\/src\/MotionPathPlugin.js"
-    },
-    {
-      "hash": "sha256-4JK9UeNfVaJNWiHd27fyTGkaPKU+wI5x6t5tYDDmP3A=",
-      "url": "gsap-public\/src\/Observer.js"
-    },
-    {
-      "hash": "sha256-0W2SmtstGyyXbwk9\/Dc8eN0FCETIdrhS+wEYmFdufEA=",
-      "url": "gsap-public\/src\/PixiPlugin.js"
-    },
-    {
-      "hash": "sha256-JShg9g2yFqz3oQp0gtbWM\/yJ1sWcQbyRtlWIciflGgc=",
-      "url": "gsap-public\/src\/ScrollToPlugin.js"
-    },
-    {
-      "hash": "sha256-HpnA4U7bkJwOIkKvOg0PLXvMfB7RbZcr7kLNWkyNZ24=",
-      "url": "gsap-public\/src\/ScrollTrigger.js"
-    },
-    {
-      "hash": "sha256-H3irFaoLBRm\/Y7EIGTWr5IkFvs+ZH8tnCsSP5f+vbPk=",
-      "url": "gsap-public\/src\/TextPlugin.js"
-    },
-    {
-      "hash": "sha256-xdzxEm3XSij14NfOwK22lvBJbeDeqowEocoWZS1vyVo=",
-      "url": "gsap-public\/src\/utils\/matrix.js"
-    },
-    {
-      "hash": "sha256-Q\/bP5\/ldzSnJYut7Rf+lvtEnY3na1QuAdeeB21cdPoM=",
-      "url": "gsap-public\/src\/utils\/paths.js"
-    },
-    {
-      "hash": "sha256-aB757FuaJOqlTkjk2+Ntve5Uyb6knXHhNJg7uwZw3BI=",
-      "url": "gsap-public\/src\/utils\/strings.js"
-    },
-    {
-      "hash": "sha256-1lFlJ5EFymdzGAUAaI30vcaaLHt3F1LwpG7xILf9jsM=",
-      "url": "gsap-public\/umd\/.DS_Store"
-    },
-    {
-      "hash": "sha256-p7oDzFf7jWXnh6QTwebzcTZIBWmwkIcIFUn6PJbHWcc=",
-      "url": "gsap-public\/umd\/all.js"
-    },
-    {
-      "hash": "sha256-QS0pcdFZQ8DHHOBko\/zgE6LJU2e\/vwEoDP5kpEsZliE=",
-      "url": "gsap-public\/umd\/CSSRulePlugin.js"
-    },
-    {
-      "hash": "sha256-eCsD\/pBF9xNkGsSpwoQ7VVpxQlYyS8BXOKDiHcIdX+4=",
-      "url": "gsap-public\/umd\/CustomEase.js"
-    },
-    {
-      "hash": "sha256-bsdkknpXT4wz2wSGeRvDwhUmZzSPoP4j995QWD8WUac=",
-      "url": "gsap-public\/umd\/Draggable.js"
-    },
-    {
-      "hash": "sha256-XsHWJCHIaQ5Kt80YKAJ08NBqE7dKYnt68aMOzmSH2dA=",
-      "url": "gsap-public\/umd\/EaselPlugin.js"
-    },
-    {
-      "hash": "sha256-tBA\/cz2MvONVyBdt5yidHlz0Hrrf33SHRy4WPKq3t5s=",
-      "url": "gsap-public\/umd\/EasePack.js"
-    },
-    {
-      "hash": "sha256-IdewFfif38DfPZ6f7IaH60pHo6GXuUOXRzbDTsXRAaU=",
-      "url": "gsap-public\/umd\/Flip.js"
-    },
-    {
-      "hash": "sha256-nS0cbdSwdXmJEx5UxXjIK2n6akkTdfQ4z2a+rUqTsFs=",
-      "url": "gsap-public\/umd\/gsap.js"
-    },
-    {
-      "hash": "sha256-l\/H1uo1wSygszBplgUw0gxPW4ozh7pyYEK7IOqIWTD0=",
-      "url": "gsap-public\/umd\/MotionPathPlugin.js"
-    },
-    {
-      "hash": "sha256-r08CaeOYwol1UaMtJVpz84bJk3eZd5jA+Zzq40Id4cM=",
-      "url": "gsap-public\/umd\/Observer.js"
-    },
-    {
-      "hash": "sha256-Z\/xWhpVrK8bj1U1DXDtgBsi9Qh28qOHEl3kuu\/qi1jM=",
-      "url": "gsap-public\/umd\/PixiPlugin.js"
-    },
-    {
-      "hash": "sha256-r6KSt02N3+eHDa8WdkqxUQzmXDphveqbH0vdzeg9Nko=",
-      "url": "gsap-public\/umd\/ScrollToPlugin.js"
-    },
-    {
-      "hash": "sha256-YM5e9UJ9V9DTNHi+tknY2XrV1Bd6H5dCApnVlaqCsRo=",
-      "url": "gsap-public\/umd\/ScrollTrigger.js"
-    },
-    {
-      "hash": "sha256-89g9Q0jFX\/TaeraEJTucfT7De1NJQtpFPfwkLVd\/M90=",
-      "url": "gsap-public\/umd\/TextPlugin.js"
     },
     {
       "hash": "sha256-DbpQaq68ZSb5IoPosBErM1QWBfsbTxpJqhU0REi6wP4=",
@@ -433,32 +93,12 @@
       "url": "images\/velocity_input.png"
     },
     {
-      "hash": "sha256-ZZhOwuVDdhpw\/uffKcbXMWRX8NKUpCN1Ccr052rTisA=",
+      "hash": "sha256-12SG+KxEfYAJLUXSKowuXzs2Wh7owWYQssVr4UlLBzg=",
       "url": "index.html"
     },
     {
       "hash": "sha256-ggEV4rH1JkffEZTM1O4Dax8QUJW8KHFb2eG9X5IBCG4=",
       "url": "manifest.json"
-    },
-    {
-      "hash": "sha256-a3pageWbuuuADQeQxSHx0DWLx5gS9VzDzWif+tilyGQ=",
-      "url": "require.js"
-    },
-    {
-      "hash": "sha256-yzFf+O\/mlH+Q9klUSqXP2kxGKOUFLPxaww8da8fKhGU=",
-      "url": "sample-data\/weather.json"
-    },
-    {
-      "hash": "sha256-T+2i3XD1QXQgeBRAk1MEBL\/NPfNfruplRDcJpZlUP8o=",
-      "url": "thumbnail.png"
-    },
-    {
-      "hash": "sha256-ysWCGYxmva5ocUbo0VbUFXk4wTdkVfREpSgDNNqPDo0=",
-      "url": "trash-icon.png"
-    },
-    {
-      "hash": "sha256-odmRhg22yuGG9bkM\/cti1ErrrZ6MffO0f41o7byLCTM=",
-      "url": "upload-icon.png"
     },
     {
       "hash": "sha256-FNFohsDQHNEYF+QPpauYdOXaJrXoU0BgSFGy0qgZUGk=",
@@ -1257,11 +897,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-swpOvHz2uaZ3UKcWVgjuk9\/Hqf\/jxUEt+Y4BzF0RZnU=",
+      "hash": "sha256-qGxmLe9cjJBdxUdZsZfXRqEsVW7gK0VCYdywf7ZnCFI=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-VQexj7z5a52J3OdWUFCWNiPLHgYrjCw4HyKgwz6lWfU=",
+      "hash": "sha256-TB\/rR4gUyQrYMFN8YZAEHFaioCL2lyfH5Dg2OuE5q0A=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -1269,7 +909,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-h1jWGciYyTFNr4sdtPKL7TPbYCcXnnQ548IwmrsCeKQ=",
+      "hash": "sha256-0DCM+AZSPfzm\/Edav1y8DALYalQ9fmeKnOUQVVIPHR0=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -1321,5 +961,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "qdWAiwx0"
+  "version": "BKztHXWP"
 };

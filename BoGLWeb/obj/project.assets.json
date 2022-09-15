@@ -8179,11 +8179,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
       "projectName": "BoGLWeb",
-      "projectPath": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+      "projectPath": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Documents\\BoGLWeb\\BoGLWeb\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

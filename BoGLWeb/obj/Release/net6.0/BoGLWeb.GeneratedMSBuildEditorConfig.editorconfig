@@ -11,21 +11,21 @@ build_property.EnableTrimAnalyzer = true
 build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = BoGLWeb
 build_property.RootNamespace = BoGLWeb
-build_property.ProjectDir = C:\Users\Admin\Documents\BoGLWeb\BoGLWeb\
+build_property.ProjectDir = C:\Users\Admin\Downloads\BoGLWeb\BoGLWeb\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Admin\Documents\BoGLWeb\BoGLWeb
+build_property.MSBuildProjectDirectory = C:\Users\Admin\Downloads\BoGLWeb\BoGLWeb
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/App.razor]
+[C:/Users/Admin/Downloads/BoGLWeb/BoGLWeb/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/Pages/Index.razor]
+[C:/Users/Admin/Downloads/BoGLWeb/BoGLWeb/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Admin/Documents/BoGLWeb/BoGLWeb/_Imports.razor]
+[C:/Users/Admin/Downloads/BoGLWeb/BoGLWeb/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

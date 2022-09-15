@@ -20,79 +20,48 @@ body{
     background-color: rgb(248, 248, 248)
 }
 
-#toolbox{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin-bottom: 0.5em;
-    margin-left: 1em;
-    border: 2px solid #EEEEEE;
-    border-radius: 5px;
-    padding: 1em;
-    z-index: 5;
+g.selected > g > rect {
+    stroke: rgb(6, 82, 255);
 }
 
-#toolbox input{
-    width: 30px;
-    opacity: 0.4;
+g > g > rect {
+    stroke-width: 2;
+    stroke: black;
 }
-#toolbox input:hover{
-    opacity: 1;
+
+g {
+    fill: white;
     cursor: pointer;
 }
 
-#hidden-file-upload{
-    display: none;
-}
-
-#download-input{
-    margin: 0 0.5em;
-}
-
-.conceptG text{
-    pointer-events: none;
-}
-
-marker{
-    fill: #333;
-}
-
-g.conceptG circle{
-    fill: #F6FBFF;
-    stroke: #333;
-    stroke-width: 2px;
-}
-
-g.conceptG:hover circle{
+g:hover {
     fill: rgb(200, 238, 241);
-}
-
-g.selected circle{
-    fill: rgb(250, 232, 255);
-}
-g.selected:hover circle{
-    fill: rgb(250, 232, 255);
 }
 
 path.link {
     fill: none;
     stroke: #333;
-    stroke-width: 6px;
-    cursor: default;
+    stroke-width: 4px;
+    cursor: pointer;
+}
+
+path.link.selected, path.link.selected:hover {
+    stroke: rgb(6, 82, 255);
 }
 
 path.link:hover{
     stroke: rgb(94, 196, 204);
 }
 
-g.connect-node circle{
-    fill: #BEFFFF;
-}
-
 path.link.hidden{
     stroke-width: 0;
 }
 
-path.link.selected {
-    stroke: rgb(229, 172, 247);
+.container {
+    display: flex;
+    margin: 0;
+}
+
+#graphMenu {
+    width: 120px;
 }

@@ -1,28 +1,61 @@
 document.onload = (async function (d3, saveAs, Blob) {
     "use strict";
 
-    function waitForElm(selector) {
-        return new Promise(resolve => {
-            if (document.querySelector(selector)) {
-                return resolve(document.querySelector(selector));
-            }
+    var draggingElement = null;
 
-            const observer = new MutationObserver(mutations => {
-                if (document.querySelector(selector)) {
-                    resolve(document.querySelector(selector));
-                    observer.disconnect();
-                }
-            });
+    document.addEventListener("mouseup", function () {
+        document.body.style.cursor = 'auto';
+        draggingElement = null;
+    });
 
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
+    function makeElementSource(link, index, thisGraph) {
+        var group = menuSvg.append('g')
+            .attr('id', 'group_' + index)
+            .attr('index', index)
+            .attr('style', 'cursor: grab')
+            .on('mousedown', function () {
+                document.body.style.cursor = 'grabbing';
+                draggingElement = link;
             });
+        var box = group.append('rect');
+        box.attr('width', '60px')
+            .attr('height', '60px')
+            .attr('x', '30px')
+            .attr('y', (30 + index * 70) + 'px')
+            .attr('style', 'fill:rgb(255, 255, 255);stroke-width:2;stroke:rgb(0,0,0)');
+        var image = group.append('image');
+        image.attr('href', link)
+            .attr('x', '35px')
+            .attr('id', 'image_' + index);
+        if (index == 2) {
+            image.attr('height', '50px')
+                .attr('x', '50px');
+        } else {
+            image.attr('width', '50px');
+        }
+        document.getElementById("image_" + index).addEventListener('load', function () {
+            let imgHeight = image[0][0].getBoundingClientRect().height;
+            image.attr('y', (30 + index * 70 + ((60 - imgHeight) / 2)) + 'px');
         });
+        return group;
     }
 
-    // check if this is needed
-    waitForElm('#graph')
+    function drawMenu() {
+        menuSvg.append('rect')
+            .attr('width', '100px')
+            .attr('height', '520px')
+            .attr('x', '10px')
+            .attr('y', '10px')
+            .attr('style', 'fill:rgb(220,220,220)');
+
+        makeElementSource('images/damper.png', 0, graph);
+        makeElementSource('images/force_input.png', 1, graph);
+        makeElementSource('images/gravity.png', 2, graph);
+        makeElementSource('images/ground.png', 3, graph);
+        makeElementSource('images/mass.png', 4, graph);
+        makeElementSource('images/spring.png', 5, graph);
+        makeElementSource('images/velocity_input.png', 6, graph);
+    }
 
     // define graphcreator object
     let GraphCreator = function (svg, nodes, edges) {
@@ -162,19 +195,6 @@ document.onload = (async function (d3, saveAs, Blob) {
         }
     };
 
-    GraphCreator.prototype.deleteGraph = function (skipPrompt) {
-        var thisGraph = this,
-            doDelete = true;
-        if (!skipPrompt) {
-            doDelete = window.confirm("Press OK to delete this graph");
-        }
-        if (doDelete) {
-            thisGraph.nodes = [];
-            thisGraph.edges = [];
-            thisGraph.updateGraph();
-        }
-    };
-
     // remove edges associated with a node
     GraphCreator.prototype.spliceLinksForNode = function (node) {
         var thisGraph = this,
@@ -239,7 +259,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     };
 
     // mousedown on node
-    GraphCreator.prototype.circleMouseDown = function (d3node, d) {
+    GraphCreator.prototype.nodeMouseDown = function (d3node, d) {
         var thisGraph = this,
             state = thisGraph.state;
         d3.event.stopPropagation();
@@ -254,7 +274,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     };
 
     // mouseup on nodes
-    GraphCreator.prototype.circleMouseUp = function (d3node, d) {
+    GraphCreator.prototype.nodeMouseUp = function (d3node, d) {
         var thisGraph = this,
             state = thisGraph.state,
             consts = thisGraph.consts;
@@ -313,6 +333,13 @@ document.onload = (async function (d3, saveAs, Blob) {
     GraphCreator.prototype.svgMouseUp = function () {
         var thisGraph = this,
             state = thisGraph.state;
+        if (draggingElement) {
+            document.body.style.cursor = 'auto';
+            var xycoords = d3.mouse(thisGraph.svgG.node()),
+                d = { img: draggingElement, id: thisGraph.idct++, x: xycoords[0], y: xycoords[1], initialDrag: true };
+            thisGraph.nodes.push(d);
+            thisGraph.updateGraph();
+        }
         if (state.justScaleTransGraph) {
             // dragged not clicked
             state.justScaleTransGraph = false;
@@ -414,10 +441,10 @@ document.onload = (async function (d3, saveAs, Blob) {
                 d3.select(this).classed(consts.connectClass, false);
             })
             .on("mousedown", function (d) {
-                thisGraph.circleMouseDown.call(thisGraph, d3.select(this), d);
+                thisGraph.nodeMouseDown.call(thisGraph, d3.select(this), d);
             })
             .on("mouseup", function (d) {
-                thisGraph.circleMouseUp.call(thisGraph, d3.select(this), d);
+                thisGraph.nodeMouseUp.call(thisGraph, d3.select(this), d);
             })
             .call(thisGraph.drag);
 
@@ -425,16 +452,16 @@ document.onload = (async function (d3, saveAs, Blob) {
 
         let group = newGs.append("g");
         group.attr('id', 'group_' + index)
-            .classed('draggable', true)
-            .attr('index', function (d, i) { return d.id; })
-            .attr('untouched', true);
+            .attr('style', 'fill:inherit')
+            .attr('index', function (d, i) { return d.id; });
 
         let box = group.append('rect');
         box.attr('width', '60px')
             .attr('height', '60px')
             .attr('x', '-30px')
             .attr('y', '-30px')
-            .attr('style', 'fill:rgb(255, 255, 255);stroke-width:2;stroke:rgb(0,0,0)');
+            .attr('style', 'fill:inherit');
+
         let image = group.append('image');
         image.attr('href', function (d, i) { return d.img; })
             .attr('x', '-25px')
@@ -443,18 +470,13 @@ document.onload = (async function (d3, saveAs, Blob) {
             .attr('preserveAspectRatio', 'xMidYMid meet')
             .attr('height', '50px')
             .attr('width', '50px');
-        /*if (index == 2) {
-            image.attr('height', '50px')
-                .attr('x', '50px');
-        } else {
-            image.attr('width', '50px');
-        }*/
 
         // remove old nodes
         thisGraph.circles.exit().remove();
     };
 
     GraphCreator.prototype.zoomed = function () {
+        console.log("Drag graph");
         this.state.justScaleTransGraph = true;
         d3.select("." + this.consts.graphClass)
             .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
@@ -478,61 +500,14 @@ document.onload = (async function (d3, saveAs, Blob) {
     var nodes = [];
     var edges = [];
 
-    /** MAIN SVG **/
     var svg = d3.select("#graph").append("svg")
         .attr("width", width)
         .attr("height", height);
+    var menuSvg = d3.select("#graphMenu").append("svg")
+        .attr("width", width)
+        .attr("height", height);
     var graph = new GraphCreator(svg, nodes, edges);
+    drawMenu();
     graph.setIdCt(2);
-
-    // BoGL specific
-    svg.append('rect')
-        .attr('width', '100px')
-        .attr('height', '520px')
-        .attr('x', '10px')
-        .attr('y', '10px')
-        .attr('style', 'fill:rgb(220,220,220)');
-
-    function makeElementSource(link, index, thisGraph) {
-        var group = svg.append('g')
-            .attr('id', 'group_' + index)
-            .attr('index', index)
-            .on('mousedown', function () {
-                var xycoords = d3.mouse(thisGraph.svgG.node()),
-                    d = { img: link, id: thisGraph.idct++, x: xycoords[0], y: xycoords[1] };
-                thisGraph.nodes.push(d);
-                thisGraph.updateGraph();
-            });
-        var box = group.append('rect');
-        box.attr('width', '60px')
-            .attr('height', '60px')
-            .attr('x', '30px')
-            .attr('y', (30 + index * 70) + 'px')
-            .attr('style', 'fill:rgb(255, 255, 255);stroke-width:2;stroke:rgb(0,0,0)');
-        var image = group.append('image');
-        image.attr('href', link)
-            .attr('x', '35px')
-            .attr('id', 'image_' + index);
-        if (index == 2) {
-            image.attr('height', '50px')
-                .attr('x', '50px');
-        } else {
-            image.attr('width', '50px');
-        }
-        document.getElementById("image_" + index).addEventListener('load', function () {
-            let imgHeight = image[0][0].getBoundingClientRect().height;
-            image.attr('y', (30 + index * 70 + ((60 - imgHeight) / 2)) + 'px');
-        });
-        return group;
-    }
-
-    makeElementSource('images/damper.png', 0, graph);
-    makeElementSource('images/force_input.png', 1, graph);
-    makeElementSource('images/gravity.png', 2, graph);
-    makeElementSource('images/ground.png', 3, graph);
-    makeElementSource('images/mass.png', 4, graph);
-    makeElementSource('images/spring.png', 5, graph);
-    makeElementSource('images/velocity_input.png', 6, graph);
-
     graph.updateGraph();
 })(window.d3, window.saveAs, window.Blob);
