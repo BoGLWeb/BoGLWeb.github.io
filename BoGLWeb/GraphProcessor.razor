@@ -147,4 +147,196 @@
         }
     }
 
+    public async void loadExampleSystemDiagram(){
+
+    }
+
+    private designGraph systemGraph = null;
+    private designGraph unSimplifiedGraph = null;
+    private designGraph simplifiedGraphWithDir = null;
+    private designGraph systemGraphUser = null;
+
+    private List<option> options = new List<option>();
+
+    public void obtainCausality()
+    {
+        //TODO Rename variables
+        Stack<designGraph> sysGraphs = new Stack<designGraph>();
+        sysGraphs.Push(systemGraph.copy());
+        var sys = sysGraphs.Pop();
+        options = ruleSetMap["NewCausalityMethodRuleset"].recognize(sys, false, null);
+
+        while (options.Count > 0)
+        {
+            options[0].apply(sys, null);
+            options = ruleSetMap["NewCausalityMethodRuleset"].recognize(sys, false, null);
+        }
+
+        sysGraphs.Push(sys);
+        while (sysGraphs.Count > 0)
+        {
+            sys = sysGraphs.Pop();
+            options = ruleSetMap["NewCausalityMethodRuleset_2"].recognize(sys, false, null);
+            if (options.Count > 0)
+            {
+                foreach (var opt in options)
+                {
+                    var gra = sys.copy();
+                    GraphSynth.Search.SearchProcess.transferLmappingToChild(gra, sys, opt.nodes, opt.arcs, opt.hyperarcs);
+                    opt.apply(gra, null);
+                    sysGraphs.Push(gra);
+                }
+            }
+            else
+            {
+                sysGraphs.Push(sys); //This was .Add() in the desktop version which doesn't exist and I cant find documentation on, so this element may be getting added to the wrong location
+            }
+
+            foreach (var item in sysGraphs)
+            {
+                sys = item.copy();
+                options = ruleSetMap["NewCausalityMethodRuleset_3"].recognize(sys, false, null);
+
+                while (options.Count > 0)
+                {
+                    options[0].apply(sys, null);
+                    options = ruleSetMap["NewCausalityMethodRuleset_3"].recognize(sys, false, null);
+                }
+                sysGraphs.Push(sys);
+            }
+
+            sysGraphs.Clear();
+        }
+
+        //line 1330
+        while (sysGraphs.Count > 0) {
+            sys = sysGraphs.Pop();
+            options = ruleSetMap["INVDMarkerRules"].recognize(sys, false, null);
+            while (options.Count > 0) {
+                options[0].apply(sys, null);
+                options = ruleSetMap["INVDMarkerRules"].recognize(sys, false, null);
+            }
+
+            Stack<designGraph> graphss = new Stack<designGraph>(); //graphss in desktop verison
+            List<designGraph> graph_SSS= new List<designGraph>(); //graph_SSS in desktop version
+            graphss.Push(sys);
+
+            //There is a random open curly brace here, no idea why, didn't put it here, if thinks break maybe thats the problem? who knows
+            //The curly brackets can be used to for scope, interesting. I didn't put them here and just redefined options1 instead
+            var stackHead = graphss.Pop(); //graphS in desktop version
+            var options1 = ruleSetMap["CalibrationNewRuleset"].recognize(stackHead, false, null);
+
+            if (options1.Count > 0) {
+                foreach (var opt in options1) {
+                    var stackHeadCopy = stackHead.copy();
+                    GraphSynth.Search.SearchProcess.transferLmappingToChild(stackHeadCopy, stackHead, opt.nodes, opt.arcs, opt.hyperarcs);
+                    opt.apply(stackHeadCopy, null);
+                    graph_SSS.Add(stackHeadCopy);
+                }
+            } else {
+                graph_SSS.Add(stackHead);
+            }
+
+            foreach (var opt in graph_SSS) {
+                options1 = ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null);
+
+                while (options1.Count > 0) {
+                    options1[0].apply(opt, null);
+                    options1 = ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null);
+                }
+
+                graphss.Push(opt);
+            }
+
+            graph_SSS.Clear();
+
+            while (graphss.Count > 0) {
+                var graphS = graphss.Pop();
+                options1 = ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null);
+                while (options1.Count > 0) {
+                    options1[0].apply(graphS, null);
+                    options1 = ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null);
+                }
+                graph_SSS.Add(graphS);
+            }
+
+            foreach (var opt in graph_SSS) {
+                graphss.Push(opt);
+            }
+
+            graph_SSS.Clear();
+
+            //Line 1411
+            while (graphss.Count > 0) {
+                var graphS = graphss.Pop();
+                options1 = ruleSetMap["ICFixToolRuleset"].recognize(graphS, false, null);
+
+                //There was stuff commented out here, ignoring it for now
+
+                while (options1.Count > 0) {
+                    options1[0].apply(graphS, null);
+                    options1 = ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null);
+                }
+
+                graph_SSS.Add(graphS);
+            }
+
+            foreach (var op in graph_SSS) {
+                options = ruleSetMap["TransformerFlipRuleset"].recognize(op, false, null);
+
+                if(options.Count > 0) {
+                    options[0].apply(op, null);
+                    sysGraphs.Push(op);
+                } else {
+                    options = ruleSetMap["TransformerFlipRuleset2"].recognize(op, false, null);
+
+                    if (options.Count > 0) {
+                        options[0].apply(op, null);
+                        sysGraphs.Push(op);
+                    } else {
+                        optiGraphs.Add(op); //TODO This doesn't exists yet, make it
+                    }
+                }
+            }
+
+        }
+
+        //Line 1473
+        foreach (var opt in optiGraphs) {
+            options = ruleSetMap["Clean23Ruleset"].recognize(opt, false, null);
+
+            while (options.Count > 0) {
+                options[0].apply(opt, null);
+                options = ruleSetMap["Clean23Ruleset"].recognize(opt, false, null);
+            }
+
+            finalresult.Add(opt); //TODO This doesn't exist yet, make it
+        }
+
+        indiceswithoutINVD.Clear(); //TODO This doesn't exist yet, make it
+        maxIntegralCausality.Clear(); //TODO This doesn't exist yet, make it
+
+        for (int ii = 0l ii < finalresult.Count; ii++) {
+            bool index = checkINVD(finalresult[ii]); //TODO This doesn't exist yet, make it
+
+            if (index == false) {
+                indiceswithoutINVD.Add(ii);
+                maxIntegralCauslaity.Add(checkICs(finalresult[ii])); //TODO This doesn't exist yet, make it
+            }
+        }
+
+        if (indecieswithoutINVD.Count == 0) {
+            //We have an error
+            //TODO Create a better way to show this error message
+            Console.WriteLine("THERE IS AN ISSUE!!!!!");
+        } else {
+            int currentHashSetcount = 0;
+            int nn = 0;
+            foreach (var n in indecieswithoutINVD) {
+                //Line 1523
+            }
+        }
+
+    }
+
 }
