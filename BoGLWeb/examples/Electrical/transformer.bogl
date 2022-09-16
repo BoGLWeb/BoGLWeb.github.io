@@ -1,0 +1,274 @@
+[Header]
+panX -191.72796536796528
+panY 31.026075258075196
+zoom 0.5999999999999995
+
+[Elements]
+{
+	name System_E_Voltage_Input
+	x -241.56666666666672
+	y -31.880000000000052
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -129.30000000000018
+	y -251.11333333333351
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 201.77450980392177
+	y -231.77786230281623
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -16.892156862745082
+	y -105.94452896948246
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -11.558823529411711
+	y 16.222137697184166
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 8.441176470588289
+	y 103.38880436385102
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x 105.77450980392177
+	y 209.55547103051777
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 200.44117647058852
+	y 365.555471030518
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 435.10784313725526
+	y -211.27786230281595
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 330.9411764705885
+	y -147.77786230281583
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 313.7745098039218
+	y -222.44452896948275
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 481.77450980392246
+	y -46.44452896948246
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 476.44117647058863
+	y 20.222137697184166
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x 167.10784313725503
+	y -34.44452896948246
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 176.27450980392166
+	y 34.888804363851136
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 332.4411764705885
+	y 24.22213769718428
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 95.10784313725514
+	y 16.222137697184166
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 389.60784313725526
+	y 100.22213769718428
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x 251.10784313725514
+	y 257.55547103051777
+	modifiers {
+	}
+}
+{
+	name System_E_Transformer
+	x 646.2745098039226
+	y 110.88880436385125
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 787.5522875817003
+	y 66.05547103051754
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 794.5602240896371
+	y 204.15864563369223
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 3
+}
+{
+	element1 3
+	element2 4
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 6
+	element2 7
+}
+{
+	element1 7
+	element2 0
+}
+{
+	element1 10
+	element2 2
+}
+{
+	element1 9
+	element2 10
+}
+{
+	element1 8
+	element2 10
+}
+{
+	element1 11
+	element2 8
+}
+{
+	element1 11
+	element2 9
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 15
+	element2 13
+}
+{
+	element1 15
+	element2 14
+}
+{
+	element1 16
+	element2 13
+}
+{
+	element1 16
+	element2 14
+}
+{
+	element1 4
+	element2 16
+}
+{
+	element1 12
+	element2 15
+}
+{
+	element1 12
+	element2 11
+}
+{
+	element1 18
+	element2 7
+}
+{
+	element1 17
+	element2 18
+}
+{
+	element1 12
+	element2 17
+}
+{
+	element1 19
+	element2 7
+}
+{
+	element1 19
+	element2 12
+}
+{
+	element1 21
+	element2 20
+}
+{
+	element1 20
+	element2 19
+}
+{
+	element1 21
+	element2 19
+}

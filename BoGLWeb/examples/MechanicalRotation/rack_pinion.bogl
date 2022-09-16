@@ -1,0 +1,85 @@
+[Header]
+panX 4.434298245614059
+panY 14.667298245614063
+zoom 0.8499999999999999
+
+[Elements]
+{
+	name System_MT_Ground
+	x -444.8058823529411
+	y 202.92000000000013
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -408.8058823529411
+	y 65.92000000000013
+	modifiers {
+	}
+}
+{
+	name System_MR_Rack
+	x -361.60588235294114
+	y -11.679999999999893
+	modifiers {
+		FRICTION
+		MASS
+	}
+}
+{
+	name System_MR_Gear
+	x -290.4058823529411
+	y -152.47999999999985
+	modifiers {
+		INERTIA
+	}
+}
+{
+	name System_MR_Shaft
+	x -111.2058823529411
+	y -155.4799999999999
+	modifiers {
+		STIFFNESS
+	}
+}
+{
+	name System_MR_Flywheel
+	x 34.39411764705886
+	y -161.47999999999996
+	modifiers {
+	}
+}
+{
+	name System_MR_Torque_Input
+	x 170.25376676986582
+	y -131.8497626418988
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 3
+}
+{
+	element1 1
+	element2 2
+}
+{
+	element1 3
+	element2 4
+}
+{
+	element1 4
+	element2 5
+}
+{
+	element1 5
+	element2 6
+}

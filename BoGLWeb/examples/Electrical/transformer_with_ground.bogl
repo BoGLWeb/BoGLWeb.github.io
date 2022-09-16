@@ -1,0 +1,181 @@
+[Header]
+panX -234.7424540114168
+panY -49.62827469743854
+zoom 0.7499999999999997
+
+[Elements]
+{
+	name System_E_Voltage_Input
+	x -291.9575851393189
+	y 44.518761609907074
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x -177.86501812600886
+	y 300.8500785901409
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x -29.11841179116709
+	y 238.9315265539417
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -156.9736154110767
+	y -65.4951702786376
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 109.65966307514304
+	y 216.59174868475213
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 275.49697282421766
+	y 258.0989473684212
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 241.05579635362926
+	y 91.98130030959766
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 237.37932576539413
+	y 6.128359133127049
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 272.6734434124529
+	y -53.43046439628472
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 381.37932576539407
+	y -73.87164086687307
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 386.9381492948059
+	y 217.1577708978329
+	modifiers {
+	}
+}
+{
+	name System_E_Transformer
+	x 502.53814929480563
+	y 35.79306501548018
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 680.6444841364354
+	y -66.05987616099071
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 691.9444841364353
+	y 91.04012383900942
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x 578.0444841364352
+	y 277.3673965662821
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 2
+	element2 1
+}
+{
+	element1 0
+	element2 1
+}
+{
+	element1 3
+	element2 0
+}
+{
+	element1 4
+	element2 2
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 8
+	element2 7
+}
+{
+	element1 3
+	element2 8
+}
+{
+	element1 6
+	element2 7
+}
+{
+	element1 9
+	element2 8
+}
+{
+	element1 10
+	element2 5
+}
+{
+	element1 11
+	element2 9
+}
+{
+	element1 11
+	element2 10
+}
+{
+	element1 12
+	element2 11
+}
+{
+	element1 13
+	element2 12
+}
+{
+	element1 13
+	element2 14
+}
+{
+	element1 11
+	element2 14
+}

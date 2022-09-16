@@ -12,47 +12,28 @@
 <button @onclick="loadRuleSets">Load Rules</button>
 
 @code {
-    public ruleSet systemToBondGraph = null;
-    public ruleSet directionRuleSet = null;
-    public ruleSet directionRuleSet2 = null;
-    public ruleSet directionRuleSet3 = null;
-    public ruleSet simplificationRuleset = null;
-    public ruleSet simplificationRuleset2 = null;
-    public ruleSet newCausalityMethodRuleset = null;
-    public ruleSet newCausalityMethodRuleset_2 = null;
-    public ruleSet newCausalityMethodRuleset_3 = null;
-    public ruleSet iNVDMarkerRules = null;
-    public ruleSet iNVDMarkerRules_2 = null;
-    public ruleSet calibrationNewRuleset = null;
-    public ruleSet calibrationNewRuleset_2 = null;
-    public ruleSet rFlagCleanRuleset = null;
-    public ruleSet iCFixTotalRuleset = null;
-    public ruleSet transformerFlipRuleset = null;
-    public ruleSet transformerFlipRuleset2 = null;
-    public ruleSet clean23Ruleset = null;
-
-    public ruleSet solidworksRuleset = null;
-
-    public ruleSet state_Ruleset_1 = null;
-    public ruleSet state_Ruleset_2 = null;
-    public ruleSet state_Ruleset_3 = null;
-    public ruleSet state_FormatGraph = null;
-    public ruleSet state_Sum_Remove = null;
-    public ruleSet state_FormatForSum = null;
-    public ruleSet state_Sum_AddLabels = null;
-
     Dictionary<string, ruleSet> ruleSetMap = new Dictionary<string, ruleSet>();
+    private List<designGraph> optiGraphs = new List<designGraph>();
+    private List<designGraph> finalresult = new List<designGraph>();
+    private List<int> indiceswithoutINVD = new List<int>();
+    private List<int> maxIntegralCausality = new List<int>();
+    private HashSet<string> nodeLabelSorted = new HashSet<string>();
+    private HashSet<int> sortedIndices = new HashSet<int>();
+    private int index1 = 0;
+    private bool causality = false;
 
-
-    public async void loadRuleSets() {
+    public async void loadRuleSets()
+    {
         List<string> ruleSetPaths = new List<string>();
         HttpClient client = new HttpClient();
         //Load Rule Location List
         HttpResponseMessage responseRuleSetList = await client.GetAsync("http://localhost:5006/Rules/RuleSetPaths.txt");
         string ruleSetListFileContent = await responseRuleSetList.Content.ReadAsStringAsync();
-        using (StringReader sr = new StringReader(ruleSetListFileContent)) {
+        using (StringReader sr = new StringReader(ruleSetListFileContent))
+        {
             string? line = null;
-            while ((line = sr.ReadLine()) != null) {
+            while ((line = sr.ReadLine()) != null)
+            {
                 Console.WriteLine("Loaded Rule");
                 Console.WriteLine(line);
                 ruleSetPaths.Add(line);
@@ -61,20 +42,21 @@
 
         int numLoaded = 0;
         var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
-        foreach (string str in ruleSetPaths) {
+        foreach (string str in ruleSetPaths)
+        {
             HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006" + str);
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
             ruleSetMap.Add(str.Substring(6), (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
-            //TODO make this use multiple grammar rules
-            var numRules = systemToBondGraph.ruleFileNames.Count;
-            string ruleDir = systemToBondGraph.rulesDir;
-            List<String> ruleFileNames = systemToBondGraph.ruleFileNames;
+            var numRules = ruleSetMap[str.Substring(6)].ruleFileNames.Count;
+            string ruleDir = ruleSetMap[str.Substring(6)].rulesDir;
+            List<String> ruleFileNames = ruleSetMap[str.Substring(6)].ruleFileNames;
 
             var progStart = 5;
             var progStep = (double)(100 - progStart) / ruleFileNames.Count;
             var rules = new List<grammarRule>();
             numLoaded = 0;
-            while (numLoaded < ruleFileNames.Count) {
+            while (numLoaded < ruleFileNames.Count)
+            {
                 var rulePath = "/Rules/" + ruleFileNames[numLoaded];
 
                 HttpResponseMessage ruleResponse = await client.GetAsync("http://localhost:5006/" + rulePath);
@@ -83,19 +65,25 @@
                 var xeRule = XElement.Parse(ruleText);
                 var temp = xeRule.Element("{ignorableUri}" + "grammarRule");
                 var openRule = new grammarRule();
-                if (temp != null){
+                if (temp != null)
+                {
                     openRule = DeSerializeRuleFromXML(RemoveXAMLns(RemoveIgnorablePrefix(temp.ToString())));
                 }
 
                 removeNullWhiteSpaceEmptyLabels(openRule.L);
                 removeNullWhiteSpaceEmptyLabels(openRule.R);
 
-                object ruleObj = new object[] {openRule, rulePath}; 
-                if (ruleObj is grammarRule) {
+                object ruleObj = new object[] { openRule, rulePath };
+                if (ruleObj is grammarRule)
+                {
                     rules.Add((grammarRule)ruleObj);
-                } else if (ruleObj is object[]) {
-                    foreach (object o in (object[]) ruleObj){
-                        if (o is grammarRule) {
+                }
+                else if (ruleObj is object[])
+                {
+                    foreach (object o in (object[])ruleObj)
+                    {
+                        if (o is grammarRule)
+                        {
                             rules.Add((grammarRule)o);
                         }
                     }
@@ -103,51 +91,65 @@
                 numLoaded++;
             }
 
-            systemToBondGraph.rules = rules;
+            ruleSetMap[str.Substring(6)].rules = rules;
         }
     }
 
-    private grammarRule DeSerializeRuleFromXML(string xmlString) {
+    private grammarRule DeSerializeRuleFromXML(string xmlString)
+    {
         var stringReader = new StringReader(xmlString);
         var ruleDeserializer = new XmlSerializer(typeof(grammarRule));
         var newGrammarRule = (grammarRule)ruleDeserializer.Deserialize(stringReader);
-        if (newGrammarRule.L == null) {
+        if (newGrammarRule.L == null)
+        {
             newGrammarRule.L = new designGraph();
-        } else {
+        }
+        else
+        {
             newGrammarRule.L.internallyConnectGraph();
         }
 
-        if (newGrammarRule.R == null) {
+        if (newGrammarRule.R == null)
+        {
             newGrammarRule.R = new designGraph();
-        } else {
+        }
+        else
+        {
             newGrammarRule.R.internallyConnectGraph();
         }
 
         return newGrammarRule;
     }
 
-    private string RemoveXAMLns(string str) {
+    private string RemoveXAMLns(string str)
+    {
         return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presenation\"", "");
     }
 
-    private string RemoveIgnorablePrefix(string str) {
+    private string RemoveIgnorablePrefix(string str)
+    {
         return str.Replace("GraphSynth:", "").Replace("xmlns=\"ignorableUri\"", "");
     }
 
-    private void removeNullWhiteSpaceEmptyLabels(designGraph g) {
+    private void removeNullWhiteSpaceEmptyLabels(designGraph g)
+    {
         g.globalLabels.RemoveAll(string.IsNullOrWhiteSpace);
-        foreach (var a in g.arcs) {
+        foreach (var a in g.arcs)
+        {
             a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
         }
-        foreach (var a in g.nodes) {
+        foreach (var a in g.nodes)
+        {
             a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
         }
-        foreach (var a in g.hyperarcs) {
+        foreach (var a in g.hyperarcs)
+        {
             a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
         }
     }
 
-    public async void loadExampleSystemDiagram(){
+    public async void loadExampleSystemDiagram()
+    {
 
     }
 
@@ -209,16 +211,18 @@
         }
 
         //line 1330
-        while (sysGraphs.Count > 0) {
+        while (sysGraphs.Count > 0)
+        {
             sys = sysGraphs.Pop();
             options = ruleSetMap["INVDMarkerRules"].recognize(sys, false, null);
-            while (options.Count > 0) {
+            while (options.Count > 0)
+            {
                 options[0].apply(sys, null);
                 options = ruleSetMap["INVDMarkerRules"].recognize(sys, false, null);
             }
 
             Stack<designGraph> graphss = new Stack<designGraph>(); //graphss in desktop verison
-            List<designGraph> graph_SSS= new List<designGraph>(); //graph_SSS in desktop version
+            List<designGraph> graph_SSS = new List<designGraph>(); //graph_SSS in desktop version
             graphss.Push(sys);
 
             //There is a random open curly brace here, no idea why, didn't put it here, if thinks break maybe thats the problem? who knows
@@ -226,21 +230,27 @@
             var stackHead = graphss.Pop(); //graphS in desktop version
             var options1 = ruleSetMap["CalibrationNewRuleset"].recognize(stackHead, false, null);
 
-            if (options1.Count > 0) {
-                foreach (var opt in options1) {
+            if (options1.Count > 0)
+            {
+                foreach (var opt in options1)
+                {
                     var stackHeadCopy = stackHead.copy();
                     GraphSynth.Search.SearchProcess.transferLmappingToChild(stackHeadCopy, stackHead, opt.nodes, opt.arcs, opt.hyperarcs);
                     opt.apply(stackHeadCopy, null);
                     graph_SSS.Add(stackHeadCopy);
                 }
-            } else {
+            }
+            else
+            {
                 graph_SSS.Add(stackHead);
             }
 
-            foreach (var opt in graph_SSS) {
+            foreach (var opt in graph_SSS)
+            {
                 options1 = ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null);
 
-                while (options1.Count > 0) {
+                while (options1.Count > 0)
+                {
                     options1[0].apply(opt, null);
                     options1 = ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null);
                 }
@@ -250,30 +260,35 @@
 
             graph_SSS.Clear();
 
-            while (graphss.Count > 0) {
+            while (graphss.Count > 0)
+            {
                 var graphS = graphss.Pop();
                 options1 = ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null);
-                while (options1.Count > 0) {
+                while (options1.Count > 0)
+                {
                     options1[0].apply(graphS, null);
                     options1 = ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null);
                 }
                 graph_SSS.Add(graphS);
             }
 
-            foreach (var opt in graph_SSS) {
+            foreach (var opt in graph_SSS)
+            {
                 graphss.Push(opt);
             }
 
             graph_SSS.Clear();
 
             //Line 1411
-            while (graphss.Count > 0) {
+            while (graphss.Count > 0)
+            {
                 var graphS = graphss.Pop();
                 options1 = ruleSetMap["ICFixToolRuleset"].recognize(graphS, false, null);
 
                 //There was stuff commented out here, ignoring it for now
 
-                while (options1.Count > 0) {
+                while (options1.Count > 0)
+                {
                     options1[0].apply(graphS, null);
                     options1 = ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null);
                 }
@@ -281,19 +296,26 @@
                 graph_SSS.Add(graphS);
             }
 
-            foreach (var op in graph_SSS) {
+            foreach (var op in graph_SSS)
+            {
                 options = ruleSetMap["TransformerFlipRuleset"].recognize(op, false, null);
 
-                if(options.Count > 0) {
+                if (options.Count > 0)
+                {
                     options[0].apply(op, null);
                     sysGraphs.Push(op);
-                } else {
+                }
+                else
+                {
                     options = ruleSetMap["TransformerFlipRuleset2"].recognize(op, false, null);
 
-                    if (options.Count > 0) {
+                    if (options.Count > 0)
+                    {
                         options[0].apply(op, null);
                         sysGraphs.Push(op);
-                    } else {
+                    }
+                    else
+                    {
                         optiGraphs.Add(op); //TODO This doesn't exists yet, make it
                     }
                 }
@@ -302,10 +324,12 @@
         }
 
         //Line 1473
-        foreach (var opt in optiGraphs) {
+        foreach (var opt in optiGraphs)
+        {
             options = ruleSetMap["Clean23Ruleset"].recognize(opt, false, null);
 
-            while (options.Count > 0) {
+            while (options.Count > 0)
+            {
                 options[0].apply(opt, null);
                 options = ruleSetMap["Clean23Ruleset"].recognize(opt, false, null);
             }
@@ -316,27 +340,159 @@
         indiceswithoutINVD.Clear(); //TODO This doesn't exist yet, make it
         maxIntegralCausality.Clear(); //TODO This doesn't exist yet, make it
 
-        for (int ii = 0l ii < finalresult.Count; ii++) {
+        for (int ii = 0; ii < finalresult.Count; ii++)
+        {
             bool index = checkINVD(finalresult[ii]); //TODO This doesn't exist yet, make it
 
-            if (index == false) {
+            if (index == false)
+            {
                 indiceswithoutINVD.Add(ii);
-                maxIntegralCauslaity.Add(checkICs(finalresult[ii])); //TODO This doesn't exist yet, make it
+                maxIntegralCausality.Add(checkICs(finalresult[ii])); //TODO This doesn't exist yet, make it
             }
         }
 
-        if (indecieswithoutINVD.Count == 0) {
+        if (indiceswithoutINVD.Count == 0)
+        {
             //We have an error
             //TODO Create a better way to show this error message
             Console.WriteLine("THERE IS AN ISSUE!!!!!");
-        } else {
+        }
+        else
+        {
             int currentHashSetcount = 0;
             int nn = 0;
-            foreach (var n in indecieswithoutINVD) {
+            foreach (var n in indiceswithoutINVD)
+            {
                 //Line 1523
+                List<string> nodeLabelsCau = new List<string>();
+                var cauGraph = finalresult[n];
+
+                foreach (var arcC in cauGraph.arcs)
+                {
+                    if (arcC.localLabels.Contains("I2") && arcC.localLabels.Contains("SAME"))
+                    {
+                        for (int iii = 0; iii < arcC.To.localLabels.Count; iii++)
+                        {
+                            if (arcC.To.localLabels[iii].Contains("iadded"))
+                            {
+                                nodeLabelsCau.Add(arcC.To.localLabels[iii]);
+
+                            }
+
+                        }
+                    }
+                    if (arcC.localLabels.Contains("C3") && arcC.localLabels.Contains("OPP"))
+                    {
+                        for (int iii = 0; iii < arcC.From.localLabels.Count; iii++)
+                        {
+                            if (arcC.From.localLabels[iii].Contains("cadded"))
+                            {
+                                nodeLabelsCau.Add(arcC.From.localLabels[iii]);
+
+                            }
+
+                        }
+                    }
+
+                }
+
+                if (nodeLabelsCau.Count > 0)
+                {
+                    nodeLabelsCau.Sort();
+
+                    string combined = "";
+                    foreach (var x in nodeLabelsCau)
+                        combined += x;
+
+                    nodeLabelSorted.Add(combined);
+
+                    //need to add index numbers as well into a list
+
+                    if ((nn + 1) == nodeLabelSorted.Count) //for the first one, it will be same
+                    {
+                        sortedIndices.Add(n);
+                        currentHashSetcount++;
+                    }
+
+                    if (currentHashSetcount <= nodeLabelSorted.Count)
+                    {
+                        sortedIndices.Add(n);
+                        currentHashSetcount++;
+                    }
+
+                }
+                nn++;
             }
+            // nodeNames_Cau.Sort();
+            // nodeNames.Add(nodeNames_Cau);
+
+            List<int> maxIntegralCaus = new List<int>();
+
+            foreach (var n in sortedIndices)
+            {
+                //use the indiceswithoutINVD to obtain the index in that list
+
+                var indexindex = indiceswithoutINVD.FindIndex(item => item == n);
+                maxIntegralCaus.Add(maxIntegralCausality[indexindex]);
+
+            }
+
+            index1 = maxIntegralCausality.IndexOf(maxIntegralCausality.Max());
+
+            //  foreach (var no in finalresult[index1].nodes)
+
+            //now add to the combo-box
+
+            for (int pp = 0; pp < nodeLabelSorted.Count; pp++)
+            {
+                var stringtobeadded = "Option " + (pp + 1).ToString();
+
+                //Graph_BG3.CausalOptions.Items.Add(stringtobeadded);
+            }
+
+            //Graph_BG3.CausalOptions.IsEnabled = true;
+
+
+            //rectangles_BG_Causality.Clear();
+            //lines_BG_Causality.Clear();
+            //connections_BG_Causality.Clear();
+            causality = true;
         }
 
+        //Graph_BG3.CausalOptions.SelectedIndex = 0;
+        //causaloptions_selection();
+
+    }
+
+    private int checkICs(designGraph designGraph)
+    {
+        int xx = 0;
+        foreach (arc a in designGraph.arcs)
+        {
+            if (a.localLabels.Contains("I2") && a.localLabels.Contains("SAME"))
+                xx = xx + 1;
+            if (a.localLabels.Contains("C3") && a.localLabels.Contains("OPP"))
+                xx = xx + 1;
+        }
+
+        return (xx);
+
+    }
+
+    private bool checkINVD(designGraph designGraph)
+    {
+        foreach (node n in designGraph.nodes)
+        {
+            foreach (string x in n.localLabels)
+            {
+                if (x.Contains("INVD"))
+                    return true;
+                if (x.Contains("Flipped"))
+                    return true;
+            }
+
+        }
+        return false;
     }
 
 }

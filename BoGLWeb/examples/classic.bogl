@@ -1,0 +1,63 @@
+[Header]
+panX 0
+panY 0
+zoom 1
+
+[Elements]
+{
+	name System_MT_Gravity
+	x -75.00233918128663
+	y -267.53847953216365
+	modifiers {
+	}
+}
+{
+	name System_MT_Mass
+	x -105.39122807017554
+	y -86.4273684210525
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -231.61345029239777
+	y 51.68374269005852
+	modifiers {
+	}
+}
+{
+	name System_MT_Damper
+	x -19.169005847953258
+	y 80.07263157894744
+	modifiers {
+	}
+}
+{
+	name System_MT_Ground
+	x -121.69999999999993
+	y 231.72000000000008
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 3
+	element2 1
+}
+{
+	element1 4
+	element2 2
+}
+{
+	element1 4
+	element2 3
+}

@@ -1,0 +1,107 @@
+[Header]
+panX 0
+panY 0
+zoom 1
+
+[Elements]
+{
+	name System_MR_Velocity_Input
+	x 40.80000000000001
+	y 190.14000000000001
+	modifiers {
+	}
+}
+{
+	name System_MR_Shaft
+	x 193.20000000000005
+	y 178.44000000000003
+	modifiers {
+	}
+}
+{
+	name System_MR_Gear
+	x 169
+	y 310.84000000000003
+	modifiers {
+	}
+}
+{
+	name System_MR_Gear
+	x 319
+	y 310.84000000000003
+	modifiers {
+	}
+}
+{
+	name System_MR_Rack
+	x 497.6
+	y 495.03999999999996
+	modifiers {
+	}
+}
+{
+	name System_MR_Gear
+	x 497.6
+	y 311.03999999999996
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x 278.80000000000007
+	y 451.43999999999994
+	modifiers {
+	}
+}
+{
+	name System_MT_Damper
+	x 363.20000000000005
+	y 550.14
+	modifiers {
+	}
+}
+{
+	name System_MT_Ground
+	x 160.40000000000003
+	y 550.44
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 2
+	element2 3
+}
+{
+	element1 4
+	element2 5
+}
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 5
+	element2 3
+}
+{
+	element1 6
+	element2 4
+}
+{
+	element1 7
+	element2 4
+}
+{
+	element1 8
+	element2 6
+}
+{
+	element1 8
+	element2 7
+}
