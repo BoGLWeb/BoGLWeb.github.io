@@ -1,5 +1,6 @@
 ﻿@inject HttpClient Http;
 @page "/graphtest"
+@using AVL_Prototype_1
 @using GraphSynth.Representation
 @using System.Xml.Serialization
 @using System.Xml.Linq
@@ -10,6 +11,7 @@
 <h1>Hello</h1>
 
 <button @onclick="loadRuleSets">Load Rules</button>
+<button @onclick="loadExampleGraphString">Load Example Graph String</button>
 
 @code {
     Dictionary<string, ruleSet> ruleSetMap = new Dictionary<string, ruleSet>();
@@ -21,6 +23,7 @@
     private HashSet<int> sortedIndices = new HashSet<int>();
     private int index1 = 0;
     private bool causality = false;
+    private Graph graph;
 
     public async void loadRuleSets()
     {
@@ -159,6 +162,8 @@
     private designGraph systemGraphUser = null;
 
     private List<option> options = new List<option>();
+
+    private string graphString = "";
 
     public void obtainCausality()
     {
@@ -493,6 +498,34 @@
 
         }
         return false;
+    }
+
+    private async void loadExampleGraphString() {
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/classic.bogl");
+        string exampleString = await exampleResponse.Content.ReadAsStringAsync();
+
+        List<string> fileTokens = tokenize(exampleString);
+        graph = new Graph();
+        bool loaded = graph.load(fileTokens);
+        Console.WriteLine(loaded);
+    }
+
+    public static List<string> tokenize(string str) {
+        List<string> tokens = new List<string>();
+
+        string[] lines = str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+        foreach (string line in lines) {
+            string[] lineTokens = line.Trim().Split(" ");
+            foreach (string token in lineTokens) {
+                if (token.Length > 0) {
+                    tokens.Add(token);
+                }
+            }
+        }
+
+        return tokens;
     }
 
 }

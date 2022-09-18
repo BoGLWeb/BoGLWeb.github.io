@@ -49,132 +49,132 @@
       "url": "css\/open-iconic\/README.md"
     },
     {
+      "hash": "sha256-2673Yea8f\/\/h3+0rDulYxLkqdrVCdP6NXFGv3073GbQ=",
+      "url": "examples\/basic-two-mass-system.bogl"
+    },
+    {
+      "hash": "sha256-Rc2ZuiqmAIUalowC62mF8HB7Ni5qwUtMnllZf8e5U+c=",
+      "url": "examples\/basic-two-mass-system1.bogl"
+    },
+    {
+      "hash": "sha256-AYgYp+69VVcPY2wNb5Xri+GAW\/5RX4EeCxuyo2wZEaI=",
+      "url": "examples\/basic-two-mass-system2.bogl"
+    },
+    {
       "hash": "sha256-a+CbiLxtRGuWIYfLZY5lJ3L7Uzf+6MtYR7IBY8pC0p8=",
       "url": "examples\/classic.bogl"
     },
     {
       "hash": "sha256-vkimphnQwMK+CWBWQb0QxxCidJa8anI2Y0WgmlkwbDI=",
-      "url": "examples\/Electrical\/current_multi_parallel.bogl"
+      "url": "examples\/current_multi_parallel.bogl"
     },
     {
       "hash": "sha256-Wc3wXAjT8pbb9WziXR3iz+hovbJsb0VYJTWWn2Pr8Rs=",
-      "url": "examples\/Electrical\/current_parallel.bogl"
+      "url": "examples\/current_parallel.bogl"
     },
     {
       "hash": "sha256-VRgquHTvWUHuCJH1AlnvegXwfH8+JbTah7VA0fnRJ6w=",
-      "url": "examples\/Electrical\/current_parallel_with resistors.bogl"
+      "url": "examples\/current_parallel_with resistors.bogl"
     },
     {
       "hash": "sha256-hjR78ZCzBf99PuArY4frpMOWjFW8TFsbII\/hOjMLKBY=",
-      "url": "examples\/Electrical\/electrical_system.bogl"
-    },
-    {
-      "hash": "sha256-IhkdemVzzLQ5NLK1Hjr05\/SevlJ5dIYHqqlqL3Qw5Wc=",
-      "url": "examples\/Electrical\/lrc_circuit.bogl"
-    },
-    {
-      "hash": "sha256-YAivK4HUsHsfTM\/jfBrmXUm9ruF1OJlCLE8HicvXjBo=",
-      "url": "examples\/Electrical\/motor.bogl"
-    },
-    {
-      "hash": "sha256-Gks\/ebbIqHJXEOMR9FWBxPDHgzCZnbpd07aelg0j9UE=",
-      "url": "examples\/Electrical\/open_circuit.bogl"
-    },
-    {
-      "hash": "sha256-sf\/HSvYCI2sFaBZy99PAd0bOGbtA1Lwnctd7YjcRtXo=",
-      "url": "examples\/Electrical\/three_voltages.bogl"
-    },
-    {
-      "hash": "sha256-G8hef75UvFBlEl\/UKGq6yp\/2qYL4xlQQsa8s8\/2chPI=",
-      "url": "examples\/Electrical\/transformer.bogl"
-    },
-    {
-      "hash": "sha256-F2Z8IZPNkrv2Mi6tC4ZkCM1yJsf+abj5woK3d12sVGA=",
-      "url": "examples\/Electrical\/transformer_with_ground.bogl"
-    },
-    {
-      "hash": "sha256-jKF9ezPqf2J8uVmeRBjV9\/980iFhyEmIX8Wy3mtC7LI=",
-      "url": "examples\/Electrical\/two_voltages.bogl"
-    },
-    {
-      "hash": "sha256-zm02c9gCNZAy59Dz9jPXI3mVXRc2w77s0SRzsTl0gOI=",
-      "url": "examples\/Electrical\/voltage_multi_parallel.bogl"
-    },
-    {
-      "hash": "sha256-IUKQnwYyp86fWQCSNWG+enASmoQNhIrjUdigIXi+v8I=",
-      "url": "examples\/Electrical\/voltage_open_circuit.bogl"
-    },
-    {
-      "hash": "sha256-jUU1t2HhhVEpRoqQ7MWjNypNShzCcq2YMdCO0oRR5Hw=",
-      "url": "examples\/Electrical\/voltage_parallel_circuit.bogl"
-    },
-    {
-      "hash": "sha256-13iCaYd4fGclJJzcZsEuR3KtS9+SrlybvYyvDzaB7ms=",
-      "url": "examples\/Electrical\/voltage_parallel_resistor.bogl"
+      "url": "examples\/electrical_system.bogl"
     },
     {
       "hash": "sha256-Z7p9Z57xPuzIbktRg6YretRo3Z26cM6vKqB5pmPTWrA=",
       "url": "examples\/goof.bogl"
     },
     {
-      "hash": "sha256-6zCnD58lp+4T+RdzDBolHqAkQT4k3\/a2RfKxN6r4rb0=",
-      "url": "examples\/MechanicalRotation\/mechrotandrackpinion.bogl"
-    },
-    {
-      "hash": "sha256-5429gtIJ+wdZ38MPCjk0MXNqEdIcQdzzGqVRjSB14uE=",
-      "url": "examples\/MechanicalRotation\/motor-gear-pair.bogl"
-    },
-    {
-      "hash": "sha256-TmBauWPvaDF0FwaG\/n5Y0HW9gQozi45Gi5irvDvLbI0=",
-      "url": "examples\/MechanicalRotation\/plane_motion.bogl"
-    },
-    {
-      "hash": "sha256-OQESgCTISjz912KLnNrYeMpjkyudrwcA3CJ8cr23cnA=",
-      "url": "examples\/MechanicalRotation\/rack_pinion.bogl"
-    },
-    {
-      "hash": "sha256-VS8xhfF5MqsN8PwcNbHV2VggrR+WpCZrim4mCKqTJrY=",
-      "url": "examples\/MechanicalRotation\/rack_pinion_example.bogl"
-    },
-    {
-      "hash": "sha256-2673Yea8f\/\/h3+0rDulYxLkqdrVCdP6NXFGv3073GbQ=",
-      "url": "examples\/MechanicalTranslation\/basic-two-mass-system.bogl"
-    },
-    {
-      "hash": "sha256-Rc2ZuiqmAIUalowC62mF8HB7Ni5qwUtMnllZf8e5U+c=",
-      "url": "examples\/MechanicalTranslation\/basic-two-mass-system1.bogl"
-    },
-    {
-      "hash": "sha256-AYgYp+69VVcPY2wNb5Xri+GAW\/5RX4EeCxuyo2wZEaI=",
-      "url": "examples\/MechanicalTranslation\/basic-two-mass-system2.bogl"
+      "hash": "sha256-IhkdemVzzLQ5NLK1Hjr05\/SevlJ5dIYHqqlqL3Qw5Wc=",
+      "url": "examples\/lrc_circuit.bogl"
     },
     {
       "hash": "sha256-797L9s+xm9f2sI3xfMjXDBnl75ShY\/rzXLE4tb2M798=",
-      "url": "examples\/MechanicalTranslation\/masses_on_&_off_wheels.bogl"
+      "url": "examples\/masses_on_&_off_wheels.bogl"
     },
     {
       "hash": "sha256-4kygtwZz28X+cxa8wcfW4JpN9U1EBeb5ArikD5Yn7Gc=",
-      "url": "examples\/MechanicalTranslation\/masses_on_a_spring.bogl"
+      "url": "examples\/masses_on_a_spring.bogl"
     },
     {
       "hash": "sha256-Y6SQg2uEzmpcaH6aR\/TzZ7\/WJQ\/dP6L5\/xt0yBiC3Gc=",
-      "url": "examples\/MechanicalTranslation\/masses_on_wheels.bogl"
+      "url": "examples\/masses_on_wheels.bogl"
     },
     {
       "hash": "sha256-O1SpUZ4\/y8tfmaIy+Y3z6mFAtLzXsHoTWX3oYkcv\/D8=",
-      "url": "examples\/MechanicalTranslation\/masses_on_wheels_with_damper_&_spring.bogl"
+      "url": "examples\/masses_on_wheels_with_damper_&_spring.bogl"
     },
     {
       "hash": "sha256-gR1h\/fawZhR7QBjPJDhQZTdtXJnTvOZ4aFuG\/\/KXakY=",
-      "url": "examples\/MechanicalTranslation\/masses_on_wheels_with_spring.bogl"
+      "url": "examples\/masses_on_wheels_with_spring.bogl"
+    },
+    {
+      "hash": "sha256-6zCnD58lp+4T+RdzDBolHqAkQT4k3\/a2RfKxN6r4rb0=",
+      "url": "examples\/mechrotandrackpinion.bogl"
+    },
+    {
+      "hash": "sha256-5429gtIJ+wdZ38MPCjk0MXNqEdIcQdzzGqVRjSB14uE=",
+      "url": "examples\/motor-gear-pair.bogl"
+    },
+    {
+      "hash": "sha256-YAivK4HUsHsfTM\/jfBrmXUm9ruF1OJlCLE8HicvXjBo=",
+      "url": "examples\/motor.bogl"
     },
     {
       "hash": "sha256-iaUZtB2\/CC+cpiJylLlqcz9pPk7BR5qPXXfcz1\/HEdY=",
-      "url": "examples\/MechanicalTranslation\/moving_masses.bogl"
+      "url": "examples\/moving_masses.bogl"
+    },
+    {
+      "hash": "sha256-Gks\/ebbIqHJXEOMR9FWBxPDHgzCZnbpd07aelg0j9UE=",
+      "url": "examples\/open_circuit.bogl"
+    },
+    {
+      "hash": "sha256-TmBauWPvaDF0FwaG\/n5Y0HW9gQozi45Gi5irvDvLbI0=",
+      "url": "examples\/plane_motion.bogl"
+    },
+    {
+      "hash": "sha256-OQESgCTISjz912KLnNrYeMpjkyudrwcA3CJ8cr23cnA=",
+      "url": "examples\/rack_pinion.bogl"
+    },
+    {
+      "hash": "sha256-VS8xhfF5MqsN8PwcNbHV2VggrR+WpCZrim4mCKqTJrY=",
+      "url": "examples\/rack_pinion_example.bogl"
     },
     {
       "hash": "sha256-oCD1idjZBmFKzl5LxiKvUsLM\/2AgJcPY4gO7kkurv2w=",
-      "url": "examples\/MechanicalTranslation\/spring_&_damper.bogl"
+      "url": "examples\/spring_&_damper.bogl"
+    },
+    {
+      "hash": "sha256-sf\/HSvYCI2sFaBZy99PAd0bOGbtA1Lwnctd7YjcRtXo=",
+      "url": "examples\/three_voltages.bogl"
+    },
+    {
+      "hash": "sha256-G8hef75UvFBlEl\/UKGq6yp\/2qYL4xlQQsa8s8\/2chPI=",
+      "url": "examples\/transformer.bogl"
+    },
+    {
+      "hash": "sha256-F2Z8IZPNkrv2Mi6tC4ZkCM1yJsf+abj5woK3d12sVGA=",
+      "url": "examples\/transformer_with_ground.bogl"
+    },
+    {
+      "hash": "sha256-jKF9ezPqf2J8uVmeRBjV9\/980iFhyEmIX8Wy3mtC7LI=",
+      "url": "examples\/two_voltages.bogl"
+    },
+    {
+      "hash": "sha256-zm02c9gCNZAy59Dz9jPXI3mVXRc2w77s0SRzsTl0gOI=",
+      "url": "examples\/voltage_multi_parallel.bogl"
+    },
+    {
+      "hash": "sha256-IUKQnwYyp86fWQCSNWG+enASmoQNhIrjUdigIXi+v8I=",
+      "url": "examples\/voltage_open_circuit.bogl"
+    },
+    {
+      "hash": "sha256-jUU1t2HhhVEpRoqQ7MWjNypNShzCcq2YMdCO0oRR5Hw=",
+      "url": "examples\/voltage_parallel_circuit.bogl"
+    },
+    {
+      "hash": "sha256-13iCaYd4fGclJJzcZsEuR3KtS9+SrlybvYyvDzaB7ms=",
+      "url": "examples\/voltage_parallel_resistor.bogl"
     },
     {
       "hash": "sha256-Jtxf9L+5ITKRc1gIRl4VbUpGkRNfOBXjYTdhJD4facM=",
@@ -4001,11 +4001,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-ctldNsmFZ\/BPw31NT9+6nA+yPYjnOTviEJLvcjam7yg=",
+      "hash": "sha256-8vCibUnoVaZqCsZbWXi3GCVqEGRS9BCdnExDqHrSScw=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-\/uyCg7NA6cPUXW\/34M6gmjmTHsMK\/92ay+TOPpU1GNU=",
+      "hash": "sha256-Y3mEm5oUbjHo770A89pvDri6zJm6em55SN2z60HWOfc=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -4013,7 +4013,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-o0Ml0J\/ilZxapEWb9bBQYqSpidZcQlR1YDb9rRoCHVY=",
+      "hash": "sha256-9Db9S6lweiytA7P8xK0nl\/4opJAAEEhm2kJL1n8N6SY=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -4065,5 +4065,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "1YD9fwsY"
+  "version": "IHPZyUa+"
 };

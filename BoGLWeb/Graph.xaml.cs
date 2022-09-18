@@ -407,7 +407,6 @@ namespace AVL_Prototype_1
                 int num = Int32.Parse(arcTokens[5]);
                 if (num < 0 || num > 8)
                     throw new Exception("Invalid velocity number " + num + ", expected in range [0, 8]");
-                a.setVelocity(num);
             }
 
             if (newGraphArcs != null)
@@ -430,7 +429,6 @@ namespace AVL_Prototype_1
             {
                 if (arc.canHaveVelocity)
                 {
-                    arc.setVelocity(velocity);
                 }
             });
         }
