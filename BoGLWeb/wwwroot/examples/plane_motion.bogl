@@ -1,0 +1,137 @@
+[Header]
+panX 0
+panY 42
+zoom 1
+
+[Elements]
+{
+	name System_MT_Velocity_Input
+	x -265.69999999999993
+	y 127.82000000000005
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -273.69999999999993
+	y -3.2799999999999727
+	modifiers {
+	}
+}
+{
+	name System_MT_Mass
+	x -279.29999999999995
+	y -134.28
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -381.7
+	y -247.27999999999997
+	modifiers {
+		PARALLEL
+	}
+}
+{
+	name System_MT_Damper
+	x -220.09999999999997
+	y -239.77999999999994
+	modifiers {
+		PARALLEL
+	}
+}
+{
+	name System_MR_Lever
+	x -124.10000000000002
+	y -357.67999999999995
+	modifiers {
+	}
+}
+{
+	name System_MT_Velocity_Input
+	x 75.10000000000014
+	y 156.62
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x 67.10000000000014
+	y 25.519999999999982
+	modifiers {
+	}
+}
+{
+	name System_MT_Mass
+	x 61.500000000000114
+	y -105.48000000000005
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -40.89999999999992
+	y -218.48000000000013
+	modifiers {
+		PARALLEL
+	}
+}
+{
+	name System_MT_Damper
+	x 120.7000000000001
+	y -210.98
+	modifiers {
+		PARALLEL
+	}
+}
+
+[Arcs]
+{
+	element1 0
+	element2 1
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 2
+	element2 4
+}
+{
+	element1 2
+	element2 3
+}
+{
+	element1 6
+	element2 7
+}
+{
+	element1 8
+	element2 7
+}
+{
+	element1 8
+	element2 10
+}
+{
+	element1 8
+	element2 9
+}
+{
+	element1 3
+	element2 5
+}
+{
+	element1 4
+	element2 5
+}
+{
+	element1 9
+	element2 5
+}
+{
+	element1 10
+	element2 5
+}

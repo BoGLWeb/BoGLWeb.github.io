@@ -1,0 +1,76 @@
+[Header]
+panX 92.31574546368682
+panY -133.74663494675286
+zoom 0.95
+
+[Elements]
+{
+	name System_MT_Mass
+	x -183.96666666666664
+	y -99.92444444444442
+	modifiers {
+		VELOCITY 2
+	}
+}
+{
+	name System_MT_Mass
+	x -190.0999999999999
+	y 139.72000000000008
+	modifiers {
+		VELOCITY 2
+	}
+}
+{
+	name System_MT_Spring
+	x -251.69999999999993
+	y 16.319999999999993
+	modifiers {
+	}
+}
+{
+	name System_MT_Damper
+	x -134.10000000000002
+	y 29.064444444444575
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -194.54444444444448
+	y 253.1200000000003
+	modifiers {
+	}
+}
+{
+	name System_MT_Velocity_Input
+	x -40.59088407292745
+	y 268.7785827313385
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 0
+	element2 2
+}
+{
+	element1 0
+	element2 3
+}
+{
+	element1 1
+	element2 2
+}
+{
+	element1 1
+	element2 3
+}
+{
+	element1 4
+	element2 1
+}
+{
+	element1 5
+	element2 4
+}

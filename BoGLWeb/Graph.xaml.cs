@@ -5,11 +5,17 @@ using System.Text;
 using System.Windows;
 using GraphSynth.Representation;
 
-namespace AVL_Prototype_1 {
+namespace AVL_Prototype_1
+{
     /// <summary>
     /// Interaction logic for Graph.xaml
     /// </summary>
-    public class Graph {
+    public class Graph
+    {
+        public enum ModifierType {
+            VELOCITY, FRICTION, PARALLEL, INERTIA, TOOTH_WEAR, DAMPING, STIFFNESS, MASS
+        };
+
         // Variables for element connection
         public bool connectingMode = false;
         public bool draggingMode = false;
@@ -19,32 +25,66 @@ namespace AVL_Prototype_1 {
         public List<Arc> arcs = null;
         public List<Arc> selectedArcs = null;
 
+        public bool selectingInRect = false;
+
         public string previousState = "";
         public string futureState = "";
 
-        public Graph() {
+        public Graph()
+        {
             elements = new List<GraphElement>();
             selectedElements = new List<GraphElement>();
             arcs = new List<Arc>();
             selectedArcs = new List<Arc>();
         }
 
-        // Returns a string containing a text representation of the graph in saved form
-        public string serialize() {
-            StringBuilder sb = new StringBuilder();
+        // Selects all elements
+        public void selectAll()
+        {
+            elements.ForEach(element => element.selected = true);
+            arcs.ForEach(arc => arc.selected = true);
+        }
 
-            // Header
-            //This represents the location on the screen so it doesn't matter right now since we just want to do things in the console
-            //sb.AppendLine("[Header]");
-            //sb.AppendLine("panX " + (mt.Matrix.OffsetX - (bigCanvas.ActualWidth / 2)));
-            //sb.AppendLine("panY " + (mt.Matrix.OffsetY - (bigCanvas.ActualHeight / 2)));
-            //sb.AppendLine("zoom " + (theCanvas.LayoutTransform as ScaleTransform).ScaleX);
+        // Deselects all elements
+        public void deselectAll()
+        {
+            // Make a copy of the list so that we don't iterate through a list that we're modifying
+            List<GraphElement> oldSelectedElements = new List<GraphElement>(selectedElements);
+            List<Arc> oldSelectedArcs = new List<Arc>(selectedArcs);
+
+            oldSelectedElements.ForEach(element => element.selected = false);
+            oldSelectedArcs.ForEach(arc => arc.selected = false);
+        }
+
+        // Deletes all elements that are currently selected
+        public void deleteSelected(bool overrideConfirm = false)
+        {
+            String currentState = serialize();
+
+            bool confirmed = true;
+
+            if (confirmed)
+            {
+                selectedArcs.ForEach(arc => arc.delete());
+                selectedElements.ForEach(el => el.delete());
+
+                selectedElements.Clear();
+                selectedArcs.Clear();
+            }
+
+        }
+
+        // Returns a string containing a text representation of the graph in saved form
+        public string serialize()
+        {
+            StringBuilder sb = new StringBuilder();
 
             // Serialize elements
             sb.AppendLine();
             sb.AppendLine("[Elements]");
 
-            elements.ForEach(element => {
+            elements.ForEach(element =>
+            {
                 sb.Append(element.serialize());
             });
 
@@ -52,21 +92,24 @@ namespace AVL_Prototype_1 {
             sb.AppendLine();
             sb.AppendLine("[Arcs]");
 
-            arcs.ForEach(arc => {
+            arcs.ForEach(arc =>
+            {
                 sb.Append(arc.serialize());
             });
 
             return sb.ToString();
         }
 
-        public string serializeSelected() {
+        public string serializeSelected()
+        {
             StringBuilder sb = new StringBuilder();
 
             // Serialize elements
             sb.AppendLine();
             sb.AppendLine("[Elements]");
 
-            selectedElements.ForEach(element => {
+            selectedElements.ForEach(element =>
+            {
                 sb.Append(element.serialize());
             });
 
@@ -74,7 +117,8 @@ namespace AVL_Prototype_1 {
             sb.AppendLine();
             sb.AppendLine("[Arcs]");
 
-            selectedArcs.ForEach(arc => {
+            selectedArcs.ForEach(arc =>
+            {
                 if (arc.element1.selected && arc.element2.selected)
                     sb.Append(arc.serialize(selectedElements));
             });
@@ -83,26 +127,30 @@ namespace AVL_Prototype_1 {
         }
 
         // Backup the current graph, try to deserialize. Return if successful
-        public bool load(List<string> tokens) {
-            try {
+        public bool load(List<string> tokens)
+        {
+            try
+            {
                 deserialize(tokens);
                 //MainWindow.unSaved = false;
                 return true;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 // Should we do this?? Delete the partially loaded file
                 //new List<GraphElement>(elements).ForEach(element => element.delete());
                 //new List<Arc>(arcs).ForEach(arc => arc.delete());
 
                 string str = "Error - corrupt input file or unable to load";
-                if (e.Message != null) {
+                if (e.Message != null)
                     str += ": " + e.Message;
-                }
                 return false;
             }
         }
 
         // Reconstruct the graph based on a list of tokens
-        public void deserialize(List<string> tokens) {
+        public void deserialize(List<string> tokens)
+        {
             List<string> elementTokens = new List<string>();
             List<string> arcTokens = new List<string>();
 
@@ -125,66 +173,74 @@ namespace AVL_Prototype_1 {
 
             double zoom = Double.Parse(tokens[6]);
 
-            //Matrix mat = new Matrix();
-            //mat.Translate(panX + (bigCanvas.ActualWidth / 2), panY + (bigCanvas.ActualHeight / 2));
-            //mt.Matrix = mat;
-
-            //theCanvas.LayoutTransform = new ScaleTransform(zoom, zoom);
-
-            //sliZoom.Value = 100 * zoom;
-
             // Get all of the tokens belonging to elements
             if (tokens[7] != "[Elements]")
                 throw new Exception("Expected '[Elements]'");
 
             int index = 8;
 
-            try {
-                while (tokens[index] != "[Arcs]") {
+            try
+            {
+                while (tokens[index] != "[Arcs]")
+                {
                     elementTokens.Add(tokens[index]);
                     index++;
                 }
-            } catch (IndexOutOfRangeException e) {
+            }
+            catch (IndexOutOfRangeException e)
+            {
                 throw new Exception("Expected '[Arcs]'");
             }
 
             parseElements(elementTokens);
 
             // Get all tokens belonging to arcs
-            for (int i = index + 1; i < tokens.Count; i++) {
+            for (int i = index + 1; i < tokens.Count; i++)
+            {
                 arcTokens.Add(tokens[i]);
             }
 
             parseArcs(arcTokens);
         }
 
-        public void parseElements(List<string> elementTokens, List<GraphElement> newGraphElements = null) {
+        public void parseElements(List<string> elementTokens, List<GraphElement> newGraphElements = null)
+        {
             // Seperate all of the {}s into different elements
             List<List<string>> newElements = new List<List<String>>();
             List<string> currentElement = null;
             int level = 0;
-            for (int i = 0; i < elementTokens.Count; i++) {
+            for (int i = 0; i < elementTokens.Count; i++)
+            {
                 string token = elementTokens[i];
-                if (token == "{") {
+                if (token == "{")
+                {
                     if (level == 0)
                         currentElement = new List<string>();
                     else
                         currentElement.Add(token);
 
                     level++;
-                } else if (token == "}") {
-                    if (level == 0) {
+                }
+                else if (token == "}")
+                {
+                    if (level == 0)
+                    {
                         throw new Exception("Unexpected '}'");
                     }
-                    if (level == 1) {
+                    if (level == 1)
+                    {
                         newElements.Add(currentElement);
                         currentElement = null;
-                    } else {
+                    }
+                    else
+                    {
                         currentElement.Add(token);
                     }
 
                     level--;
-                } else {
+                }
+                else
+                {
                     currentElement.Add(token);
                 }
             }
@@ -196,7 +252,8 @@ namespace AVL_Prototype_1 {
             newElements.ForEach(element => parseElement(element, newGraphElements));
         }
 
-        public void parseElement(List<String> elementTokens, List<GraphElement> newGraphElements = null) {
+        public void parseElement(List<String> elementTokens, List<GraphElement> newGraphElements = null)
+        {
             // Read in the name, x, and y
             if (elementTokens[0] != "name")
                 throw new Exception("Element name expected");
@@ -214,74 +271,93 @@ namespace AVL_Prototype_1 {
             double y = Double.Parse(elementTokens[5]);
 
             // If we're pasting - then shift them over a bit
-            if (newGraphElements != null) {
+            if (newGraphElements != null)
+            {
                 x += 100;
                 y += 100;
             }
 
             // Create the GraphElement
-            GraphElement ge = new GraphElement(this, name,  true);
+            GraphElement ge = new GraphElement(this, name, true);
 
             if (newGraphElements != null)
                 newGraphElements.Add(ge);
 
             // Check modifiers
-            if (elementTokens.Count > 6) {
+            if (elementTokens.Count > 6)
+            {
                 if (elementTokens[6] != "modifiers" || elementTokens[7] != "{")
                     throw new Exception("Invalid element");
 
-                for (int i = 8; i < elementTokens.Count; i++) {
+                for (int i = 8; i < elementTokens.Count; i++)
+                {
                     string token = elementTokens[i];
-                    if (i == elementTokens.Count - 1) {
+                    if (i == elementTokens.Count - 1)
+                    {
                         if (token != "}")
                             throw new Exception("Element modifiers must end with '}'");
-                    } else {
+                    }
+                    else
+                    {
                         bool success = Enum.TryParse<ModifierType>(token, out ModifierType type);
                         if (!success)
                             throw new Exception("Unknown modifier '" + token + "'");
-                        if (type == ModifierType.VELOCITY) {
+                        if (type == ModifierType.VELOCITY)
+                        {
                             i++;
                             int num = Int32.Parse(elementTokens[i]);
                             if (num < 0 || num > 8)
                                 throw new Exception("Invalid velocity number " + num + ", expected in range [0, 8]");
 
                             ge.setVelocity(num);
-                        } else {
+                        }
+                        else
+                        {
                             ge.modifiers[type] = 1;
-                            ge.modifiedIndicator.Visibility = Visibility.Visible;
                         }
                     }
                 }
             }
         }
 
-        public void parseArcs(List<string> arcTokens, List<GraphElement> newGraphElements = null, List<Arc> newGraphArcs = null) {
+        public void parseArcs(List<string> arcTokens, List<GraphElement> newGraphElements = null, List<Arc> newGraphArcs = null)
+        {
             // Seperate all of the {}s into different elements
             List<List<string>> newArcs = new List<List<String>>();
             List<string> currentArc = null;
             int level = 0;
-            for (int i = 0; i < arcTokens.Count; i++) {
+            for (int i = 0; i < arcTokens.Count; i++)
+            {
                 string token = arcTokens[i];
-                if (token == "{") {
+                if (token == "{")
+                {
                     if (level == 0)
                         currentArc = new List<string>();
                     else
                         throw new Exception("Unexpected '{'");
 
                     level++;
-                } else if (token == "}") {
-                    if (level == 0) {
+                }
+                else if (token == "}")
+                {
+                    if (level == 0)
+                    {
                         throw new Exception("Unexpected '}'");
                     }
-                    if (level == 1) {
+                    if (level == 1)
+                    {
                         newArcs.Add(currentArc);
                         currentArc = null;
-                    } else {
+                    }
+                    else
+                    {
                         throw new Exception("How did yo uget here this isn't supposed to hapen>????");
                     }
 
                     level--;
-                } else {
+                }
+                else
+                {
                     currentArc.Add(token);
                 }
             }
@@ -293,7 +369,8 @@ namespace AVL_Prototype_1 {
             newArcs.ForEach(arc => parseArc(arc, newGraphElements, newGraphArcs));
         }
 
-        public void parseArc(List<string> arcTokens, List<GraphElement> newGraphElements = null, List<Arc> newGraphArcs = null) {
+        public void parseArc(List<string> arcTokens, List<GraphElement> newGraphElements = null, List<Arc> newGraphArcs = null)
+        {
             if (arcTokens.Count != 4 && arcTokens.Count != 6)
                 throw new Exception("Unexpected number of tokens in arc");
 
@@ -319,7 +396,8 @@ namespace AVL_Prototype_1 {
 
             Arc a = new Arc(element1, element2);
 
-            if (arcTokens.Count == 6) {
+            if (arcTokens.Count == 6)
+            {
                 if (arcTokens[4] != "velocity")
                     throw new Exception("Expected 'velocity'");
 
@@ -336,8 +414,46 @@ namespace AVL_Prototype_1 {
                 newGraphArcs.Add(a);
         }
 
+        // Updates the modifiers panel
+        public void setSelectedElementsVelocity(int velocity)
+        {
+            String currentState = serialize();
+
+            selectedElements.ForEach(element =>
+            {
+                if (element.modifiers.ContainsKey(ModifierType.VELOCITY))
+                {
+                    element.setVelocity(velocity);
+                }
+            });
+            selectedArcs.ForEach(arc =>
+            {
+                if (arc.canHaveVelocity)
+                {
+                    arc.setVelocity(velocity);
+                }
+            });
+        }
+
+        /*
+        private void modCollapseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Visibility newVisibility = (modStackPanel.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            String newContent = (modStackPanel.Visibility == Visibility.Visible) ? "v" : "^";
+
+            // Set all 4 graphs
+            MainWindow mw = MainWindow.getInstance();
+            new List<Graph> { mw.Graph_System, mw.Graph_BG1, mw.Graph_BG2, mw.Graph_BG3 }.ForEach(graph =>
+            {
+                graph.modStackPanel.Visibility = newVisibility;
+                graph.modCollapseButton.Content = newContent;
+            });
+        }
+        */
+
         // Helper functions
-        public static double clamp(double value, double min, double max) {
+        public static double clamp(double value, double min, double max)
+        {
             if (value < min)
                 return min;
             else if (value > max)
@@ -345,6 +461,5 @@ namespace AVL_Prototype_1 {
             else
                 return value;
         }
-
-           }
+    }
 }

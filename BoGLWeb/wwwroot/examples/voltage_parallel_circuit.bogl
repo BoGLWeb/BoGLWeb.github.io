@@ -1,0 +1,100 @@
+[Header]
+panX -78.39999999999998
+panY 40.799999999999955
+zoom 1
+
+[Elements]
+{
+	name System_E_Voltage_Input
+	x -228.49999999999994
+	y -139.87999999999994
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -194.0999999999999
+	y -211.07999999999996
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -94.89999999999992
+	y -230.57999999999998
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 43.500000000000114
+	y 18.520000000000095
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 4.300000000000182
+	y -116.1799999999999
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 128.2999999999999
+	y -205.4799999999999
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 179.59999999999997
+	y -127.87999999999994
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x 89.7000000000001
+	y 57.72000000000014
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 2
+	element2 1
+}
+{
+	element1 0
+	element2 1
+}
+{
+	element1 3
+	element2 0
+}
+{
+	element1 4
+	element2 3
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 5
+	element2 2
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 7
+	element2 3
+}
+{
+	element1 6
+	element2 7
+}

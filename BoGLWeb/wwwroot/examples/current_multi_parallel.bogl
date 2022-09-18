@@ -1,0 +1,240 @@
+[Header]
+panX -141.2670634920634
+panY 35.981460317460574
+zoom 0.5499999999999995
+
+[Elements]
+{
+	name System_E_Current_Input
+	x -281.2999999999999
+	y 95.52000000000004
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -258.2999999999999
+	y 0.32000000000010687
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x -176.19999999999987
+	y -40.07999999999987
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -257.49999999999994
+	y 298.5200000000001
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -188.49999999999994
+	y 279.02
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 26.500000000000114
+	y 297.5200000000001
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -13.5
+	y 107.01999999999987
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 21.500000000000114
+	y -1.4800000000000182
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 141.5
+	y -21.980000000000018
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 147.0000000000001
+	y 258.52
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 331.5000000000002
+	y 0.5200000000000955
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x 297.5000000000002
+	y 135.5200000000001
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 337.50000000000034
+	y 301.234285714286
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x 297.6428571428574
+	y 397.09142857142876
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 439.7857142857146
+	y 278.1628571428572
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 450.8571428571431
+	y -42.90857142857158
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 445.5000000000002
+	y -177.83714285714302
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 658.071428571429
+	y -4.051428571428687
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 624.571428571429
+	y 117.09142857142842
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 656.928571428572
+	y 304.5200000000001
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 0
+	element2 3
+}
+{
+	element1 4
+	element2 3
+}
+{
+	element1 4
+	element2 5
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 7
+	element2 6
+}
+{
+	element1 2
+	element2 7
+}
+{
+	element1 8
+	element2 7
+}
+{
+	element1 9
+	element2 5
+}
+{
+	element1 10
+	element2 8
+}
+{
+	element1 11
+	element2 10
+}
+{
+	element1 12
+	element2 11
+}
+{
+	element1 9
+	element2 12
+}
+{
+	element1 12
+	element2 13
+}
+{
+	element1 14
+	element2 12
+}
+{
+	element1 15
+	element2 10
+}
+{
+	element1 16
+	element2 10
+}
+{
+	element1 17
+	element2 16
+}
+{
+	element1 17
+	element2 15
+}
+{
+	element1 18
+	element2 17
+}
+{
+	element1 14
+	element2 19
+}
+{
+	element1 18
+	element2 19
+}

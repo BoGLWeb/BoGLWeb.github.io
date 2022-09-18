@@ -1,0 +1,65 @@
+[Header]
+panX -53.60000000000002
+panY -51.200000000000045
+zoom 1
+
+[Elements]
+{
+	name System_MT_Ground
+	x -280.9
+	y 23.72000000000014
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -128.0999999999999
+	y -92.47999999999996
+	modifiers {
+	}
+}
+{
+	name System_MT_Damper
+	x 71.10000000000014
+	y -74.57999999999998
+	modifiers {
+	}
+}
+{
+	name System_MT_Force_Input
+	x 225.5000000000001
+	y 17.820000000000107
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -55.2999999999999
+	y 122.72000000000008
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+	velocity 1
+}
+{
+	element1 3
+	element2 2
+}
+{
+	element1 0
+	element2 4
+}
+{
+	element1 3
+	element2 4
+	velocity 4
+}

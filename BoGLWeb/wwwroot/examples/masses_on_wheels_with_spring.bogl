@@ -1,0 +1,109 @@
+[Header]
+panX -167.20000000000005
+panY 18.40000000000009
+zoom 1
+
+[Elements]
+{
+	name System_MT_Ground
+	x -460.0999999999999
+	y -21.87999999999994
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x -329.7
+	y -49.2799999999998
+	modifiers {
+	}
+}
+{
+	name System_MT_Mass
+	x -190.5
+	y -43.47999999999985
+	modifiers {
+		VELOCITY 1
+	}
+}
+{
+	name System_MT_Ground
+	x -193.69999999999993
+	y 114.12000000000018
+	modifiers {
+	}
+}
+{
+	name System_MT_Spring
+	x 31.536363636363774
+	y 7.229090909090985
+	modifiers {
+	}
+}
+{
+	name System_MT_Damper
+	x 47.89999999999998
+	y -120.1799999999999
+	modifiers {
+	}
+}
+{
+	name System_MT_Mass
+	x 290.30000000000007
+	y -45.87999999999977
+	modifiers {
+		VELOCITY 1
+	}
+}
+{
+	name System_MT_Ground
+	x 287.90000000000015
+	y 106.12000000000029
+	modifiers {
+	}
+}
+{
+	name System_MT_Force_Input
+	x 438.3000000000001
+	y -34.179999999999666
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 3
+	element2 2
+}
+{
+	element1 4
+	element2 2
+}
+{
+	element1 5
+	element2 2
+}
+{
+	element1 6
+	element2 5
+}
+{
+	element1 6
+	element2 7
+}
+{
+	element1 8
+	element2 6
+}
+{
+	element1 6
+	element2 4
+}
