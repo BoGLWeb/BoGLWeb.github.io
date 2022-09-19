@@ -33,10 +33,31 @@
                 </SubMenu>
             </Menu>
             <div class="container">
-                <svg id="">
-                    <div id="graphMenu"></div>
-                    <div id="graph"></div>
-                </svg>
+                <div id="graphMenu">
+                    <Collapse Bordered="false">
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
+                        </ExpandIconTemplate>
+                        <ChildContent>
+                            <Panel Header="Basic Mechanical Translation" Key="1">
+                                <div id="mechTrans" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Basic Mechanical Rotation" Key="2">
+                                <div id="mechRot" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Transmission Elements" Key="3">
+                                <div id="transElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Electrical" Key="3">
+                                <div id="electrical" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Actuators" Key="3">
+                                <div id="actuators" class="elementHolder"></div>
+                            </Panel>
+                        </ChildContent>
+                    </Collapse>
+                </div>
+                <div id="graph"></div>
             </div>
         </main>
     </div>

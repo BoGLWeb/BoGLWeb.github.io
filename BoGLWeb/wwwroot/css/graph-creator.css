@@ -49,19 +49,84 @@ path.link.selected, path.link.selected:hover {
     stroke: rgb(6, 82, 255);
 }
 
-path.link:hover{
+path.link:hover {
     stroke: rgb(94, 196, 204);
 }
 
-path.link.hidden{
+path.link.hidden {
     stroke-width: 0;
 }
 
 .container {
     display: flex;
     margin: 0;
+    padding: 0;
 }
 
 #graphMenu {
-    width: 120px;
+    flex: 0 0 250px;
+    display: flex;
+}
+
+.ant-collapse {
+    width: 100%;
+}
+
+.anticon-down-circle {
+    margin-right: 10px;
+    font-size: 18px;
+    margin-top: 3px;
+}
+
+.ant-collapse-expand-icon {
+    display: flex;
+    align-items: center;
+}
+
+.ant-collapse-header {
+    background-color: #D6EEFF;
+    border-color: #D6EEFF;
+}
+
+.ant-collapse {
+    background-color: #D6EEFF;
+}
+
+.ant-collapse > .ant-collapse-item {
+    border: none;
+}
+
+.elementHolder {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.groupDiv {
+    width: fit-content;
+    height: fit-content;
+    cursor: grab;
+    margin: 2px;
+}
+
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.elemImage {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.ant-collapse-content-box {
+    padding: 0 16px;
 }
