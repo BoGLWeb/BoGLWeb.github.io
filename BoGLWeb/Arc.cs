@@ -37,10 +37,11 @@ namespace AVL_Prototype_1
             // Default constructor...
         }
 
-        public Arc(GraphElement element1, GraphElement element2)
+        public Arc(Graph graph, GraphElement element1, GraphElement element2)
         {
             this.element1 = element1;
             this.element2 = element2;
+            this.graph = graph;
 
             // Add this arc to the elements' list of connections
             element1.connections.Add(this);

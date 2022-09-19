@@ -144,6 +144,7 @@ namespace AVL_Prototype_1
                 string str = "Error - corrupt input file or unable to load";
                 if (e.Message != null)
                     str += ": " + e.Message;
+                Console.WriteLine(str);
                 return false;
             }
         }
@@ -394,7 +395,7 @@ namespace AVL_Prototype_1
             if (!element1.canConnectTo(element2))
                 throw new Exception("Incompatible element types in arc");
 
-            Arc a = new Arc(element1, element2);
+            Arc a = new Arc(this, element1, element2);
 
             if (arcTokens.Count == 6)
             {
