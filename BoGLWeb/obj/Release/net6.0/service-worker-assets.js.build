@@ -5,12 +5,16 @@
       "url": "css\/app.css"
     },
     {
-      "hash": "sha256-z8OR40MowJ8GgK6P89Y+hiJK5+cclzFHzLhFQLL92bg=",
+      "hash": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7\/p4nS6D\/0=",
       "url": "css\/bootstrap\/bootstrap.min.css"
     },
     {
       "hash": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=",
       "url": "css\/bootstrap\/bootstrap.min.css.map"
+    },
+    {
+      "hash": "sha256-cWg6ZsSJ419jHl+pxl+70zA1c6e65bXCViiNbatZsR4=",
+      "url": "css\/graph-creator.css"
     },
     {
       "hash": "sha256-jA4J4h\/k76zVxbFKEaWwFKJccmO0voOQ1DbUW+5YNlI=",
@@ -61,7 +65,35 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-2rG3w5XZKShN8pYnVvXhwxfjLv0mnHbk3YUM3l3dp5w=",
+      "hash": "sha256-yxfE0g4spJfRGtMYMqTmDRtdcAZjFy7VD3Y\/HVwLQT0=",
+      "url": "images\/damper.png"
+    },
+    {
+      "hash": "sha256-7B2BDIZBTbMF945Sq1O4LnlAJZmfFlPhX9BRqIc+dyU=",
+      "url": "images\/force_input.png"
+    },
+    {
+      "hash": "sha256-BT2QBtZRghypKWU8EqtUxuWQC1vEH07xcQM1yHQnM8U=",
+      "url": "images\/gravity.png"
+    },
+    {
+      "hash": "sha256-XCgG5auurgb+feUAVs4cjFtiWyUxsOXfwR5ZWahhLek=",
+      "url": "images\/ground.png"
+    },
+    {
+      "hash": "sha256-RUir+1IBERgNGmP+DxQuNiXYVcFi\/U2pLRJ\/ANPhefc=",
+      "url": "images\/mass.png"
+    },
+    {
+      "hash": "sha256-uArkndihJEYeW2bYyGcF8zzRX8Y9tzINsZvyX\/ECmdg=",
+      "url": "images\/spring.png"
+    },
+    {
+      "hash": "sha256-z842\/s0QSPtQEIwu6K9J4zpmJXsSXbwARsyIbFme7t8=",
+      "url": "images\/velocity_input.png"
+    },
+    {
+      "hash": "sha256-12SG+KxEfYAJLUXSKowuXzs2Wh7owWYQssVr4UlLBzg=",
       "url": "index.html"
     },
     {
@@ -69,12 +101,8 @@
       "url": "manifest.json"
     },
     {
-      "hash": "sha256-yzFf+O\/mlH+Q9klUSqXP2kxGKOUFLPxaww8da8fKhGU=",
-      "url": "sample-data\/weather.json"
-    },
-    {
-      "hash": "sha256-Or\/Db1D\/hZ0jAfReT3n9wuuxGs6f0g\/3LJF279ctMSs=",
-      "url": "BoGLWeb.styles.css"
+      "hash": "sha256-FNFohsDQHNEYF+QPpauYdOXaJrXoU0BgSFGy0qgZUGk=",
+      "url": "_framework\/AntDesign.dll"
     },
     {
       "hash": "sha256-UrVyaila4UaM9NG7wgfD9o+ih1r3xt3rq4W7Z+SCE3w=",
@@ -83,6 +111,10 @@
     {
       "hash": "sha256-8yq2GCAfNZmhru8HZW\/xr9jDHwAS+MD4B1GGQFzi2Pg=",
       "url": "_framework\/Microsoft.AspNetCore.Components.dll"
+    },
+    {
+      "hash": "sha256-VGaB03HIjFg4jeK7BomIFzlhhY3vW5N+jWuRqZkbJsY=",
+      "url": "_framework\/Microsoft.AspNetCore.Components.DataAnnotations.Validation.dll"
     },
     {
       "hash": "sha256-I5BEosbTOX5zg7agqWZo14z3aViOJYbMCWeRLInDYiQ=",
@@ -163,6 +195,10 @@
     {
       "hash": "sha256-kyP+B3x4SLKMAQWP1uHn9V4Q5p3r69HPLhs8C3yxGMU=",
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll"
+    },
+    {
+      "hash": "sha256-K99lDyL6VrtTDYGRk5o+Q3caW25Uogee\/1e7aIvpgLY=",
+      "url": "_framework\/OneOf.dll"
     },
     {
       "hash": "sha256-6+E55JXedimdw1c1bDtVg4K7XuWjVWVTifH8QpfzXSY=",
@@ -861,11 +897,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-ndr20yvJWrFEwgo0KZWKL44bU8+0Pi0grbqVX\/yR6rM=",
+      "hash": "sha256-qGxmLe9cjJBdxUdZsZfXRqEsVW7gK0VCYdywf7ZnCFI=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-zBCKgcR6t6fcsB4G5\/jb3DROX+yQxOQV0HvvPiilKhI=",
+      "hash": "sha256-TB\/rR4gUyQrYMFN8YZAEHFaioCL2lyfH5Dg2OuE5q0A=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -873,20 +909,8 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-PBR0l5HuS5pJR4xu5iWLjfuscNTz8wYVFYca1ZvykSI=",
+      "hash": "sha256-0DCM+AZSPfzm\/Edav1y8DALYalQ9fmeKnOUQVVIPHR0=",
       "url": "_framework\/blazor.boot.json"
-    },
-    {
-      "hash": "sha256-FNFohsDQHNEYF+QPpauYdOXaJrXoU0BgSFGy0qgZUGk=",
-      "url": "_framework\/AntDesign.dll"
-    },
-    {
-      "hash": "sha256-VGaB03HIjFg4jeK7BomIFzlhhY3vW5N+jWuRqZkbJsY=",
-      "url": "_framework\/Microsoft.AspNetCore.Components.DataAnnotations.Validation.dll"
-    },
-    {
-      "hash": "sha256-K99lDyL6VrtTDYGRk5o+Q3caW25Uogee\/1e7aIvpgLY=",
-      "url": "_framework\/OneOf.dll"
     },
     {
       "hash": "sha256-O\/aSEUaxYaUHZem01yYFe4MXqByjgFKRNh7ZDwAsdlQ=",
@@ -937,5 +961,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "2V2w\/sdu"
+  "version": "BKztHXWP"
 };

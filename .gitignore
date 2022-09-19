@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.vsidx
+/BoGLWeb/.vs/BoGLWeb/v17/.suo~Stashed changes
+/.vs

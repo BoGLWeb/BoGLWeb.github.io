@@ -1,0 +1,67 @@
+body{
+    margin: 0;
+    padding: 0;
+    overflow:hidden;
+}
+
+p{ 
+     text-align: center; 
+     overflow: overlay;
+     position: relative;
+}
+
+body{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(248, 248, 248)
+}
+
+g.selected > g > rect {
+    stroke: rgb(6, 82, 255);
+}
+
+g > g > rect {
+    stroke-width: 2;
+    stroke: black;
+}
+
+g {
+    fill: white;
+    cursor: pointer;
+}
+
+g:hover {
+    fill: rgb(200, 238, 241);
+}
+
+path.link {
+    fill: none;
+    stroke: #333;
+    stroke-width: 4px;
+    cursor: pointer;
+}
+
+path.link.selected, path.link.selected:hover {
+    stroke: rgb(6, 82, 255);
+}
+
+path.link:hover{
+    stroke: rgb(94, 196, 204);
+}
+
+path.link.hidden{
+    stroke-width: 0;
+}
+
+.container {
+    display: flex;
+    margin: 0;
+}
+
+#graphMenu {
+    width: 120px;
+}
