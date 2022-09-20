@@ -16,3 +16,4 @@
 /Rules/TransformerFlipRuleset.rsxml
 /Rules/TransformerFlipRuleset2.rsxml
 /Rules/Clean23Ruleset.rsxml
+/Rules/BeforeBG-VerifyDirRuleSet.rsxml
