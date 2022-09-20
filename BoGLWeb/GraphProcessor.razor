@@ -339,8 +339,8 @@
         }
         else
         {
-            //bondgraphBeforeSimplification();
-            //bondgraphSimplified();
+            bondgraphBeforeSimplification();
+            bondgraphSimplified();
 
             int ii = 0;
             foreach (var n in systemGraph.nodes)
@@ -354,9 +354,493 @@
                     n.localLabels.Add("cadded" + (ii.ToString()));
                 ii++;
             }
-            //obtainCausality();
+            obtainCausality();
         }
 
+    }
+
+    private void obtainCausality()
+    {
+        nodeLabelSorted.Clear();
+        sortedIndices.Clear();
+
+        finalresult.Clear();
+        optiGraphs.Clear();
+
+        //will just do one option for now, will figure out
+
+        #region initial causality
+        Stack<designGraph> sysGraphs = new Stack<designGraph>();
+
+        sysGraphs.Push(systemGraph.copy());
+        var sys = sysGraphs.Pop();
+        options = (ruleSetMap["NewCausalityMethodRuleset"].recognize(sys, false, null));
+        while (options.Count > 0)
+        {
+            options[0].apply(sys, null);
+            options = ruleSetMap["NewCausalityMethodRuleset"].recognize(sys, false, null);
+        }
+
+        sysGraphs.Push(sys);
+        while (sysGraphs.Count > 0)
+        {
+            sys = sysGraphs.Pop();
+            options = (ruleSetMap["NewCausalityMethodRuleset_2"].recognize(sys, false, null));
+            if (options.Count > 0)
+            {
+                foreach (var opt in options)
+                {
+                    var gra = sys.copy();
+                    GraphSynth.Search.SearchProcess.transferLmappingToChild(gra, sys, opt.nodes, opt.arcs, opt.hyperarcs);
+                    opt.apply(gra, null);
+                    sysGraphs.Push(gra);
+                }
+            }
+            else
+                sysGraphs.Push(sys);
+        }
+
+        foreach (var item in sysGraphs)
+        {
+            sys = item.copy();
+            options = (ruleSetMap["NewCausalityMethodRuleset_3"].recognize(sys, false, null));
+
+            while (options.Count > 0)
+            {
+                options[0].apply(sys, null);
+                options = ruleSetMap["NewCausalityMethodRuleset_3"].recognize(sys, false, null);
+            }
+            sysGraphs.Push(sys);
+
+        }
+        #endregion
+
+        while (sysGraphs.Count > 0)
+        {
+            sys = sysGraphs.Pop();
+            options = (ruleSetMap["INVDMarkerRules"].recognize(sys, false, null));
+            while (options.Count > 0)
+            {
+                options[0].apply(sys, null);
+                options = ruleSetMap["INVDMarkerRules"].recognize(sys, false, null);
+            }
+
+            Stack<designGraph> graphss = new Stack<designGraph>();
+            List<designGraph> graph_SSS = new List<designGraph>();
+            graphss.Push(sys);
+
+            {
+                var graphS = graphss.Pop();
+                var options1 = (ruleSetMap["CalibrationNewRuleset"].recognize(graphS, false, null));
+
+                if (options1.Count > 0)
+                {
+                    foreach (var opt in options1)
+                    {
+                        var graphSS = graphS.copy();
+                        GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                                                           opt.arcs, opt.hyperarcs);
+                        opt.apply(graphSS, null);
+                        graph_SSS.Add(graphSS);
+                    }
+                }
+                else
+                    graph_SSS.Add(graphS);
+
+            }
+
+            foreach (var opt in graph_SSS)
+            {
+                var options1 = (ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null));
+
+                while (options1.Count > 0)
+                {
+                    options1[0].apply(opt, null);
+                    options1 = ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null);
+                }
+
+                graphss.Push(opt);
+            }
+
+            graph_SSS.Clear();
+
+            while (graphss.Count > 0)
+            {
+                var graphS = graphss.Pop();
+                var options1 = (ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null));
+
+                /* if (options1.Count > 0)
+                 {
+                     foreach (var opt in options1)
+                     {
+                         var graphSS = graphS.copy();
+                         GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                                                            opt.arcs, opt.hyperarcs);
+                         opt.apply(graphSS, null);
+                         graphss.Push(graphSS);
+                     }
+                 }
+                 else
+                     graph_SSS.Add(graphS); */
+                while (options1.Count > 0)
+                {
+                    options1[0].apply(graphS, null);
+                    options1 = (ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null));
+                }
+                graph_SSS.Add(graphS);
+            }
+            foreach (var opt in graph_SSS)
+            {
+                graphss.Push(opt);
+            }
+
+            graph_SSS.Clear();
+
+            while (graphss.Count > 0)
+            {
+                var graphS = graphss.Pop();
+                var options1 = (ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null));
+
+                /* if (options1.Count > 0)
+                 {
+                     foreach (var opt in options1)
+                     {
+                         var graphSS = graphS.copy();
+                         GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                                                            opt.arcs, opt.hyperarcs);
+                         opt.apply(graphSS, null);
+                         graphss.Push(graphSS);
+                     }
+                 }
+                 else
+                     graph_SSS.Add(graphS);*/
+
+                while (options1.Count > 0)
+                {
+                    options1[0].apply(graphS, null);
+                    options1 = (ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null));
+                }
+
+                graph_SSS.Add(graphS);
+
+            }
+
+            foreach (var op in graph_SSS)
+            {
+                options = (ruleSetMap["TransformerFlipRuleset"].recognize(op, false, null));
+
+                if (options.Count > 0)
+                {
+                    options[0].apply(op, null);
+
+                    sysGraphs.Push(op);
+
+                }
+
+                else
+                {
+
+
+                    options = (ruleSetMap["TransformerFlipRuleset2"].recognize(op, false, null));
+
+                    if (options.Count > 0)
+                    {
+
+                        options[0].apply(op, null);
+                        sysGraphs.Push(op);
+                    }
+                    else
+                        optiGraphs.Add(op);
+                }
+
+
+            }
+
+        }
+
+        foreach (var opt in optiGraphs)
+        {
+            options = (ruleSetMap["Clean23Ruleset"].recognize(opt, false, null));
+
+            while (options.Count > 0)
+            {
+                options[0].apply(opt, null);
+                options = ruleSetMap["Clean23Ruleset"].recognize(opt, false, null);
+            }
+
+            finalresult.Add(opt);
+        }
+
+
+
+
+
+
+        indiceswithoutINVD.Clear();
+        maxIntegralCausality.Clear();
+        for (int ii = 0; ii < finalresult.Count; ii++)
+        {
+            bool index = checkINVD(finalresult[ii]);
+
+            if (index == false)
+            {
+                indiceswithoutINVD.Add(ii);
+                maxIntegralCausality.Add(checkICs(finalresult[ii]));
+
+            }
+        }
+
+        //now from the list of finalgraph, eliminate duplicate solutions
+
+
+
+        if (indiceswithoutINVD.Count == 0)
+        {
+            Console.WriteLine("Sorry, we have encountered an error with respect to Causality assignment");
+
+        }
+
+        //need to add exception here if the program is unable to added
+
+        else
+        {
+            int currentHashSetcount = 0;
+            int nn = 0;
+            foreach (var n in indiceswithoutINVD)
+            {
+                List<string> nodeLabels_Cau = new List<string>();
+                var cauGraph = finalresult[n];
+
+                foreach (var arcC in cauGraph.arcs)
+                {
+                    if (arcC.localLabels.Contains("I2") && arcC.localLabels.Contains("SAME"))
+                    {
+                        for (int iii = 0; iii < arcC.To.localLabels.Count; iii++)
+                        {
+                            if (arcC.To.localLabels[iii].Contains("iadded"))
+                            {
+                                nodeLabels_Cau.Add(arcC.To.localLabels[iii]);
+
+                            }
+
+                        }
+                    }
+                    if (arcC.localLabels.Contains("C3") && arcC.localLabels.Contains("OPP"))
+                    {
+                        for (int iii = 0; iii < arcC.From.localLabels.Count; iii++)
+                        {
+                            if (arcC.From.localLabels[iii].Contains("cadded"))
+                            {
+                                nodeLabels_Cau.Add(arcC.From.localLabels[iii]);
+
+                            }
+
+                        }
+                    }
+
+                }
+
+                if (nodeLabels_Cau.Count > 0)
+                {
+                    nodeLabels_Cau.Sort();
+
+                    string combined = "";
+                    foreach (var x in nodeLabels_Cau)
+                        combined += x;
+
+                    nodeLabelSorted.Add(combined);
+
+                    //need to add index numbers as well into a list
+
+                    if ((nn + 1) == nodeLabelSorted.Count) //for the first one, it will be same
+                    {
+                        sortedIndices.Add(n);
+                        currentHashSetcount++;
+                    }
+
+                    if (currentHashSetcount <= nodeLabelSorted.Count)
+                    {
+                        sortedIndices.Add(n);
+                        currentHashSetcount++;
+                    }
+
+                }
+                nn++;
+            }
+            // nodeNames_Cau.Sort();
+            // nodeNames.Add(nodeNames_Cau);
+
+            List<int> maxIntegralCaus = new List<int>();
+
+            foreach (var n in sortedIndices)
+            {
+                //use the indiceswithoutINVD to obtain the index in that list
+
+                var indexindex = indiceswithoutINVD.FindIndex(item => item == n);
+                maxIntegralCaus.Add(maxIntegralCausality[indexindex]);
+
+            }
+
+            index1 = maxIntegralCausality.IndexOf(maxIntegralCausality.Max());
+
+            //  foreach (var no in finalresult[index1].nodes)
+
+            //now add to the combo-box
+
+            for (int pp = 0; pp < nodeLabelSorted.Count; pp++)
+            {
+                var stringtobeadded = "Option " + (pp + 1).ToString();
+
+                Console.WriteLine(stringtobeadded);
+            }
+
+            causality = true;
+
+        }
+
+    }
+
+
+    private void bondgraphSimplified()
+    {
+        options = (ruleSetMap["SimplificationRuleset"].recognize(systemGraph, false, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["SimplificationRuleset"].recognize(systemGraph, false, null);
+        }
+
+        options = (ruleSetMap["DirectionRuleSet"].recognize(systemGraph, false, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["DirectionRuleSet"].recognize(systemGraph, false, null);
+        }
+
+        options = (ruleSetMap["newDirectionRuleSet_2"].recognize(systemGraph, false, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["newDirectionRuleSet_2"].recognize(systemGraph, false, null);
+        }
+
+        options = (ruleSetMap["DirRuleset3"].recognize(systemGraph, false, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["DirRuleset3"].recognize(systemGraph, false, null);
+        }
+
+        options = (ruleSetMap["Simplification2"].recognize(systemGraph, false, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["Simplification2"].recognize(systemGraph, false, null);
+        }
+
+        //again do a deepcopy of the systemGraph
+
+        //  designGraph SimplifiedGraphWithDir = systemGraph.copy(true);
+
+        foreach (var no in systemGraph.nodes)
+        {
+            List<string> localLabels = no.localLabels.ToList();
+
+            List<string> localLabels_Copy = no.localLabels.ToList();
+
+            foreach (var uu in localLabels_Copy)
+            {
+                if (uu.Contains("vel"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("good"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("multiple"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("system"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("iadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("cadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("rackadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("gearadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("layoutadded"))
+                    localLabels.Remove(uu);
+
+            }
+        }
+
+        //now let us apply directions - first let us do the sources and i-c-r
+
+        //all sources should have arrow heads away from source
+        //all I-C-R should have arrow heads into them.
+    }
+
+
+    private void bondgraphBeforeSimplification()
+    {
+        options = (ruleSetMap["BondGraphRuleset"].recognize(systemGraph, true, null));
+
+        while (options.Count > 0)
+        {
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["BondGraphRuleset"].recognize(systemGraph, true, null);
+
+        }
+
+        List<string> nodeLabels = new List<string>();
+        List<int> nodeNames = new List<int>();
+        int ll = 0;
+        foreach (var no in systemGraph.nodes)
+        {
+            nodeLabels.Add(String.Join(String.Empty, no.localLabels.ToArray()));
+            nodeNames.Add(ll++);
+        }
+        ll = 0;
+        foreach (var opt in systemGraph.nodes)
+        {
+            opt.name = "name" + nodeNames[ll];
+            ll = ll + 1;
+        }
+
+        //try to update the positions of each node
+
+        foreach (var no in systemGraph.nodes)
+        {
+            List<string> localLabels = no.localLabels.ToList();
+
+            List<string> localLabels_Copy = no.localLabels.ToList();
+
+            foreach (var uu in localLabels_Copy)
+            {
+                if (uu.Contains("vel"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("good"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("multiple"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("system"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("iadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("cadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("rackadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("gearadded"))
+                    localLabels.Remove(uu);
+                if (uu.Contains("layoutadded"))
+                    localLabels.Remove(uu);
+
+            }
+        }
     }
 
     private void checkIfVelocityDirectionsAreOkay(out bool noGood)
