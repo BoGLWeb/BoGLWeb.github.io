@@ -52,10 +52,10 @@
         {
             HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006" + str);
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
-            ruleSetMap.Add(str.Substring(6), (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
-            var numRules = ruleSetMap[str.Substring(6)].ruleFileNames.Count;
-            string ruleDir = ruleSetMap[str.Substring(6)].rulesDir;
-            List<String> ruleFileNames = ruleSetMap[str.Substring(6)].ruleFileNames;
+            ruleSetMap.Add(str.Substring(7, str.Length - 6 - 7), (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
+            var numRules = ruleSetMap[str.Substring(7, str.Length - 6 - 7)].ruleFileNames.Count;
+            string ruleDir = ruleSetMap[str.Substring(7, str.Length - 6 - 7)].rulesDir;
+            List<String> ruleFileNames = ruleSetMap[str.Substring(7, str.Length - 6 - 7)].ruleFileNames;
 
             var progStart = 5;
             var progStep = (double)(100 - progStart) / ruleFileNames.Count;
@@ -97,7 +97,7 @@
                 numLoaded++;
             }
 
-            ruleSetMap[str.Substring(6)].rules = rules;
+            ruleSetMap[str.Substring(7, str.Length - 6 - 7)].rules = rules;
         }
     }
 
@@ -196,7 +196,7 @@
 
     private async void loadExampleGraphString() {
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/classic.bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         string exampleString = await exampleResponse.Content.ReadAsStringAsync();
 
         List<string> fileTokens = tokenize(exampleString);
@@ -222,7 +222,8 @@
         return tokens;
     }
 
-    public void generateBondGraph() {
+    public async void generateBondGraph() {
+        Console.WriteLine("Starting to generate Bond Graph");
         foreach (var n in graph.elements)
         {
             foreach (var n1 in n.modifiers)
@@ -356,6 +357,8 @@
             }
             obtainCausality();
         }
+
+        Console.WriteLine("Finished generating Bond Graph");
 
     }
 
