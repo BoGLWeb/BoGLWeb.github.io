@@ -64,7 +64,7 @@ path.link.hidden {
 }
 
 #graphMenu {
-    flex: 0 0 250px;
+    flex: 0 0 235px;
     display: flex;
 }
 
@@ -90,6 +90,9 @@ path.link.hidden {
 
 .ant-collapse {
     background-color: #D6EEFF;
+    overflow-y: auto;
+    height: calc(100vh - 47px);
+    padding-bottom: 10px;
 }
 
 .ant-collapse > .ant-collapse-item {
@@ -114,8 +117,8 @@ path.link.hidden {
 }
 
 .box {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
@@ -123,10 +126,14 @@ path.link.hidden {
 }
 
 .elemImage {
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 45px;
+    max-height: 45px;
 }
 
 .ant-collapse-content-box {
-    padding: 0 16px;
+    padding: 0 16px 5px 16px !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 5px;
 }
