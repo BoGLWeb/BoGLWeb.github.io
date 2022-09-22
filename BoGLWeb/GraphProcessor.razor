@@ -194,7 +194,8 @@
         return false;
     }
 
-    private async void loadExampleGraphString() {
+    private async void loadExampleGraphString()
+    {
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         string exampleString = await exampleResponse.Content.ReadAsStringAsync();
@@ -205,15 +206,19 @@
         Console.WriteLine(loaded);
     }
 
-    public static List<string> tokenize(string str) {
+    public static List<string> tokenize(string str)
+    {
         List<string> tokens = new List<string>();
 
         string[] lines = str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-        foreach (string line in lines) {
+        foreach (string line in lines)
+        {
             string[] lineTokens = line.Trim().Split(" ");
-            foreach (string token in lineTokens) {
-                if (token.Length > 0) {
+            foreach (string token in lineTokens)
+            {
+                if (token.Length > 0)
+                {
                     tokens.Add(token);
                 }
             }
@@ -222,7 +227,8 @@
         return tokens;
     }
 
-    public async void generateBondGraph() {
+    public async void generateBondGraph()
+    {
         Console.WriteLine("Starting to generate Bond Graph");
         foreach (var n in graph.elements)
         {
@@ -268,12 +274,14 @@
         }
 
         int i = 0;
-        foreach (var n in graph.elements) {
+        foreach (var n in graph.elements)
+        {
             n.nodeName = n.componentName + (i++);
         }
 
         //Generate GraphSynth graph
         generateSystemGraph();
+        Console.WriteLine("generateSystemGraph");
 
         //now remove all the labels that we added
 
@@ -332,7 +340,10 @@
             }
         }
 
+        Console.WriteLine("Here");
+        //The problem is here
         checkIfVelocityDirectionsAreOkay(out bool noGood);
+        Console.WriteLine("checkIfVelocityDirectionsAreOkay");
 
         if (!noGood)
         {
@@ -341,7 +352,9 @@
         else
         {
             bondgraphBeforeSimplification();
+            Console.WriteLine("bondGraphBeforeSImplification");
             bondgraphSimplified();
+            Console.WriteLine("bondGraphSimplified");
 
             int ii = 0;
             foreach (var n in systemGraph.nodes)
@@ -356,6 +369,7 @@
                 ii++;
             }
             obtainCausality();
+            Console.WriteLine("obtainCausality");
         }
 
         Console.WriteLine("Finished generating Bond Graph");
@@ -472,18 +486,18 @@
                 var graphS = graphss.Pop();
                 var options1 = (ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null));
 
-                /* if (options1.Count > 0)
-                 {
-                     foreach (var opt in options1)
+                     /* if (options1.Count > 0)
                      {
+                     foreach (var opt in options1)
+                         {
                          var graphSS = graphS.copy();
                          GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                                                            opt.arcs, opt.hyperarcs);
+                         opt.arcs, opt.hyperarcs);
                          opt.apply(graphSS, null);
                          graphss.Push(graphSS);
-                     }
                  }
-                 else
+                 }
+                     else
                      graph_SSS.Add(graphS); */
                 while (options1.Count > 0)
                 {
@@ -504,18 +518,18 @@
                 var graphS = graphss.Pop();
                 var options1 = (ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null));
 
-                /* if (options1.Count > 0)
-                 {
-                     foreach (var opt in options1)
+                     /* if (options1.Count > 0)
                      {
+                     foreach (var opt in options1)
+                         {
                          var graphSS = graphS.copy();
                          GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                                                            opt.arcs, opt.hyperarcs);
+                         opt.arcs, opt.hyperarcs);
                          opt.apply(graphSS, null);
                          graphss.Push(graphSS);
-                     }
                  }
-                 else
+                 }
+                     else
                      graph_SSS.Add(graphS);*/
 
                 while (options1.Count > 0)
@@ -847,62 +861,68 @@
     }
 
     private void checkIfVelocityDirectionsAreOkay(out bool noGood)
+    {
+        //works for mechanical translation systems only - no mechanical rotation yet
+
+        //first load the verify direction rules
+
+        /*var filename = "Rules\\BeforeBG-VerifyDirRuleSet.rsxml";
+        //  var filename = extractPath1 + "\\BondGraphRuleset.rsxml";
+        ruleReader = new StreamReader(filename);*/
+
+
+           /*   var assembly = Assembly.GetExecutingAssembly();
+           var filename = "AVL_Prototype_1.Rules.BeforeBG-VerifyDirRuleSet.rsxml";
+           var stream = assembly.GetManifestResourceStream(filename);
+           ruleReader = new StreamReader(stream); */
+
+        //Uri uri = new Uri("/Rules/BeforeBG-VerifyDirRuleSet.rsxml", UriKind.Relative);
+        //System.Windows.Resources.StreamResourceInfo info = Application.GetResourceStream(uri);
+        //ruleReader = new StreamReader(info.Stream);
+
+        //var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
+        //ruleSet VerifyBGDir = (ruleSet)ruleDeserializer.Deserialize(ruleReader);
+        ////VerifyBGDir.rulesDir = System.IO.Path.GetDirectoryName(filename) + @"\";
+        //int numLoaded;
+        //var numRules = VerifyBGDir.ruleFileNames.Count;
+        //VerifyBGDir.rules = LoadRulesFromFileNames(VerifyBGDir.rulesDir, VerifyBGDir.ruleFileNames, out numLoaded);
+        //ruleReader.Dispose();
+
+        Console.WriteLine("Here 1");
+        foreach (var item in ruleSetMap["BeforeBG-VerifyDirRuleSet"].rules)
         {
-            //works for mechanical translation systems only - no mechanical rotation yet
+            item.TransformNodePositions = false;
+            item.Rotate = false;
+        }
 
-            //first load the verify direction rules 
+        //second step is to verify if all nodes have velocity directions
 
-            /*var filename = "Rules\\BeforeBG-VerifyDirRuleSet.rsxml";
-            //  var filename = extractPath1 + "\\BondGraphRuleset.rsxml";
-            ruleReader = new StreamReader(filename);*/
+        Console.WriteLine("Here 2");
+        options = (ruleSetMap["BeforeBG-VerifyDirRuleSet"].recognize(systemGraph, false, null));
 
+        Console.WriteLine("Here 3");
+        //The problem is here
+        while (options.Count > 0)
+        {
+            Console.WriteLine(options.Count);
+            options[0].apply(systemGraph, null);
+            options = ruleSetMap["SimplificationRuleset"].recognize(systemGraph, false, null);
+        }
 
-            /*   var assembly = Assembly.GetExecutingAssembly();
-               var filename = "AVL_Prototype_1.Rules.BeforeBG-VerifyDirRuleSet.rsxml";
-               var stream = assembly.GetManifestResourceStream(filename);
-               ruleReader = new StreamReader(stream); */
+        //now check if all the nodes that have veladded label have good label as well
 
-            //Uri uri = new Uri("/Rules/BeforeBG-VerifyDirRuleSet.rsxml", UriKind.Relative);
-            //System.Windows.Resources.StreamResourceInfo info = Application.GetResourceStream(uri);
-            //ruleReader = new StreamReader(info.Stream);
+        noGood = true;
 
-            //var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
-            //ruleSet VerifyBGDir = (ruleSet)ruleDeserializer.Deserialize(ruleReader);
-            ////VerifyBGDir.rulesDir = System.IO.Path.GetDirectoryName(filename) + @"\";
-            //int numLoaded;
-            //var numRules = VerifyBGDir.ruleFileNames.Count;
-            //VerifyBGDir.rules = LoadRulesFromFileNames(VerifyBGDir.rulesDir, VerifyBGDir.ruleFileNames, out numLoaded);
-            //ruleReader.Dispose();
-
-            foreach (var item in ruleSetMap["BeforeBG-VerifyDirRuleSet"].rules)
+        Console.WriteLine("Here 4");
+        foreach (var n in systemGraph.nodes)
+        {
+            if (n.localLabels.Contains("veladded") && !n.localLabels.Contains("good"))
             {
-                item.TransformNodePositions = false;
-                item.Rotate = false;
-            }
-
-            //second step is to verify if all nodes have velocity directions 
-
-            options = (ruleSetMap["BeforeBG-VerifyDirRuleSet"].recognize(systemGraph, false, null));
-
-            while (options.Count > 0)
-            {
-                options[0].apply(systemGraph, null);
-                options = ruleSetMap["SimplificationRuleset"].recognize(systemGraph, false, null);
-            }
-
-            //now check if all the nodes that have veladded label have good label as well
-
-            noGood = true;
-
-            foreach (var n in systemGraph.nodes)
-            {
-                if (n.localLabels.Contains("veladded") && !n.localLabels.Contains("good"))
-                {
-                    noGood = false;
-                    break;
-                }
+                noGood = false;
+                break;
             }
         }
+    }
 
     private void generateSystemGraph()
     {
@@ -913,9 +933,9 @@
         #region GraphSynth Protocols
         builder.Append("<Page Background=\"#FF000000\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"").Append(
       " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"").Append(
-" mc:Ignorable=\"GraphSynth\" xmlns:GraphSynth=\"ignorableUri\" Tag=\"Graph\" ><Border BorderThickness=\"1,1,1,1\"").Append(
+    " mc:Ignorable=\"GraphSynth\" xmlns:GraphSynth=\"ignorableUri\" Tag=\"Graph\" ><Border BorderThickness=\"1,1,1,1\"").Append(
       " BorderBrush=\"#FFA9A9A9\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"><Viewbox ").Append(
-" StretchDirection=\"Both\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"><Canvas Background=\"#FFFFFFFF\"").Append(
+    " StretchDirection=\"Both\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"><Canvas Background=\"#FFFFFFFF\"").Append(
      "  Width=\"732.314136125654\" Height=\"570.471204188482\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"").Append(
      "  RenderTransform=\"1,0,0,-1,0,570.471204188482\"><Ellipse Fill=\"#FF000000\" Tag=\"input\" Width=\"5\" Height=\"5\"").Append(
      "  HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" /><TextBlock Text=\"input (input, pivot, revolute, ground)\"").Append(
@@ -933,7 +953,7 @@
           " Points=\"278,70 281,74.5 278,79\" /></PathFigure.Segments></PathFigure></PathGeometry.Figures></PathGeometry> ").Append(
               " </Path.Data></Path></Canvas></Viewbox></Border> ").Append(
 
-" <GraphSynth:CanvasProperty BackgroundColor=\"#FFFFFFFF\" AxesColor=\"#FF000000\" AxesOpacity=\"1\" AxesThick=\"0.5\" ").Append(
+    " <GraphSynth:CanvasProperty BackgroundColor=\"#FFFFFFFF\" AxesColor=\"#FF000000\" AxesOpacity=\"1\" AxesThick=\"0.5\" ").Append(
       " GridColor=\"#FF000000\" GridOpacity=\"1\" GridSpacing=\"24\" GridThick=\"0.25\" SnapToGrid=\"True\"").Append(
       " ScaleFactor=\"1\" ShapeOpacity=\"1\" ZoomToFit=\"False\" ShowNodeName=\"True\" ShowNodeLabel=\"True\"").Append(
       " ShowArcName=\"False\" ShowArcLabel=\"True\" ShowHyperArcName=\"False\" ShowHyperArcLabel=\"True\"").Append(
