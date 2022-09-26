@@ -204,6 +204,7 @@
         graph = new Graph();
         bool loaded = graph.load(fileTokens);
         Console.WriteLine(loaded);
+        generateSystemGraph();
     }
 
     public static List<string> tokenize(string str)
@@ -486,19 +487,19 @@
                 var graphS = graphss.Pop();
                 var options1 = (ruleSetMap["RFlagCleanRuleset"].recognize(graphS, false, null));
 
-                     /* if (options1.Count > 0)
-                     {
-                     foreach (var opt in options1)
-                         {
-                         var graphSS = graphS.copy();
-                         GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                         opt.arcs, opt.hyperarcs);
-                         opt.apply(graphSS, null);
-                         graphss.Push(graphSS);
-                 }
-                 }
-                     else
-                     graph_SSS.Add(graphS); */
+                /* if (options1.Count > 0)
+                {
+                    foreach (var opt in options1)
+                    {
+                    var graphSS = graphS.copy();
+                    GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                    opt.arcs, opt.hyperarcs);
+                    opt.apply(graphSS, null);
+                    graphss.Push(graphSS);
+            }
+                }
+                else
+                graph_SSS.Add(graphS); */
                 while (options1.Count > 0)
                 {
                     options1[0].apply(graphS, null);
@@ -518,19 +519,19 @@
                 var graphS = graphss.Pop();
                 var options1 = (ruleSetMap["ICFixTotalRuleset"].recognize(graphS, false, null));
 
-                     /* if (options1.Count > 0)
-                     {
-                     foreach (var opt in options1)
-                         {
-                         var graphSS = graphS.copy();
-                         GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                         opt.arcs, opt.hyperarcs);
-                         opt.apply(graphSS, null);
-                         graphss.Push(graphSS);
-                 }
-                 }
-                     else
-                     graph_SSS.Add(graphS);*/
+                /* if (options1.Count > 0)
+                {
+                    foreach (var opt in options1)
+                    {
+                    var graphSS = graphS.copy();
+                    GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                    opt.arcs, opt.hyperarcs);
+                    opt.apply(graphSS, null);
+                    graphss.Push(graphSS);
+            }
+                }
+                else
+                graph_SSS.Add(graphS);*/
 
                 while (options1.Count > 0)
                 {
@@ -871,9 +872,9 @@
         ruleReader = new StreamReader(filename);*/
 
 
-           /*   var assembly = Assembly.GetExecutingAssembly();
-           var filename = "AVL_Prototype_1.Rules.BeforeBG-VerifyDirRuleSet.rsxml";
-           var stream = assembly.GetManifestResourceStream(filename);
+        /*   var assembly = Assembly.GetExecutingAssembly();
+        var filename = "AVL_Prototype_1.Rules.BeforeBG-VerifyDirRuleSet.rsxml";
+        var stream = assembly.GetManifestResourceStream(filename);
            ruleReader = new StreamReader(stream); */
 
         //Uri uri = new Uri("/Rules/BeforeBG-VerifyDirRuleSet.rsxml", UriKind.Relative);
@@ -926,6 +927,7 @@
 
     private void generateSystemGraph()
     {
+        Console.WriteLine("Loading System Graph");
         systemGraph = null;
         StringBuilder builder = new StringBuilder();
         string ruleFileName = "system_graph";
@@ -1016,8 +1018,8 @@
                 }
             }
             builder.AppendLine("</localLabels>");
-            /*  else
-              {
+              /*  else
+                  {
                   builder.AppendLine("<localLabels />");
               } */
 
@@ -1050,10 +1052,12 @@
             var stringReader = new StringReader(temp.ToString());
             var graphDeserializer = new XmlSerializer(typeof(designGraph));
 
+            //We have a problem here maybe
             systemGraph = (designGraph)graphDeserializer.Deserialize(stringReader);
             systemGraph.internallyConnectGraph();
             removeNullWhiteSpaceEmptyLabels(systemGraph);
         }
+        Console.WriteLine("Loaded");
     }
 
 }
