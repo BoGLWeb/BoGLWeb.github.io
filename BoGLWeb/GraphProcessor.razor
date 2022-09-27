@@ -489,17 +489,17 @@
 
                 /* if (options1.Count > 0)
                 {
-                    foreach (var opt in options1)
-                    {
-                    var graphSS = graphS.copy();
-                    GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                    opt.arcs, opt.hyperarcs);
-                    opt.apply(graphSS, null);
-                    graphss.Push(graphSS);
+                foreach (var opt in options1)
+                {
+                var graphSS = graphS.copy();
+                GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                opt.arcs, opt.hyperarcs);
+                opt.apply(graphSS, null);
+                graphss.Push(graphSS);
             }
-                }
-                else
-                graph_SSS.Add(graphS); */
+            }
+            else
+            graph_SSS.Add(graphS); */
                 while (options1.Count > 0)
                 {
                     options1[0].apply(graphS, null);
@@ -521,17 +521,17 @@
 
                 /* if (options1.Count > 0)
                 {
-                    foreach (var opt in options1)
-                    {
-                    var graphSS = graphS.copy();
-                    GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                    opt.arcs, opt.hyperarcs);
-                    opt.apply(graphSS, null);
-                    graphss.Push(graphSS);
+                foreach (var opt in options1)
+                {
+                var graphSS = graphS.copy();
+                GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
+                opt.arcs, opt.hyperarcs);
+                opt.apply(graphSS, null);
+                graphss.Push(graphSS);
             }
-                }
-                else
-                graph_SSS.Add(graphS);*/
+            }
+            else
+            graph_SSS.Add(graphS);*/
 
                 while (options1.Count > 0)
                 {
@@ -990,6 +990,10 @@
                 builder.AppendLine("<localLabels />");
 
 
+                //I don't think nodes have names? This could be part of the issue.
+                //Node names are null. This could be part of the problem. Why is this happening though?
+                //What should it be?
+
                 builder.AppendLine("<localVariables />");
                 builder.AppendLine("<From>" + item.element1.nodeName + "</From>");
                 builder.AppendLine("<To>" + item.element2.nodeName + "</To>");
@@ -1018,13 +1022,16 @@
                 }
             }
             builder.AppendLine("</localLabels>");
-              /*  else
-                  {
-                  builder.AppendLine("<localLabels />");
-              } */
+            /*  else
+            {
+            builder.AppendLine("<localLabels />");
+        } */
 
             builder.AppendLine("<localVariables />");
 
+            //Got rid of some location data here. I think this could be part of the issue.
+            builder.AppendLine("<X>0</X>");
+            builder.AppendLine("<Y>0</Y>");
             builder.AppendLine("<Z>0</Z>");
 
             builder.AppendLine("</node>");
@@ -1037,6 +1044,9 @@
         builder.AppendLine("</GraphSynth:designGraph>");
         builder.AppendLine("</Page>");
 
+        Console.WriteLine("-------- Builder String --------");
+        Console.WriteLine(builder.ToString());
+
         XDocument doc_ = XDocument.Parse(builder.ToString());
 
         XmlReader do1 = doc_.CreateReader();
@@ -1048,11 +1058,13 @@
 
         // if (temp != null)
         var temp = RemoveXAMLns(RemoveIgnorablePrefix(temp2.ToString()));
+        Console.WriteLine("-------- temp --------");
+        Console.WriteLine(temp);
         {
             var stringReader = new StringReader(temp.ToString());
             var graphDeserializer = new XmlSerializer(typeof(designGraph));
 
-            //We have a problem here maybe
+            //We have a problem here
             systemGraph = (designGraph)graphDeserializer.Deserialize(stringReader);
             systemGraph.internallyConnectGraph();
             removeNullWhiteSpaceEmptyLabels(systemGraph);

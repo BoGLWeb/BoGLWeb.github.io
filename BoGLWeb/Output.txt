@@ -1,0 +1,115 @@
+<designGraph xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphSynth="ignorableUri">
+  <name >system_graph</name>
+  <globalLabels  />
+  <globalVariables  />
+  <arcs >
+    <arc>
+      <name>arc0</name>
+      <localLabels />
+      <localVariables />
+      <From>Spring1</From>
+      <To>Mass0</To>
+      <directed>false</directed>
+      <doublyDirected>false</doublyDirected>
+    </arc>
+    <arc>
+      <name>arc1</name>
+      <localLabels />
+      <localVariables />
+      <From>Mass2</From>
+      <To>Spring1</To>
+      <directed>false</directed>
+      <doublyDirected>false</doublyDirected>
+    </arc>
+    <arc>
+      <name>arc2</name>
+      <localLabels />
+      <localVariables />
+      <From>Spring3</From>
+      <To>Mass2</To>
+      <directed>false</directed>
+      <doublyDirected>false</doublyDirected>
+    </arc>
+    <arc>
+      <name>arc3</name>
+      <localLabels />
+      <localVariables />
+      <From>Mass4</From>
+      <To>Spring3</To>
+      <directed>false</directed>
+      <doublyDirected>false</doublyDirected>
+    </arc>
+    <arc>
+      <name>arc4</name>
+      <localLabels />
+      <localVariables />
+      <From>Mass4</From>
+      <To>Force_Input5</To>
+      <directed>false</directed>
+      <doublyDirected>false</doublyDirected>
+    </arc>
+  </arcs>
+  <nodes >
+    <node>
+      <name>Mass0</name>
+      <localLabels>
+        <string>Mass</string>
+      </localLabels>
+      <localVariables />
+      <X>-375.5666666666667</X>
+      <Y>-26.14666666666659</Y>
+      <Z>0</Z>
+    </node>
+    <node>
+      <name>Spring1</name>
+      <localLabels>
+        <string>Spring</string>
+      </localLabels>
+      <localVariables />
+      <X>-241.96666666666675</X>
+      <Y>-51.946666666666545</Y>
+      <Z>0</Z>
+    </node>
+    <node>
+      <name>Mass2</name>
+      <localLabels>
+        <string>Mass</string>
+      </localLabels>
+      <localVariables />
+      <X>-98.76666666666677</X>
+      <Y>-38.946666666666545</Y>
+      <Z>0</Z>
+    </node>
+    <node>
+      <name>Spring3</name>
+      <localLabels>
+        <string>Spring</string>
+      </localLabels>
+      <localVariables />
+      <X>54.83333333333326</X>
+      <Y>-23.14666666666659</Y>
+      <Z>0</Z>
+    </node>
+    <node>
+      <name>Mass4</name>
+      <localLabels>
+        <string>Mass</string>
+      </localLabels>
+      <localVariables />
+      <X>203.49298245614045</X>
+      <Y>-13.992280701754225</Y>
+      <Z>0</Z>
+    </node>
+    <node>
+      <name>Force_Input5</name>
+      <localLabels>
+        <string>Force_Input</string>
+      </localLabels>
+      <localVariables />
+      <X>388.02631578947387</X>
+      <Y>-2.5589473684208315</Y>
+      <Z>0</Z>
+    </node>
+  </nodes>
+  <hyperarcs  />
+</designGraph>

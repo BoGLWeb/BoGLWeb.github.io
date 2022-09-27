@@ -807,4 +807,8 @@
     </None>
   </ItemGroup>
 
+	<ItemGroup>
+		<TrimmerRootAssembly Include="System.Xml.XmlSerializer"/>
+	</ItemGroup>
+
 </Project>
