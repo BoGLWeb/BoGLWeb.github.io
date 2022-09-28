@@ -27,6 +27,7 @@
     private int index1 = 0;
     private bool causality = false;
     private Graph graph;
+    private List<designGraph> sys_Graphs = new List<designGraph>();
 
     public async void loadRuleSets()
     {
@@ -368,6 +369,7 @@
                     n.localLabels.Add("cadded" + (ii.ToString()));
                 ii++;
             }
+            Console.WriteLine("Starting obtainCausality");
             obtainCausality();
             Console.WriteLine("obtainCausality");
         }
@@ -392,6 +394,8 @@
         sysGraphs.Push(systemGraph.copy());
         var sys = sysGraphs.Pop();
         options = (ruleSetMap["NewCausalityMethodRuleset"].recognize(sys, false, null));
+
+        Console.WriteLine("Obtain 1");
         while (options.Count > 0)
         {
             options[0].apply(sys, null);
@@ -399,8 +403,10 @@
         }
 
         sysGraphs.Push(sys);
+        Console.WriteLine("Obtain 2");
         while (sysGraphs.Count > 0)
         {
+            Console.WriteLine(sysGraphs.Count);
             sys = sysGraphs.Pop();
             options = (ruleSetMap["NewCausalityMethodRuleset_2"].recognize(sys, false, null));
             if (options.Count > 0)
@@ -414,10 +420,11 @@
                 }
             }
             else
-                sysGraphs.Push(sys);
+                sys_Graphs.Add(sys);
         }
 
-        foreach (var item in sysGraphs)
+        Console.WriteLine("Obtain 3");
+        foreach (var item in sys_Graphs)
         {
             sys = item.copy();
             options = (ruleSetMap["NewCausalityMethodRuleset_3"].recognize(sys, false, null));
@@ -430,8 +437,11 @@
             sysGraphs.Push(sys);
 
         }
+
+        sys_Graphs.Clear();
         #endregion
 
+        Console.WriteLine("Obtain 4");
         while (sysGraphs.Count > 0)
         {
             sys = sysGraphs.Pop();
@@ -466,6 +476,7 @@
 
             }
 
+            Console.WriteLine("Obtain 5");
             foreach (var opt in graph_SSS)
             {
                 var options1 = (ruleSetMap["CalibrationNewRuleset"].recognize(opt, false, null));
@@ -481,6 +492,7 @@
 
             graph_SSS.Clear();
 
+            Console.WriteLine("Obtain 6");
             while (graphss.Count > 0)
             {
                 var graphS = graphss.Pop();
@@ -513,6 +525,7 @@
 
             graph_SSS.Clear();
 
+            Console.WriteLine("Obtain 7");
             while (graphss.Count > 0)
             {
                 var graphS = graphss.Pop();
@@ -542,6 +555,7 @@
 
             }
 
+            Console.WriteLine("Obtain 8");
             foreach (var op in graph_SSS)
             {
                 options = (ruleSetMap["TransformerFlipRuleset"].recognize(op, false, null));
@@ -575,6 +589,7 @@
 
         }
 
+        Console.WriteLine("Obtain 10");
         foreach (var opt in optiGraphs)
         {
             options = (ruleSetMap["Clean23Ruleset"].recognize(opt, false, null));
@@ -588,11 +603,7 @@
             finalresult.Add(opt);
         }
 
-
-
-
-
-
+        Console.WriteLine("Obtain 11");
         indiceswithoutINVD.Clear();
         maxIntegralCausality.Clear();
         for (int ii = 0; ii < finalresult.Count; ii++)
@@ -713,6 +724,7 @@
 
             causality = true;
 
+            Console.WriteLine("End Obtain");
         }
 
     }
