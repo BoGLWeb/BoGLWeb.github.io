@@ -129,7 +129,7 @@
 
     private string RemoveXAMLns(string str)
     {
-        return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presenation\"", "");
+        return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", "");
     }
 
     private string RemoveIgnorablePrefix(string str)
@@ -728,12 +728,12 @@
             options = ruleSetMap["SimplificationRuleset"].recognize(systemGraph, false, null);
         }
 
-        options = (ruleSetMap["DirectionRuleSet"].recognize(systemGraph, false, null));
+        options = (ruleSetMap["DirRuleset"].recognize(systemGraph, false, null));
 
         while (options.Count > 0)
         {
             options[0].apply(systemGraph, null);
-            options = ruleSetMap["DirectionRuleSet"].recognize(systemGraph, false, null);
+            options = ruleSetMap["DirRuleset"].recognize(systemGraph, false, null);
         }
 
         options = (ruleSetMap["newDirectionRuleSet_2"].recognize(systemGraph, false, null));
