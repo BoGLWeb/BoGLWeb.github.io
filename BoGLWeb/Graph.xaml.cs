@@ -22,6 +22,7 @@ namespace AVL_Prototype_1
         public List<GraphElement> elements = null;
         public GraphElement connectingElement = null;
         public List<GraphElement> selectedElements = null;
+        //This list currently is not being fed any data. That is a problem. Why?
         public List<Arc> arcs = null;
         public List<Arc> selectedArcs = null;
 
