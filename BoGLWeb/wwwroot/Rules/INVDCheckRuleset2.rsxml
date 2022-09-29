@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet6</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet5</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>INVDCheck.grxml</string>
+  </ruleFileNames>
+  <name>INVDCheckRuleset2</name>
+  <TriggerRuleNum>1</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet6</generationAfterNoRules>
+  <generationAfterTriggerRule>GoToRuleSet5</generationAfterTriggerRule>
+</ruleSet>

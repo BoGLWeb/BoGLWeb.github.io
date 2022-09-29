@@ -1,0 +1,72 @@
+[Header]
+panX -49.10119704856564
+panY -114.65016218868863
+zoom 0.5999999999999995
+
+[Elements]
+{
+	name System_MR_Gear
+	x -198.55480367585608
+	y -80.42269005847913
+	modifiers {
+	}
+}
+{
+	name System_MR_Gear
+	x 52.111862990811005
+	y -80.42269005847902
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -160.33258145363413
+	y -40.42269005847925
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x 92.11186299081078
+	y -40.42269005847925
+	modifiers {
+	}
+}
+{
+	name System_MT_Gravity
+	x -45.49924812030031
+	y 68.02175438596555
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -84.33133825239054
+	y 335.11693698114834
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x 130.33532841427643
+	y 149.78360364781452
+	modifiers {
+	}
+}
+{
+	name System_E_Resistor
+	x -296.33133825239065
+	y 156.45027031448126
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 7
+	element2 5
+}
+{
+	element1 6
+	element2 5
+}

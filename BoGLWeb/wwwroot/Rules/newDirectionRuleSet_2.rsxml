@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>newDirectionConnections_down.grxml</string>
+    <string>newDirectionConnections_up.grxml</string>
+    <string>newDirectionConnections_left.grxml</string>
+    <string>newDirectionConnections_right.grxml</string>
+    <string>newDirectionConnections_down_1.grxml</string>
+    <string>newDirectionConnections_up_1.grxml</string>
+    <string>newDirectionConnections_left_1.grxml</string>
+    <string>newDirectionConnections_right_1.grxml</string>
+    <string>newDirectionConnections_TY.grxml</string>
+    <string>newDirectionConnections_GY.grxml</string>
+    <string>newDirectionConnections_general.grxml</string>
+    <string>newDirectionConnections_general_2.grxml</string>
+    <string>newDirectionConnections_general_3.grxml</string>
+    <string>newDirectionConnections_general_4.grxml</string>
+    <string>newDirectionConnections_parallel.grxml</string>
+    <string>newDirectionConnections_mechRot.grxml</string>
+    <string>dir_dir.grxml</string>
+  </ruleFileNames>
+  <name>newDirectionRuleSet_2</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>Stop</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>
