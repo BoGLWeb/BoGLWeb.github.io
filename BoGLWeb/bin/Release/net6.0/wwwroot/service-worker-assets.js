@@ -13,7 +13,7 @@
       "url": "css\/bootstrap\/bootstrap.min.css.map"
     },
     {
-      "hash": "sha256-cWg6ZsSJ419jHl+pxl+70zA1c6e65bXCViiNbatZsR4=",
+      "hash": "sha256-uaSLctlkaoX8SYDjtiV5B1ri9jDweI7R+SaiwlDhTak=",
       "url": "css\/graph-creator.css"
     },
     {
@@ -65,32 +65,140 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-yxfE0g4spJfRGtMYMqTmDRtdcAZjFy7VD3Y\/HVwLQT0=",
-      "url": "images\/damper.png"
+      "hash": "sha256-a8gGJGK8IE\/s3Fp0qOO8sQl7jjsF0ejN6J8fhLuJpjo=",
+      "url": "images\/actuators\/pm_motor.svg"
     },
     {
-      "hash": "sha256-7B2BDIZBTbMF945Sq1O4LnlAJZmfFlPhX9BRqIc+dyU=",
-      "url": "images\/force_input.png"
+      "hash": "sha256-AIEDM5O4jOonFkfJOU0dOQA7616ipnX0sTBxYbPFeh4=",
+      "url": "images\/actuators\/vc_transducer.svg"
     },
     {
-      "hash": "sha256-BT2QBtZRghypKWU8EqtUxuWQC1vEH07xcQM1yHQnM8U=",
-      "url": "images\/gravity.png"
+      "hash": "sha256-iZjOY0tEYOGhWh01EDtC\/PPG4nFXQWb2DYdBh7dEC44=",
+      "url": "images\/arrowAttempts\/up_arrow.jpeg"
     },
     {
-      "hash": "sha256-XCgG5auurgb+feUAVs4cjFtiWyUxsOXfwR5ZWahhLek=",
-      "url": "images\/ground.png"
+      "hash": "sha256-zaLZ1fgIWpZu5Nfo0fQMUcJKhomLPvO1gIvCvyZmwjs=",
+      "url": "images\/arrowAttempts\/up_arrow.png"
     },
     {
-      "hash": "sha256-RUir+1IBERgNGmP+DxQuNiXYVcFi\/U2pLRJ\/ANPhefc=",
-      "url": "images\/mass.png"
+      "hash": "sha256-diRxgoumPnaDNMsJ8+uumZBmC9Q+CzhbTWHBhPdLzZE=",
+      "url": "images\/electrical\/capacitor.svg"
     },
     {
-      "hash": "sha256-uArkndihJEYeW2bYyGcF8zzRX8Y9tzINsZvyX\/ECmdg=",
-      "url": "images\/spring.png"
+      "hash": "sha256-oynAPY2Xoi+BAB0OK4qHmB9EO2quVAdg9+cE+StP8Gg=",
+      "url": "images\/electrical\/current_input.svg"
     },
     {
-      "hash": "sha256-z842\/s0QSPtQEIwu6K9J4zpmJXsSXbwARsyIbFme7t8=",
-      "url": "images\/velocity_input.png"
+      "hash": "sha256-jxvjO61nvapBt+RVryHTiaCjsgmXHdKS\/FzmfR5aHpc=",
+      "url": "images\/electrical\/ground.svg"
+    },
+    {
+      "hash": "sha256-iQsOFrSa7b9gSngKK4Wy1iMV\/DJHGzyLWrIOUe+ab0c=",
+      "url": "images\/electrical\/inductor.svg"
+    },
+    {
+      "hash": "sha256-5odrE9qYBv1TMuyC5JDVoMG8o6OskZQZ\/fc9TYHA\/nU=",
+      "url": "images\/electrical\/junction.svg"
+    },
+    {
+      "hash": "sha256-Uv5Rc345\/ukMLmrCw1z42QijtohOXq8QuW4osS9j0sU=",
+      "url": "images\/electrical\/junction_palette.svg"
+    },
+    {
+      "hash": "sha256-hg0ojZwdHJjrbHzNoGQ8\/VMMeCY+6l0IFzrBS+HqS8I=",
+      "url": "images\/electrical\/resistor.svg"
+    },
+    {
+      "hash": "sha256-49z0NCzlnFRU7XexhB51wVp6632GPsF9Mb6tE\/8mVuc=",
+      "url": "images\/electrical\/transformer.svg"
+    },
+    {
+      "hash": "sha256-iKPExamr9MB\/oe2usCs1TXf1Ac\/1mYXjVl72aKlL1AQ=",
+      "url": "images\/electrical\/voltage_input.svg"
+    },
+    {
+      "hash": "sha256-YQlfMdE\/rRlfmJjotLS9xTPdMufDK4TXLP4qBBhRyA4=",
+      "url": "images\/mechRot\/damper.svg"
+    },
+    {
+      "hash": "sha256-SAXK0JKcZtHJ8s+FVNWKoCw1ReWkah3FvvEDxfti+vA=",
+      "url": "images\/mechRot\/flywheel.svg"
+    },
+    {
+      "hash": "sha256-+vDDLm3RVHJyC5sgi4rQRtdcSl5AUKu1YrWPEBpOB7k=",
+      "url": "images\/mechRot\/pulley_grounded.svg"
+    },
+    {
+      "hash": "sha256-MPVLxGsGgTvENf\/LybYceveYrVugoQgc+x18Tjqz2ow=",
+      "url": "images\/mechRot\/spring.svg"
+    },
+    {
+      "hash": "sha256-Z\/nCOLPuQMrH66PIxGGMCJ6QjF8zqAsWf4wwZbydcJo=",
+      "url": "images\/mechRot\/torque_input.svg"
+    },
+    {
+      "hash": "sha256-rof0KEf\/kupR2TltI9nZeyhZLr1XjBhEhSVYnZsVrJg=",
+      "url": "images\/mechRot\/velocity_input.svg"
+    },
+    {
+      "hash": "sha256-YQlfMdE\/rRlfmJjotLS9xTPdMufDK4TXLP4qBBhRyA4=",
+      "url": "images\/mechTrans\/damper.svg"
+    },
+    {
+      "hash": "sha256-YYc7DrlTCU5s5GC5lCSspkV991d1kE9uh5DXfMqIP0s=",
+      "url": "images\/mechTrans\/force_input.svg"
+    },
+    {
+      "hash": "sha256-XbeTwRWhp7MzNTOMGhVAJOLhv\/g4zGk3p26aG0BmNzw=",
+      "url": "images\/mechTrans\/gravity.svg"
+    },
+    {
+      "hash": "sha256-UVmWdmEpDuyWusif3e1DOwE4T3x6PgZzLrnwZt9Mz+0=",
+      "url": "images\/mechTrans\/ground.svg"
+    },
+    {
+      "hash": "sha256-ynCpWPay2+JxCoal92APObKJagFZNYTBOgsOzYAP85U=",
+      "url": "images\/mechTrans\/mass.svg"
+    },
+    {
+      "hash": "sha256-MPVLxGsGgTvENf\/LybYceveYrVugoQgc+x18Tjqz2ow=",
+      "url": "images\/mechTrans\/spring.svg"
+    },
+    {
+      "hash": "sha256-V\/KGM17HYevlkDJsG88Jyoo2PALxsjOQ3QbzUuaIsBs=",
+      "url": "images\/mechTrans\/velocity_input.svg"
+    },
+    {
+      "hash": "sha256-RrvcEWwRWh9H09wBsu7ul+WkXVOjbmIrqZCb\/SPojjA=",
+      "url": "images\/transElem\/belt.svg"
+    },
+    {
+      "hash": "sha256-GmPPUBvjl+bPk09FsgfbGz5MMY2pPzJcqOzGooMiCpQ=",
+      "url": "images\/transElem\/gear.svg"
+    },
+    {
+      "hash": "sha256-02+qjp2Ngan8BtWXjhcumUu7l0ZRXWdKylgMlu7KLHc=",
+      "url": "images\/transElem\/gear_pair.svg"
+    },
+    {
+      "hash": "sha256-KseB41lI4QnbqrsGlOM9hJc3EK0BaJ190+XsXgAr20c=",
+      "url": "images\/transElem\/lever.svg"
+    },
+    {
+      "hash": "sha256-BnS66eJdgb6AIG0NgyJF\/rYxNYUhaWIodq4iGXYmBao=",
+      "url": "images\/transElem\/pulley.svg"
+    },
+    {
+      "hash": "sha256-kSCQU47AGetujGYahIlXnUiQ8wqbA+PGos9rgFFdUAI=",
+      "url": "images\/transElem\/rack.svg"
+    },
+    {
+      "hash": "sha256-tJ+7I30UrwNDKu3vT\/nRjEe6Xc46DWNCMwEKMvSTy10=",
+      "url": "images\/transElem\/rack_pinion.svg"
+    },
+    {
+      "hash": "sha256-lI3JFAuuq434F5yoeDnYRdqnf7dLpnmvOcu7oUWST6k=",
+      "url": "images\/transElem\/shaft.svg"
     },
     {
       "hash": "sha256-12SG+KxEfYAJLUXSKowuXzs2Wh7owWYQssVr4UlLBzg=",
@@ -897,11 +1005,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-qGxmLe9cjJBdxUdZsZfXRqEsVW7gK0VCYdywf7ZnCFI=",
+      "hash": "sha256-B9T2dEHE2taYo3ERqr41r23H1avLgs1kte9UkDvkGKg=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-TB\/rR4gUyQrYMFN8YZAEHFaioCL2lyfH5Dg2OuE5q0A=",
+      "hash": "sha256-DsBkqwveKmjg23SLjqYHCMgormxtin\/L5c\/cHdcnN6Q=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -909,7 +1017,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-0DCM+AZSPfzm\/Edav1y8DALYalQ9fmeKnOUQVVIPHR0=",
+      "hash": "sha256-HnSU1VkA\/ONEjUtuc9L20+w3xy9p4K\/chkTr1EBXzHI=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -961,5 +1069,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "BKztHXWP"
+  "version": "vuTNXBTC"
 };

@@ -4,57 +4,44 @@ document.onload = (async function (d3, saveAs, Blob) {
     var draggingElement = null;
 
     document.addEventListener("mouseup", function () {
-        document.body.style.cursor = 'auto';
+        document.body.style.cursor = "auto";
         draggingElement = null;
     });
 
-    function makeElementSource(link, index, thisGraph) {
-        var group = menuSvg.append('g')
-            .attr('id', 'group_' + index)
-            .attr('index', index)
-            .attr('style', 'cursor: grab')
-            .on('mousedown', function () {
-                document.body.style.cursor = 'grabbing';
-                draggingElement = link;
-            });
-        var box = group.append('rect');
-        box.attr('width', '60px')
-            .attr('height', '60px')
-            .attr('x', '30px')
-            .attr('y', (30 + index * 70) + 'px')
-            .attr('style', 'fill:rgb(255, 255, 255);stroke-width:2;stroke:rgb(0,0,0)');
-        var image = group.append('image');
-        image.attr('href', link)
-            .attr('x', '35px')
-            .attr('id', 'image_' + index);
-        if (index == 2) {
-            image.attr('height', '50px')
-                .attr('x', '50px');
-        } else {
-            image.attr('width', '50px');
-        }
-        document.getElementById("image_" + index).addEventListener('load', function () {
-            let imgHeight = image[0][0].getBoundingClientRect().height;
-            image.attr('y', (30 + index * 70 + ((60 - imgHeight) / 2)) + 'px');
+    function makeElementSource(section, link) {
+        const group = document.createElement('div');
+
+        group.classList = "groupDiv";
+        group.addEventListener("mousedown", function () {
+            document.body.style.cursor = "grabbing";
+            draggingElement = link;
         });
-        return group;
+
+        section.appendChild(group);
+
+        var box = document.createElement('div');
+        box.classList = "box";
+        group.appendChild(box);
+
+        var image = document.createElement('img');
+        image.src = link;
+        image.draggable = false;
+        image.classList = "elemImage";
+        box.appendChild(image);
     }
 
-    function drawMenu() {
-        menuSvg.append('rect')
-            .attr('width', '100px')
-            .attr('height', '520px')
-            .attr('x', '10px')
-            .attr('y', '10px')
-            .attr('style', 'fill:rgb(220,220,220)');
+    function makeSection(sectionName, images) {
+        let sectionElem = document.getElementById(sectionName);
+        images.forEach(image => makeElementSource(sectionElem, "images/" + sectionName + "/" + image + ".svg"));
+    }
 
-        makeElementSource('images/damper.png', 0, graph);
-        makeElementSource('images/force_input.png', 1, graph);
-        makeElementSource('images/gravity.png', 2, graph);
-        makeElementSource('images/ground.png', 3, graph);
-        makeElementSource('images/mass.png', 4, graph);
-        makeElementSource('images/spring.png', 5, graph);
-        makeElementSource('images/velocity_input.png', 6, graph);
+    function populateMenu() {
+        // eventually want to pass these in from C#, which can likely access files easier
+        makeSection("mechTrans", ["mass", "spring", "damper", "ground", "force_input", "gravity", "velocity_input"]);
+        makeSection("mechRot", ["flywheel", "spring", "damper", "torque_input", "velocity_input"]);
+        makeSection("transElem", ["lever", "pulley", "belt", "shaft", "gear", "gear_pair", "rack", "rack_pinion"]);
+        makeSection("electrical", ["inductor", "capacitor", "resistor", "transformer", "junction_palette", "ground", "current_input", "voltage_input"]);
+        makeSection("actuators", ["pm_motor", "vc_transducer"]);
     }
 
     // define graphcreator object
@@ -77,30 +64,30 @@ document.onload = (async function (d3, saveAs, Blob) {
             selectedText: null
         };
 
-        svg.attr('id', 'svg');
+        svg.attr("id", "svg");
 
         // define arrow markers for graph links
-        var defs = svg.append('svg:defs');
-        defs.append('svg:marker')
-            .attr('id', 'end-arrow')
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', "32")
-            .attr('markerWidth', 3.5)
-            .attr('markerHeight', 3.5)
-            .attr('orient', 'auto')
-            .append('svg:path')
-            .attr('d', 'M0,-5L10,0L0,5');
+        var defs = svg.append("svg:defs");
+        defs.append("svg:marker")
+            .attr("id", "end-arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", "32")
+            .attr("markerWidth", 3.5)
+            .attr("markerHeight", 3.5)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5");
 
         // define arrow markers for leading arrow
-        defs.append('svg:marker')
-            .attr('id', 'mark-end-arrow')
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 7)
-            .attr('markerWidth', 3.5)
-            .attr('markerHeight', 3.5)
-            .attr('orient', 'auto')
-            .append('svg:path')
-            .attr('d', 'M0,-5L10,0L0,5');
+        defs.append("svg:marker")
+            .attr("id", "mark-end-arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 7)
+            .attr("markerWidth", 3.5)
+            .attr("markerHeight", 3.5)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5");
 
         thisGraph.svg = svg;
         thisGraph.svgG = svg.append("g")
@@ -108,9 +95,9 @@ document.onload = (async function (d3, saveAs, Blob) {
         var svgG = thisGraph.svgG;
 
         // displayed when dragging between nodes
-        thisGraph.dragLine = svgG.append('svg:path')
-            .attr('class', 'link dragline hidden')
-            .attr('d', 'M0,0L0,0');
+        thisGraph.dragLine = svgG.append("svg:path")
+            .attr("class", "link dragline hidden")
+            .attr("d", "M0,0L0,0");
 
         // svg nodes and edges
         thisGraph.paths = svgG.append("g").selectAll("g");
@@ -154,10 +141,10 @@ document.onload = (async function (d3, saveAs, Blob) {
                 if (ael) {
                     ael.blur();
                 }
-                if (!d3.event.sourceEvent.shiftKey) d3.select('body').style("cursor", "move");
+                if (!d3.event.sourceEvent.shiftKey) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-                d3.select('body').style("cursor", "auto");
+                d3.select("body").style("cursor", "auto");
             });
 
         svg.call(dragSvg).on("dblclick.zoom", null);
@@ -187,7 +174,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     GraphCreator.prototype.dragmove = function (d) {
         var thisGraph = this;
         if (thisGraph.state.shiftNodeDrag) {
-            thisGraph.dragLine.attr('d', 'M' + d.x + ',' + d.y + 'L' + d3.mouse(thisGraph.svgG.node())[0] + ',' + d3.mouse(this.svgG.node())[1]);
+            thisGraph.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(thisGraph.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
             d.x += d3.event.dx;
             d.y += d3.event.dy;
@@ -267,8 +254,8 @@ document.onload = (async function (d3, saveAs, Blob) {
         if (d3.event.shiftKey) {
             state.shiftNodeDrag = d3.event.shiftKey;
             // reposition dragged directed edge
-            thisGraph.dragLine.classed('hidden', false)
-                .attr('d', 'M' + d.x + ',' + d.y + 'L' + d.x + ',' + d.y);
+            thisGraph.dragLine.classed("hidden", false)
+                .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
             return;
         }
     };
@@ -289,7 +276,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         thisGraph.dragLine.classed("hidden", true);
 
         if (mouseDownNode !== d) {
-            // we're in a different node: create new edge for mousedown edge and add to graph
+            // we"re in a different node: create new edge for mousedown edge and add to graph
             var newEdge = { source: mouseDownNode, target: d };
             var filtRes = thisGraph.paths.filter(function (d) {
                 if (d.source === newEdge.target && d.target === newEdge.source) {
@@ -302,7 +289,7 @@ document.onload = (async function (d3, saveAs, Blob) {
                 thisGraph.updateGraph();
             }
         } else {
-            // we're in the same node
+            // we"re in the same node
             if (state.justDragged) {
                 // dragged, not clicked
                 state.justDragged = false;
@@ -334,7 +321,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         var thisGraph = this,
             state = thisGraph.state;
         if (draggingElement) {
-            document.body.style.cursor = 'auto';
+            document.body.style.cursor = "auto";
             var xycoords = d3.mouse(thisGraph.svgG.node()),
                 d = { img: draggingElement, id: thisGraph.idct++, x: xycoords[0], y: xycoords[1], initialDrag: true };
             thisGraph.nodes.push(d);
@@ -356,7 +343,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         var thisGraph = this,
             state = thisGraph.state,
             consts = thisGraph.consts;
-        // make sure repeated key presses don't register for each keydown
+        // make sure repeated key presses don"t register for each keydown
         if (state.lastKeyDown !== -1) return;
 
         state.lastKeyDown = d3.event.keyCode;
@@ -448,28 +435,24 @@ document.onload = (async function (d3, saveAs, Blob) {
             })
             .call(thisGraph.drag);
 
-        let index = 0;
-
         let group = newGs.append("g");
-        group.attr('id', 'group_' + index)
-            .attr('style', 'fill:inherit')
-            .attr('index', function (d, i) { return d.id; });
+        group.attr("style", "fill:inherit")
+            .attr("index", function (d, i) { return d.id; });
 
-        let box = group.append('rect');
-        box.attr('width', '60px')
-            .attr('height', '60px')
-            .attr('x', '-30px')
-            .attr('y', '-30px')
-            .attr('style', 'fill:inherit');
+        let box = group.append("rect");
+        box.attr("width", "60px")
+            .attr("height", "60px")
+            .attr("x", "-30px")
+            .attr("y", "-30px")
+            .attr("style", "fill:inherit");
 
-        let image = group.append('image');
-        image.attr('href', function (d, i) { return d.img; })
-            .attr('x', '-25px')
-            .attr('y', '-25px')
-            .attr('id', 'image_' + index)
-            .attr('preserveAspectRatio', 'xMidYMid meet')
-            .attr('height', '50px')
-            .attr('width', '50px');
+        let image = group.append("image");
+        image.attr("href", function (d, i) { return d.img; })
+            .attr("x", "-25px")
+            .attr("y", "-25px")
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("height", "50px")
+            .attr("width", "50px");
 
         // remove old nodes
         thisGraph.circles.exit().remove();
@@ -484,14 +467,14 @@ document.onload = (async function (d3, saveAs, Blob) {
 
     GraphCreator.prototype.updateWindow = function (svg) {
         var docEl = document.documentElement,
-            bodyEl = document.getElementsByTagName('body')[0];
+            bodyEl = document.getElementsByTagName("body")[0];
         var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
         var y = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
         svg.attr("width", x).attr("height", y);
     };
 
     var docEl = document.documentElement,
-        bodyEl = document.getElementsByTagName('body')[0];
+        bodyEl = document.getElementsByTagName("body")[0];
 
     var width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
         height = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
@@ -503,11 +486,9 @@ document.onload = (async function (d3, saveAs, Blob) {
     var svg = d3.select("#graph").append("svg")
         .attr("width", width)
         .attr("height", height);
-    var menuSvg = d3.select("#graphMenu").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+    var menu = document.getElementById("graphMenu");
     var graph = new GraphCreator(svg, nodes, edges);
-    drawMenu();
+    populateMenu();
     graph.setIdCt(2);
     graph.updateGraph();
 })(window.d3, window.saveAs, window.Blob);
