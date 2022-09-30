@@ -21,6 +21,12 @@
 <body>
     <div id="app">Loading...</div>
 
+    <script type="text/javascript">
+        caches.delete("blazor-resources-/").then(function (e) {
+            console.log("'blazor-resources-/' cache deleted");
+        });
+    </script>
+
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
