@@ -7,7 +7,7 @@
 <body>
     <div class="page">
         <main>
-            <Menu Selectable=false Mode=MenuMode.Horizontal>
+            <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
                 <SubMenu title="File">
                     <MenuItem Key="setting:1">New</MenuItem>
                     <MenuItem Key="setting:2">Open</MenuItem>
@@ -32,8 +32,35 @@
                     <MenuItem Key="setting:5">About BoGL</MenuItem>
                 </SubMenu>
             </Menu>
+            @*<Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
+                <Overlay>
+                    <Menu>
+                        <MenuItem>
+                            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
+                                1st menu item
+                            </a>
+                        </MenuItem>
+                        <MenuItem>
+                            <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
+                                2nd menu item
+                            </a>
+                        </MenuItem>
+                        <MenuItem>
+                            <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+                                3rd menu item
+                            </a>
+                        </MenuItem>
+                    </Menu>
+                </Overlay>
+                <ChildContent>
+                    <a class="ant-dropdown-link" @onclick:preventDefault>
+                        Click me <Icon Type="down" />
+                    </a>
+                </ChildContent>
+            </Dropdown>*@
             <div class="container">
                 <div id="graphMenu">
+                    <div></div>
                     <Collapse Bordered="false">
                         <ExpandIconTemplate>
                             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
@@ -57,7 +84,22 @@
                         </ChildContent>
                     </Collapse>
                 </div>
-                <div id="graph"></div>
+                <div class="card-container">
+                    <Tabs Type="@TabType.Card">
+                        <TabPane Key="1" Tab="System">
+                            <div id="graph"></div>
+                        </TabPane>
+                        <TabPane Key="2" Tab="Unsimplified BG">
+                            <div class="expand">Content of Tab Pane 2</div>
+                        </TabPane>
+                        <TabPane Key="3" Tab="Simplified BG">
+                            <div class="expand">Content of Tab Pane 3</div>
+                        </TabPane>
+                        <TabPane Key="4" Tab="Causal BG">
+                            <div class="expand">Content of Tab Pane 4</div>
+                        </TabPane>
+                    </Tabs>
+                </div>
             </div>
         </main>
     </div>
