@@ -13,7 +13,7 @@
       "url": "css\/bootstrap\/bootstrap.min.css.map"
     },
     {
-      "hash": "sha256-uaSLctlkaoX8SYDjtiV5B1ri9jDweI7R+SaiwlDhTak=",
+      "hash": "sha256-UXXP1vJeC3mhRL9oeyJ3pqm6VNAm\/KuRjxFb0J3Kli0=",
       "url": "css\/graph-creator.css"
     },
     {
@@ -55,6 +55,10 @@
     {
       "hash": "sha256-Jtxf9L+5ITKRc1gIRl4VbUpGkRNfOBXjYTdhJD4facM=",
       "url": "favicon.ico"
+    },
+    {
+      "hash": "sha256-7cND3htOd8cGPffog1+\/+jOIk0JKMPtrCtu34XswBnk=",
+      "url": "graph-creator.js.map"
     },
     {
       "hash": "sha256-DbpQaq68ZSb5IoPosBErM1QWBfsbTxpJqhU0REi6wP4=",
@@ -201,12 +205,16 @@
       "url": "images\/transElem\/shaft.svg"
     },
     {
-      "hash": "sha256-12SG+KxEfYAJLUXSKowuXzs2Wh7owWYQssVr4UlLBzg=",
+      "hash": "sha256-CWigu2kFVAOUqZFyUphqWYzNoOJfcWSBb7eONid0zNI=",
       "url": "index.html"
     },
     {
       "hash": "sha256-ggEV4rH1JkffEZTM1O4Dax8QUJW8KHFb2eG9X5IBCG4=",
       "url": "manifest.json"
+    },
+    {
+      "hash": "sha256-jnP45kzh2MW41IjEYqb9VsCOXWrS3yqcXuH01qayi3I=",
+      "url": "tsconfig.json"
     },
     {
       "hash": "sha256-FNFohsDQHNEYF+QPpauYdOXaJrXoU0BgSFGy0qgZUGk=",
@@ -1005,11 +1013,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-B9T2dEHE2taYo3ERqr41r23H1avLgs1kte9UkDvkGKg=",
+      "hash": "sha256-Rp6gi7T8oIA6KOeLAaJukGlRZAEPg7OuS52yEQlYAko=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-DsBkqwveKmjg23SLjqYHCMgormxtin\/L5c\/cHdcnN6Q=",
+      "hash": "sha256-ZOqeOxKGubV8yHCuaQc\/dfr4OnHQLTE\/SAZ8qu+Wkrg=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -1017,7 +1025,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-HnSU1VkA\/ONEjUtuc9L20+w3xy9p4K\/chkTr1EBXzHI=",
+      "hash": "sha256-YkUR2z1FmwYAJF6VBEk1Boz4fhBmFfIUJym76owPQQ0=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -1069,5 +1077,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "vuTNXBTC"
+  "version": "dA2xASBU"
 };
