@@ -1,5 +1,6 @@
-// @ts-ignore
-document.onload = (async function (d3, saveAs, Blob) {
+import { DragEvent, ZoomEvent } from "./types/d3";
+
+document.onload = (function (): any {
     "use strict";
 
     var draggingElement = null;
@@ -12,8 +13,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     function makeElementSource(section, link) {
         const group = document.createElement('div');
 
-        // @ts-ignore
-        group.classList = "groupDiv";
+        group.classList.add("groupDiv");
         group.addEventListener("mousedown", function () {
             document.body.style.cursor = "grabbing";
             draggingElement = link;
@@ -22,15 +22,13 @@ document.onload = (async function (d3, saveAs, Blob) {
         section.appendChild(group);
 
         var box = document.createElement('div');
-        // @ts-ignore
-        box.classList = "box";
+        box.classList.add("box");
         group.appendChild(box);
 
         var image = document.createElement('img');
         image.src = link;
         image.draggable = false;
-        // @ts-ignore
-        image.classList = "elemImage";
+        image.classList.add("elemImage");
         box.appendChild(image);
     }
 
@@ -108,7 +106,7 @@ document.onload = (async function (d3, saveAs, Blob) {
         thisGraph.circles = svgG.append("g").selectAll("g");
 
         thisGraph.drag = d3.behavior.drag()
-            .origin(function (d) {
+            .origin(function (d: any) {
                 return { x: d.x, y: d.y };
             })
             .on("drag", function (args) {
@@ -132,20 +130,11 @@ document.onload = (async function (d3, saveAs, Blob) {
         // listen for dragging
         var dragSvg = d3.behavior.zoom()
             .on("zoom", function () {
-                if (d3.event.sourceEvent.shiftKey) {
-                    // TODO  the internal d3 state is still changing
-                    return false;
-                } else {
-                    thisGraph.zoomed.call(thisGraph);
-                }
+                thisGraph.zoomed.call(thisGraph);
                 return true;
             })
             .on("zoomstart", function () {
-                var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
-                if (ael) {
-                    ael.blur();
-                }
-                if (!d3.event.sourceEvent.shiftKey) d3.select("body").style("cursor", "move");
+                if (!((<KeyboardEvent> (<ZoomEvent> d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
                 d3.select("body").style("cursor", "auto");
@@ -180,8 +169,8 @@ document.onload = (async function (d3, saveAs, Blob) {
         if (thisGraph.state.shiftNodeDrag) {
             thisGraph.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(thisGraph.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
-            d.x += d3.event.dx;
-            d.y += d3.event.dy;
+            d.x += (<DragEvent> d3.event).dx;
+            d.y += (<DragEvent> d3.event).dy;
             thisGraph.updateGraph();
         }
     };
@@ -234,7 +223,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     GraphCreator.prototype.pathMouseDown = function (d3path, d) {
         var thisGraph = this,
             state = thisGraph.state;
-        d3.event.stopPropagation();
+        (<Event> d3.event).stopPropagation();
         state.mouseDownLink = d;
 
         if (state.selectedNode) {
@@ -253,10 +242,10 @@ document.onload = (async function (d3, saveAs, Blob) {
     GraphCreator.prototype.nodeMouseDown = function (d3node, d) {
         var thisGraph = this,
             state = thisGraph.state;
-        d3.event.stopPropagation();
+        (<Event> d3.event).stopPropagation();
         state.mouseDownNode = d;
-        if (d3.event.shiftKey) {
-            state.shiftNodeDrag = d3.event.shiftKey;
+        if ((<KeyboardEvent> d3.event).shiftKey) {
+            state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
             // reposition dragged directed edge
             thisGraph.dragLine.classed("hidden", false)
                 .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
@@ -350,14 +339,14 @@ document.onload = (async function (d3, saveAs, Blob) {
         // make sure repeated key presses don"t register for each keydown
         if (state.lastKeyDown !== -1) return;
 
-        state.lastKeyDown = d3.event.keyCode;
+        state.lastKeyDown = (<KeyboardEvent> d3.event).keyCode;
         var selectedNode = state.selectedNode,
             selectedEdge = state.selectedEdge;
 
-        switch (d3.event.keyCode) {
+        switch ((<KeyboardEvent>d3.event).keyCode) {
             case consts.BACKSPACE_KEY:
             case consts.DELETE_KEY:
-                d3.event.preventDefault();
+                (<Event> d3.event).preventDefault();
                 if (selectedNode) {
                     thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
                     thisGraph.spliceLinksForNode(selectedNode);
@@ -465,7 +454,7 @@ document.onload = (async function (d3, saveAs, Blob) {
     GraphCreator.prototype.zoomed = function () {
         this.state.justScaleTransGraph = true;
         d3.select("." + this.consts.graphClass)
-            .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+            .attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent> d3.event).scale + ")");
     };
 
     GraphCreator.prototype.updateWindow = function (svg) {
@@ -494,5 +483,4 @@ document.onload = (async function (d3, saveAs, Blob) {
     populateMenu();
     graph.setIdCt(2);
     graph.updateGraph();
-// @ts-ignore
-})(window.d3, window.saveAs, window.Blob);
+})();
