@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\graph-creator.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
@@ -30,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\graph-creator.js" />
+    <None Include="wwwroot\build\build.js" />
     <None Include="wwwroot\css\app.css" />
     <None Include="wwwroot\css\bootstrap\bootstrap.min.css" />
     <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
