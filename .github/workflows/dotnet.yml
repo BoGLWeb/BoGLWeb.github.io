@@ -46,7 +46,7 @@ jobs:
     
       - name: Install dependencies
         run: | 
-          cd PlaywrightTests
+          cd BoGLWeb/PlaywrightTests
           npm ci
           npx playwright install-deps
           npx playwright install
