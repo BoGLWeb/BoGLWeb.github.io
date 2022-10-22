@@ -46,7 +46,7 @@ jobs:
     
       - name: Install dependencies
         run: | 
-          cd testing
+          cd PlaywrightTests
           npm ci
           npx playwright install-deps
           npx playwright install
