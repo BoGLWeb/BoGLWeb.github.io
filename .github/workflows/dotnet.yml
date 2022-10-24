@@ -26,3 +26,4 @@ jobs:
           cd BoGLWeb/PlaywrightTests
           npm ci
           npx playwright install-deps
+          npx playwright install
