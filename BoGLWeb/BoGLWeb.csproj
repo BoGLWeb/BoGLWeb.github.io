@@ -795,6 +795,8 @@
     <PackageReference Include="AntDesign" Version="0.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -808,7 +810,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<TrimmerRootAssembly Include="System.Xml.XmlSerializer"/>
+		<TrimmerRootAssembly Include="System.Xml.XmlSerializer" />
 	</ItemGroup>
 
 </Project>
