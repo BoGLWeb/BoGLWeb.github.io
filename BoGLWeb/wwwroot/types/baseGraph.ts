@@ -35,6 +35,7 @@ class BaseGraph {
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
 
+        console.log("Fella area", this)
         let graph = this;
 
         // listen for key events
@@ -44,8 +45,8 @@ class BaseGraph {
         .on("keyup", function () {
             graph.svgKeyUp.call(graph);
         });
-        svg.on("mousedown", function (d) { graph.svgMouseDown.call(this, d); });
-        svg.on("mouseup", function (d) { graph.svgMouseUp.call(this, d); });
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
 
         svg.call(this.dragSvg).on("dblclick.zoom", null);
     }

@@ -142,6 +142,7 @@ export class SystemDiagram extends BaseGraph {
             this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
             this.updateGraph();
         }
+        console.log(this)
         if (state.justScaleTransGraph) {
             // dragged not clicked
             state.justScaleTransGraph = false;
