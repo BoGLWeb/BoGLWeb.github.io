@@ -52,14 +52,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[6.0.8, )"
-            },
-            "Microsoft.Playwright.NUnit": {
-              "target": "Package",
-              "version": "[1.27.1, )"
-            },
-            "NUnit": {
-              "target": "Package",
-              "version": "[3.13.3, )"
             }
           },
           "imports": [
