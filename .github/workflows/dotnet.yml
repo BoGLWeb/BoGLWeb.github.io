@@ -59,7 +59,7 @@ jobs:
         npx playwright install --with-deps
     - name: Run Playwright tests
       run: 
-        cd PlaywrightTests
+        ls
     - uses: actions/upload-artifact@v2
       if: always()
       with:
