@@ -11,24 +11,24 @@ class BaseGraph {
     readonly ENTER_KEY: 13;
 
     idct: number = 0;
-    nodes: BondGraphElement[];
-    edges: BondGraphBond[];
+    elements: BondGraphElement[];
+    bonds: BondGraphBond[];
     state: GraphState = new GraphState();
     svg: SVGSelection;
     svgG: SVGSelection;
-    dragLine: SVGSelection;
-    bonds: BGBondSelection;
-    elements: BGElementSelection;
+    dragBond: SVGSelection;
+    bondSelection: BGBondSelection;
+    elementSelection: BGElementSelection;
     draggingElement: string = null;
 
     constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
-        this.nodes = nodes || [];
-        this.edges = edges || [];
+        this.elements = nodes || [];
+        this.bonds = edges || [];
 
         svg.attr("id", "svg");
 
         // define arrow markers for graph links
-        var defs = svg.append("svg:defs");
+        let defs = svg.append("svg:defs");
         defs.append("svg:marker")
             .attr("id", "end-arrow")
             .attr("viewBox", "0 -5 10 10")
@@ -53,16 +53,16 @@ class BaseGraph {
         this.svg = svg;
         this.svgG = svg.append("g")
             .classed(this.graphClass, true);
-        var svgG = this.svgG;
+        let svgG = this.svgG;
 
-        // displayed when dragging between nodes
-        this.dragLine = svgG.append("svg:path");
-        this.dragLine.attr("class", "link dragline hidden")
+        // displayed when dragging between elements
+        this.dragBond = svgG.append("svg:path");
+        this.dragBond.attr("class", "link dragline hidden")
             .attr("d", "M0,0L0,0");
 
-        // svg nodes and edges
-        this.bonds = svgG.append("g").selectAll("g");
-        this.elements = svgG.append("g").selectAll("g");
+        // svg elements and bonds
+        this.bondSelection = svgG.append("g").selectAll("g");
+        this.elementSelection = svgG.append("g").selectAll("g");
 
         let graph = this;
 
@@ -80,9 +80,9 @@ class BaseGraph {
     }
 
     get drag() {
-        var graph = this;
+        let graph = this;
         return d3.behavior.drag()
-            .origin(function (d: any) {
+            .origin(function (d) {
                 return { x: d.x, y: d.y };
             })
             .on("drag", function (args) {
@@ -93,7 +93,7 @@ class BaseGraph {
 
     // listen for dragging
     get dragSvg() {
-        var graph = this;
+        let graph = this;
         return d3.behavior.zoom()
             .on("zoom", function () {
                 graph.zoomed.call(graph);
@@ -107,114 +107,113 @@ class BaseGraph {
             });
     }
 
-    setIdCt(idct) {
-        this.idct = idct;
+    setIdCt(id: number) {
+        this.idct = id;
     };
 
-
-    dragmove(d) {
+    dragmove(el: BondGraphElement) {
         if (this.state.shiftNodeDrag) {
-            this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
-            d.x += (<DragEvent>d3.event).dx;
-            d.y += (<DragEvent>d3.event).dy;
+            el.x += (<DragEvent>d3.event).dx;
+            el.y += (<DragEvent>d3.event).dy;
             this.updateGraph();
         }
     };
 
-    // remove edges associated with a node
-    spliceLinksForNode(node) {
-        let toSplice = this.edges.filter(function (l) {
-            return (l.source === node || l.target === node);
+    // remove bonds associated with a node
+    spliceLinksForNode(el: BondGraphElement) {
+        let toSplice = this.bonds.filter(function (l) {
+            return (l.source === el || l.target === el);
         });
         toSplice.map(function (l) {
             this.edges.splice(this.edges.indexOf(l), 1);
         });
     };
 
-    replaceSelectEdge(d3Path, edgeData) {
-        d3Path.classed(this.selectedClass, true);
-        if (this.state.selectedEdge) {
+    replaceSelectEdge(d3Bond: SVGSelection, bond: BondGraphBond) {
+        d3Bond.classed(this.selectedClass, true);
+        if (this.state.selectedBond) {
             this.removeSelectFromEdge();
         }
-        this.state.selectedEdge = edgeData;
+        this.state.selectedBond = bond;
     };
 
-    replaceSelectNode(d3Node, nodeData) {
-        d3Node.classed(this.selectedClass, true);
-        if (this.state.selectedNode) {
+    replaceSelectNode(d3Elem: SVGSelection, el: BondGraphElement) {
+        d3Elem.classed(this.selectedClass, true);
+        if (this.state.selectedElement) {
             this.removeSelectFromNode();
         }
-        this.state.selectedNode = nodeData;
+        this.state.selectedElement = el;
     };
 
     removeSelectFromNode() {
         let graph = this;
-        this.elements.filter(function (cd) { return cd.id === graph.state.selectedNode.id; }).classed(this.selectedClass, false);
-        this.state.selectedNode = null;
+        this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
+        this.state.selectedElement = null;
     };
 
     removeSelectFromEdge() {
-        var graph = this;
-        graph.bonds.filter(function (cd) { return cd === graph.state.selectedEdge; }).classed(graph.selectedClass, false);
-        this.state.selectedEdge = null;
+        let graph = this;
+        graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
+        this.state.selectedBond = null;
     };
 
-    pathMouseDown(d3path, d) {
+    pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownLink = d;
+        this.state.mouseDownLink = bond;
 
-        if (this.state.selectedNode) {
+        if (this.state.selectedElement) {
             this.removeSelectFromNode();
         }
 
-        var prevEdge = this.state.selectedEdge;
-        if (!prevEdge || prevEdge !== d) {
-            this.replaceSelectEdge(d3path, d);
+        let prevEdge = this.state.selectedBond;
+        if (!prevEdge || prevEdge !== bond) {
+            this.replaceSelectEdge(d3Bond, bond);
         } else {
             this.removeSelectFromEdge();
         }
     };
 
-    // mousedown on node
-    nodeMouseDown(d) {
+    // mousedown on element
+    nodeMouseDown(el: BondGraphElement) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = d;
+        this.state.mouseDownNode = el;
         if ((<KeyboardEvent>d3.event).shiftKey) {
             this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
             // reposition dragged directed edge
-            this.dragLine.classed("hidden", false)
-                .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
+            this.dragBond.classed("hidden", false)
+                .attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
             return;
         }
     };
 
-    // mouseup on nodes
-    nodeMouseUp(d3node, d) {
-        var graph = this;
+    // mouseup on elements
+    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) {
+        let graph = this;
         let state = graph.state;
 
         // reset the states
         state.shiftNodeDrag = false;
-        d3node.classed(this.bondClass, false);
+        d3Elem.classed(this.bondClass, false);
 
-        var mouseDownNode = state.mouseDownNode;
+        let mouseDownNode = state.mouseDownNode;
 
         if (!mouseDownNode) return;
 
-        this.dragLine.classed("hidden", true);
+        this.dragBond.classed("hidden", true);
 
-        if (mouseDownNode !== d) {
+        if (mouseDownNode !== el) {
             // we"re in a different node: create new edge for mousedown edge and add to graph
-            var newEdge = { source: mouseDownNode, target: d };
-            var filtRes = this.bonds.filter(function (d) {
+            let newEdge = { source: mouseDownNode, target: el };
+            let filtRes = this.bondSelection.filter(function (d) {
                 if (d.source === newEdge.target && d.target === newEdge.source) {
-                    graph.edges.splice(graph.edges.indexOf(d), 1);
+                    graph.bonds.splice(graph.bonds.indexOf(d), 1);
                 }
                 return d.source === newEdge.source && d.target === newEdge.target;
             });
             if (!filtRes[0].length) {
-                this.edges.push(newEdge);
+                this.bonds.push(newEdge);
                 this.updateGraph();
             }
         } else {
@@ -223,13 +222,13 @@ class BaseGraph {
                 // dragged, not clicked
                 state.justDragged = false;
             } else {
-                if (state.selectedEdge) {
+                if (state.selectedBond) {
                     this.removeSelectFromEdge();
                 }
-                var prevNode = state.selectedNode;
+                let prevNode = state.selectedElement;
 
-                if (!prevNode || prevNode.id !== d.id) {
-                    this.replaceSelectNode(d3node, d);
+                if (!prevNode || prevNode.id !== el.id) {
+                    this.replaceSelectNode(d3Elem, el);
                 } else {
                     this.removeSelectFromNode();
                 }
@@ -250,8 +249,8 @@ class BaseGraph {
         let state = this.state;
         if (this.draggingElement) {
             document.body.style.cursor = "auto";
-            var xycoords = d3.mouse(this.svgG.node());
-            this.nodes.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+            let xycoords = d3.mouse(this.svgG.node());
+            this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {
@@ -260,7 +259,7 @@ class BaseGraph {
         } else if (state.shiftNodeDrag) {
             // dragged from node
             state.shiftNodeDrag = false;
-            this.dragLine.classed("hidden", true);
+            this.dragBond.classed("hidden", true);
         }
         state.graphMouseDown = false;
     };
@@ -272,21 +271,21 @@ class BaseGraph {
         if (state.lastKeyDown !== -1) return;
 
         state.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
-        var selectedNode = state.selectedNode,
-            selectedEdge = state.selectedEdge;
+        let selectedNode = state.selectedElement,
+            selectedEdge = state.selectedBond;
 
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
                 (<Event>d3.event).preventDefault();
                 if (selectedNode) {
-                    this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
+                    this.elements.splice(this.elements.indexOf(selectedNode), 1);
                     this.spliceLinksForNode(selectedNode);
-                    state.selectedNode = null;
+                    state.selectedElement = null;
                     this.updateGraph();
                 } else if (selectedEdge) {
-                    this.edges.splice(this.edges.indexOf(selectedEdge), 1);
-                    state.selectedEdge = null;
+                    this.bonds.splice(this.bonds.indexOf(selectedEdge), 1);
+                    state.selectedBond = null;
                     this.updateGraph();
                 }
                 break;
@@ -299,21 +298,21 @@ class BaseGraph {
 
     // call to propagate changes to graph
     updateGraph() {
-        var graph = this;
+        let graph = this;
 
-        this.bonds = this.bonds.data(this.edges, function (d) {
+        this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
-        var paths = this.bonds;
-        // update existing bonds
+        let paths = this.bondSelection;
+        // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
-            return d === graph.state.selectedEdge;
+            return d === graph.state.selectedBond;
         })
             .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             });
 
-        // add new bonds
+        // add new bondSelection
         paths.enter()
             .append("path")
             .classed("link", true)
@@ -330,12 +329,12 @@ class BaseGraph {
         // remove old links
         paths.exit().remove();
 
-        // update existing nodes
-        this.elements = this.elements.data<BondGraphElement>(this.nodes, function (d) { return d.id.toString(); });
-        this.elements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+        // update existing elements
+        this.elementSelection = this.elementSelection.data<BondGraphElement>(this.elements, function (d) { return d.id.toString(); });
+        this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-        // add new elements
-        var newElements = this.elements.enter().append("g");
+        // add new elementSelection
+        let newElements = this.elementSelection.enter().append("g");
 
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on("mouseover", function () {
@@ -366,15 +365,15 @@ class BaseGraph {
             .attr("style", "fill:inherit");
 
         let image = group.append("image");
-        image.attr("href", function (d: any, i) { return d.img; })
+        image.attr("href", function (d) { return d.img; })
             .attr("x", "-25px")
             .attr("y", "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("height", "50px")
             .attr("width", "50px");
 
-        // remove old nodes
-        this.elements.exit().remove();
+        // remove old elements
+        this.elementSelection.exit().remove();
     };
 
     zoomed() {

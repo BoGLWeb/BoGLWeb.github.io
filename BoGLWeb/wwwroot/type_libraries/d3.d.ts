@@ -35,7 +35,7 @@ declare namespace d3 {
     export function selectAll(selector: string): Selection<any>;
 
     /**
-     * Create a selection from the given list of nodes.
+     * Create a selection from the given list of elements.
      */
     export function selectAll(nodes: EventTarget[]): Selection<any>;
 
@@ -48,7 +48,7 @@ declare namespace d3 {
         export var prototype: Selection<any>;
 
         /**
-         * Selections are grouped into arrays of nodes, with the parent tracked in the 'parentNode' property.
+         * Selections are grouped into arrays of elements, with the parent tracked in the 'parentNode' property.
          */
         interface Group extends Array<EventTarget> {
             parentNode: EventTarget;
@@ -73,7 +73,7 @@ declare namespace d3 {
             attr(name: string): string;
 
             /**
-             * For all nodes, set the attribute to the specified constant value. Use null to remove.
+             * For all elements, set the attribute to the specified constant value. Use null to remove.
              *
              * @param name The attribute name, optionally prefixed.
              * @param value The attribute value to use. Note that this is coerced to a string automatically.
@@ -132,7 +132,7 @@ declare namespace d3 {
             style(name: string): string;
 
             /**
-             * Set a style property for all nodes in the selection.
+             * Set a style property for all elements in the selection.
              * @param name the CSS property name
              * @param value the property value
              * @param priority if specified, either null or the string "important" (no exclamation mark)
@@ -192,7 +192,7 @@ declare namespace d3 {
 
             /**
              * Set the textContent of each node in the selection.
-             * @param value the text to use for all nodes
+             * @param value the text to use for all elements
              */
             text(value: Primitive): Update<Datum>;
 
@@ -288,13 +288,13 @@ declare namespace d3 {
             data<NewDatum>(data: (datum: Datum, index: number, outerIndex: number) => NewDatum[], key?: (datum: NewDatum, index: number, outerIndex: number) => string): Update<NewDatum>;
 
             /**
-             * Filters the selection, returning only those nodes that match the given CSS selector.
+             * Filters the selection, returning only those elements that match the given CSS selector.
              * @param selector the CSS selector
              */
             filter(selector: string): Update<Datum>;
 
             /**
-             * Filters the selection, returning only those nodes for which the given function returned true.
+             * Filters the selection, returning only those elements for which the given function returned true.
              * @param selector the filter function
              */
             filter(selector: (datum: Datum, index: number, outerIndex: number) => boolean): Update<Datum>;
@@ -317,13 +317,13 @@ declare namespace d3 {
             datum<NewDatum>(value: NewDatum): Update<NewDatum>;
 
             /**
-             * Reorders nodes in the selection based on the given comparator. Nodes are re-inserted into the document once sorted.
+             * Reorders elements in the selection based on the given comparator. Nodes are re-inserted into the document once sorted.
              * @param comparator the comparison function, which defaults to d3.ascending
              */
             sort(comparator?: (a: Datum, b: Datum) => number): Update<Datum>;
 
             /**
-             * Reorders nodes in the document to match the selection order. More efficient than calling sort() if the selection is already ordered.
+             * Reorders elements in the document to match the selection order. More efficient than calling sort() if the selection is already ordered.
              */
             order(): Update<Datum>;
 
@@ -406,12 +406,12 @@ declare namespace d3 {
             size(): number;
 
             /**
-             * Returns the placeholder nodes for each data element for which no corresponding DOM element was found.
+             * Returns the placeholder elements for each data element for which no corresponding DOM element was found.
              */
             enter(): Enter<Datum>;
 
             /**
-             * Returns a selection for those DOM nodes for which no new data element was found.
+             * Returns a selection for those DOM elements for which no new data element was found.
              */
             exit(): Selection<Datum>;
         }
@@ -446,7 +446,7 @@ declare namespace d3 {
     }
 
     /**
-     * A grouped array of nodes.
+     * A grouped array of elements.
      * @param Datum the data bound to this selection.
      */
     interface Selection<Datum> {
@@ -468,7 +468,7 @@ declare namespace d3 {
         attr(name: string): string;
 
         /**
-         * For all nodes, set the attribute to the specified constant value. Use null to remove.
+         * For all elements, set the attribute to the specified constant value. Use null to remove.
          *
          * @param name The attribute name, optionally prefixed.
          * @param value The attribute value to use. Note that this is coerced to a string automatically.
@@ -527,7 +527,7 @@ declare namespace d3 {
         style(name: string): string;
 
         /**
-         * Set a style property for all nodes in the selection.
+         * Set a style property for all elements in the selection.
          * @param name the CSS property name
          * @param value the property value
          * @param priority if specified, either null or the string "important" (no exclamation mark)
@@ -587,7 +587,7 @@ declare namespace d3 {
 
         /**
          * Set the textContent of each node in the selection.
-         * @param value the text to use for all nodes
+         * @param value the text to use for all elements
          */
         text(value: Primitive): Selection<Datum>;
 
@@ -681,13 +681,13 @@ declare namespace d3 {
         data<NewDatum>(data: (datum: Datum, index: number, outerIndex: number) => NewDatum[], key?: (datum: NewDatum, index: number, outerIndex: number) => string): selection.Update<NewDatum>;
 
         /**
-         * Filters the selection, returning only those nodes that match the given CSS selector.
+         * Filters the selection, returning only those elements that match the given CSS selector.
          * @param selector the CSS selector
          */
         filter(selector: string): Selection<Datum>;
 
         /**
-         * Filters the selection, returning only those nodes for which the given function returned true.
+         * Filters the selection, returning only those elements for which the given function returned true.
          * @param selector the filter function
          */
         filter(selector: (datum: Datum, index: number, outerIndex: number) => boolean): Selection<Datum>;
@@ -710,13 +710,13 @@ declare namespace d3 {
         datum<NewDatum>(value: NewDatum): Selection<NewDatum>;
 
         /**
-         * Reorders nodes in the selection based on the given comparator. Nodes are re-inserted into the document once sorted.
+         * Reorders elements in the selection based on the given comparator. Nodes are re-inserted into the document once sorted.
          * @param comparator the comparison function, which defaults to d3.ascending
          */
         sort(comparator?: (a: Datum, b: Datum) => number): Selection<Datum>;
 
         /**
-         * Reorders nodes in the document to match the selection order. More efficient than calling sort() if the selection is already ordered.
+         * Reorders elements in the document to match the selection order. More efficient than calling sort() if the selection is already ordered.
          */
         order(): Selection<Datum>;
 

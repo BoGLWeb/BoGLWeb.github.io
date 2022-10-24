@@ -1,10 +1,10 @@
 ﻿class BondGraphElement {
-    id: Number;
-    img: String;
-    x: Number;
-    y: Number;
+    id: number;
+    img: string;
+    x: number;
+    y: number;
 
-    constructor(id: Number, img: String, x: Number, y: Number) {
+    constructor(id: number, img: string, x: number, y: number) {
         this.id = id;
         this.img = img;
         this.x = x;

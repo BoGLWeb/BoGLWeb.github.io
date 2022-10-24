@@ -12,7 +12,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             this.nodes = nodes || [];
             this.edges = edges || [];
             svg.attr("id", "svg");
-            var defs = svg.append("svg:defs");
+            let defs = svg.append("svg:defs");
             defs.append("svg:marker")
                 .attr("id", "end-arrow")
                 .attr("viewBox", "0 -5 10 10")
@@ -34,7 +34,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             this.svg = svg;
             this.svgG = svg.append("g")
                 .classed(this.graphClass, true);
-            var svgG = this.svgG;
+            let svgG = this.svgG;
             this.dragLine = svgG.append("svg:path");
             this.dragLine.attr("class", "link dragline hidden")
                 .attr("d", "M0,0L0,0");
@@ -52,7 +52,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             svg.call(this.dragSvg).on("dblclick.zoom", null);
         }
         get drag() {
-            var graph = this;
+            let graph = this;
             return d3.behavior.drag()
                 .origin(function (d) {
                 return { x: d.x, y: d.y };
@@ -63,7 +63,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             });
         }
         get dragSvg() {
-            var graph = this;
+            let graph = this;
             return d3.behavior.zoom()
                 .on("zoom", function () {
                 graph.zoomed.call(graph);
@@ -101,12 +101,12 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             });
         }
         ;
-        replaceSelectEdge(d3Path, edgeData) {
+        replaceSelectEdge(d3Path, bond) {
             d3Path.classed(this.selectedClass, true);
-            if (this.state.selectedEdge) {
+            if (this.state.selectedBond) {
                 this.removeSelectFromEdge();
             }
-            this.state.selectedEdge = edgeData;
+            this.state.selectedBond = bond;
         }
         ;
         replaceSelectNode(d3Node, nodeData) {
@@ -124,9 +124,9 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
         }
         ;
         removeSelectFromEdge() {
-            var graph = this;
-            graph.bonds.filter(function (cd) { return cd === graph.state.selectedEdge; }).classed(graph.selectedClass, false);
-            this.state.selectedEdge = null;
+            let graph = this;
+            graph.bonds.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
+            this.state.selectedBond = null;
         }
         ;
         pathMouseDown(d3path, d) {
@@ -135,7 +135,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             if (this.state.selectedNode) {
                 this.removeSelectFromNode();
             }
-            var prevEdge = this.state.selectedEdge;
+            let prevEdge = this.state.selectedBond;
             if (!prevEdge || prevEdge !== d) {
                 this.replaceSelectEdge(d3path, d);
             }
@@ -156,17 +156,17 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
         }
         ;
         nodeMouseUp(d3node, d) {
-            var graph = this;
+            let graph = this;
             let state = graph.state;
             state.shiftNodeDrag = false;
             d3node.classed(this.bondClass, false);
-            var mouseDownNode = state.mouseDownNode;
+            let mouseDownNode = state.mouseDownNode;
             if (!mouseDownNode)
                 return;
             this.dragLine.classed("hidden", true);
             if (mouseDownNode !== d) {
-                var newEdge = { source: mouseDownNode, target: d };
-                var filtRes = this.bonds.filter(function (d) {
+                let newEdge = { source: mouseDownNode, target: d };
+                let filtRes = this.bonds.filter(function (d) {
                     if (d.source === newEdge.target && d.target === newEdge.source) {
                         graph.edges.splice(graph.edges.indexOf(d), 1);
                     }
@@ -182,10 +182,10 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
                     state.justDragged = false;
                 }
                 else {
-                    if (state.selectedEdge) {
+                    if (state.selectedBond) {
                         this.removeSelectFromEdge();
                     }
-                    var prevNode = state.selectedNode;
+                    let prevNode = state.selectedNode;
                     if (!prevNode || prevNode.id !== d.id) {
                         this.replaceSelectNode(d3node, d);
                     }
@@ -206,7 +206,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             let state = this.state;
             if (this.draggingElement) {
                 document.body.style.cursor = "auto";
-                var xycoords = d3.mouse(this.svgG.node());
+                let xycoords = d3.mouse(this.svgG.node());
                 this.nodes.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
                 this.updateGraph();
             }
@@ -225,7 +225,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             if (state.lastKeyDown !== -1)
                 return;
             state.lastKeyDown = d3.event.keyCode;
-            var selectedNode = state.selectedNode, selectedEdge = state.selectedEdge;
+            let selectedNode = state.selectedNode, selectedEdge = state.selectedBond;
             switch (d3.event.keyCode) {
                 case this.BACKSPACE_KEY:
                 case this.DELETE_KEY:
@@ -238,7 +238,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
                     }
                     else if (selectedEdge) {
                         this.edges.splice(this.edges.indexOf(selectedEdge), 1);
-                        state.selectedEdge = null;
+                        state.selectedBond = null;
                         this.updateGraph();
                     }
                     break;
@@ -250,13 +250,13 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
         }
         ;
         updateGraph() {
-            var graph = this;
+            let graph = this;
             this.bonds = this.bonds.data(this.edges, function (d) {
                 return String(d.source.id) + "+" + String(d.target.id);
             });
-            var paths = this.bonds;
+            let paths = this.bonds;
             paths.classed(this.selectedClass, function (d) {
-                return d === graph.state.selectedEdge;
+                return d === graph.state.selectedBond;
             })
                 .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
@@ -276,7 +276,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
             paths.exit().remove();
             this.elements = this.elements.data(this.nodes, function (d) { return d.id.toString(); });
             this.elements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-            var newElements = this.elements.enter().append("g");
+            let newElements = this.elements.enter().append("g");
             newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
                 .on("mouseover", function () {
                 if (graph.state.shiftNodeDrag) {
@@ -303,7 +303,7 @@ define("types/baseGraph", ["require", "exports"], function (require, exports) {
                 .attr("y", "-30px")
                 .attr("style", "fill:inherit");
             let image = group.append("image");
-            image.attr("href", function (d, i) { return d.img; })
+            image.attr("href", function (d) { return d.img; })
                 .attr("x", "-25px")
                 .attr("y", "-25px")
                 .attr("preserveAspectRatio", "xMidYMid meet")
@@ -392,7 +392,7 @@ class BondGraphElement {
 class GraphState {
     constructor() {
         this.selectedNode = null;
-        this.selectedEdge = null;
+        this.selectedBond = null;
         this.mouseDownNode = null;
         this.mouseDownLink = null;
         this.justDragged = false;

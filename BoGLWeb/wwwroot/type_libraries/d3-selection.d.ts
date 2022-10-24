@@ -151,14 +151,14 @@ export function selectAll(selector: undefined): Selection<null, undefined, null,
  */
 export function selectAll<GElement extends BaseType, OldDatum>(selector: string): Selection<GElement, OldDatum, HTMLElement, any>;
 /**
- * Select the specified array, array-like, or iterable of nodes.
- * This is useful if you already have a reference to nodes, such as `this.childNodes` within an event listener or a global such as `document.links`.
- * The nodes may instead be an iterable, or a pseudo-array such as a NodeList.
+ * Select the specified array, array-like, or iterable of elements.
+ * This is useful if you already have a reference to elements, such as `this.childNodes` within an event listener or a global such as `document.links`.
+ * The elements may instead be an iterable, or a pseudo-array such as a NodeList.
  *
  * The first generic "GElement" refers to the type of element to be selected.
  * The second generic "OldDatum" refers to the type of the datum, of a selected element.
  *
- * @param nodes An array, array-like, or iterable of nodes
+ * @param nodes An array, array-like, or iterable of elements
  */
 export function selectAll<GElement extends BaseType, OldDatum>(nodes: GElement[] | ArrayLike<GElement> | Iterable<GElement>): Selection<GElement, OldDatum, null, undefined>;
 
@@ -205,7 +205,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The generic represents the type of the descendant element to be selected.
      *
      * @param selector A selector function, which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).
      * It must return an element, or null if there is no matching element.
      */
     select<DescElement extends BaseType>(selector: ValueFn<GElement, Datum, DescElement>): Selection<DescElement, Datum, PElement, PDatum>;
@@ -251,7 +251,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * datum, of a selected element. This is useful when re-selecting elements with a previously set, know datum type.
      *
      * @param selector A selector function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). It must return an array of elements
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). It must return an array of elements
      * (or an iterable, or a pseudo-array, such as a NodeList), or the empty array if there are no matching elements.
      */
     selectAll<DescElement extends BaseType, OldDatum>(
@@ -289,7 +289,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * it does not preserve indexes as some elements may be removed; use selection.select to preserve the index, if needed.
      *
      * @param selector  A value function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return true
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return true
      * for an element to be included, and false otherwise.
      */
     filter(selector: ValueFn<GElement, Datum, boolean>): Selection<GElement, Datum, PElement, PDatum>;
@@ -301,7 +301,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * it does not preserve indexes as some elements may be removed; use selection.select to preserve the index, if needed.
      *
      * @param selector  A value function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return true
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return true
      * for an element to be included, and false otherwise.
      */
     filter<FilteredElement extends BaseType>(selector: ValueFn<GElement, Datum, boolean>): Selection<FilteredElement, Datum, PElement, PDatum>;
@@ -347,7 +347,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The first generic represents the type of the descendant element to be selected.
      * The second generic represents the type of any of the child elements.
      *
-     * @param selector A selector function, which is evaluated for each of the children nodes, in order, being passed the child (child), the child’s index (i), and the list of children (children);
+     * @param selector A selector function, which is evaluated for each of the children elements, in order, being passed the child (child), the child’s index (i), and the list of children (children);
      * the method selects the first child for which the selector return truthy, if any.
      */
     selectChild<ResultElement extends BaseType, ChildElement extends BaseType>(
@@ -381,7 +381,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The second generic refers to the type of the datum of the element to be selected.
      * The third generic represents the type of any of the child elements.
      *
-     * @param selector A selector function, which is evaluated for each of the children nodes, in order, being passed the child (child), the child’s index (i), and the list of children (children);
+     * @param selector A selector function, which is evaluated for each of the children elements, in order, being passed the child (child), the child’s index (i), and the list of children (children);
      * the method selects the first child for which the selector return truthy, if any.
      */
     selectChildren<ResultElement extends BaseType, ResultDatum, ChildElement extends BaseType>(
@@ -423,7 +423,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param name Name of the attribute
      * @param value A value function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).  A null value will clear the attribute.
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).  A null value will clear the attribute.
      */
     attr(name: string, value: ValueFn<GElement, Datum, string | number | boolean | null>): this;
 
@@ -451,7 +451,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param names A string of space-separated class names.
      * @param value A value function which is evaluated for each selected element, in order,
-     * being passed the current datum (d), the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).
+     * being passed the current datum (d), the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).
      * The function’s return value is then used to assign or unassign classes on each element.
      */
     classed(names: string, value: ValueFn<GElement, Datum, boolean>): this;
@@ -486,7 +486,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param name Name of the style
      * @param value A value function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).  A null value will clear the style.
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).  A null value will clear the style.
      * @param priority An optional priority flag, either null or the string important (without the exclamation point)
      */
     style(name: string, value: ValueFn<GElement, Datum, string | number | boolean | null>, priority?: null | 'important'): this;
@@ -513,7 +513,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param name Name of the property
      * @param value A value function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).  A null value will clear the property.
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).  A null value will clear the property.
      */
     property(name: string, value: ValueFn<GElement, Datum, any>): this;
     /**
@@ -569,7 +569,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * All elements are given the same text content.
      *
      * @param value A value unction which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).
      * The function’s return value is then used to set each element’s text content. A null value will clear the content.
      */
     text(value: ValueFn<GElement, Datum, string | number | boolean | null>): this;
@@ -595,7 +595,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The inner HTML is determined for each individual element using a value function.
      *
      * @param value A value function which is evaluated for each selected element, in order, being passed the current
-     * datum (d), the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]).
+     * datum (d), the current index (i), and the current group (elements), with this as the current DOM element (elements[i]).
      * The function’s return value is then used to set each element’s inner HTML. A null value will clear the content.
      */
     html(value: ValueFn<GElement, Datum, string | null>): this;
@@ -644,14 +644,14 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The generic refers to the type of the child element to be appended.
      *
      * @param type A creator function which is evaluated for each selected element, in order, being passed the current datum (d),
-     * the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return
+     * the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return
      * an element to be appended. (The function typically creates a new element, but it may instead return an existing element.)
      */
     append<ChildElement extends BaseType>(type: ValueFn<GElement, Datum, ChildElement>): Selection<ChildElement, Datum, PElement, PDatum>;
 
     /**
      * Inserts a new element of the specified type (tag name) before the first element matching the specified
-     * before selector for each selected element. For example, a before selector :first-child will prepend nodes before the first child.
+     * before selector for each selected element. For example, a before selector :first-child will prepend elements before the first child.
      * If before is not specified, it defaults to null. (To append elements in an order consistent with bound data, use selection.append.)
      *
      * This method returns a new selection containing the appended elements.
@@ -663,7 +663,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * @param before One of:
      *   * A CSS selector string for the element before which the insertion should occur.
      *   * A child selector function which is evaluated for each selected element, in order, being passed the current datum (d),
-     *     the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return the child element
+     *     the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return the child element
      *     before which the element should be inserted.
      */
     insert<K extends keyof ElementTagNameMap>(
@@ -672,7 +672,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
     ): Selection<ElementTagNameMap[K], Datum, PElement, PDatum>;
     /**
      * Inserts a new element of the specified type (tag name) before the first element matching the specified
-     * before selector for each selected element. For example, a before selector :first-child will prepend nodes before the first child.
+     * before selector for each selected element. For example, a before selector :first-child will prepend elements before the first child.
      * If before is not specified, it defaults to null. (To append elements in an order consistent with bound data, use selection.append.)
      *
      * This method returns a new selection containing the appended elements.
@@ -686,12 +686,12 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *     from the parent element; or, if the name is one of the known prefixes, the corresponding namespace will be used
      *     (for example, svg implies svg:svg)
      *   * A creator function which is evaluated for each selected element, in order, being passed the current datum (d),
-     *     the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return
+     *     the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return
      *     an element to be inserted. (The function typically creates a new element, but it may instead return an existing element.)
      * @param before One of:
      *   * A CSS selector string for the element before which the insertion should occur.
      *   * A child selector function which is evaluated for each selected element, in order, being passed the current datum (d),
-     *     the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]). This function should return the child element
+     *     the current index (i), and the current group (elements), with this as the current DOM element (elements[i]). This function should return the child element
      *     before which the element should be inserted.
      */
     insert<ChildElement extends BaseType>(
@@ -707,7 +707,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
 
     /**
      * Inserts clones of the selected elements immediately following the selected elements and returns a selection of the newly
-     * added clones. If deep is true, the descendant nodes of the selected elements will be cloned as well. Otherwise, only the elements
+     * added clones. If deep is true, the descendant elements of the selected elements will be cloned as well. Otherwise, only the elements
      * themselves will be cloned.
      *
      * @param deep Perform deep cloning if this flag is set to true.
@@ -775,9 +775,9 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param data The specified data is an array or iterable of arbitrary values (e.g., numbers or objects).
      * @param key An optional key function which is evaluated for each selected element, in order, being passed the
-     * current datum (d), the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]); the returned string is the element’s key.
+     * current datum (d), the current index (i), and the current group (elements), with this as the current DOM element (elements[i]); the returned string is the element’s key.
      * The key function is then also evaluated for each new datum in data, being passed the current datum (d),
-     * the current index (i), and the group’s new data, with this as the group’s parent DOM element (nodes[i]); the returned string is the datum’s key.
+     * the current index (i), and the group’s new data, with this as the group’s parent DOM element (elements[i]); the returned string is the datum’s key.
      * The datum for a given key is assigned to the element with the matching key. If multiple elements have the same key,
      * the duplicate elements are put into the exit selection; if multiple data have the same key, the duplicate data are put into the enter selection.
      */
@@ -805,12 +805,12 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The generic refers to the type of the new datum to be used for the selected elements.
      *
      * @param data A value function which will be evaluated for each group in order, being passed the group’s parent datum
-     * (d, which may be undefined), the group index (i), and the selection’s parent nodes (nodes),
+     * (d, which may be undefined), the group index (i), and the selection’s parent elements (elements),
      * with this as the group’s parent element. The function returns an array or iterable of values for each group.
      * @param key An optional key function which is evaluated for each selected element, in order, being passed the
-     * current datum (d), the current index (i), and the current group (nodes), with this as the current DOM element (nodes[i]); the returned string is the element’s key.
+     * current datum (d), the current index (i), and the current group (elements), with this as the current DOM element (elements[i]); the returned string is the element’s key.
      * The key function is then also evaluated for each new datum in data, being passed the current datum (d),
-     * the current index (i), and the group’s new data, with this as the group’s parent DOM element (nodes[i]); the returned string is the datum’s key.
+     * the current index (i), and the group’s new data, with this as the group’s parent DOM element (elements[i]); the returned string is the datum’s key.
      * The datum for a given key is assigned to the element with the matching key. If multiple elements have the same key,
      * the duplicate elements are put into the exit selection; if multiple data have the same key, the duplicate data are put into the enter selection.
      */
@@ -851,7 +851,7 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
     ): Selection<ChildElement | GElement, Datum, PElement, PDatum>;
 
     /**
-     * Return the enter selection: placeholder nodes for each datum that had no corresponding DOM element
+     * Return the enter selection: placeholder elements for each datum that had no corresponding DOM element
      * in the selection. (The enter selection is empty for selections not returned by selection.data.)
      */
     enter(): Selection<EnterElement, Datum, PElement, PDatum>;
@@ -883,8 +883,8 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      * The generic refers to the type of the new datum to be used for the selected elements.
      *
      * @param value A value function which is evaluated for each selected element, in order,
-     * being passed the current datum (d), the current index (i), and the current group (nodes),
-     * with this as the current DOM element (nodes[i]). The function is then used to set each element’s new data.
+     * being passed the current datum (d), the current index (i), and the current group (elements),
+     * with this as the current DOM element (elements[i]). The function is then used to set each element’s new data.
      * A null value will delete the bound data.
      */
     datum<NewDatum>(value: ValueFn<GElement, Datum, NewDatum>): Selection<GElement, NewDatum, PElement, PDatum>;
@@ -955,8 +955,8 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
      *
      * @param type Name of event to dispatch
      * @param parameters A value function which is evaluated for each selected element, in order,
-     * being passed the current datum (d), the current index (i), and the current group (nodes),
-     * with this as the current DOM element (nodes[i]). It must return the parameters map for the current element.
+     * being passed the current datum (d), the current index (i), and the current group (elements),
+     * with this as the current DOM element (elements[i]). It must return the parameters map for the current element.
      */
     dispatch(type: string, parameters?: ValueFn<GElement, Datum, CustomEventParameters>): this;
 
@@ -964,11 +964,11 @@ export interface Selection<GElement extends BaseType, Datum, PElement extends Ba
 
     /**
      * Invoke the specified function for each selected element, passing in the current datum (d),
-     * the current index (i), and the current group (nodes), with this of the current DOM element (nodes[i]).
+     * the current index (i), and the current group (elements), with this of the current DOM element (elements[i]).
      * This method can be used to invoke arbitrary code for each selected element, and is useful for creating a context to access parent and child data simultaneously.
      *
      * @param func A function which is invoked for each selected element,
-     *             being passed the current datum (d), the current index (i), and the current group (nodes), with this of the current DOM element (nodes[i]).
+     *             being passed the current datum (d), the current index (i), and the current group (elements), with this of the current DOM element (elements[i]).
      */
     each(func: ValueFn<GElement, Datum, void>): this;
 
@@ -1075,7 +1075,7 @@ export interface Local<T> {
      */
     get(node: Element): T | undefined;
     /**
-     * Deletes the value associated with the given node. Values stored on ancestors are not affected, meaning that child nodes will still see inherited values.
+     * Deletes the value associated with the given node. Values stored on ancestors are not affected, meaning that child elements will still see inherited values.
      *
      * This function returns true if there was a value stored directly on the node, and false otherwise.
      *

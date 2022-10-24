@@ -1,7 +1,7 @@
 "use strict";
 import { BaseGraph } from "./types/baseGraph";
 
-function makeElementSource(graph, section, link) {
+function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {
     const group = document.createElement('div');
 
     group.classList.add("groupDiv");
@@ -23,12 +23,12 @@ function makeElementSource(graph, section, link) {
     box.appendChild(image);
 }
 
-function makeSection(graph, sectionName, images) {
+function makeSection(graph: BaseGraph, sectionName: string, images: string[]) {
     let sectionElem = document.getElementById(sectionName);
     images.forEach(image => makeElementSource(graph, sectionElem, "images/" + sectionName + "/" + image + ".svg"));
 }
 
-function populateMenu(graph) {
+function populateMenu(graph: BaseGraph) {
     // eventually want to pass these in from C#, which can likely access files easier
     makeSection(graph, "mechTrans", ["mass", "spring", "damper", "ground", "force_input", "gravity", "velocity_input"]);
     makeSection(graph, "mechRot", ["flywheel", "spring", "damper", "torque_input", "velocity_input"]);

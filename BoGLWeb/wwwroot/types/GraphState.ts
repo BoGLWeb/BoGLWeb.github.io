@@ -1,6 +1,6 @@
 ﻿class GraphState {
-    selectedNode: BondGraphElement = null;
-    selectedEdge: BondGraphBond = null;
+    selectedElement: BondGraphElement = null;
+    selectedBond: BondGraphBond = null;
     mouseDownNode: BondGraphElement = null;
     mouseDownLink: BondGraphBond = null;
     justDragged: Boolean = false;
