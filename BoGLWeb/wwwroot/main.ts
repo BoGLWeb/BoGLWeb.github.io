@@ -38,7 +38,6 @@ function populateMenu(graph) {
 }
 
 function loadPage() {
-    console.log("Loading")
     var svg = d3.select("#graph").append("svg");
 
     var graph = new BaseGraph(svg, [], []);
@@ -48,12 +47,6 @@ function loadPage() {
         document.body.style.cursor = "auto";
         graph.draggingElement = null;
     });
-
-    var docEl = document.documentElement,
-        bodyEl = document.getElementsByTagName("body")[0];
-
-    var width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
-        height = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
 
     populateMenu(graph);
     graph.setIdCt(2);

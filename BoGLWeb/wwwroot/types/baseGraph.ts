@@ -1,48 +1,29 @@
-﻿import { Selection } from "../type_libraries/d3-selection";
-import { DragEvent, ZoomEvent, svg } from "../type_libraries/d3";
+﻿import { BGBondSelection, BGElementSelection, SVGSelection } from "../type_libraries/d3-selection";
+import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 
 class BaseGraph {
+    // constants
+    readonly selectedClass: string = "selected";
+    readonly bondClass: string = "bond";
+    readonly graphClass: "graph";
+    readonly BACKSPACE_KEY: 8;
+    readonly DELETE_KEY: 46;
+    readonly ENTER_KEY: 13;
 
-    idct: number;
-    // come back and add node and edge types when they exist
-    nodes: [any];
-    edges: [any];
-    state = {
-        selectedNode: null,
-        selectedEdge: null,
-        mouseDownNode: null,
-        mouseDownLink: null,
-        justDragged: false,
-        justScaleTransGraph: false,
-        lastKeyDown: -1,
-        shiftNodeDrag: false,
-        selectedText: null,
-        graphMouseDown: false
-    };
-    consts = {
-        selectedClass: "selected",
-        connectClass: "connect-node",
-        circleGClass: "conceptG",
-        graphClass: "graph",
-        activeEditId: "active-editing",
-        BACKSPACE_KEY: 8,
-        DELETE_KEY: 46,
-        ENTER_KEY: 13,
-        nodeRadius: 50
-    };
-    svg: Selection<any, any, any, any>;
-    svgG: Selection<any, any, any, any>;
-    dragLine: Selection<any, any, any, any>;
-    paths: any;
-    nodeObjects: Selection<any, any, any, any>;
-    draggingElement: String = null;
+    idct: number = 0;
+    nodes: BondGraphElement[];
+    edges: BondGraphBond[];
+    state: GraphState = new GraphState();
+    svg: SVGSelection;
+    svgG: SVGSelection;
+    dragLine: SVGSelection;
+    bonds: BGBondSelection;
+    elements: BGElementSelection;
+    draggingElement: string = null;
 
-    constructor(svg, nodes, edges) {
-        var thisGraph = this;
-        thisGraph.idct = 0;
-
-        thisGraph.nodes = nodes || [];
-        thisGraph.edges = edges || [];
+    constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
+        this.nodes = nodes || [];
+        this.edges = edges || [];
 
         svg.attr("id", "svg");
 
@@ -69,57 +50,53 @@ class BaseGraph {
             .append("svg:path")
             .attr("d", "M0,-5L10,0L0,5");
 
-        thisGraph.svg = svg;
-        thisGraph.svgG = svg.append("g")
-            .classed(thisGraph.consts.graphClass, true);
-        var svgG = thisGraph.svgG;
+        this.svg = svg;
+        this.svgG = svg.append("g")
+            .classed(this.graphClass, true);
+        var svgG = this.svgG;
 
         // displayed when dragging between nodes
-        thisGraph.dragLine = svgG.append("svg:path");
-        thisGraph.dragLine.attr("class", "link dragline hidden")
+        this.dragLine = svgG.append("svg:path");
+        this.dragLine.attr("class", "link dragline hidden")
             .attr("d", "M0,0L0,0");
 
         // svg nodes and edges
-        thisGraph.paths = svgG.append("g").selectAll("g");
-        thisGraph.nodeObjects = svgG.append("g").selectAll("g");
+        this.bonds = svgG.append("g").selectAll("g");
+        this.elements = svgG.append("g").selectAll("g");
+
+        let graph = this;
 
         // listen for key events
         d3.select(window).on("keydown", function () {
-            thisGraph.svgKeyDown.call(thisGraph);
+            this.svgKeyDown.call(this);
         })
-            .on("keyup", function () {
-                thisGraph.svgKeyUp.call(thisGraph);
-            });
-        svg.on("mousedown", function (d) { thisGraph.svgMouseDown.call(thisGraph, d); });
-        svg.on("mouseup", function (d) { thisGraph.svgMouseUp.call(thisGraph, d); });
+        .on("keyup", function () {
+            this.svgKeyUp.call(this);
+        });
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(this, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(this, d); });
 
-        svg.call(thisGraph.dragSvg).on("dblclick.zoom", null);
-
-        // listen for resize
-        window.onresize = function () { thisGraph.updateWindow(svg); };
+        svg.call(this.dragSvg).on("dblclick.zoom", null);
     }
 
     get drag() {
-        var thisGraph = this;
+        var graph = this;
         return d3.behavior.drag()
             .origin(function (d: any) {
                 return { x: d.x, y: d.y };
             })
             .on("drag", function (args) {
-                thisGraph.state.justDragged = true;
-                thisGraph.dragmove.call(thisGraph, args);
-            })
-            .on("dragend", function () {
-                // todo check if edge-mode is selected
+                graph.state.justDragged = true;
+                graph.dragmove.call(graph, args);
             });
     }
 
     // listen for dragging
     get dragSvg() {
-        var thisGraph = this;
+        var graph = this;
         return d3.behavior.zoom()
             .on("zoom", function () {
-                thisGraph.zoomed.call(thisGraph);
+                graph.zoomed.call(graph);
                 return true;
             })
             .on("zoomstart", function () {
@@ -136,89 +113,77 @@ class BaseGraph {
 
 
     dragmove(d) {
-        var thisGraph = this;
-        if (thisGraph.state.shiftNodeDrag) {
-            thisGraph.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(thisGraph.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+        if (this.state.shiftNodeDrag) {
+            this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
             d.x += (<DragEvent>d3.event).dx;
             d.y += (<DragEvent>d3.event).dy;
-            thisGraph.updateGraph();
+            this.updateGraph();
         }
     };
 
     // remove edges associated with a node
     spliceLinksForNode(node) {
-        var thisGraph = this,
-            toSplice = thisGraph.edges.filter(function (l) {
-                return (l.source === node || l.target === node);
-            });
+        let toSplice = this.edges.filter(function (l) {
+            return (l.source === node || l.target === node);
+        });
         toSplice.map(function (l) {
-            thisGraph.edges.splice(thisGraph.edges.indexOf(l), 1);
+            this.edges.splice(this.edges.indexOf(l), 1);
         });
     };
 
     replaceSelectEdge(d3Path, edgeData) {
-        var thisGraph = this;
-        d3Path.classed(thisGraph.consts.selectedClass, true);
-        if (thisGraph.state.selectedEdge) {
-            thisGraph.removeSelectFromEdge();
+        d3Path.classed(this.selectedClass, true);
+        if (this.state.selectedEdge) {
+            this.removeSelectFromEdge();
         }
-        thisGraph.state.selectedEdge = edgeData;
+        this.state.selectedEdge = edgeData;
     };
 
     replaceSelectNode(d3Node, nodeData) {
-        var thisGraph = this;
-        d3Node.classed(this.consts.selectedClass, true);
-        if (thisGraph.state.selectedNode) {
-            thisGraph.removeSelectFromNode();
+        d3Node.classed(this.selectedClass, true);
+        if (this.state.selectedNode) {
+            this.removeSelectFromNode();
         }
-        thisGraph.state.selectedNode = nodeData;
+        this.state.selectedNode = nodeData;
     };
 
     removeSelectFromNode() {
-        var thisGraph = this;
-        thisGraph.nodeObjects.filter(function (cd) {
-            return cd.id === thisGraph.state.selectedNode.id;
-        }).classed(thisGraph.consts.selectedClass, false);
-        thisGraph.state.selectedNode = null;
+        let graph = this;
+        this.elements.filter(function (cd) { return cd.id === graph.state.selectedNode.id; }).classed(this.selectedClass, false);
+        this.state.selectedNode = null;
     };
 
     removeSelectFromEdge() {
-        var thisGraph = this;
-        thisGraph.paths.filter(function (cd) {
-            return cd === thisGraph.state.selectedEdge;
-        }).classed(thisGraph.consts.selectedClass, false);
-        thisGraph.state.selectedEdge = null;
+        var graph = this;
+        graph.bonds.filter(function (cd) { return cd === graph.state.selectedEdge; }).classed(graph.selectedClass, false);
+        this.state.selectedEdge = null;
     };
 
     pathMouseDown(d3path, d) {
-        var thisGraph = this,
-            state = thisGraph.state;
         (<Event>d3.event).stopPropagation();
-        state.mouseDownLink = d;
+        this.state.mouseDownLink = d;
 
-        if (state.selectedNode) {
-            thisGraph.removeSelectFromNode();
+        if (this.state.selectedNode) {
+            this.removeSelectFromNode();
         }
 
-        var prevEdge = state.selectedEdge;
+        var prevEdge = this.state.selectedEdge;
         if (!prevEdge || prevEdge !== d) {
-            thisGraph.replaceSelectEdge(d3path, d);
+            this.replaceSelectEdge(d3path, d);
         } else {
-            thisGraph.removeSelectFromEdge();
+            this.removeSelectFromEdge();
         }
     };
 
     // mousedown on node
-    nodeMouseDown(d3node, d) {
-        var thisGraph = this,
-            state = thisGraph.state;
+    nodeMouseDown(d) {
         (<Event>d3.event).stopPropagation();
-        state.mouseDownNode = d;
+        this.state.mouseDownNode = d;
         if ((<KeyboardEvent>d3.event).shiftKey) {
-            state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
+            this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
             // reposition dragged directed edge
-            thisGraph.dragLine.classed("hidden", false)
+            this.dragLine.classed("hidden", false)
                 .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
             return;
         }
@@ -226,31 +191,31 @@ class BaseGraph {
 
     // mouseup on nodes
     nodeMouseUp(d3node, d) {
-        var thisGraph = this,
-            state = thisGraph.state,
-            consts = thisGraph.consts;
+        var graph = this;
+        let state = graph.state;
+
         // reset the states
         state.shiftNodeDrag = false;
-        d3node.classed(consts.connectClass, false);
+        d3node.classed(this.bondClass, false);
 
         var mouseDownNode = state.mouseDownNode;
 
         if (!mouseDownNode) return;
 
-        thisGraph.dragLine.classed("hidden", true);
+        this.dragLine.classed("hidden", true);
 
         if (mouseDownNode !== d) {
             // we"re in a different node: create new edge for mousedown edge and add to graph
             var newEdge = { source: mouseDownNode, target: d };
-            var filtRes = thisGraph.paths.filter(function (d) {
+            var filtRes = this.bonds.filter(function (d) {
                 if (d.source === newEdge.target && d.target === newEdge.source) {
-                    thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
+                    graph.edges.splice(graph.edges.indexOf(d), 1);
                 }
                 return d.source === newEdge.source && d.target === newEdge.target;
             });
             if (!filtRes[0].length) {
-                thisGraph.edges.push(newEdge);
-                thisGraph.updateGraph();
+                this.edges.push(newEdge);
+                this.updateGraph();
             }
         } else {
             // we"re in the same node
@@ -259,14 +224,14 @@ class BaseGraph {
                 state.justDragged = false;
             } else {
                 if (state.selectedEdge) {
-                    thisGraph.removeSelectFromEdge();
+                    this.removeSelectFromEdge();
                 }
                 var prevNode = state.selectedNode;
 
                 if (!prevNode || prevNode.id !== d.id) {
-                    thisGraph.replaceSelectNode(d3node, d);
+                    this.replaceSelectNode(d3node, d);
                 } else {
-                    thisGraph.removeSelectFromNode();
+                    this.removeSelectFromNode();
                 }
             }
         }
@@ -282,14 +247,12 @@ class BaseGraph {
 
     // mouseup on main svg
     svgMouseUp() {
-        var thisGraph = this,
-            state = thisGraph.state;
-        if (thisGraph.draggingElement) {
+        let state = this.state;
+        if (this.draggingElement) {
             document.body.style.cursor = "auto";
-            var xycoords = d3.mouse(thisGraph.svgG.node()),
-                d = { img: thisGraph.draggingElement, id: thisGraph.idct++, x: xycoords[0], y: xycoords[1], initialDrag: true };
-            thisGraph.nodes.push(d);
-            thisGraph.updateGraph();
+            var xycoords = d3.mouse(this.svgG.node());
+            this.nodes.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+            this.updateGraph();
         }
         if (state.justScaleTransGraph) {
             // dragged not clicked
@@ -297,16 +260,14 @@ class BaseGraph {
         } else if (state.shiftNodeDrag) {
             // dragged from node
             state.shiftNodeDrag = false;
-            thisGraph.dragLine.classed("hidden", true);
+            this.dragLine.classed("hidden", true);
         }
         state.graphMouseDown = false;
     };
 
     // keydown on main svg
     svgKeyDown() {
-        var thisGraph = this,
-            state = thisGraph.state,
-            consts = thisGraph.consts;
+        let state = this.state;
         // make sure repeated key presses don"t register for each keydown
         if (state.lastKeyDown !== -1) return;
 
@@ -315,18 +276,18 @@ class BaseGraph {
             selectedEdge = state.selectedEdge;
 
         switch ((<KeyboardEvent>d3.event).keyCode) {
-            case consts.BACKSPACE_KEY:
-            case consts.DELETE_KEY:
+            case this.BACKSPACE_KEY:
+            case this.DELETE_KEY:
                 (<Event>d3.event).preventDefault();
                 if (selectedNode) {
-                    thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
-                    thisGraph.spliceLinksForNode(selectedNode);
+                    this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
+                    this.spliceLinksForNode(selectedNode);
                     state.selectedNode = null;
-                    thisGraph.updateGraph();
+                    this.updateGraph();
                 } else if (selectedEdge) {
-                    thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
+                    this.edges.splice(this.edges.indexOf(selectedEdge), 1);
                     state.selectedEdge = null;
-                    thisGraph.updateGraph();
+                    this.updateGraph();
                 }
                 break;
         }
@@ -338,24 +299,21 @@ class BaseGraph {
 
     // call to propagate changes to graph
     updateGraph() {
+        var graph = this;
 
-        var thisGraph = this,
-            consts = thisGraph.consts,
-            state = thisGraph.state;
-
-        thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function (d) {
+        this.bonds = this.bonds.data(this.edges, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
-        var paths = thisGraph.paths;
-        // update existing paths
-        paths.classed(consts.selectedClass, function (d) {
-            return d === state.selectedEdge;
+        var paths = this.bonds;
+        // update existing bonds
+        paths.classed(this.selectedClass, function (d) {
+            return d === graph.state.selectedEdge;
         })
             .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             });
 
-        // add new paths
+        // add new bonds
         paths.enter()
             .append("path")
             .classed("link", true)
@@ -363,45 +321,42 @@ class BaseGraph {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             })
             .on("mousedown", function (d) {
-                thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
-            }
-            )
+                graph.pathMouseDown.call(graph, d3.select(this), d);
+            })
             .on("mouseup", function (d) {
-                state.mouseDownLink = null;
+                graph.state.mouseDownLink = null;
             });
 
         // remove old links
         paths.exit().remove();
 
         // update existing nodes
-        thisGraph.nodeObjects = thisGraph.nodeObjects.data(thisGraph.nodes, function (d) { return d.id; });
-        thisGraph.nodeObjects.attr("transform", function (d: any) { return "translate(" + d.x + "," + d.y + ")"; });
+        this.elements = this.elements.data<BondGraphElement>(this.nodes, function (d) { return d.id.toString(); });
+        this.elements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-        // add new nodes
-        var newGs = thisGraph.nodeObjects.enter()
-            .append("g");
+        // add new elements
+        var newElements = this.elements.enter().append("g");
 
-        newGs.classed(consts.circleGClass, true)
-            .attr("transform", function (d: any) { return "translate(" + d.x + "," + d.y + ")"; })
-            .on("mouseover", function (d) {
-                if (state.shiftNodeDrag) {
-                    d3.select(this).classed(consts.connectClass, true);
+        newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .on("mouseover", function () {
+                if (graph.state.shiftNodeDrag) {
+                    d3.select(this).classed(graph.bondClass, true);
                 }
             })
-            .on("mouseout", function (d) {
-                d3.select(this).classed(consts.connectClass, false);
+            .on("mouseout", function () {
+                d3.select(this).classed(graph.bondClass, false);
             })
             .on("mousedown", function (d) {
-                thisGraph.nodeMouseDown.call(thisGraph, d3.select(this), d);
+                graph.nodeMouseDown.call(graph, d);
             })
             .on("mouseup", function (d) {
-                thisGraph.nodeMouseUp.call(thisGraph, d3.select(this), d);
+                graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
-            .call(thisGraph.drag);
+            .call(this.drag);
 
-        let group = newGs.append("g");
+        let group = newElements.append("g");
         group.attr("style", "fill:inherit")
-            .attr("index", function (d, i) { return d.id; });
+            .attr("index", function (d, i) { return d.id.toString(); });
 
         let box = group.append("rect");
         box.attr("width", "60px")
@@ -419,21 +374,13 @@ class BaseGraph {
             .attr("width", "50px");
 
         // remove old nodes
-        thisGraph.nodeObjects.exit().remove();
+        this.elements.exit().remove();
     };
 
     zoomed() {
         this.state.justScaleTransGraph = true;
-        d3.select("." + this.consts.graphClass)
+        d3.select("." + this.graphClass)
             .attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
-    };
-
-    updateWindow(svg) {
-        var docEl = document.documentElement,
-            bodyEl = document.getElementsByTagName("body")[0];
-        var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
-        var y = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
-        svg.attr("width", x).attr("height", y);
     };
 }
 
