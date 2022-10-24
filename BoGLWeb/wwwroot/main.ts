@@ -1,5 +1,6 @@
 "use strict";
-import { BaseGraph } from "./types/baseGraph";
+import { BaseGraph } from "./types/BaseGraph";
+import { SystemDiagram } from "./types/SystemDiagram";
 
 function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {
     const group = document.createElement('div');
@@ -39,8 +40,11 @@ function populateMenu(graph: BaseGraph) {
 
 function loadPage() {
     var svg = d3.select("#graph").append("svg");
-
-    var graph = new BaseGraph(svg, [], []);
+/*
+    let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
+    let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
+*/
+    var graph = new SystemDiagram(svg, [], []);
     graph.draggingElement = null;
 
     document.addEventListener("mouseup", function () {
@@ -49,7 +53,6 @@ function loadPage() {
     });
 
     populateMenu(graph);
-    graph.setIdCt(2);
     graph.updateGraph();
 }
 

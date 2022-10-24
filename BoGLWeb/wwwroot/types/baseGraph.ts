@@ -27,38 +27,9 @@ class BaseGraph {
 
         svg.attr("id", "svg");
 
-        // define arrow markers for graph links
-        let defs = svg.append("svg:defs");
-        defs.append("svg:marker")
-            .attr("id", "end-arrow")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", "32")
-            .attr("markerWidth", 3.5)
-            .attr("markerHeight", 3.5)
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5");
-
-        // define arrow markers for leading arrow
-        defs.append("svg:marker")
-            .attr("id", "mark-end-arrow")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 7)
-            .attr("markerWidth", 3.5)
-            .attr("markerHeight", 3.5)
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5");
-
         this.svg = svg;
-        this.svgG = svg.append("g")
-            .classed(this.graphClass, true);
+        this.svgG = svg.append("g").classed(this.graphClass, true);
         let svgG = this.svgG;
-
-        // displayed when dragging between elements
-        this.dragBond = svgG.append("svg:path");
-        this.dragBond.attr("class", "link dragline hidden")
-            .attr("d", "M0,0L0,0");
 
         // svg elements and bonds
         this.bondSelection = svgG.append("g").selectAll("g");
@@ -68,16 +39,35 @@ class BaseGraph {
 
         // listen for key events
         d3.select(window).on("keydown", function () {
-            this.svgKeyDown.call(this);
+            graph.svgKeyDown.call(graph);
         })
         .on("keyup", function () {
-            this.svgKeyUp.call(this);
+            graph.svgKeyUp.call(graph);
         });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(this, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(this, d); });
 
         svg.call(this.dragSvg).on("dblclick.zoom", null);
     }
+
+    // functions needed in system diagram are called from this class but not defined by default
+    svgKeyDown() { }
+    svgKeyUp() { }
+    svgMouseDown() { }
+    svgMouseUp() { }
+    pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) { }
+    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) { }
+
+    // mousedown on element
+    nodeMouseDown(el: BondGraphElement) {
+        (<Event>d3.event).stopPropagation();
+    };
+
+    dragmove(el: BondGraphElement) {
+        el.x += (<DragEvent>d3.event).dx;
+        el.y += (<DragEvent>d3.event).dy;
+        this.updateGraph();
+    };
 
     get drag() {
         let graph = this;
@@ -107,195 +97,6 @@ class BaseGraph {
             });
     }
 
-    setIdCt(id: number) {
-        this.idct = id;
-    };
-
-    dragmove(el: BondGraphElement) {
-        if (this.state.shiftNodeDrag) {
-            this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-        } else {
-            el.x += (<DragEvent>d3.event).dx;
-            el.y += (<DragEvent>d3.event).dy;
-            this.updateGraph();
-        }
-    };
-
-    // remove bonds associated with a node
-    spliceLinksForNode(el: BondGraphElement) {
-        let toSplice = this.bonds.filter(function (l) {
-            return (l.source === el || l.target === el);
-        });
-        toSplice.map(function (l) {
-            this.edges.splice(this.edges.indexOf(l), 1);
-        });
-    };
-
-    replaceSelectEdge(d3Bond: SVGSelection, bond: BondGraphBond) {
-        d3Bond.classed(this.selectedClass, true);
-        if (this.state.selectedBond) {
-            this.removeSelectFromEdge();
-        }
-        this.state.selectedBond = bond;
-    };
-
-    replaceSelectNode(d3Elem: SVGSelection, el: BondGraphElement) {
-        d3Elem.classed(this.selectedClass, true);
-        if (this.state.selectedElement) {
-            this.removeSelectFromNode();
-        }
-        this.state.selectedElement = el;
-    };
-
-    removeSelectFromNode() {
-        let graph = this;
-        this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
-        this.state.selectedElement = null;
-    };
-
-    removeSelectFromEdge() {
-        let graph = this;
-        graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
-        this.state.selectedBond = null;
-    };
-
-    pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) {
-        (<Event>d3.event).stopPropagation();
-        this.state.mouseDownLink = bond;
-
-        if (this.state.selectedElement) {
-            this.removeSelectFromNode();
-        }
-
-        let prevEdge = this.state.selectedBond;
-        if (!prevEdge || prevEdge !== bond) {
-            this.replaceSelectEdge(d3Bond, bond);
-        } else {
-            this.removeSelectFromEdge();
-        }
-    };
-
-    // mousedown on element
-    nodeMouseDown(el: BondGraphElement) {
-        (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = el;
-        if ((<KeyboardEvent>d3.event).shiftKey) {
-            this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
-            // reposition dragged directed edge
-            this.dragBond.classed("hidden", false)
-                .attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
-            return;
-        }
-    };
-
-    // mouseup on elements
-    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) {
-        let graph = this;
-        let state = graph.state;
-
-        // reset the states
-        state.shiftNodeDrag = false;
-        d3Elem.classed(this.bondClass, false);
-
-        let mouseDownNode = state.mouseDownNode;
-
-        if (!mouseDownNode) return;
-
-        this.dragBond.classed("hidden", true);
-
-        if (mouseDownNode !== el) {
-            // we"re in a different node: create new edge for mousedown edge and add to graph
-            let newEdge = { source: mouseDownNode, target: el };
-            let filtRes = this.bondSelection.filter(function (d) {
-                if (d.source === newEdge.target && d.target === newEdge.source) {
-                    graph.bonds.splice(graph.bonds.indexOf(d), 1);
-                }
-                return d.source === newEdge.source && d.target === newEdge.target;
-            });
-            if (!filtRes[0].length) {
-                this.bonds.push(newEdge);
-                this.updateGraph();
-            }
-        } else {
-            // we"re in the same node
-            if (state.justDragged) {
-                // dragged, not clicked
-                state.justDragged = false;
-            } else {
-                if (state.selectedBond) {
-                    this.removeSelectFromEdge();
-                }
-                let prevNode = state.selectedElement;
-
-                if (!prevNode || prevNode.id !== el.id) {
-                    this.replaceSelectNode(d3Elem, el);
-                } else {
-                    this.removeSelectFromNode();
-                }
-            }
-        }
-        state.mouseDownNode = null;
-        return;
-
-    };
-
-    // mousedown on main svg
-    svgMouseDown() {
-        this.state.graphMouseDown = true;
-    };
-
-    // mouseup on main svg
-    svgMouseUp() {
-        let state = this.state;
-        if (this.draggingElement) {
-            document.body.style.cursor = "auto";
-            let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
-            this.updateGraph();
-        }
-        if (state.justScaleTransGraph) {
-            // dragged not clicked
-            state.justScaleTransGraph = false;
-        } else if (state.shiftNodeDrag) {
-            // dragged from node
-            state.shiftNodeDrag = false;
-            this.dragBond.classed("hidden", true);
-        }
-        state.graphMouseDown = false;
-    };
-
-    // keydown on main svg
-    svgKeyDown() {
-        let state = this.state;
-        // make sure repeated key presses don"t register for each keydown
-        if (state.lastKeyDown !== -1) return;
-
-        state.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
-        let selectedNode = state.selectedElement,
-            selectedEdge = state.selectedBond;
-
-        switch ((<KeyboardEvent>d3.event).keyCode) {
-            case this.BACKSPACE_KEY:
-            case this.DELETE_KEY:
-                (<Event>d3.event).preventDefault();
-                if (selectedNode) {
-                    this.elements.splice(this.elements.indexOf(selectedNode), 1);
-                    this.spliceLinksForNode(selectedNode);
-                    state.selectedElement = null;
-                    this.updateGraph();
-                } else if (selectedEdge) {
-                    this.bonds.splice(this.bonds.indexOf(selectedEdge), 1);
-                    state.selectedBond = null;
-                    this.updateGraph();
-                }
-                break;
-        }
-    };
-
-    svgKeyUp() {
-        this.state.lastKeyDown = -1;
-    };
-
     // call to propagate changes to graph
     updateGraph() {
         let graph = this;
@@ -308,9 +109,9 @@ class BaseGraph {
         paths.classed(this.selectedClass, function (d) {
             return d === graph.state.selectedBond;
         })
-            .attr("d", function (d) {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            });
+        .attr("d", function (d) {
+            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+        });
 
         // add new bondSelection
         paths.enter()
