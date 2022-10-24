@@ -394,9 +394,7 @@ define("main", ["require", "exports", "types/baseGraph"], function (require, exp
     }
     function loadPage() {
         console.log("Loading");
-        var svg = d3.select("#graph").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        var svg = d3.select("#graph").append("svg");
         var graph = new baseGraph_1.BaseGraph(svg, [], []);
         graph.draggingElement = null;
         document.addEventListener("mouseup", function () {

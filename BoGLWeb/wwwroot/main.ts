@@ -39,9 +39,7 @@ function populateMenu(graph) {
 
 function loadPage() {
     console.log("Loading")
-    var svg = d3.select("#graph").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+    var svg = d3.select("#graph").append("svg");
 
     var graph = new BaseGraph(svg, [], []);
     graph.draggingElement = null;
