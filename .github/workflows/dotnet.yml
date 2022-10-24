@@ -60,6 +60,7 @@ jobs:
     - name: Run Playwright tests
       run: |
         cd BoGLWeb/PlaywrightTests/
+        ls
         npx playwright test
     - uses: actions/upload-artifact@v2
       if: always()
