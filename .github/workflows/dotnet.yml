@@ -24,6 +24,11 @@ jobs:
       - name: Install dependencies
         run: | 
           cd BoGLWeb/PlaywrightTests
+          if [ -e yarn.lock ]; then
+          yarn install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
           npm ci
+          else
+          npm i
           npx playwright install-deps
           npx playwright install
