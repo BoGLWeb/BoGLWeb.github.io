@@ -61,7 +61,7 @@ jobs:
       run: 
         cd PlaywrightTests
         pwd
-        npx playwright test
+        # npx playwright test
     - uses: actions/upload-artifact@v2
       if: always()
       with:
