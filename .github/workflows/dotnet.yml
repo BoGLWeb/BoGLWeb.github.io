@@ -30,5 +30,6 @@ jobs:
           npm ci
           else
           npm i
+          fi
           npx playwright install-deps
           npx playwright install
