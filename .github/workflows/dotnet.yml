@@ -58,7 +58,9 @@ jobs:
         npm install -D @playwright/test
         npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test
+      run: 
+        cd PlaywrightTests
+        npx playwright test
     - uses: actions/upload-artifact@v2
       if: always()
       with:
