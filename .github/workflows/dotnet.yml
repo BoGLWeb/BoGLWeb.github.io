@@ -11,27 +11,47 @@ on:
 
 jobs:
   
-  test:
-    name: "Test site using Playwright"
-    timeout-minutes: 60
-    runs-on: ubuntu-20.04  
-    steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
+  # test:
+  #   name: "Test site using Playwright"
+  #   timeout-minutes: 60
+  #   runs-on: ubuntu-20.04  
+  #   steps:
+  #     - uses: actions/checkout@main
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: '14.x'
     
-      - name: Install dependencies
-        run: | 
-          cd BoGLWeb/PlaywrightTests
-          if [ -e yarn.lock ]; then
-          yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-          npm ci
-          else
-          npm i
-          fi
-          npx playwright install-deps
-          npx playwright install
-          npm run build
-          npx playwright test
+  #     - name: Install dependencies
+  #       run: | 
+  #         cd BoGLWeb/PlaywrightTests
+  #         if [ -e yarn.lock ]; then
+  #         yarn install --frozen-lockfile
+  #         elif [ -e package-lock.json ]; then
+  #         npm ci
+  #         else
+  #         npm i
+  #         fi
+  #         npx playwright install-deps
+  #         npx playwright install
+  #         npm run build
+  #         npx playwright test
+  test:
+   timeout-minutes: 60
+   runs-on: ubuntu-latest
+   steps:
+   - uses: actions/checkout@v2
+   - uses: actions/setup-node@v2
+     with:
+       node-version: '14.x'
+   - name: Install dependencies
+     run: npm ci
+   - name: Install Playwright Browsers
+     run: npx playwright install --with-deps
+   - name: Run Playwright tests
+     run: npx playwright test
+   - uses: actions/upload-artifact@v2
+     if: always()
+     with:
+       name: playwright-report
+       path: playwright-report/
+       retention-days: 30
