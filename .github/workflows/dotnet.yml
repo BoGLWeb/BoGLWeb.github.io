@@ -58,7 +58,7 @@ jobs:
         npm install -D @playwright/test
         npx playwright install --with-deps
     - name: Run Playwright tests
-      run: 
+      run: |
         cd BoGLWeb/PlaywrightTests/
         npx playwright test
     - uses: actions/upload-artifact@v2
