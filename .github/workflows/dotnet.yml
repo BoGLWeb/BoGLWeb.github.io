@@ -45,13 +45,13 @@ jobs:
       with:
         node-version: '14.x'
     - name: Install dependencies
-      run:
+      run:  |
         if [ -e yarn.lock ]; then
-          yarn install --frozen-lockfile
+        yarn install --frozen-lockfile
         elif [ -e package-lock.json ]; then
-          npm ci
+        npm ci
         else
-          npm i
+        npm i
         fi
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
