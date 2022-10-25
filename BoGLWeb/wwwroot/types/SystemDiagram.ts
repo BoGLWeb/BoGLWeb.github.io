@@ -5,10 +5,6 @@ import { BaseGraph } from "./BaseGraph";
 export class SystemDiagram extends BaseGraph {
     constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
         super(svg, nodes, edges);
-        // displayed when dragging between elements
-        this.dragBond = this.svgG.append("svg:path");
-        this.dragBond.attr("class", "link dragline hidden")
-            .attr("d", "M0,0L0,0");
     }
 
     // remove bonds associated with a node
@@ -72,8 +68,8 @@ export class SystemDiagram extends BaseGraph {
         if ((<KeyboardEvent>d3.event).shiftKey) {
             this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
             // reposition dragged directed edge
-            this.dragBond.classed("hidden", false)
-                .attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+            this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+            this.dragBond.classed("hidden", false);
             return;
         }
     }

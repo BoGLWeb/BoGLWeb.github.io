@@ -19,6 +19,9 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             this.svg = svg;
             this.svgG = svg.append("g").classed(this.graphClass, true);
             let svgG = this.svgG;
+            this.dragBond = this.svgG.append("svg:path");
+            this.dragBond.attr("class", "link dragline hidden")
+                .attr("d", "M0,0L0,0");
             this.bondSelection = svgG.append("g").selectAll("g");
             this.elementSelection = svgG.append("g").selectAll("g");
             let graph = this;
@@ -153,9 +156,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     class SystemDiagram extends BaseGraph_1.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
-            this.dragBond = this.svgG.append("svg:path");
-            this.dragBond.attr("class", "link dragline hidden")
-                .attr("d", "M0,0L0,0");
         }
         spliceLinksForNode(el) {
             let toSplice = this.bonds.filter(function (l) {
@@ -208,8 +208,8 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             this.state.mouseDownNode = el;
             if (d3.event.shiftKey) {
                 this.state.shiftNodeDrag = d3.event.shiftKey;
-                this.dragBond.classed("hidden", false)
-                    .attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+                this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+                this.dragBond.classed("hidden", false);
                 return;
             }
         }

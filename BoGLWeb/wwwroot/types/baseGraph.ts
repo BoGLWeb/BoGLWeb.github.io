@@ -31,6 +31,11 @@ class BaseGraph {
         this.svgG = svg.append("g").classed(this.graphClass, true);
         let svgG = this.svgG;
 
+        // displayed when dragging between elements, here because it needs to be added first
+        this.dragBond = this.svgG.append("svg:path");
+        this.dragBond.attr("class", "link dragline hidden")
+            .attr("d", "M0,0L0,0");
+
         // svg elements and bonds
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
