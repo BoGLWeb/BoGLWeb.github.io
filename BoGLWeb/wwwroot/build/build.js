@@ -6,7 +6,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         constructor(svg, nodes, edges) {
             this.selectedClass = "selected";
             this.bondClass = "bond";
-            this.graphClass = "graph";
             this.BACKSPACE_KEY = 8;
             this.DELETE_KEY = 46;
             this.ENTER_KEY = 13;
@@ -16,7 +15,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             this.elements = nodes || [];
             this.bonds = edges || [];
             this.svg = svg;
-            this.svgG = svg.append("g").classed(this.graphClass, true);
+            this.svgG = svg.append("g");
             let svgG = this.svgG;
             this.dragBond = this.svgG.append("svg:path");
             this.dragBond.attr("class", "link dragline hidden")
@@ -136,8 +135,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         ;
         zoomed() {
             this.state.justScaleTransGraph = true;
-            d3.select("." + this.graphClass)
-                .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+            this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
         }
         ;
     }

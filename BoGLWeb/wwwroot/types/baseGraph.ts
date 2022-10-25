@@ -5,7 +5,6 @@ class BaseGraph {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";
-    readonly graphClass: string = "graph";
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
@@ -26,7 +25,7 @@ class BaseGraph {
         this.bonds = edges || [];
 
         this.svg = svg;
-        this.svgG = svg.append("g").classed(this.graphClass, true);
+        this.svgG = svg.append("g");
         let svgG = this.svgG;
 
         // displayed when dragging between elements, here because it needs to be added first
@@ -174,8 +173,7 @@ class BaseGraph {
 
     zoomed() {
         this.state.justScaleTransGraph = true;
-        d3.select("." + this.graphClass)
-            .attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
     };
 }
 
