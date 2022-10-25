@@ -2491,3 +2491,12 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\refint\BoGLWeb.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.pdb
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.csproj.AssemblyReference.cache
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.AssemblyInfoInputs.cache
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.AssemblyInfo.cs
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.csproj.CoreCompileInputs.cache
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.dll
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\refint\BoGLWeb.dll
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.pdb
