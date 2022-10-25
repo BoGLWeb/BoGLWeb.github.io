@@ -7,6 +7,10 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Include="wwwroot\examples\classic.bogl" />
     <None Include="wwwroot\examples\current_multi_parallel.bogl" />
@@ -797,6 +801,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>

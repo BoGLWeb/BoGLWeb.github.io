@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1Y9BblMvQjQj5ODL4yyzwY9Q8BQizrIXUzb5i6oQrA4/pmVKMZPERRbQnjJA9e8xy7xT9F7NIKIw4mdeowUoag==",
+  "dgSpecHash": "bH8mFDfLsOTsEGykEGbmZaRDlPTRs03geV9dphX332m8+FITHGYLnNJTdMqMw4mY+khZ5mWPQtHcgmEWQJKbcg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -45,7 +45,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nuget.frameworks\\5.11.0\\nuget.frameworks.5.11.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit\\3.13.3\\nunit.3.13.3.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit3testadapter\\4.0.0\\nunit3testadapter.4.0.0.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit3testadapter\\4.2.1\\nunit3testadapter.4.2.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\oneof\\2.1.155\\oneof.2.1.155.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\runtime.any.system.collections\\4.0.11\\runtime.any.system.collections.4.0.11.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\runtime.any.system.diagnostics.tools\\4.0.1\\runtime.any.system.diagnostics.tools.4.0.1.nupkg.sha512",

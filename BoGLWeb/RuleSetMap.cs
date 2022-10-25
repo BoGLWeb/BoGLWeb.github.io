@@ -31,7 +31,7 @@ namespace BoGLWeb {
             HttpClient client = new HttpClient();
 
             //TODO Figure out if this URL is okay, or is there something else that it should be
-            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name);
+            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name + ".rsxml");
             var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
             ruleSetMap.Add(name, (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));

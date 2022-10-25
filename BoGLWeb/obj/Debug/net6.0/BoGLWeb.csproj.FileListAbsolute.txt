@@ -2488,9 +2488,7 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\service-worker-assets.js.build
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.csproj.CopyComplete
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.dll
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\refint\BoGLWeb.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.pdb
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CommunicationUtilities.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
@@ -3107,3 +3105,11 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\mV2KUCuT.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\TTdsQ01l.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\N0mOJ9mT.gz
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\NUnit3.TestAdapter.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\NUnit3.TestAdapter.pdb
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\nunit.engine.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\nunit.engine.api.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\nunit.engine.core.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\testcentric.engine.metadata.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\refint\BoGLWeb.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
