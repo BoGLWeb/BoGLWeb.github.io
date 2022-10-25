@@ -59,16 +59,16 @@
                 </div>
                 <div class="card-container">
                     <Tabs Type="@TabType.Card">
-                        <TabPane Key="1" Tab="System">
-                            <div id="graph"></div>
+                        <TabPane Key="1" Tab="System" ForceRender=true>
+                            <div id="systemDiagram"></div>
                         </TabPane>
-                        <TabPane Key="2" Tab="Unsimplified BG">
-                            <div class="expand">Content of Tab Pane 2</div>
+                        <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
+                            <div id="bondGraph"></div>
                         </TabPane>
-                        <TabPane Key="3" Tab="Simplified BG">
+                        <TabPane Key="3" Tab="Simplified BG" ForceRender=true>
                             <div class="expand">Content of Tab Pane 3</div>
                         </TabPane>
-                        <TabPane Key="4" Tab="Causal BG">
+                        <TabPane Key="4" Tab="Causal BG" ForceRender=true>
                             <div class="expand">Content of Tab Pane 4</div>
                         </TabPane>
                     </Tabs>

@@ -25,8 +25,6 @@ class BaseGraph {
         this.elements = nodes || [];
         this.bonds = edges || [];
 
-        svg.attr("id", "svg");
-
         this.svg = svg;
         this.svgG = svg.append("g").classed(this.graphClass, true);
         let svgG = this.svgG;
@@ -39,18 +37,6 @@ class BaseGraph {
         // svg elements and bonds
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
-
-        let graph = this;
-
-        // listen for key events
-        d3.select(window).on("keydown", function () {
-            graph.svgKeyDown.call(graph);
-        })
-        .on("keyup", function () {
-            graph.svgKeyUp.call(graph);
-        });
-        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
-        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
 
         svg.call(this.dragSvg).on("dblclick.zoom", null);
     }
@@ -122,13 +108,16 @@ class BaseGraph {
         paths.enter()
             .append("path")
             .classed("link", true)
+            .classed("hoverablePath", function (d) {
+                return d.hoverable;
+            })
             .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             })
             .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
             })
-            .on("mouseup", function (d) {
+            .on("mouseup", function () {
                 graph.state.mouseDownLink = null;
             });
 
@@ -142,7 +131,8 @@ class BaseGraph {
         // add new elementSelection
         let newElements = this.elementSelection.enter().append("g");
 
-        newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+        newElements.classed("boglElem", true)
+            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on("mouseover", function () {
                 if (graph.state.shiftNodeDrag) {
                     d3.select(this).classed(graph.bondClass, true);

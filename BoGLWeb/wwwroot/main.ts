@@ -39,21 +39,26 @@ function populateMenu(graph: BaseGraph) {
 }
 
 function loadPage() {
-    var svg = d3.select("#graph").append("svg");
-/*
-    let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
-    let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
-*/
-    var graph = new SystemDiagram(svg, [], []);
-    graph.draggingElement = null;
+    var systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    systemDiagramSVG.classed("graphSVG", true);
+
+    var systemDiagram = new SystemDiagram(systemDiagramSVG, [], []);
+    systemDiagram.draggingElement = null;
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
-        graph.draggingElement = null;
+        systemDiagram.draggingElement = null;
     });
 
-    populateMenu(graph);
-    graph.updateGraph();
+    populateMenu(systemDiagram);
+    systemDiagram.updateGraph();
+
+    var bondGraphSVG = d3.select("#bondGraph").append("svg");
+    bondGraphSVG.classed("graphSVG", true);
+    let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
+    let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
+    var bondGraph = new BaseGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+    bondGraph.updateGraph();
 }
 
 

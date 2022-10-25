@@ -5,15 +5,29 @@ import { BaseGraph } from "./BaseGraph";
 export class SystemDiagram extends BaseGraph {
     constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
         super(svg, nodes, edges);
+
+        let graph = this;
+
+        // listen for key events
+        d3.select(window).on("keydown", function () {
+            graph.svgKeyDown.call(graph);
+        })
+        .on("keyup", function () {
+            graph.svgKeyUp.call(graph);
+        });
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
     }
 
     // remove bonds associated with a node
     spliceLinksForNode(el: BondGraphElement) {
+        let graph = this;
+
         let toSplice = this.bonds.filter(function (l) {
             return (l.source === el || l.target === el);
         });
         toSplice.map(function (l) {
-            this.edges.splice(this.edges.indexOf(l), 1);
+            graph.bonds.splice(graph.bonds.indexOf(l), 1);
         });
     }
 
@@ -91,7 +105,7 @@ export class SystemDiagram extends BaseGraph {
 
         if (mouseDownNode !== el) {
             // we"re in a different node: create new edge for mousedown edge and add to graph
-            let newEdge = new BondGraphBond(mouseDownNode, el);
+            let newEdge = new BondGraphBond(mouseDownNode, el, true);
             let filtRes = this.bondSelection.filter(function (d) {
                 if (d.source === newEdge.target && d.target === newEdge.source) {
                     graph.bonds.splice(graph.bonds.indexOf(d), 1);
@@ -161,13 +175,15 @@ export class SystemDiagram extends BaseGraph {
         let selectedNode = state.selectedElement,
             selectedEdge = state.selectedBond;
 
+        let graph = this;
+
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
-/*                (<Event>d3.event).preventDefault();
-*/                if (selectedNode) {
+                (<Event>d3.event).preventDefault();
+                if (selectedNode) {
                     this.elements.splice(this.elements.indexOf(selectedNode), 1);
-                    this.spliceLinksForNode(selectedNode);
+                    graph.spliceLinksForNode(selectedNode);
                     state.selectedElement = null;
                     this.updateGraph();
                 } else if (selectedEdge) {

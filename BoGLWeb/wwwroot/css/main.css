@@ -93,26 +93,29 @@ g > g > rect {
 
 g {
     fill: white;
-    cursor: pointer;
 }
 
 g:hover {
     fill: rgb(200, 238, 241);
 }
 
+.boglElem {
+    cursor: pointer;
+}
+
 path.link {
     fill: none;
     stroke: #333;
     stroke-width: 4px;
-    cursor: pointer;
 }
 
 path.link.selected, path.link.selected:hover {
     stroke: rgb(6, 82, 255);
 }
 
-path.link:hover {
+.hoverablePath:hover {
     stroke: rgb(94, 196, 204);
+    cursor: pointer;
 }
 
 path.link.hidden {
@@ -271,7 +274,7 @@ path.link.hidden {
     flex: 1 1 0;
 }
 
-#svg {
+.graphSVG {
     width: 100%;
     height: calc(100vh - 79px);
 }

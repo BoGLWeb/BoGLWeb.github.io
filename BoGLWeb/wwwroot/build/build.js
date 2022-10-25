@@ -15,7 +15,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             this.draggingElement = null;
             this.elements = nodes || [];
             this.bonds = edges || [];
-            svg.attr("id", "svg");
             this.svg = svg;
             this.svgG = svg.append("g").classed(this.graphClass, true);
             let svgG = this.svgG;
@@ -24,15 +23,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 .attr("d", "M0,0L0,0");
             this.bondSelection = svgG.append("g").selectAll("g");
             this.elementSelection = svgG.append("g").selectAll("g");
-            let graph = this;
-            d3.select(window).on("keydown", function () {
-                graph.svgKeyDown.call(graph);
-            })
-                .on("keyup", function () {
-                graph.svgKeyUp.call(graph);
-            });
-            svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
-            svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
             svg.call(this.dragSvg).on("dblclick.zoom", null);
         }
         svgKeyDown() { }
@@ -92,20 +82,24 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             paths.enter()
                 .append("path")
                 .classed("link", true)
+                .classed("hoverablePath", function (d) {
+                return d.hoverable;
+            })
                 .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             })
                 .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
             })
-                .on("mouseup", function (d) {
+                .on("mouseup", function () {
                 graph.state.mouseDownLink = null;
             });
             paths.exit().remove();
             this.elementSelection = this.elementSelection.data(this.elements, function (d) { return d.id.toString(); });
             this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             let newElements = this.elementSelection.enter().append("g");
-            newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+            newElements.classed("boglElem", true)
+                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
                 .on("mouseover", function () {
                 if (graph.state.shiftNodeDrag) {
                     d3.select(this).classed(graph.bondClass, true);
@@ -156,13 +150,23 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     class SystemDiagram extends BaseGraph_1.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
+            let graph = this;
+            d3.select(window).on("keydown", function () {
+                graph.svgKeyDown.call(graph);
+            })
+                .on("keyup", function () {
+                graph.svgKeyUp.call(graph);
+            });
+            svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+            svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         }
         spliceLinksForNode(el) {
+            let graph = this;
             let toSplice = this.bonds.filter(function (l) {
                 return (l.source === el || l.target === el);
             });
             toSplice.map(function (l) {
-                this.edges.splice(this.edges.indexOf(l), 1);
+                graph.bonds.splice(graph.bonds.indexOf(l), 1);
             });
         }
         replaceSelectEdge(d3Bond, bond) {
@@ -223,7 +227,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 return;
             this.dragBond.classed("hidden", true);
             if (mouseDownNode !== el) {
-                let newEdge = new BondGraphBond(mouseDownNode, el);
+                let newEdge = new BondGraphBond(mouseDownNode, el, true);
                 let filtRes = this.bondSelection.filter(function (d) {
                     if (d.source === newEdge.target && d.target === newEdge.source) {
                         graph.bonds.splice(graph.bonds.indexOf(d), 1);
@@ -281,12 +285,14 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 return;
             state.lastKeyDown = d3.event.keyCode;
             let selectedNode = state.selectedElement, selectedEdge = state.selectedBond;
+            let graph = this;
             switch (d3.event.keyCode) {
                 case this.BACKSPACE_KEY:
                 case this.DELETE_KEY:
+                    d3.event.preventDefault();
                     if (selectedNode) {
                         this.elements.splice(this.elements.indexOf(selectedNode), 1);
-                        this.spliceLinksForNode(selectedNode);
+                        graph.spliceLinksForNode(selectedNode);
                         state.selectedElement = null;
                         this.updateGraph();
                     }
@@ -314,7 +320,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     }
     exports.SystemDiagram = SystemDiagram;
 });
-define("main", ["require", "exports", "types/SystemDiagram"], function (require, exports, SystemDiagram_1) {
+define("main", ["require", "exports", "types/BaseGraph", "types/SystemDiagram"], function (require, exports, BaseGraph_2, SystemDiagram_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function makeElementSource(graph, section, link) {
@@ -346,15 +352,22 @@ define("main", ["require", "exports", "types/SystemDiagram"], function (require,
         makeSection(graph, "actuators", ["pm_motor", "vc_transducer"]);
     }
     function loadPage() {
-        var svg = d3.select("#graph").append("svg");
-        var graph = new SystemDiagram_1.SystemDiagram(svg, [], []);
-        graph.draggingElement = null;
+        var systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+        systemDiagramSVG.classed("graphSVG", true);
+        var systemDiagram = new SystemDiagram_1.SystemDiagram(systemDiagramSVG, [], []);
+        systemDiagram.draggingElement = null;
         document.addEventListener("mouseup", function () {
             document.body.style.cursor = "auto";
-            graph.draggingElement = null;
+            systemDiagram.draggingElement = null;
         });
-        populateMenu(graph);
-        graph.updateGraph();
+        populateMenu(systemDiagram);
+        systemDiagram.updateGraph();
+        var bondGraphSVG = d3.select("#bondGraph").append("svg");
+        bondGraphSVG.classed("graphSVG", true);
+        let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
+        let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
+        var bondGraph = new BaseGraph_2.BaseGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+        bondGraph.updateGraph();
     }
     function pollDOM() {
         const el = document.getElementById('graphMenu');
@@ -367,11 +380,11 @@ define("main", ["require", "exports", "types/SystemDiagram"], function (require,
     }
     pollDOM();
 });
-define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_2) {
+define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BondGraph = void 0;
-    class BondGraph extends BaseGraph_2.BaseGraph {
+    class BondGraph extends BaseGraph_3.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
             let defs = svg.append("svg:defs");
@@ -398,9 +411,11 @@ define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (r
     exports.BondGraph = BondGraph;
 });
 class BondGraphBond {
-    constructor(source, target) {
+    constructor(source, target, hoverable) {
+        this.hoverable = false;
         this.source = source;
         this.target = target;
+        this.hoverable = hoverable;
     }
 }
 class BondGraphElement {
