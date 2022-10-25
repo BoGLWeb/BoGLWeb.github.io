@@ -5,10 +5,10 @@ class BaseGraph {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";
-    readonly graphClass: "graph";
-    readonly BACKSPACE_KEY: 8;
-    readonly DELETE_KEY: 46;
-    readonly ENTER_KEY: 13;
+    readonly graphClass: string = "graph";
+    readonly BACKSPACE_KEY: number = 8;
+    readonly DELETE_KEY: number = 46;
+    readonly ENTER_KEY: number = 13;
 
     idct: number = 0;
     elements: BondGraphElement[];
@@ -35,7 +35,6 @@ class BaseGraph {
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
 
-        console.log("Fella area", this)
         let graph = this;
 
         // listen for key events

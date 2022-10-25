@@ -6,6 +6,10 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         constructor(svg, nodes, edges) {
             this.selectedClass = "selected";
             this.bondClass = "bond";
+            this.graphClass = "graph";
+            this.BACKSPACE_KEY = 8;
+            this.DELETE_KEY = 46;
+            this.ENTER_KEY = 13;
             this.idct = 0;
             this.state = new GraphState();
             this.draggingElement = null;
@@ -17,7 +21,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             let svgG = this.svgG;
             this.bondSelection = svgG.append("g").selectAll("g");
             this.elementSelection = svgG.append("g").selectAll("g");
-            console.log("Fella area", this);
             let graph = this;
             d3.select(window).on("keydown", function () {
                 graph.svgKeyDown.call(graph);
@@ -263,7 +266,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
                 this.updateGraph();
             }
-            console.log(this);
             if (state.justScaleTransGraph) {
                 state.justScaleTransGraph = false;
             }
@@ -282,7 +284,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             switch (d3.event.keyCode) {
                 case this.BACKSPACE_KEY:
                 case this.DELETE_KEY:
-                    d3.event.preventDefault();
                     if (selectedNode) {
                         this.elements.splice(this.elements.indexOf(selectedNode), 1);
                         this.spliceLinksForNode(selectedNode);
@@ -299,7 +300,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
         }
         dragmove(el) {
             if (this.state.shiftNodeDrag) {
-                this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             }
             else {
                 el.x += d3.event.dx;

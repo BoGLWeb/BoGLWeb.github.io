@@ -142,7 +142,6 @@ export class SystemDiagram extends BaseGraph {
             this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
             this.updateGraph();
         }
-        console.log(this)
         if (state.justScaleTransGraph) {
             // dragged not clicked
             state.justScaleTransGraph = false;
@@ -157,8 +156,10 @@ export class SystemDiagram extends BaseGraph {
     // keydown on main svg
     svgKeyDown() {
         let state = this.state;
+
         // make sure repeated key presses don"t register for each keydown
         if (state.lastKeyDown !== -1) return;
+
 
         state.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
         let selectedNode = state.selectedElement,
@@ -167,8 +168,8 @@ export class SystemDiagram extends BaseGraph {
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
-                (<Event>d3.event).preventDefault();
-                if (selectedNode) {
+/*                (<Event>d3.event).preventDefault();
+*/                if (selectedNode) {
                     this.elements.splice(this.elements.indexOf(selectedNode), 1);
                     this.spliceLinksForNode(selectedNode);
                     state.selectedElement = null;
@@ -184,7 +185,7 @@ export class SystemDiagram extends BaseGraph {
 
     dragmove(el: BondGraphElement) {
         if (this.state.shiftNodeDrag) {
-            this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
             el.x += (<DragEvent>d3.event).dx;
             el.y += (<DragEvent>d3.event).dy;
