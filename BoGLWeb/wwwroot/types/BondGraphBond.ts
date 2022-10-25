@@ -1,11 +1,9 @@
 ﻿class BondGraphBond {
     source: BondGraphElement;
     target: BondGraphElement;
-    hoverable: boolean = false;
 
-    constructor(source: BondGraphElement, target: BondGraphElement, hoverable?: boolean) {
+    constructor(source: BondGraphElement, target: BondGraphElement) {
         this.source = source;
         this.target = target;
-        this.hoverable = hoverable;
     }
 }

@@ -1,5 +1,6 @@
 "use strict";
 import { BaseGraph } from "./types/BaseGraph";
+import { BondGraph } from "./types/BondGraph";
 import { SystemDiagram } from "./types/SystemDiagram";
 
 function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {
@@ -57,7 +58,7 @@ function loadPage() {
     bondGraphSVG.classed("graphSVG", true);
     let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
     let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
-    var bondGraph = new BaseGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+    var bondGraph = new BondGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
     bondGraph.updateGraph();
 }
 

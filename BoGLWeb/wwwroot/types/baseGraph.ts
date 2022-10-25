@@ -47,6 +47,7 @@ class BaseGraph {
     svgMouseUp() { }
     pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) { }
     nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) { }
+    pathExtraRendering(path: BGBondSelection) { }
 
     // mousedown on element
     nodeMouseDown(el: BondGraphElement) {
@@ -107,9 +108,6 @@ class BaseGraph {
         paths.enter()
             .append("path")
             .classed("link", true)
-            .classed("hoverablePath", function (d) {
-                return d.hoverable;
-            })
             .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             })
@@ -119,6 +117,8 @@ class BaseGraph {
             .on("mouseup", function () {
                 graph.state.mouseDownLink = null;
             });
+
+        this.pathExtraRendering(paths);
 
         // remove old links
         paths.exit().remove();

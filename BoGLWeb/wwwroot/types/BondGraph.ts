@@ -1,4 +1,4 @@
-﻿import { SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { BaseGraph } from "./BaseGraph";
 
 export class BondGraph extends BaseGraph {
@@ -27,5 +27,9 @@ export class BondGraph extends BaseGraph {
             .attr("orient", "auto")
             .append("svg:path")
             .attr("d", "M0,-5L10,0L0,5");
+    }
+
+    pathExtraRendering(paths: BGBondSelection) {
+        paths.style('marker-end', 'url(#mark-end-arrow)');
     }
 }

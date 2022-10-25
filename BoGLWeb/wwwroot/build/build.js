@@ -30,6 +30,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         svgMouseUp() { }
         pathMouseDown(d3Bond, bond) { }
         nodeMouseUp(d3Elem, el) { }
+        pathExtraRendering(path) { }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
         }
@@ -81,9 +82,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             paths.enter()
                 .append("path")
                 .classed("link", true)
-                .classed("hoverablePath", function (d) {
-                return d.hoverable;
-            })
                 .attr("d", function (d) {
                 return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
             })
@@ -93,6 +91,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 .on("mouseup", function () {
                 graph.state.mouseDownLink = null;
             });
+            this.pathExtraRendering(paths);
             paths.exit().remove();
             this.elementSelection = this.elementSelection.data(this.elements, function (d) { return d.id.toString(); });
             this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -141,11 +140,44 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
     }
     exports.BaseGraph = BaseGraph;
 });
-define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_1) {
+define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BondGraph = void 0;
+    class BondGraph extends BaseGraph_1.BaseGraph {
+        constructor(svg, nodes, edges) {
+            super(svg, nodes, edges);
+            let defs = svg.append("svg:defs");
+            defs.append("svg:marker")
+                .attr("id", "end-arrow")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", "32")
+                .attr("markerWidth", 3.5)
+                .attr("markerHeight", 3.5)
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5");
+            defs.append("svg:marker")
+                .attr("id", "mark-end-arrow")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 7)
+                .attr("markerWidth", 3.5)
+                .attr("markerHeight", 3.5)
+                .attr("orient", "auto")
+                .append("svg:path")
+                .attr("d", "M0,-5L10,0L0,5");
+        }
+        pathExtraRendering(paths) {
+            paths.style('marker-end', 'url(#mark-end-arrow)');
+        }
+    }
+    exports.BondGraph = BondGraph;
+});
+define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SystemDiagram = void 0;
-    class SystemDiagram extends BaseGraph_1.BaseGraph {
+    class SystemDiagram extends BaseGraph_2.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
             let graph = this;
@@ -157,6 +189,9 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             });
             svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
             svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+        }
+        pathExtraRendering(paths) {
+            paths.classed("hoverablePath", true);
         }
         spliceLinksForNode(el) {
             let graph = this;
@@ -225,7 +260,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 return;
             this.dragBond.classed("hidden", true);
             if (mouseDownNode !== el) {
-                let newEdge = new BondGraphBond(mouseDownNode, el, true);
+                let newEdge = new BondGraphBond(mouseDownNode, el);
                 let filtRes = this.bondSelection.filter(function (d) {
                     if (d.source === newEdge.target && d.target === newEdge.source) {
                         graph.bonds.splice(graph.bonds.indexOf(d), 1);
@@ -318,7 +353,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     }
     exports.SystemDiagram = SystemDiagram;
 });
-define("main", ["require", "exports", "types/BaseGraph", "types/SystemDiagram"], function (require, exports, BaseGraph_2, SystemDiagram_1) {
+define("main", ["require", "exports", "types/BondGraph", "types/SystemDiagram"], function (require, exports, BondGraph_1, SystemDiagram_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function makeElementSource(graph, section, link) {
@@ -364,7 +399,7 @@ define("main", ["require", "exports", "types/BaseGraph", "types/SystemDiagram"],
         bondGraphSVG.classed("graphSVG", true);
         let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
         let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
-        var bondGraph = new BaseGraph_2.BaseGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+        var bondGraph = new BondGraph_1.BondGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
         bondGraph.updateGraph();
     }
     function pollDOM() {
@@ -378,42 +413,10 @@ define("main", ["require", "exports", "types/BaseGraph", "types/SystemDiagram"],
     }
     pollDOM();
 });
-define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_3) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.BondGraph = void 0;
-    class BondGraph extends BaseGraph_3.BaseGraph {
-        constructor(svg, nodes, edges) {
-            super(svg, nodes, edges);
-            let defs = svg.append("svg:defs");
-            defs.append("svg:marker")
-                .attr("id", "end-arrow")
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", "32")
-                .attr("markerWidth", 3.5)
-                .attr("markerHeight", 3.5)
-                .attr("orient", "auto")
-                .append("svg:path")
-                .attr("d", "M0,-5L10,0L0,5");
-            defs.append("svg:marker")
-                .attr("id", "mark-end-arrow")
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 7)
-                .attr("markerWidth", 3.5)
-                .attr("markerHeight", 3.5)
-                .attr("orient", "auto")
-                .append("svg:path")
-                .attr("d", "M0,-5L10,0L0,5");
-        }
-    }
-    exports.BondGraph = BondGraph;
-});
 class BondGraphBond {
-    constructor(source, target, hoverable) {
-        this.hoverable = false;
+    constructor(source, target) {
         this.source = source;
         this.target = target;
-        this.hoverable = hoverable;
     }
 }
 class BondGraphElement {

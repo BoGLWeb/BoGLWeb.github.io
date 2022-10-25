@@ -1,4 +1,4 @@
-﻿import { SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { DragEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
 
@@ -17,6 +17,10 @@ export class SystemDiagram extends BaseGraph {
         });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+    }
+
+    pathExtraRendering(paths: BGBondSelection) {
+        paths.classed("hoverablePath", true);
     }
 
     // remove bonds associated with a node
@@ -105,7 +109,7 @@ export class SystemDiagram extends BaseGraph {
 
         if (mouseDownNode !== el) {
             // we"re in a different node: create new edge for mousedown edge and add to graph
-            let newEdge = new BondGraphBond(mouseDownNode, el, true);
+            let newEdge = new BondGraphBond(mouseDownNode, el);
             let filtRes = this.bondSelection.filter(function (d) {
                 if (d.source === newEdge.target && d.target === newEdge.source) {
                     graph.bonds.splice(graph.bonds.indexOf(d), 1);
