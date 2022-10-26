@@ -4,35 +4,57 @@
 
 <p role="status">Num Rulesets: @numRuleSets</p>
 
+@foreach (Pair name in numRules) {
+    <p>@name.name : @name.count</p>
+}
+
 <Button @onclick="countRules">Count Rules</Button>
 
 @code {
     private int numRuleSets = 0;
+    private readonly List<string> ruleNames = new List<string>();
+    private readonly List<Pair> numRules = new List<Pair>();
 
     protected override async Task OnInitializedAsync() {
-        RuleSetMap.getInstance().loadRuleSet("BondGraphRuleset");
-        RuleSetMap.getInstance().loadRuleSet("SimplificationRuleset");
-        RuleSetMap.getInstance().loadRuleSet("DirRuleset");
-        RuleSetMap.getInstance().loadRuleSet("newDirectionRuleSet_2");
-        RuleSetMap.getInstance().loadRuleSet("DirRuleset3");
-        RuleSetMap.getInstance().loadRuleSet("Simplification2");
-        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset");
-        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset_2");
-        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset_3");
-        RuleSetMap.getInstance().loadRuleSet("INVDMarkerRules");
-        RuleSetMap.getInstance().loadRuleSet("INVDMarkerRules_2");
-        RuleSetMap.getInstance().loadRuleSet("CalibrationNewRuleset");
-        RuleSetMap.getInstance().loadRuleSet("CalibrationNewRuleset_2");
-        RuleSetMap.getInstance().loadRuleSet("RFlagCleanRuleset");
-        RuleSetMap.getInstance().loadRuleSet("ICFixTotalRuleset");
-        RuleSetMap.getInstance().loadRuleSet("TransformerFlipRuleset");
-        RuleSetMap.getInstance().loadRuleSet("TransformerFlipRuleset2");
-        RuleSetMap.getInstance().loadRuleSet("Clean23Ruleset");
-        RuleSetMap.getInstance().loadRuleSet("BeforeBG-VerifyDirRuleSet");
+        ruleNames.Add("BondGraphRuleset"); //57
+        ruleNames.Add("SimplificationRuleset"); //27
+        ruleNames.Add("DirRuleset"); //5
+        ruleNames.Add("newDirectionRuleSet_2"); //15
+        ruleNames.Add("DirRuleset3"); //4
+        ruleNames.Add("Simplification2"); //32
+        ruleNames.Add("NewCausalityMethodRuleset"); //6
+        ruleNames.Add("NewCausalityMethodRuleset_2"); //4
+        ruleNames.Add("NewCausalityMethodRuleset_3"); //2
+        ruleNames.Add("INVDMarkerRules"); //6
+        ruleNames.Add("INVDMarkerRules_2"); //0?
+        ruleNames.Add("CalibrationNewRuleset"); //12
+        ruleNames.Add("CalibrationNewRuleset_2"); //0?
+        ruleNames.Add("RFlagCleanRuleset"); //1
+        ruleNames.Add("ICFixTotalRuleset"); //12
+        ruleNames.Add("TransformerFlipRuleset"); //1
+        ruleNames.Add("TransformerFlipRuleset2"); //1
+        ruleNames.Add("Clean23Ruleset"); //4
+        ruleNames.Add("BeforeBG-VerifyDirRuleSet"); //8
+
+        foreach(string str in ruleNames){
+            RuleSetMap.getInstance().loadRuleSet(str);
+            Pair p = new Pair();
+            p.name = str;
+            p.count = 0;
+            numRules.Add(p);
+        }
     }
 
     public void countRules(){
         numRuleSets = RuleSetMap.getInstance().getNumRules();
+        foreach(Pair rule in numRules){
+            rule.count = RuleSetMap.getInstance().getRuleSet(rule.name).rules.Count();
+        }
+    }
+
+    private class Pair{
+        public string name;
+        public int count;
     }
 
 }
