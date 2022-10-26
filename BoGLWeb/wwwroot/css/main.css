@@ -223,10 +223,12 @@ path.link.hidden {
     padding-bottom: 4px !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
+    border: 1.5px solid lightgray !important;
+    border-bottom-color: #fff !important;
 }
 
 .ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
-    margin: 0 0 5px 0;
+    margin: 0 0 3px 0;
 }
 
 .ant-tabs-tab:not(.ant-tabs-tab-active) {
@@ -277,4 +279,41 @@ path.link.hidden {
 .graphSVG {
     width: 100%;
     height: calc(100vh - 79px);
+}
+
+.boglLogo {
+    padding-right: 20px !important;
+}
+
+.iconDiv {
+    padding-left: 20px !important;
+}
+
+.boglLogo > img {
+    margin-top: -3px;
+}
+
+.boglLogo > div {
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    left: -5px;
+}
+
+.boglLogo:hover > div {
+    color: black !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item, .ant-menu-horizontal > .ant-menu-submenu {
+    top: 0;
+    vertical-align: unset;
+}
+
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu {
+    padding: 0 10px;
+}
+
+.menuIcon {
+    margin-top: -7px;
+    height: 15px;
 }

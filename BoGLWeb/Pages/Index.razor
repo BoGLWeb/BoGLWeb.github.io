@@ -8,6 +8,10 @@
     <div class="page">
         <main>
             <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
+                <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
+                    <img src="images/logo.png" width="50" />
+                    <div id="logoSave">*</div>
+                </li>
                 <SubMenu title="File">
                     <MenuItem Key="setting:1">New</MenuItem>
                     <MenuItem Key="setting:2">Open</MenuItem>
@@ -31,6 +35,38 @@
                     <MenuItem Key="setting:4">Report Bugs</MenuItem>
                     <MenuItem Key="setting:5">About BoGL</MenuItem>
                 </SubMenu>
+                <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
+                    @{
+                        RenderFragment SaveSvg =@<img class="menuIcon" src="images/menuBar/save.png" title="Save" />;
+                        RenderFragment CutSvg=@<img class="menuIcon" src="images/menuBar/cut.png" title="Cut" />;
+                        RenderFragment CopySvg=@<img class="menuIcon" src="images/menuBar/copy.png" title="Copy" />;
+                        RenderFragment PasteSvg=@<img class="menuIcon" src="images/menuBar/paste.png" title="Paste" />;
+                        RenderFragment UndoSvg=@<img class="menuIcon" src="images/menuBar/undo.png" title="Undo" />;
+                        RenderFragment RedoSvg=@<img class="menuIcon" src="images/menuBar/redo.png" title="Redo" />;
+                        RenderFragment TrashSvg=@<img class="menuIcon" src="images/menuBar/trash.png" title="Trash" />;
+                    }
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="SaveSvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="CutSvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="CopySvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="PasteSvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="UndoSvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="RedoSvg" />
+                    </Button>
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="TrashSvg" />
+                    </Button>
+                </li>
             </Menu>
             <div class="pageContainer">
                 <div id="graphMenu">
