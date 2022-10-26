@@ -82,6 +82,10 @@ namespace BoGLWeb {
             ruleSetMap[name].rules = rules;
         }
 
+        public int getNumRules() {
+            return ruleSetMap.Count;
+        }
+
         private grammarRule DeSerializeRuleFromXML(string xmlString)
         {
         var stringReader = new StringReader(xmlString);

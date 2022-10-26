@@ -1,0 +1,38 @@
+﻿@page "/rulerulesettest"
+
+<h3>RuleRulesetTest</h3>
+
+<p role="status">Num Rulesets: @numRuleSets</p>
+
+<Button @onclick="countRules">Count Rules</Button>
+
+@code {
+    private int numRuleSets = 0;
+
+    protected override async Task OnInitializedAsync() {
+        RuleSetMap.getInstance().loadRuleSet("BondGraphRuleset");
+        RuleSetMap.getInstance().loadRuleSet("SimplificationRuleset");
+        RuleSetMap.getInstance().loadRuleSet("DirRuleset");
+        RuleSetMap.getInstance().loadRuleSet("newDirectionRuleSet_2");
+        RuleSetMap.getInstance().loadRuleSet("DirRuleset3");
+        RuleSetMap.getInstance().loadRuleSet("Simplification2");
+        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset");
+        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset_2");
+        RuleSetMap.getInstance().loadRuleSet("NewCausalityMethodRuleset_3");
+        RuleSetMap.getInstance().loadRuleSet("INVDMarkerRules");
+        RuleSetMap.getInstance().loadRuleSet("INVDMarkerRules_2");
+        RuleSetMap.getInstance().loadRuleSet("CalibrationNewRuleset");
+        RuleSetMap.getInstance().loadRuleSet("CalibrationNewRuleset_2");
+        RuleSetMap.getInstance().loadRuleSet("RFlagCleanRuleset");
+        RuleSetMap.getInstance().loadRuleSet("ICFixTotalRuleset");
+        RuleSetMap.getInstance().loadRuleSet("TransformerFlipRuleset");
+        RuleSetMap.getInstance().loadRuleSet("TransformerFlipRuleset2");
+        RuleSetMap.getInstance().loadRuleSet("Clean23Ruleset");
+        RuleSetMap.getInstance().loadRuleSet("BeforeBG-VerifyDirRuleSet");
+    }
+
+    public void countRules(){
+        numRuleSets = RuleSetMap.getInstance().getNumRules();
+    }
+
+}
