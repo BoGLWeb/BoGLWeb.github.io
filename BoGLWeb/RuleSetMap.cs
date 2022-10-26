@@ -27,8 +27,9 @@ namespace BoGLWeb {
             }            
         }
 
-        public async void loadRuleSet(string name) {
+        public async Task loadRuleSet(string name) {
             if (ruleSetMap.ContainsKey(name)) {
+                Console.WriteLine("Rule " + name + " already loaded.");
                 return;
             }
 

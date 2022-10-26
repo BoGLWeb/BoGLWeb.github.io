@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
@@ -9,6 +10,8 @@ namespace PlaywrightTests {
 
     [TestFixture]
     public class RuleRuleSetLoadTests : PageTest{
+
+        private readonly int timeout = 100000;
        
         [SetUp]
         public void setup() {
@@ -19,7 +22,7 @@ namespace PlaywrightTests {
         public async Task testNumLoadedRuleSets() {
             await Page.GotoAsync("http://localhost:5006/rulerulesettest");
             await Expect(Page.Locator("text=Num Rulesets: 0")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout 
             });
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
@@ -27,12 +30,23 @@ namespace PlaywrightTests {
         }
 
         [Test]
+        public async Task testNumLoadedRulets() {
+            await Page.GotoAsync("http://localhost:5006/rulerulesettest");
+            var countButton = Page.Locator("text=Count Rules");
+            await countButton.ClickAsync();
+
+            await Expect(Page.Locator("text=Total Rules : 202")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
+                Timeout = timeout
+            });
+        }
+
+        [Test]
         public async Task testNumLoadedBondGraphRulesetRules() {
             await Page.GotoAsync("http://localhost:5006/rulerulesettest");
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
-            await Expect(Page.Locator("text=BondGraphRuleset : 57")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+            await Expect(Page.Locator("text=BondGraphRuleset : 58")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
+                Timeout = timeout 
             });
         }
 
@@ -42,7 +56,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=SimplificationRuleset: 27")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout 
             });
         }
 
@@ -52,7 +66,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=DirRuleset: 5")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout 
             });
         }
 
@@ -62,7 +76,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=newDirectionRuleSet_2 : 15")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout 
             });
         }
 
@@ -72,7 +86,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=DirRuleset3 : 4")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -82,7 +96,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=Simplification2 : 32")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -92,7 +106,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=NewCausalityMethodRuleset : 6")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -102,7 +116,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=NewCausalityMethodRuleset_2 : 4")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -112,7 +126,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=NewCausalityMethod_3 : 2")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -122,7 +136,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=INVDMarkerRules : 6")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -132,7 +146,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=INVDMarkerRules_2: 0")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -142,7 +156,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=CalubrationNewRuleset : 12")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -152,7 +166,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=CalibrationNewRuleset_2 : 0")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -162,7 +176,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=RFlagCleanRuleset : 1")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -172,7 +186,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=ICFixTotalRuleset : 12")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -182,7 +196,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=TransformerFlipRuleset: 1")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -192,7 +206,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=TransformerFlipRuleset2 : 1")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -202,7 +216,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=Clearn23Ruleset : 4")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
 
@@ -212,7 +226,7 @@ namespace PlaywrightTests {
             var countButton = Page.Locator("text=Count Rules");
             await countButton.ClickAsync();
             await Expect(Page.Locator("text=BeforeBG-VerifyDirRuleSet : 8")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = 20000
+                Timeout = timeout
             });
         }
     }
