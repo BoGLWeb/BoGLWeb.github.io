@@ -12,7 +12,7 @@
                     <img src="images/logo.png" width="50" />
                     <div id="logoSave">*</div>
                 </li>
-                <SubMenu title="File">
+                <SubMenu title="File" Class="topMenu">
                     <MenuItem Key="setting:1">New</MenuItem>
                     <MenuItem Key="setting:2">Open</MenuItem>
                     <MenuItem Key="setting:3">Save</MenuItem>
@@ -20,7 +20,7 @@
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
                     <MenuItem Key="setting:6">Exit</MenuItem>
                 </SubMenu>
-                <SubMenu title="Edit">
+                <SubMenu title="Edit" Class="topMenu">
                     <MenuItem Key="setting:1">Cut</MenuItem>
                     <MenuItem Key="setting:2">Copy</MenuItem>
                     <MenuItem Key="setting:3">Paste</MenuItem>
@@ -28,7 +28,7 @@
                     <MenuItem Key="setting:5">Redo</MenuItem>
                     <MenuItem Key="setting:6">Delete</MenuItem>
                 </SubMenu>
-                <SubMenu title="Help">
+                <SubMenu title="Help" Class="topMenu">
                     <MenuItem Key="setting:1"><Checkbox>Confirm deleting many items</Checkbox></MenuItem>
                     <MenuItem Key="setting:2">Tutorial</MenuItem>
                     <SubMenu Title="Example Files">
@@ -64,26 +64,35 @@
                     <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="SaveSvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="CutSvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="CopySvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="PasteSvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="UndoSvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="RedoSvg" />
                     </Button>
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="TrashSvg" />
                     </Button>
                 </li>
             </Menu>
+
+            @code
+            {
+                RenderFragment sub1Title =
+                @<Template>
+                    <Icon Type="setting" Theme="outline"></Icon>
+                    Navigation Three - Submenu
+                </Template>;
+            }
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">

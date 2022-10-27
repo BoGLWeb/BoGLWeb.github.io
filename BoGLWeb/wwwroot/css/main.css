@@ -269,7 +269,6 @@ path.link.hidden {
 }
 
 .ant-menu-submenu-title {
-    font-weight: bold;
 }
 
 .card-container {
@@ -316,4 +315,12 @@ path.link.hidden {
 .menuIcon {
     margin-top: -7px;
     height: 15px;
+}
+
+.ant-btn-text[disabled] {
+    opacity: 40% !important;
+}
+
+.topMenu {
+    font-weight: bold;
 }
