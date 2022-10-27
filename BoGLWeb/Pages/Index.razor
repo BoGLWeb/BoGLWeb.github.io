@@ -8,7 +8,11 @@
     <div class="page">
         <main>
             <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
-                <SubMenu title="File">
+                <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
+                    <img src="images/logo.png" width="50" />
+                    <div id="logoSave">*</div>
+                </li>
+                <SubMenu title="File" Class="topMenu">
                     <MenuItem Key="setting:1">New</MenuItem>
                     <MenuItem Key="setting:2">Open</MenuItem>
                     <MenuItem Key="setting:3">Save</MenuItem>
@@ -16,7 +20,7 @@
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
                     <MenuItem Key="setting:6">Exit</MenuItem>
                 </SubMenu>
-                <SubMenu title="Edit">
+                <SubMenu title="Edit" Class="topMenu">
                     <MenuItem Key="setting:1">Cut</MenuItem>
                     <MenuItem Key="setting:2">Copy</MenuItem>
                     <MenuItem Key="setting:3">Paste</MenuItem>
@@ -24,14 +28,71 @@
                     <MenuItem Key="setting:5">Redo</MenuItem>
                     <MenuItem Key="setting:6">Delete</MenuItem>
                 </SubMenu>
-                <SubMenu title="Help">
+                <SubMenu title="Help" Class="topMenu">
                     <MenuItem Key="setting:1"><Checkbox>Confirm deleting many items</Checkbox></MenuItem>
                     <MenuItem Key="setting:2">Tutorial</MenuItem>
-                    <MenuItem Key="setting:3">Example Files</MenuItem>
+                    <SubMenu Title="Example Files">
+                        <SubMenu Title="Mechanical Translation">
+                            <MenuItem Key="mt:1">Basic Two Mass System - 1</MenuItem>
+                            <MenuItem Key="mt:2">Basic Two Mass System - 2</MenuItem>
+                            <MenuItem Key="mt:3">Basic Two Mass System - 3</MenuItem>
+                            <MenuItem Key="mt:4">Quarter Car Model</MenuItem>
+                            <MenuItem Key="mt:5">Basic Mass, Spring System with Directions</MenuItem>
+                            <MenuItem Key="mt:6">Spring and Damper with Force</MenuItem>
+                        </SubMenu>
+                        <SubMenu Title="Mechanical Rotation">
+                            <MenuItem Key="mr:1">Rack and Pinion System</MenuItem>
+                            <MenuItem Key="mr:2">Motor, Shaft and Gear Pair</MenuItem>
+                        </SubMenu>
+                        <SubMenu Title="Electrical">
+                            <MenuItem Key="elec:1">LRC Circuit</MenuItem>
+                        </SubMenu>
+                    </SubMenu>
                     <MenuItem Key="setting:4">Report Bugs</MenuItem>
                     <MenuItem Key="setting:5">About BoGL</MenuItem>
                 </SubMenu>
+                <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
+                    @{
+                        RenderFragment SaveSvg =@<img class="menuIcon" src="images/menuBar/save.png" title="Save" />;
+                        RenderFragment CutSvg=@<img class="menuIcon" src="images/menuBar/cut.png" title="Cut" />;
+                        RenderFragment CopySvg=@<img class="menuIcon" src="images/menuBar/copy.png" title="Copy" />;
+                        RenderFragment PasteSvg=@<img class="menuIcon" src="images/menuBar/paste.png" title="Paste" />;
+                        RenderFragment UndoSvg=@<img class="menuIcon" src="images/menuBar/undo.png" title="Undo" />;
+                        RenderFragment RedoSvg=@<img class="menuIcon" src="images/menuBar/redo.png" title="Redo" />;
+                        RenderFragment TrashSvg=@<img class="menuIcon" src="images/menuBar/trash.png" title="Trash" />;
+                    }
+                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="SaveSvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="CutSvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="CopySvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="PasteSvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="UndoSvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="RedoSvg" />
+                    </Button>
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                        <Icon Component="TrashSvg" />
+                    </Button>
+                </li>
             </Menu>
+
+            @code
+            {
+                RenderFragment sub1Title =
+                @<Template>
+                    <Icon Type="setting" Theme="outline"></Icon>
+                    Navigation Three - Submenu
+                </Template>;
+            }
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">
