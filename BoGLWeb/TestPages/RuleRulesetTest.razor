@@ -2,8 +2,8 @@
 
 <h3>RuleRulesetTest</h3>
 
-<p role="status">Num Rulesets: @numRuleSets</p>
-<p role="status">Total Rules: @totalRules</p>
+<p role="status">Num Rulesets : @numRuleSets</p>
+<p role="status">Total Rules : @totalRules</p>
 
 @foreach (Pair name in numRules) {
     <p>@name.name : @name.count</p>
@@ -19,9 +19,9 @@
 
     protected override async Task OnInitializedAsync() {
         ruleNames.Add("BondGraphRuleset"); //58
-        ruleNames.Add("SimplificationRuleset"); //27
+        ruleNames.Add("SimplificationRuleset"); //28
         ruleNames.Add("DirRuleset"); //5
-        ruleNames.Add("newDirectionRuleSet_2"); //15
+        ruleNames.Add("newDirectionRuleSet_2"); //17
         ruleNames.Add("DirRuleset3"); //4
         ruleNames.Add("Simplification2"); //32
         ruleNames.Add("NewCausalityMethodRuleset"); //6
