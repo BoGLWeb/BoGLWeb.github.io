@@ -1,10 +1,6 @@
 {
   "version": 2,
-<<<<<<< HEAD
-  "dgSpecHash": "iyhtxNiUrgQSFe1V7qcmn8CcPIRMO8SN31wN/iUVlmUx9aW1JUMuXHnSfZXKm2YaD8bByuxIRAtbuB2aBdQCpw==",
-=======
   "dgSpecHash": "+Fcne851+I2WESBQuCJ8Dq4CwmyOhwJ1DmUDi3UXy6CZpmplB8y9OvFCvSiJS5adyp0wwnmg4T7jQRE7Q7npmQ==",
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -19,7 +15,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly.devserver\\6.0.8\\microsoft.aspnetcore.components.webassembly.devserver.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.metadata\\6.0.8\\microsoft.aspnetcore.metadata.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.codecoverage\\17.3.2\\microsoft.codecoverage.17.3.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.codecoverage\\16.11.0\\microsoft.codecoverage.16.11.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.0\\microsoft.extensions.configuration.6.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
@@ -37,19 +33,19 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.jsinterop\\6.0.8\\microsoft.jsinterop.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.jsinterop.webassembly\\6.0.8\\microsoft.jsinterop.webassembly.6.0.8.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.net.test.sdk\\17.3.2\\microsoft.net.test.sdk.17.3.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.net.test.sdk\\16.11.0\\microsoft.net.test.sdk.16.11.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.netcore.targets\\1.0.1\\microsoft.netcore.targets.1.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.playwright\\1.27.1\\microsoft.playwright.1.27.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.playwright.nunit\\1.27.1\\microsoft.playwright.nunit.1.27.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.playwright.testadapter\\1.27.1\\microsoft.playwright.testadapter.1.27.1.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.3.2\\microsoft.testplatform.objectmodel.17.3.2.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\17.3.2\\microsoft.testplatform.testhost.17.3.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.3.0\\microsoft.testplatform.objectmodel.17.3.0.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\16.11.0\\microsoft.testplatform.testhost.16.11.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nuget.frameworks\\5.11.0\\nuget.frameworks.5.11.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit\\3.13.3\\nunit.3.13.3.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit3testadapter\\4.2.1\\nunit3testadapter.4.2.1.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nunit3testadapter\\4.0.0\\nunit3testadapter.4.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\oneof\\2.1.155\\oneof.2.1.155.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\runtime.any.system.collections\\4.0.11\\runtime.any.system.collections.4.0.11.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\runtime.any.system.diagnostics.tools\\4.0.1\\runtime.any.system.diagnostics.tools.4.0.1.nupkg.sha512",
