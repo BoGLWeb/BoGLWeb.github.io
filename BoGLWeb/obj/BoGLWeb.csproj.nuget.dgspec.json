@@ -53,15 +53,9 @@
               "target": "Package",
               "version": "[6.0.8, )"
             },
-<<<<<<< HEAD
-            "Microsoft.NET.Test.Sdk": {
-              "target": "Package",
-              "version": "[17.3.2, )"
-=======
             "Microsoft.Playwright": {
               "target": "Package",
               "version": "[1.27.1, )"
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
             },
             "Microsoft.Playwright.NUnit": {
               "target": "Package",
@@ -70,10 +64,6 @@
             "NUnit": {
               "target": "Package",
               "version": "[3.13.3, )"
-            },
-            "NUnit3TestAdapter": {
-              "target": "Package",
-              "version": "[4.2.1, )"
             }
           },
           "imports": [
