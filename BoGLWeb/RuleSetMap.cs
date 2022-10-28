@@ -10,7 +10,7 @@ namespace BoGLWeb {
         private static readonly object padlock = new object();
 
         //Other Stuff
-        private Dictionary<String, ruleSet> ruleSetMap;
+        private Dictionary<string, ruleSet> ruleSetMap;
         private int numLoaded;
 
         RuleSetMap() {
@@ -27,17 +27,22 @@ namespace BoGLWeb {
             }            
         }
 
-        public async void loadRuleSet(string name) {
+        public async Task loadRuleSet(string name) {
+            if (ruleSetMap.ContainsKey(name)) {
+                Console.WriteLine("Rule " + name + " already loaded.");
+                return;
+            }
+
             HttpClient client = new HttpClient();
 
             //TODO Figure out if this URL is okay, or is there something else that it should be
-            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name);
+            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name + ".rsxml");
             var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
             ruleSetMap.Add(name, (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
             var numRules = ruleSetMap[name].ruleFileNames.Count;
             string ruleDir = ruleSetMap[name].rulesDir;
-            List<String> ruleFileNames = ruleSetMap[name].ruleFileNames;
+            List<string> ruleFileNames = ruleSetMap[name].ruleFileNames;
 
             var progStart = 5;
             var progStep = (double)(100 - progStart) / ruleFileNames.Count;
@@ -80,6 +85,14 @@ namespace BoGLWeb {
             }
 
             ruleSetMap[name].rules = rules;
+        }
+
+        public int getNumRules() {
+            return ruleSetMap.Count;
+        }
+
+        public ruleSet getRuleSet(string name) {
+            return ruleSetMap[name];
         }
 
         private grammarRule DeSerializeRuleFromXML(string xmlString)
