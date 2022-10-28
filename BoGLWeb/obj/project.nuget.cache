@@ -1,10 +1,6 @@
 {
   "version": 2,
-<<<<<<< HEAD
   "dgSpecHash": "iyhtxNiUrgQSFe1V7qcmn8CcPIRMO8SN31wN/iUVlmUx9aW1JUMuXHnSfZXKm2YaD8bByuxIRAtbuB2aBdQCpw==",
-=======
-  "dgSpecHash": "+Fcne851+I2WESBQuCJ8Dq4CwmyOhwJ1DmUDi3UXy6CZpmplB8y9OvFCvSiJS5adyp0wwnmg4T7jQRE7Q7npmQ==",
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [

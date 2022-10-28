@@ -2489,10 +2489,6 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.csproj.CopyComplete
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.pdb
-<<<<<<< HEAD
-=======
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CommunicationUtilities.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\cs\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
@@ -2947,10 +2943,6 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\.playwright\package\types\structs.d.ts
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\.playwright\package\types\types.d.ts
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\playwright.ps1
-<<<<<<< HEAD
-=======
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\package.json
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\Microsoft.Playwright.dll
@@ -3033,7 +3025,6 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\zh-Hant\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\zh-Hant\Microsoft.VisualStudio.TestPlatform.Common.resources.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\DpDvv+U+.gz
-<<<<<<< HEAD
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\PN+gF1oi.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Dh7Tn6ry.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\9VNHJSaq.gz
@@ -3121,85 +3112,3 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\IGdxXKJB.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\s3Qtlpbq.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\vs0htOtZ.gz
-=======
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ZwVza6fC.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\PN+gF1oi.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Dh7Tn6ry.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\9VNHJSaq.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\xiLwK3ml.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\qMtMDWus.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\CnEXArOi.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\W1IlxR+W.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\TBmdWnsC.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\GXTIF1hv.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\p972SmeI.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\WlFpvMxK.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\UtzIVwYa.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\tQ3zRJ7W.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\J5jddgH3.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\+asMvr+K.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\8z2DcmkT.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\KOq1k8VE.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\6CtoMta9.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\xBLaqUw7.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\dTzvmPOf.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ufwCHHIv.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Ght0tnr8.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\qdrzD9vQ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\l5zg+ESk.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\YtzKcfrB.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\YvzURo5O.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\FUCJA2rl.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\JlEsrs+j.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\g8tv+eo8.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\rDAslYCZ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Zxe5G3G+.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\av5aD00E.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\6Y0BSbu7.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\sorHcVep.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\9dPUT4aV.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\DpQcDpE3.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\AaF8eQWt.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ESZn6Ruz.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\M833OyG9.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\pziSwQzU.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\03DP8BCv.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\g7aDs9Gs.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\X72hb6C+.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\vfwv5Q+P.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ycfQM8F1.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\SOhmyhZO.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\dXJM6zte.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\tUK9numK.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\91r4MiOb.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\7ewFBvyt.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\1+dHgD+r.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\gOU4qsyw.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Z7VgdKNZ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\9XJp04UE.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\XknEjMOt.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\kSnunUh9.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\EtgXojhI.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\e6+yXnXz.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\rFw1JI6k.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\3+CzQwZe.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\L3XMCZbq.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\o2S1cwGJ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\Vpfe+YtY.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\C2YCzDh1.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ogZ+HsUX.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\zo50j0S3.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\rJHwd4lq.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\LsTpL5Yk.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\ZrHXBriJ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\8DN7xvgU.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\LyPKjH9G.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\fiRO1jiV.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\NbTu7pGC.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\AJQ4abkp.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\QvKY75xQ.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\gLShAC4O.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\mV2KUCuT.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\TTdsQ01l.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\N0mOJ9mT.gz
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
