@@ -107,6 +107,16 @@ namespace BoGLWeb {
                 this.head = head;
                 this.cursor = cursor;
             }
+            
+            /// <summary>
+            /// Gets the index of this <c>EditionList</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.index</c>
+            /// </returns>
+            public int Index() {
+                return this.index;
+            }
 
             /// <summary>
             /// Gets the size of this <c>EditionList</c>.

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OdLGs1AI7yli7f2vDAGwITjkbWP7SyJ2tsv5j3lxfCefSKcK/3tlnKdSqhhpFbdJc0HMUWDrE9xmlytB1oSGVA==",
+  "dgSpecHash": "M3GuZSFKfDXLKyv4R7wIBX2MtEkS73AUkA/5oj/jVWRfpiXutSM3o0ad2YinS0wkjOgvrcBRsjmgS5rApZiQNw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+  "projectFilePath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bdane\\.nuget\\packages\\antdesign\\0.12.2\\antdesign.0.12.2.nupkg.sha512",
     "C:\\Users\\bdane\\.nuget\\packages\\microsoft.aspnetcore.authorization\\6.0.8\\microsoft.aspnetcore.authorization.6.0.8.nupkg.sha512",
