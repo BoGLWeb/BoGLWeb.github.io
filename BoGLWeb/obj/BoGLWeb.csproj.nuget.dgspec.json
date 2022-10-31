@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
+    "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {
+    "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "projectUniqueName": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
         "projectName": "BoGLWeb",
-        "projectPath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
-        "packagesPath": "C:\\Users\\Jakob Misbach\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\",
+        "projectPath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "packagesPath": "C:\\Users\\bdane\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Jakob Misbach\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\bdane\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -53,15 +53,9 @@
               "target": "Package",
               "version": "[6.0.8, )"
             },
-<<<<<<< HEAD
-            "Microsoft.NET.Test.Sdk": {
-              "target": "Package",
-              "version": "[17.3.2, )"
-=======
             "Microsoft.Playwright": {
               "target": "Package",
               "version": "[1.27.1, )"
->>>>>>> 1875348e6617429f4910b7dce9905e20a2abc906
             },
             "Microsoft.Playwright.NUnit": {
               "target": "Package",
@@ -70,10 +64,6 @@
             "NUnit": {
               "target": "Package",
               "version": "[3.13.3, )"
-            },
-            "NUnit3TestAdapter": {
-              "target": "Package",
-              "version": "[4.2.1, )"
             }
           },
           "imports": [
@@ -90,7 +80,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-              "version": "[6.0.8, 6.0.8]"
+              "version": "[6.0.9, 6.0.9]"
             }
           ],
           "frameworkReferences": {
@@ -98,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
