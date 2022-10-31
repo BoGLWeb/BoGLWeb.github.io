@@ -143,13 +143,16 @@ class BaseGraph {
             .on("mouseout", function () {
                 d3.select(this).classed(graph.bondClass, false);
             })
+            .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
             .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
             .call(this.drag);
 
         let group = newElements.append("g");
-        group.attr("style", "fill:inherit;") // pointer-events: bounding-box;
+        group.attr("style", "fill:inherit;")
             .attr("index", function (d, i) { return d.id.toString(); });
 
         this.addEdgeHover(group);

@@ -76,8 +76,8 @@ export class SystemDiagram extends BaseGraph {
         image.on("mouseenter", function () {
             graph.edgeCircle.style("visibility", "hidden");
         })
-        .on("mousedown", function (d) {
-            graph.nodeMouseDown.call(graph, d);
+        .on("mouseup", function (d) {
+            graph.imageMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
         })
         .on("mouseleave", function () {
             graph.edgeCircle.style("visibility", "visible");
@@ -188,22 +188,27 @@ export class SystemDiagram extends BaseGraph {
                 this.bonds.push(newEdge);
                 this.updateGraph();
             }
-        } else {
-            // we"re in the same node
-            if (state.justDragged) {
-                // dragged, not clicked
-                state.justDragged = false;
-            } else {
-                if (state.selectedBond) {
-                    this.removeSelectFromEdge();
-                }
-                let prevNode = state.selectedElement;
+        }
+        state.mouseDownNode = null;
+        return;
+    }
 
-                if (!prevNode || prevNode.id !== el.id) {
-                    this.replaceSelectNode(d3Elem, el);
-                } else {
-                    this.removeSelectFromNode();
-                }
+    imageMouseUp(d3Elem: SVGSelection, el: BondGraphElement) {
+        let state = this.state;
+        // we"re in the same node
+        if (state.justDragged) {
+            // dragged, not clicked
+            state.justDragged = false;
+        } else {
+            if (state.selectedBond) {
+                this.removeSelectFromEdge();
+            }
+            let prevNode = state.selectedElement;
+
+            if (!prevNode || prevNode.id !== el.id) {
+                this.replaceSelectNode(d3Elem, el);
+            } else {
+                this.removeSelectFromNode();
             }
         }
         state.mouseDownNode = null;

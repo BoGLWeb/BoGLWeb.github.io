@@ -109,6 +109,9 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 .on("mouseout", function () {
                 d3.select(this).classed(graph.bondClass, false);
             })
+                .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
                 .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
@@ -245,8 +248,8 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             image.on("mouseenter", function () {
                 graph.edgeCircle.style("visibility", "hidden");
             })
-                .on("mousedown", function (d) {
-                graph.nodeMouseDown.call(graph, d);
+                .on("mouseup", function (d) {
+                graph.imageMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
             })
                 .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "visible");
@@ -337,21 +340,24 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     this.updateGraph();
                 }
             }
+            state.mouseDownNode = null;
+            return;
+        }
+        imageMouseUp(d3Elem, el) {
+            let state = this.state;
+            if (state.justDragged) {
+                state.justDragged = false;
+            }
             else {
-                if (state.justDragged) {
-                    state.justDragged = false;
+                if (state.selectedBond) {
+                    this.removeSelectFromEdge();
+                }
+                let prevNode = state.selectedElement;
+                if (!prevNode || prevNode.id !== el.id) {
+                    this.replaceSelectNode(d3Elem, el);
                 }
                 else {
-                    if (state.selectedBond) {
-                        this.removeSelectFromEdge();
-                    }
-                    let prevNode = state.selectedElement;
-                    if (!prevNode || prevNode.id !== el.id) {
-                        this.replaceSelectNode(d3Elem, el);
-                    }
-                    else {
-                        this.removeSelectFromNode();
-                    }
+                    this.removeSelectFromNode();
                 }
             }
             state.mouseDownNode = null;
