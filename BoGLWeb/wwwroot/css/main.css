@@ -82,21 +82,23 @@ body {
     background-color: rgb(248, 248, 248)
 }
 
-g.selected > g > rect {
+g.selected > g > g > .outline {
     stroke: rgb(6, 82, 255);
 }
 
-g > g > rect {
+.outline {
     stroke-width: 2;
     stroke: black;
-}
-
-g {
     fill: white;
 }
 
-g:hover {
-    fill: rgb(200, 238, 241);
+.selectable {
+    fill: white;
+}
+
+g {
+    fill: none;
+    pointer-events: bounding-box;
 }
 
 .boglElem {

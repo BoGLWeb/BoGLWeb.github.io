@@ -31,6 +31,8 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         pathMouseDown(d3Bond, bond) { }
         nodeMouseUp(d3Elem, el) { }
         pathExtraRendering(path) { }
+        addEdgeHover(group) { }
+        addHover(image, hoverBox, box) { }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
         }
@@ -49,6 +51,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             })
                 .on("drag", function (args) {
                 graph.state.justDragged = true;
+                console.log(args);
                 graph.dragmove.call(graph, args);
             });
         }
@@ -106,29 +109,30 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 .on("mouseout", function () {
                 d3.select(this).classed(graph.bondClass, false);
             })
-                .on("mousedown", function (d) {
-                graph.nodeMouseDown.call(graph, d);
-            })
                 .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
                 .call(this.drag);
             let group = newElements.append("g");
-            group.attr("style", "fill:inherit")
+            group.attr("style", "fill:inherit;")
                 .attr("index", function (d, i) { return d.id.toString(); });
-            let box = group.append("rect");
-            box.attr("width", "60px")
+            this.addEdgeHover(group);
+            let hoverBox = group.append("g");
+            let box = hoverBox.append("rect");
+            box.classed("outline", true)
+                .attr("width", "60px")
                 .attr("height", "60px")
                 .attr("x", "-30px")
-                .attr("y", "-30px")
-                .attr("style", "fill:inherit");
-            let image = group.append("image");
-            image.attr("href", function (d) { return d.img; })
+                .attr("y", "-30px");
+            let image = hoverBox.append("image");
+            image.attr("href", function (d, i) { return d.img; })
+                .classed("hoverImg", true)
                 .attr("x", "-25px")
                 .attr("y", "-25px")
                 .attr("preserveAspectRatio", "xMidYMid meet")
                 .attr("height", "50px")
                 .attr("width", "50px");
+            this.addHover(image, hoverBox, box);
             this.elementSelection.exit().remove();
         }
         ;
@@ -189,9 +193,70 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             });
             svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
             svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+            this.edgeCircle = this.svgG.append("circle");
+            this.edgeCircle.attr("r", "5")
+                .attr("fill", "green")
+                .attr("style", "cursor: pointer; visibility: hidden;");
         }
         pathExtraRendering(paths) {
             paths.classed("hoverablePath", true);
+        }
+        moveCircle(e) {
+            let coordinates = d3.mouse(d3.event.currentTarget);
+            let x = coordinates[0];
+            let y = coordinates[1];
+            let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+            let fourth = 1 / 4 * Math.PI;
+            let s = 30;
+            let coords = [];
+            if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
+                coords = [s, -s * Math.tan(theta)];
+            }
+            else if (theta >= fourth && theta < 3 * fourth) {
+                coords = [s * 1 / Math.tan(theta), -s];
+            }
+            else if (theta >= 3 * fourth && theta < 5 * fourth) {
+                coords = [-s, s * Math.tan(theta)];
+            }
+            else {
+                coords = [-s * 1 / Math.tan(theta), s];
+            }
+            this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        }
+        addEdgeHover(group) {
+            let graph = this;
+            let edgeHover = group.append("rect");
+            edgeHover.attr("width", "80px")
+                .attr("height", "80px")
+                .attr("x", "-40px")
+                .attr("y", "-40px")
+                .on("mousemove", function (e) {
+                graph.moveCircle.call(graph, e);
+            })
+                .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            })
+                .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "hidden");
+            });
+        }
+        addHover(image, hoverBox, box) {
+            let graph = this;
+            image.on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "hidden");
+            })
+                .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
+                .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            });
+            box.on("mousemove", function (e) {
+                graph.moveCircle.call(graph, e);
+            })
+                .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            });
         }
         spliceLinksForNode(el) {
             let graph = this;
@@ -245,7 +310,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             this.state.mouseDownNode = el;
             if (d3.event.shiftKey) {
                 this.state.shiftNodeDrag = d3.event.shiftKey;
-                this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
                 this.dragBond.classed("hidden", false);
                 return;
             }
@@ -338,6 +403,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
         }
         dragmove(el) {
+            console.log("moving");
             if (this.state.shiftNodeDrag) {
                 this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             }

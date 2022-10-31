@@ -1,8 +1,10 @@
-﻿import { BGBondSelection, SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, BGElementSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { DragEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
 
 export class SystemDiagram extends BaseGraph {
+    edgeCircle: SVGSelection;
+
     constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
         super(svg, nodes, edges);
 
@@ -17,10 +19,76 @@ export class SystemDiagram extends BaseGraph {
         });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+        this.edgeCircle = this.svgG.append("circle");
+        this.edgeCircle.attr("r", "5")
+            .attr("fill", "green")
+            .attr("style", "cursor: pointer; visibility: hidden;");
     }
 
     pathExtraRendering(paths: BGBondSelection) {
         paths.classed("hoverablePath", true);
+    }
+
+    moveCircle(e: BondGraphElement) {
+        let coordinates = d3.mouse(<Event>d3.event.currentTarget);
+        let x = coordinates[0];
+        let y = coordinates[1];
+        let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+        let fourth = 1 / 4 * Math.PI;
+        let s = 30;
+        let coords = [];
+        // quads 1, 2, 3, and 4
+        if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
+            coords = [s, -s * Math.tan(theta)]
+        } else if (theta >= fourth && theta < 3 * fourth) {
+            coords = [s * 1 / Math.tan(theta), -s]
+        } else if (theta >= 3 * fourth && theta < 5 * fourth) {
+            coords = [-s, s * Math.tan(theta)]
+        } else {
+            coords = [-s * 1 / Math.tan(theta), s]
+        }
+        this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+    }
+
+    addEdgeHover(group: BGElementSelection) {
+        let graph = this;
+
+        let edgeHover = group.append("rect");
+        edgeHover.attr("width", "80px")
+            .attr("height", "80px")
+            .attr("x", "-40px")
+            .attr("y", "-40px")
+            .on("mousemove", function (e) {
+                graph.moveCircle.call(graph, e);
+            })
+            .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            })
+            .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "hidden");
+            });
+    }
+
+    addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) {
+        let graph = this;
+
+        // determine whether mouse is near edge of element
+        image.on("mouseenter", function () {
+            graph.edgeCircle.style("visibility", "hidden");
+        })
+        .on("mousedown", function (d) {
+            graph.nodeMouseDown.call(graph, d);
+        })
+        .on("mouseleave", function () {
+            graph.edgeCircle.style("visibility", "visible");
+        });
+
+        box.on("mousemove", function (e) {
+            graph.moveCircle.call(graph, e);
+        })
+        .on("mouseenter", function () {
+            graph.edgeCircle.style("visibility", "visible");
+        });
     }
 
     // remove bonds associated with a node
@@ -86,7 +154,7 @@ export class SystemDiagram extends BaseGraph {
         if ((<KeyboardEvent>d3.event).shiftKey) {
             this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
             // reposition dragged directed edge
-            this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
+            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             this.dragBond.classed("hidden", false);
             return;
         }
@@ -200,6 +268,7 @@ export class SystemDiagram extends BaseGraph {
     }
 
     dragmove(el: BondGraphElement) {
+        console.log("moving")
         if (this.state.shiftNodeDrag) {
             this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         } else {
