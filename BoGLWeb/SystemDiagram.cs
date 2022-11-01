@@ -18,6 +18,28 @@ namespace BoGLWeb {
             edges.Add(new Edge(e1, e2));
         }
 
+        public Element getElement(int pos) {
+            return elements[pos];
+        }
+
+        public Edge getEdge(int pos) {
+            return edges[pos];
+        }
+
+        //Parsing
+        //From XML
+        //TODO Figure out if this should be a string
+        public static SystemDiagram generateSystemDiagramFromXML(string xml) {
+            return null;
+        }
+
+        //From JSON
+
+        //Convert to GraphSynth
+        //TODO Figure out if this should be a string
+        public static SystemDiagram generateSystemDiagramFromJSON(string json) {
+            return null;
+        }
 
         public class Element {
             private string name;
