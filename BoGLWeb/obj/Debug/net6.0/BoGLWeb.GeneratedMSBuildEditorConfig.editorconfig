@@ -11,37 +11,41 @@ build_property.EnableTrimAnalyzer = true
 build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = BoGLWeb
 build_property.RootNamespace = BoGLWeb
-build_property.ProjectDir = C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\
+build_property.ProjectDir = C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb
+build_property.MSBuildProjectDirectory = C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/App.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/GraphProcessor.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/GraphProcessor.razor]
 build_metadata.AdditionalFiles.TargetPath = R3JhcGhQcm9jZXNzb3IucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/Pages/Index.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/TestPages/UndoRedoTest.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/TestPages/RuleRulesetTest.razor]
+build_metadata.AdditionalFiles.TargetPath = VGVzdFBhZ2VzXFJ1bGVSdWxlc2V0VGVzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/TestPages/UndoRedoTest.razor]
 build_metadata.AdditionalFiles.TargetPath = VGVzdFBhZ2VzXFVuZG9SZWRvVGVzdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/_Imports.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/Shared/MainLayout.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-8vt6731u30
 
-[C:/Users/bdane/Dropbox/PC/Documents/GitHub/BoGLWeb/BoGLWeb/BoGLWeb/Shared/NavMenu.razor]
+[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-4i8nsd1hgu
