@@ -27,6 +27,9 @@ namespace BoGLWeb {
         public class Element {
             private readonly string label;
 
+            //For graph visualization
+            //TODO Create a way to modify these values
+
             public Element(string label) {
                 this.label = label;
             }
