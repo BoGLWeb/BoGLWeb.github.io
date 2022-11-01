@@ -1,0 +1,36 @@
+﻿@using EditorHelper;
+@page "/undoredotest"
+<h3>UndoRedoTest</h3>
+<p>Current index: @list.Index()</p>
+<p>Current size: @list.Size()</p>
+<p>Current element: @list.Get()</p>
+<Button OnClick="undo">UndoAction</Button>
+<Button OnClick="redo">RedoAction</Button>
+<Button OnClick="edit">Edit</Button>
+<Button OnClick="clear">Clear</Button>
+@code {
+	/// The next element to be added to the <c>EditionList</c>
+	private int counter = 0;
+	/// The test <c>EditionList</c>
+	private EditionList<int> list = new();
+
+	/// Activates the test "undo" button to move the cursor backward in the list
+	public void undo() {
+		list.Prev();
+	}
+
+	/// Activates the test "redo" button to move the cursor forward in the list
+	public void redo() {
+		list.Next();
+	}
+
+	/// Activates the test "edit" button to add an element to the list
+	public void edit() {
+		list.Add(counter++);
+	}
+
+	/// Activates the test "clear" button to empty the list
+	public void clear() {
+		list.Clear();
+	}
+}
