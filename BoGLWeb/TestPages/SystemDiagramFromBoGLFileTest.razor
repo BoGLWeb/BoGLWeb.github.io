@@ -1,0 +1,35 @@
+﻿@page "/systemdiagramfromboglfiletest"
+@using static BoGLWeb.SystemDiagram
+
+<h3>SystemDiagramFromBoGLFileTest</h3>
+
+<p>
+    <input @bind="targetFile">Enter A Bogl File</input>
+</p>
+
+<p>
+    <button onclick="loadFile">Load File</button>
+</p>
+
+@foreach (Element e in sysDiagram.getElements()) {
+    <p>e.toString()</p>
+}
+
+<p>@xmlString</p>
+
+@code {
+    private string? targetFile;
+    private string xmlString;
+    private SystemDiagram sysDiagram;
+
+    public async Task loadBoglFile(){
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        genSystemDiagram();
+    }
+
+    public void genSystemDiagram(){
+        sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+    }
+}

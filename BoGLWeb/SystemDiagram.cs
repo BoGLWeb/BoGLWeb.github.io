@@ -36,6 +36,14 @@ namespace BoGLWeb {
             return edges[pos];
         }
 
+        public List<Element> getElements() {
+            return elements;
+        }
+
+        public List<Edge> getEdges() {
+            return edges;
+        }
+
         //Parsing
         //From XML
         //TODO Figure out if this should be a string
@@ -262,6 +270,21 @@ namespace BoGLWeb {
             public void setVelocity(string vel) {
                 velocityDir = vel;
             }
+
+            public string getName() {
+                return name;
+            }
+
+            public string toString() {
+                string output = "Element\n ";
+                output += name + "\n";
+
+                foreach (KeyValuePair<string, bool> modifier in modifiers) {
+                    output += modifier.Key + " " + modifier.Value + "\n";
+                }
+
+                return output;
+            }
         }
 
         public static Dictionary<string, bool> generateModifierDictionary() {
@@ -284,12 +307,17 @@ namespace BoGLWeb {
             public Edge(Element e1, Element e2) {
                 this.e1 = e1;
                 this.e2 = e2;
+                this.velocity = -1;
             }
 
             public Edge(Element e1, Element e2, int velocity) {
                 this.e1 = e1;
                 this.e2 = e2;
                 this.velocity = velocity;
+            }
+
+            public string toString() {
+                return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity;
             }
         }
     }
