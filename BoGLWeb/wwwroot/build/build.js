@@ -29,7 +29,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         svgMouseDown() { }
         svgMouseUp() { }
         pathMouseDown(d3Bond, bond) { }
-        nodeMouseUp(d3Elem, el) { }
         pathExtraRendering(path) { }
         addEdgeHover(group) { }
         addHover(image, hoverBox, box) { }
@@ -51,7 +50,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             })
                 .on("drag", function (args) {
                 graph.state.justDragged = true;
-                console.log(args);
                 graph.dragmove.call(graph, args);
             });
         }
@@ -111,9 +109,6 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             })
                 .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
-            })
-                .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
                 .call(this.drag);
             let group = newElements.append("g");
@@ -187,6 +182,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     class SystemDiagram extends BaseGraph_2.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
+            this.edgeOrigin = null;
             let graph = this;
             d3.select(window).on("keydown", function () {
                 graph.svgKeyDown.call(graph);
@@ -241,6 +237,12 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             })
                 .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "hidden");
+            })
+                .on("mouseup", function (d) {
+                graph.handleEdge.call(graph, d);
+            })
+                .on("mousedown", function (d) {
+                graph.handleEdge.call(graph, d);
             });
         }
         addHover(image, hoverBox, box) {
@@ -249,7 +251,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.edgeCircle.style("visibility", "hidden");
             })
                 .on("mouseup", function (d) {
-                graph.imageMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
+                graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
             })
                 .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "visible");
@@ -259,6 +261,12 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             })
                 .on("mouseenter", function () {
                 graph.edgeCircle.style("visibility", "visible");
+            })
+                .on("mouseup", function (d) {
+                graph.handleEdge.call(graph, d);
+            })
+                .on("mousedown", function (d) {
+                graph.handleEdge.call(graph, d);
             });
         }
         spliceLinksForNode(el) {
@@ -309,6 +317,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
         }
         nodeMouseDown(el) {
+            console.log("Node mouse down");
             d3.event.stopPropagation();
             this.state.mouseDownNode = el;
             if (d3.event.shiftKey) {
@@ -318,15 +327,26 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 return;
             }
         }
+        handleEdge(el) {
+            d3.event.stopPropagation();
+            if (this.edgeOrigin) {
+                if (this.edgeOrigin === el) {
+                    this.edgeOrigin = null;
+                }
+                else {
+                    console.log("Make edge and stop dragging");
+                    this.edgeOrigin = null;
+                }
+            }
+            else {
+                this.edgeOrigin = el;
+                console.log("Start edge dragging");
+            }
+        }
         nodeMouseUp(d3Elem, el) {
-            let graph = this;
-            let state = graph.state;
-            state.shiftNodeDrag = false;
-            d3Elem.classed(this.bondClass, false);
+            let state = this.state;
             let mouseDownNode = state.mouseDownNode;
-            if (!mouseDownNode)
-                return;
-            this.dragBond.classed("hidden", true);
+            let graph = this;
             if (mouseDownNode !== el) {
                 let newEdge = new BondGraphBond(mouseDownNode, el);
                 let filtRes = this.bondSelection.filter(function (d) {
@@ -340,28 +360,25 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     this.updateGraph();
                 }
             }
-            state.mouseDownNode = null;
-            return;
-        }
-        imageMouseUp(d3Elem, el) {
-            let state = this.state;
-            if (state.justDragged) {
-                state.justDragged = false;
-            }
             else {
-                if (state.selectedBond) {
-                    this.removeSelectFromEdge();
-                }
-                let prevNode = state.selectedElement;
-                if (!prevNode || prevNode.id !== el.id) {
-                    this.replaceSelectNode(d3Elem, el);
+                if (state.justDragged) {
+                    state.justDragged = false;
                 }
                 else {
-                    this.removeSelectFromNode();
+                    if (state.selectedBond) {
+                        this.removeSelectFromEdge();
+                    }
+                    let prevNode = state.selectedElement;
+                    if (!prevNode || prevNode.id !== el.id) {
+                        this.replaceSelectNode(d3Elem, el);
+                    }
+                    else {
+                        this.removeSelectFromNode();
+                    }
                 }
+                state.mouseDownNode = null;
+                return;
             }
-            state.mouseDownNode = null;
-            return;
         }
         svgMouseDown() {
             this.state.graphMouseDown = true;
@@ -409,7 +426,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
         }
         dragmove(el) {
-            console.log("moving");
+            console.log("dragmove");
             if (this.state.shiftNodeDrag) {
                 this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             }

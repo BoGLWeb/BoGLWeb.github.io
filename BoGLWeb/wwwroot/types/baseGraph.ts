@@ -46,7 +46,6 @@ class BaseGraph {
     svgMouseDown() { }
     svgMouseUp() { }
     pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) { }
-    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) { }
     pathExtraRendering(path: BGBondSelection) { }
     addEdgeHover(group: BGElementSelection) { }
     addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) { }
@@ -70,7 +69,6 @@ class BaseGraph {
             })
             .on("drag", function (args) {
                 graph.state.justDragged = true;
-                console.log(args)
                 graph.dragmove.call(graph, args);
             });
     }
@@ -145,9 +143,6 @@ class BaseGraph {
             })
             .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
-            })
-            .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this), d);
             })
             .call(this.drag);
 

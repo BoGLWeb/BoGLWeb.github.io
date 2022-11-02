@@ -98,7 +98,7 @@ g.selected > g > g > .outline {
 
 g {
     fill: none;
-    pointer-events: bounding-box;
+    pointer-events: all;
 }
 
 .boglElem {
@@ -325,4 +325,8 @@ path.link.hidden {
 
 .topMenu {
     font-weight: bold;
+}
+
+circle {
+    pointer-events: none;
 }
