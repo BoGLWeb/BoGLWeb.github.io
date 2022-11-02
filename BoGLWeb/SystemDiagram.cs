@@ -77,7 +77,9 @@ namespace BoGLWeb {
                 Stack<string> braceStack = new Stack<string>();
 
                 //The head of the queue should always be a brace here so we can pop it and add it to the stack
-                braceStack.Push(tokenQueue.Dequeue());
+                string stackTok = tokenQueue.Dequeue();
+                //Console.WriteLine(stackTok);
+                braceStack.Push(stackTok);
 
                 //We expect the next string in the queue to be "name"
                 string name = "";
@@ -85,11 +87,13 @@ namespace BoGLWeb {
                 double y = 0.0;
                 List<string> modifiers = new List<string>();
 
-                if (tokenQueue.Dequeue().Equals("name")) {
+                string tok = tokenQueue.Dequeue();
+                if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
+                    Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
                     return null;
                 }
 
@@ -98,6 +102,7 @@ namespace BoGLWeb {
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
+                    Console.WriteLine("X was missing. Got: <" + tok + "> instead");
                     return null;
                 }
 
@@ -106,6 +111,7 @@ namespace BoGLWeb {
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
+                    Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
                     return null;
                 }
 
@@ -113,22 +119,23 @@ namespace BoGLWeb {
                     //Add the brace to the stack
                     braceStack.Push(tokenQueue.Dequeue());
                     while (braceStack.Count != 1) {
-                        string tok = tokenQueue.Dequeue();
+                        string velTok = tokenQueue.Dequeue();
 
-                        if (tok.Equals("VELOCITY")) {
-                            modifiers.Add(tok + " " + tokenQueue.Dequeue());
-                        } else {
-                            modifiers.Add(tok);
+                        if (velTok.Equals("VELOCITY")) {
+                            modifiers.Add(velTok + " " + tokenQueue.Dequeue());
+                        } else if (!velTok.Equals("}")) {
+                            modifiers.Add(velTok);
                         }
 
                         //Pop modifier brace off the stack is we find a closing brace
-                        if (tok.Equals("}")) {
+                        if (velTok.Equals("}")) {
                             braceStack.Pop();
                         }
                     }
                 } else {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
+                    Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
                     return null;
                 }
 
@@ -141,12 +148,18 @@ namespace BoGLWeb {
                         e.addModifier(str);
                     }
                 }
+
+                elements.Add(e);
+
+                if (tokenQueue.Dequeue().Equals("}")) {
+                    braceStack.Pop();
+                }
             }
 
             //Parse Arcs
             List<Edge> arcs = new List<Edge>();
             Queue<string> arcsTokenQueue = new Queue<string>();
-            for (int i = elementsPos + 1; i < arcsPos; i++) {
+            for (int i = arcsPos + 1; i < tokens.Count; i++) {
                 arcsTokenQueue.Enqueue(tokens[i]);
             }
 
@@ -160,46 +173,55 @@ namespace BoGLWeb {
                         int e2 = 0;
                         int velocity = -1;
 
+
                         //Check element1
-                        if (arcsTokenQueue.Dequeue().Equals("element1")) {
+                        string tok = arcsTokenQueue.Dequeue();
+                        if (tok.Equals("element1")) {
                             e1 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
+                            Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
                             return null;
                         }
 
                         //Check element2
-                        if (arcsTokenQueue.Dequeue().Equals("element2")) {
+                        tok = arcsTokenQueue.Dequeue();
+                        if (tok.Equals("element2")) {
                             e2 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
+                            Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
                             return null;
                         }
 
                         //Modifiers
+                        tok = arcsTokenQueue.Dequeue();
                         //TODO Confirm that this is the only modifier
-                        if (arcsTokenQueue.Dequeue().Equals("velocity")) {
+                        if (tok.Equals("velocity")) {
                             velocity = Convert.ToInt32(arcsTokenQueue.Dequeue());
+                        } else if (tok.Equals("}")) {
+                            foundCloseBrace = true;
                         }
 
                         if (velocity == -1) {
                             arcs.Add(new Edge(elements[e1], elements[e2]));
                         } else {
                             arcs.Add(new Edge(elements[e1], elements[e2], velocity));
+                            foundCloseBrace = arcsTokenQueue.Dequeue().Equals("}");
                         }
-
-                        foundCloseBrace = arcsTokenQueue.Dequeue().Equals("}");
                     }
                 } else {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
+                    Console.WriteLine("Missing open brace");
                     return null;
                 }
             }
 
             //Create system diagram
+            Console.WriteLine("HERE");
             return new SystemDiagram(header, elements, arcs);
         }
 

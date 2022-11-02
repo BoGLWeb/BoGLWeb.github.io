@@ -4,32 +4,36 @@
 <h3>SystemDiagramFromBoGLFileTest</h3>
 
 <p>
-    <input @bind="targetFile">Enter A Bogl File</input>
+    System Diagram String: <br>
+    @sysDiagramString
 </p>
 
 <p>
-    <button onclick="loadFile">Load File</button>
+    System Diagram XML: <br>
+    @xmlString
 </p>
 
-@foreach (Element e in sysDiagram.getElements()) {
-    <p>e.toString()</p>
-}
-
-<p>@xmlString</p>
-
 @code {
-    private string? targetFile;
     private string xmlString;
     private SystemDiagram sysDiagram;
+    private string sysDiagramString = "";
 
-    public async Task loadBoglFile(){
+    protected override async Task OnInitializedAsync(){
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(xmlString);
         genSystemDiagram();
     }
 
     public void genSystemDiagram(){
         sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        foreach(Element e in  sysDiagram.getElements()) {
+            sysDiagramString += e.toString();
+        }
+
+        foreach(Edge e in sysDiagram.getEdges()) {
+            sysDiagramString += e.toString();
+        }
     }
 }

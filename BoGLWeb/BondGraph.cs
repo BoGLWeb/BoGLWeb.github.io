@@ -43,14 +43,14 @@ namespace BoGLWeb {
             private readonly bool direction;
 
             //True means the causal stroke is at the source
-            private readonly bool causalSroke;
+            private readonly bool causalStroke;
 
             private Bond(Element source, Element sink, string label, bool direction, bool causalStroke) {
                 this.source = source;
                 this.sink = sink;
                 this.label = label;
                 this.direction = direction;
-                this.causalSroke = causalSroke;
+                this.causalStroke = causalStroke;
             }
         }
     }
