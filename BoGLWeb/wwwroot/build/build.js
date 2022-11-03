@@ -29,8 +29,9 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
         svgMouseDown() { }
         svgMouseUp() { }
         pathMouseDown(d3Bond, bond) { }
-        nodeMouseUp(d3Elem, el) { }
         pathExtraRendering(path) { }
+        addEdgeHover(group) { }
+        addHover(image, hoverBox, box) { }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
         }
@@ -109,26 +110,27 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
-                .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this), d);
-            })
                 .call(this.drag);
             let group = newElements.append("g");
-            group.attr("style", "fill:inherit")
+            group.attr("style", "fill:inherit;")
                 .attr("index", function (d, i) { return d.id.toString(); });
-            let box = group.append("rect");
-            box.attr("width", "60px")
+            this.addEdgeHover(group);
+            let hoverBox = group.append("g");
+            let box = hoverBox.append("rect");
+            box.classed("outline", true)
+                .attr("width", "60px")
                 .attr("height", "60px")
                 .attr("x", "-30px")
-                .attr("y", "-30px")
-                .attr("style", "fill:inherit");
-            let image = group.append("image");
-            image.attr("href", function (d) { return d.img; })
+                .attr("y", "-30px");
+            let image = hoverBox.append("image");
+            image.attr("href", function (d, i) { return d.img; })
+                .classed("hoverImg", true)
                 .attr("x", "-25px")
                 .attr("y", "-25px")
                 .attr("preserveAspectRatio", "xMidYMid meet")
                 .attr("height", "50px")
                 .attr("width", "50px");
+            this.addHover(image, hoverBox, box);
             this.elementSelection.exit().remove();
         }
         ;
@@ -180,6 +182,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     class SystemDiagram extends BaseGraph_2.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
+            this.edgeOrigin = null;
             let graph = this;
             d3.select(window).on("keydown", function () {
                 graph.svgKeyDown.call(graph);
@@ -189,9 +192,94 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             });
             svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
             svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+            this.edgeCircle = this.svgG.append("circle");
+            this.edgeCircle.attr("r", "5")
+                .attr("fill", "green")
+                .attr("style", "cursor: pointer; visibility: hidden;");
+        }
+        moveCircle(e) {
+            let coordinates = d3.mouse(d3.event.currentTarget);
+            let x = coordinates[0];
+            let y = coordinates[1];
+            let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+            let fourth = 1 / 4 * Math.PI;
+            let s = 30;
+            let coords = [];
+            if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
+                coords = [s, -s * Math.tan(theta)];
+            }
+            else if (theta >= fourth && theta < 3 * fourth) {
+                coords = [s * 1 / Math.tan(theta), -s];
+            }
+            else if (theta >= 3 * fourth && theta < 5 * fourth) {
+                coords = [-s, s * Math.tan(theta)];
+            }
+            else {
+                coords = [-s * 1 / Math.tan(theta), s];
+            }
+            this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        }
+        setFollowingEdge(sourceNode) {
+            this.edgeOrigin = sourceNode;
+            if (sourceNode == null) {
+                this.dragBond.classed("hidden", true);
+            }
+            else {
+                this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+                this.dragBond.classed("hidden", false);
+            }
         }
         pathExtraRendering(paths) {
             paths.classed("hoverablePath", true);
+        }
+        addEdgeHover(group) {
+            let graph = this;
+            let edgeHover = group.append("rect");
+            edgeHover.attr("width", "80px")
+                .attr("height", "80px")
+                .attr("x", "-40px")
+                .attr("y", "-40px")
+                .on("mousemove", function (e) {
+                graph.moveCircle.call(graph, e);
+            })
+                .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            })
+                .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "hidden");
+            })
+                .on("mouseup", function (d) {
+                graph.handleEdgeUp.call(graph, d);
+            })
+                .on("mousedown", function (d) {
+                graph.handleEdgeDown.call(graph, d);
+            })
+                .call(this.edgeDrag);
+        }
+        addHover(image, hoverBox, box) {
+            let graph = this;
+            image.on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "hidden");
+            })
+                .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
+            })
+                .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            });
+            box.on("mousemove", function (e) {
+                graph.moveCircle.call(graph, e);
+            })
+                .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            })
+                .on("mouseup", function (d) {
+                graph.handleEdgeUp.call(graph, d);
+            })
+                .on("mousedown", function (d) {
+                graph.handleEdgeDown.call(graph, d);
+            })
+                .call(this.edgeDrag);
         }
         spliceLinksForNode(el) {
             let graph = this;
@@ -216,15 +304,15 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
             this.state.selectedElement = el;
         }
-        removeSelectFromNode() {
-            let graph = this;
-            this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
-            this.state.selectedElement = null;
-        }
         removeSelectFromEdge() {
             let graph = this;
             graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
             this.state.selectedBond = null;
+        }
+        removeSelectFromNode() {
+            let graph = this;
+            this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
+            this.state.selectedElement = null;
         }
         pathMouseDown(d3Bond, bond) {
             d3.event.stopPropagation();
@@ -240,43 +328,43 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 this.removeSelectFromEdge();
             }
         }
+        handleEdgeDown(el) {
+            d3.event.stopPropagation();
+            if (!this.edgeOrigin) {
+                this.setFollowingEdge(el);
+                d3.event.stopPropagation();
+            }
+        }
+        handleEdgeUp(el) {
+            d3.event.stopPropagation();
+            if (this.edgeOrigin && this.edgeOrigin != el) {
+                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.setFollowingEdge(null);
+                this.edgeOrigin = null;
+                this.updateGraph();
+            }
+            else {
+                this.setFollowingEdge(el);
+                d3.event.stopPropagation();
+            }
+        }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
             this.state.mouseDownNode = el;
-            if (d3.event.shiftKey) {
-                this.state.shiftNodeDrag = d3.event.shiftKey;
-                this.dragBond.attr("el", "M" + el.x + "," + el.y + "L" + el.x + "," + el.y);
-                this.dragBond.classed("hidden", false);
-                return;
-            }
+            this.state.justDragged = false;
         }
         nodeMouseUp(d3Elem, el) {
-            let graph = this;
-            let state = graph.state;
-            state.shiftNodeDrag = false;
-            d3Elem.classed(this.bondClass, false);
-            let mouseDownNode = state.mouseDownNode;
-            if (!mouseDownNode)
-                return;
-            this.dragBond.classed("hidden", true);
-            if (mouseDownNode !== el) {
-                let newEdge = new BondGraphBond(mouseDownNode, el);
-                let filtRes = this.bondSelection.filter(function (d) {
-                    if (d.source === newEdge.target && d.target === newEdge.source) {
-                        graph.bonds.splice(graph.bonds.indexOf(d), 1);
-                    }
-                    return d.source === newEdge.source && d.target === newEdge.target;
-                });
-                if (!filtRes[0].length) {
-                    this.bonds.push(newEdge);
-                    this.updateGraph();
-                }
+            let state = this.state;
+            d3.event.stopPropagation();
+            state.mouseDownNode = null;
+            if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
+                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.setFollowingEdge(null);
+                this.edgeOrigin = null;
+                this.updateGraph();
             }
             else {
-                if (state.justDragged) {
-                    state.justDragged = false;
-                }
-                else {
+                if (!state.justDragged) {
                     if (state.selectedBond) {
                         this.removeSelectFromEdge();
                     }
@@ -289,14 +377,14 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     }
                 }
             }
-            state.mouseDownNode = null;
-            return;
+            state.justDragged = false;
         }
         svgMouseDown() {
             this.state.graphMouseDown = true;
         }
         svgMouseUp() {
             let state = this.state;
+            this.setFollowingEdge(null);
             if (this.draggingElement) {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
@@ -337,19 +425,38 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     break;
             }
         }
+        svgKeyUp() {
+            this.state.lastKeyDown = -1;
+        }
+        get edgeDrag() {
+            let graph = this;
+            return d3.behavior.drag()
+                .origin(function (d) {
+                return { x: d.x, y: d.y };
+            })
+                .on("drag", function (d) {
+                graph.dragmoveEdge.call(graph, d);
+            });
+        }
         dragmove(el) {
-            if (this.state.shiftNodeDrag) {
-                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-            }
-            else {
+            if (this.state.mouseDownNode) {
                 el.x += d3.event.dx;
                 el.y += d3.event.dy;
                 this.updateGraph();
             }
         }
-        svgKeyUp() {
-            this.state.lastKeyDown = -1;
+        dragmoveEdge(el) {
+            if (this.edgeOrigin) {
+                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            }
         }
+        zoomed() {
+            if (!this.edgeOrigin) {
+                this.state.justScaleTransGraph = true;
+                this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+            }
+        }
+        ;
     }
     exports.SystemDiagram = SystemDiagram;
 });

@@ -1,4 +1,4 @@
-﻿import { BGBondSelection, BGElementSelection, SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, BGElementSelection, Selection, SVGSelection } from "../type_libraries/d3-selection";
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 
 class BaseGraph {
@@ -46,8 +46,9 @@ class BaseGraph {
     svgMouseDown() { }
     svgMouseUp() { }
     pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) { }
-    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) { }
     pathExtraRendering(path: BGBondSelection) { }
+    addEdgeHover(group: BGElementSelection) { }
+    addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) { }
 
     // mousedown on element
     nodeMouseDown(el: BondGraphElement) {
@@ -100,9 +101,9 @@ class BaseGraph {
         paths.classed(this.selectedClass, function (d) {
             return d === graph.state.selectedBond;
         })
-        .attr("d", function (d) {
-            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-        });
+            .attr("d", function (d) {
+                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            });
 
         // add new bondSelection
         paths.enter()
@@ -143,29 +144,33 @@ class BaseGraph {
             .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
-            .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this), d);
-            })
             .call(this.drag);
 
         let group = newElements.append("g");
-        group.attr("style", "fill:inherit")
+        group.attr("style", "fill:inherit;")
             .attr("index", function (d, i) { return d.id.toString(); });
 
-        let box = group.append("rect");
-        box.attr("width", "60px")
+        this.addEdgeHover(group);
+
+        let hoverBox = group.append("g");
+
+        let box = hoverBox.append("rect");
+        box.classed("outline", true)
+            .attr("width", "60px")
             .attr("height", "60px")
             .attr("x", "-30px")
-            .attr("y", "-30px")
-            .attr("style", "fill:inherit");
+            .attr("y", "-30px");
 
-        let image = group.append("image");
-        image.attr("href", function (d) { return d.img; })
+        let image = hoverBox.append("image");
+        image.attr("href", function (d, i) { return d.img; })
+            .classed("hoverImg", true)
             .attr("x", "-25px")
             .attr("y", "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("height", "50px")
             .attr("width", "50px");
+
+        this.addHover(image, hoverBox, box);
 
         // remove old elements
         this.elementSelection.exit().remove();
