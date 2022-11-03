@@ -197,9 +197,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 .attr("fill", "green")
                 .attr("style", "cursor: pointer; visibility: hidden;");
         }
-        pathExtraRendering(paths) {
-            paths.classed("hoverablePath", true);
-        }
         moveCircle(e) {
             let coordinates = d3.mouse(d3.event.currentTarget);
             let x = coordinates[0];
@@ -222,6 +219,19 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
             this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
         }
+        setFollowingEdge(sourceNode) {
+            this.edgeOrigin = sourceNode;
+            if (sourceNode == null) {
+                this.dragBond.classed("hidden", true);
+            }
+            else {
+                this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+                this.dragBond.classed("hidden", false);
+            }
+        }
+        pathExtraRendering(paths) {
+            paths.classed("hoverablePath", true);
+        }
         addEdgeHover(group) {
             let graph = this;
             let edgeHover = group.append("rect");
@@ -239,11 +249,12 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.edgeCircle.style("visibility", "hidden");
             })
                 .on("mouseup", function (d) {
-                graph.handleEdge.call(graph, d);
+                graph.handleEdgeUp.call(graph, d);
             })
                 .on("mousedown", function (d) {
-                graph.handleEdge.call(graph, d);
-            });
+                graph.handleEdgeDown.call(graph, d);
+            })
+                .call(this.edgeDrag);
         }
         addHover(image, hoverBox, box) {
             let graph = this;
@@ -263,11 +274,12 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.edgeCircle.style("visibility", "visible");
             })
                 .on("mouseup", function (d) {
-                graph.handleEdge.call(graph, d);
+                graph.handleEdgeUp.call(graph, d);
             })
                 .on("mousedown", function (d) {
-                graph.handleEdge.call(graph, d);
-            });
+                graph.handleEdgeDown.call(graph, d);
+            })
+                .call(this.edgeDrag);
         }
         spliceLinksForNode(el) {
             let graph = this;
@@ -292,15 +304,15 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
             this.state.selectedElement = el;
         }
-        removeSelectFromNode() {
-            let graph = this;
-            this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
-            this.state.selectedElement = null;
-        }
         removeSelectFromEdge() {
             let graph = this;
             graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
             this.state.selectedBond = null;
+        }
+        removeSelectFromNode() {
+            let graph = this;
+            this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
+            this.state.selectedElement = null;
         }
         pathMouseDown(d3Bond, bond) {
             d3.event.stopPropagation();
@@ -316,67 +328,66 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 this.removeSelectFromEdge();
             }
         }
+        handleEdgeDown(el) {
+            console.log("Edge down");
+            d3.event.stopPropagation();
+            if (!this.edgeOrigin) {
+                this.setFollowingEdge(el);
+                console.log("Start edge dragging");
+                d3.event.stopPropagation();
+            }
+        }
+        handleEdgeUp(el) {
+            console.log("Edge up");
+            d3.event.stopPropagation();
+            if (this.edgeOrigin && this.edgeOrigin != el) {
+                console.log("Make edge and stop dragging");
+                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.setFollowingEdge(null);
+                this.edgeOrigin = null;
+                this.updateGraph();
+            }
+            else {
+                this.setFollowingEdge(el);
+                console.log("Start edge dragging");
+                d3.event.stopPropagation();
+            }
+        }
         nodeMouseDown(el) {
             console.log("Node mouse down");
             d3.event.stopPropagation();
             this.state.mouseDownNode = el;
-            if (d3.event.shiftKey) {
-                this.state.shiftNodeDrag = d3.event.shiftKey;
-                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-                this.dragBond.classed("hidden", false);
-                return;
-            }
-        }
-        handleEdge(el) {
-            d3.event.stopPropagation();
-            if (this.edgeOrigin) {
-                if (this.edgeOrigin === el) {
-                    this.edgeOrigin = null;
-                }
-                else {
-                    console.log("Make edge and stop dragging");
-                    this.edgeOrigin = null;
-                }
-            }
-            else {
-                this.edgeOrigin = el;
-                console.log("Start edge dragging");
-            }
+            this.state.justDragged = false;
         }
         nodeMouseUp(d3Elem, el) {
             let state = this.state;
-            let mouseDownNode = state.mouseDownNode;
-            let graph = this;
-            if (mouseDownNode !== el) {
-                let newEdge = new BondGraphBond(mouseDownNode, el);
-                let filtRes = this.bondSelection.filter(function (d) {
-                    if (d.source === newEdge.target && d.target === newEdge.source) {
-                        graph.bonds.splice(graph.bonds.indexOf(d), 1);
-                    }
-                    return d.source === newEdge.source && d.target === newEdge.target;
-                });
-                if (!filtRes[0].length) {
-                    this.bonds.push(newEdge);
-                    this.updateGraph();
-                }
+            console.log('node mouse up');
+            d3.event.stopPropagation();
+            state.mouseDownNode = null;
+            if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
+                console.log("Make edge and stop dragging (node up)");
+                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.setFollowingEdge(null);
+                this.edgeOrigin = null;
+                state.justDragged = false;
+                this.updateGraph();
             }
             else {
-                if (state.justDragged) {
-                    state.justDragged = false;
-                }
-                else {
+                if (!state.justDragged) {
                     if (state.selectedBond) {
                         this.removeSelectFromEdge();
                     }
                     let prevNode = state.selectedElement;
                     if (!prevNode || prevNode.id !== el.id) {
+                        console.log("Change select to ", el);
                         this.replaceSelectNode(d3Elem, el);
                     }
                     else {
+                        console.log("Remove select");
                         this.removeSelectFromNode();
                     }
                 }
-                state.mouseDownNode = null;
+                state.justDragged = false;
                 return;
             }
         }
@@ -384,7 +395,9 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             this.state.graphMouseDown = true;
         }
         svgMouseUp() {
+            console.log("SVG mouse up");
             let state = this.state;
+            this.setFollowingEdge(null);
             if (this.draggingElement) {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
@@ -425,20 +438,40 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     break;
             }
         }
+        svgKeyUp() {
+            this.state.lastKeyDown = -1;
+        }
+        get edgeDrag() {
+            let graph = this;
+            return d3.behavior.drag()
+                .origin(function (d) {
+                return { x: d.x, y: d.y };
+            })
+                .on("drag", function (d) {
+                graph.dragmoveEdge.call(graph, d);
+            });
+        }
         dragmove(el) {
             console.log("dragmove");
-            if (this.state.shiftNodeDrag) {
-                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-            }
-            else {
+            if (this.state.mouseDownNode) {
                 el.x += d3.event.dx;
                 el.y += d3.event.dy;
                 this.updateGraph();
             }
         }
-        svgKeyUp() {
-            this.state.lastKeyDown = -1;
+        dragmoveEdge(el) {
+            console.log("dragmove edge");
+            if (this.edgeOrigin) {
+                this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            }
         }
+        zoomed() {
+            if (!this.edgeOrigin) {
+                this.state.justScaleTransGraph = true;
+                this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+            }
+        }
+        ;
     }
     exports.SystemDiagram = SystemDiagram;
 });

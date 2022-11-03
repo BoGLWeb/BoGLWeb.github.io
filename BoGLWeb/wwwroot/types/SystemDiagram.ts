@@ -1,5 +1,5 @@
 ﻿import { BGBondSelection, BGElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { DragEvent } from "../type_libraries/d3";
+import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
 
 export class SystemDiagram extends BaseGraph {
@@ -26,10 +26,6 @@ export class SystemDiagram extends BaseGraph {
             .attr("style", "cursor: pointer; visibility: hidden;");
     }
 
-    pathExtraRendering(paths: BGBondSelection) {
-        paths.classed("hoverablePath", true);
-    }
-
     moveCircle(e: BondGraphElement) {
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
         let x = coordinates[0];
@@ -51,6 +47,21 @@ export class SystemDiagram extends BaseGraph {
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
     }
 
+    setFollowingEdge(sourceNode: BondGraphElement) {
+        this.edgeOrigin = sourceNode;
+        if (sourceNode == null) {
+            // hide edge
+            this.dragBond.classed("hidden", true);
+        } else {
+            this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.classed("hidden", false);
+        }
+    }
+
+    pathExtraRendering(paths: BGBondSelection) {
+        paths.classed("hoverablePath", true);
+    }
+
     addEdgeHover(group: BGElementSelection) {
         let graph = this;
 
@@ -69,11 +80,12 @@ export class SystemDiagram extends BaseGraph {
                 graph.edgeCircle.style("visibility", "hidden");
             })
             .on("mouseup", function (d) {
-                graph.handleEdge.call(graph, d);
+                graph.handleEdgeUp.call(graph, d);
             })
             .on("mousedown", function (d) {
-                graph.handleEdge.call(graph, d);
-            });
+                graph.handleEdgeDown.call(graph, d);
+            })
+            .call(this.edgeDrag);
     }
 
     addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) {
@@ -98,11 +110,12 @@ export class SystemDiagram extends BaseGraph {
             graph.edgeCircle.style("visibility", "visible");
         })
         .on("mouseup", function (d) {
-            graph.handleEdge.call(graph, d);
+            graph.handleEdgeUp.call(graph, d);
         })
         .on("mousedown", function (d) {
-            graph.handleEdge.call(graph, d);
-        });
+            graph.handleEdgeDown.call(graph, d);
+        })
+        .call(this.edgeDrag);
     }
 
     // remove bonds associated with a node
@@ -133,16 +146,16 @@ export class SystemDiagram extends BaseGraph {
         this.state.selectedElement = el;
     }
 
-    removeSelectFromNode() {
-        let graph = this;
-        this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
-        this.state.selectedElement = null;
-    }
-
     removeSelectFromEdge() {
         let graph = this;
         graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
         this.state.selectedBond = null;
+    }
+
+    removeSelectFromNode() {
+        let graph = this;
+        this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
+        this.state.selectedElement = null;
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) {
@@ -161,62 +174,48 @@ export class SystemDiagram extends BaseGraph {
         }
     }
 
-    // mousedown on element
-    nodeMouseDown(el: BondGraphElement) {
-        console.log("Node mouse down");
+    handleEdgeDown(el: BondGraphElement) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = el;
-        if ((<KeyboardEvent>d3.event).shiftKey) {
-            this.state.shiftNodeDrag = (<KeyboardEvent>d3.event).shiftKey;
-            // reposition dragged directed edge
-            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-            this.dragBond.classed("hidden", false);
-            return;
+        if (!this.edgeOrigin) {
+            this.setFollowingEdge(el);
+            (<Event>d3.event).stopPropagation()
         }
     }
 
-    // mouseup on elements
-    handleEdge(el: BondGraphElement) {
-        (<Event> d3.event).stopPropagation();
-        if (this.edgeOrigin) {
-            if (this.edgeOrigin === el) {
-                this.edgeOrigin = null;
-            } else {
-                // make edge
-                console.log("Make edge and stop dragging");
-                this.edgeOrigin = null;
-            }
+    handleEdgeUp(el: BondGraphElement) {
+        (<Event>d3.event).stopPropagation();
+        if (this.edgeOrigin && this.edgeOrigin != el) {
+            this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+            this.setFollowingEdge(null);
+            this.edgeOrigin = null;
+            this.updateGraph();
         } else {
-            this.edgeOrigin = el;
-            console.log("Start edge dragging");
-            // start dragging edge
+            this.setFollowingEdge(el);
+            (<Event>d3.event).stopPropagation()
         }
+    }
+
+    // mousedown on element
+    nodeMouseDown(el: BondGraphElement) {
+        (<Event>d3.event).stopPropagation();
+        this.state.mouseDownNode = el;
+        this.state.justDragged = false;
     }
 
     nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) {
         let state = this.state;
-        let mouseDownNode = state.mouseDownNode;
-        let graph = this;
 
-        if (mouseDownNode !== el) {
-            // we"re in a different node: create new edge for mousedown edge and add to graph
-            let newEdge = new BondGraphBond(mouseDownNode, el);
-            let filtRes = this.bondSelection.filter(function (d) {
-                if (d.source === newEdge.target && d.target === newEdge.source) {
-                    graph.bonds.splice(graph.bonds.indexOf(d), 1);
-                }
-                return d.source === newEdge.source && d.target === newEdge.target;
-            });
-            if (!filtRes[0].length) {
-                this.bonds.push(newEdge);
-                this.updateGraph();
-            }
+        (<Event>d3.event).stopPropagation();
+
+        state.mouseDownNode = null;
+        if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
+            this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+            this.setFollowingEdge(null);
+            this.edgeOrigin = null;
+            this.updateGraph();
         } else {
             // we"re in the same node
-            if (state.justDragged) {
-                // dragged, not clicked
-                state.justDragged = false;
-            } else {
+            if (!state.justDragged) {
                 if (state.selectedBond) {
                     this.removeSelectFromEdge();
                 }
@@ -228,9 +227,8 @@ export class SystemDiagram extends BaseGraph {
                     this.removeSelectFromNode();
                 }
             }
-            state.mouseDownNode = null;
-            return;
         }
+        state.justDragged = false;
     }
 
     // mousedown on main svg
@@ -241,6 +239,7 @@ export class SystemDiagram extends BaseGraph {
     // mouseup on main svg
     svgMouseUp() {
         let state = this.state;
+        this.setFollowingEdge(null);
         if (this.draggingElement) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
@@ -289,18 +288,39 @@ export class SystemDiagram extends BaseGraph {
         }
     }
 
+    svgKeyUp() {
+        this.state.lastKeyDown = -1;
+    }
+
+    get edgeDrag() {
+        let graph = this;
+        return d3.behavior.drag()
+            .origin(function (d) {
+                return { x: d.x, y: d.y };
+            })
+            .on("drag", function (d) {
+                graph.dragmoveEdge.call(graph, d);
+            });
+    }
+
     dragmove(el: BondGraphElement) {
-        console.log("dragmove")
-        if (this.state.shiftNodeDrag) {
-            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-        } else {
+        if (this.state.mouseDownNode) {
             el.x += (<DragEvent>d3.event).dx;
             el.y += (<DragEvent>d3.event).dy;
             this.updateGraph();
         }
     }
 
-    svgKeyUp() {
-        this.state.lastKeyDown = -1;
+    dragmoveEdge(el: BondGraphElement) {
+        if (this.edgeOrigin) {
+            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+        }
     }
+
+    zoomed() {
+        if (!this.edgeOrigin) {
+            this.state.justScaleTransGraph = true;
+            this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+        }
+    };
 }
