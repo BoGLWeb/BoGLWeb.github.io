@@ -329,19 +329,15 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
         }
         handleEdgeDown(el) {
-            console.log("Edge down");
             d3.event.stopPropagation();
             if (!this.edgeOrigin) {
                 this.setFollowingEdge(el);
-                console.log("Start edge dragging");
                 d3.event.stopPropagation();
             }
         }
         handleEdgeUp(el) {
-            console.log("Edge up");
             d3.event.stopPropagation();
             if (this.edgeOrigin && this.edgeOrigin != el) {
-                console.log("Make edge and stop dragging");
                 this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
                 this.setFollowingEdge(null);
                 this.edgeOrigin = null;
@@ -349,27 +345,22 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
             else {
                 this.setFollowingEdge(el);
-                console.log("Start edge dragging");
                 d3.event.stopPropagation();
             }
         }
         nodeMouseDown(el) {
-            console.log("Node mouse down");
             d3.event.stopPropagation();
             this.state.mouseDownNode = el;
             this.state.justDragged = false;
         }
         nodeMouseUp(d3Elem, el) {
             let state = this.state;
-            console.log('node mouse up');
             d3.event.stopPropagation();
             state.mouseDownNode = null;
             if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-                console.log("Make edge and stop dragging (node up)");
                 this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
                 this.setFollowingEdge(null);
                 this.edgeOrigin = null;
-                state.justDragged = false;
                 this.updateGraph();
             }
             else {
@@ -379,23 +370,19 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                     }
                     let prevNode = state.selectedElement;
                     if (!prevNode || prevNode.id !== el.id) {
-                        console.log("Change select to ", el);
                         this.replaceSelectNode(d3Elem, el);
                     }
                     else {
-                        console.log("Remove select");
                         this.removeSelectFromNode();
                     }
                 }
-                state.justDragged = false;
-                return;
             }
+            state.justDragged = false;
         }
         svgMouseDown() {
             this.state.graphMouseDown = true;
         }
         svgMouseUp() {
-            console.log("SVG mouse up");
             let state = this.state;
             this.setFollowingEdge(null);
             if (this.draggingElement) {
@@ -452,7 +439,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             });
         }
         dragmove(el) {
-            console.log("dragmove");
             if (this.state.mouseDownNode) {
                 el.x += d3.event.dx;
                 el.y += d3.event.dy;
@@ -460,7 +446,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             }
         }
         dragmoveEdge(el) {
-            console.log("dragmove edge");
             if (this.edgeOrigin) {
                 this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             }

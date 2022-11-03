@@ -101,9 +101,9 @@ class BaseGraph {
         paths.classed(this.selectedClass, function (d) {
             return d === graph.state.selectedBond;
         })
-        .attr("d", function (d) {
-            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-        });
+            .attr("d", function (d) {
+                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            });
 
         // add new bondSelection
         paths.enter()

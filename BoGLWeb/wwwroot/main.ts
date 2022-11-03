@@ -49,8 +49,6 @@ function loadPage() {
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
         systemDiagram.draggingElement = null;
-/*        systemDiagram.setFollowingEdge(null);
-        console.log("Deleted edge")*/
     });
 
     populateMenu(systemDiagram);
