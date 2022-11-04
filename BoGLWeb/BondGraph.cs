@@ -26,31 +26,33 @@ namespace BoGLWeb {
 
         public class Element {
             private readonly string label;
+            private readonly double value;
 
             //For graph visualization
             //TODO Create a way to modify these values
 
-            public Element(string label) {
+            public Element(string label, double value) {
                 this.label = label;
+                this.value = value;
             }
         }
 
         public class Bond {
-            private Element source, sink;
+            private readonly Element source, sink;
             private readonly string label;
-
-            //True means that the arrow is pointing towards the sink
-            private readonly bool direction;
+            private readonly double flow, effort;
 
             //True means the causal stroke is at the source
             private readonly bool causalStroke;
 
-            private Bond(Element source, Element sink, string label, bool direction, bool causalStroke) {
+            //The arrow will always point at the sink
+            private Bond(Element source, Element sink, string label, bool causalStroke, double flow, double effort) {
                 this.source = source;
                 this.sink = sink;
                 this.label = label;
-                this.direction = direction;
                 this.causalStroke = causalStroke;
+                this.flow = flow;
+                this.effort = effort;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
+using Newtonsoft.Json;
 using System.Linq.Expressions;
 
 namespace BoGLWeb {
@@ -257,7 +258,17 @@ namespace BoGLWeb {
         //Convert to GraphSynth
         //TODO Figure out if this should be a string
         public static SystemDiagram generateSystemDiagramFromJSON(string json) {
-            return null;
+            var sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
+            if (sysDiagram is null) {
+                return sysDiagram;
+            } else {
+                //TODO Throw error
+                return null;
+            }
+        }
+
+        public static string convertToJson(SystemDiagram sysDiagram) {
+            return JsonConvert.SerializeObject(sysDiagram);
         }
 
         public class Element {
