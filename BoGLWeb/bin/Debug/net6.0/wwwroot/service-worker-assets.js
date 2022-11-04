@@ -4325,11 +4325,11 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-IO8GcSFUtObl6hKDmaIQ69B3ZCZZZfPBko3bWgZshs0=",
+      "hash": "sha256-F3dX6sCY1llv9ZU1UgTwM06eYaWoI3wJcz2bfD4EHF4=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-4IIqblXRSVSM94WreRewTWKbZ2GkGzpI4RZLGH5m6ZI=",
+      "hash": "sha256-e6lQJhzb+WhR0kIRhFP7nCAVn+3gg9SgK7OQaRDo7xU=",
       "url": "_framework\/BoGLWeb.pdb"
     },
     {
@@ -4337,7 +4337,7 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-X5vYjqbikcTWo2kUYpzwru0hxwe7IOZwkoy9UmFX00s=",
+      "hash": "sha256-hLGOer9ynrv9JtwODFljQCgR1SSDrQf\/TXycabswYOw=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -4389,5 +4389,5 @@
       "url": "_content\/AntDesign\/js\/ant-design-blazor.js.map"
     }
   ],
-  "version": "8ss95D5L"
+  "version": "pqoGm5nA"
 };

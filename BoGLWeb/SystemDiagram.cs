@@ -298,11 +298,11 @@ namespace BoGLWeb {
             }
 
             public string toString() {
-                string output = "Element\n ";
-                output += name + "\n";
+                string output = "Element\r\n ";
+                output += name + "\r\n";
 
                 foreach (KeyValuePair<string, bool> modifier in modifiers) {
-                    output += modifier.Key + " " + modifier.Value + "\n";
+                    output += modifier.Key + " " + modifier.Value + "\r\n";
                 }
 
                 return output;
@@ -339,7 +339,7 @@ namespace BoGLWeb {
             }
 
             public string toString() {
-                return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity;
+                return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity + "\r\n";
             }
         }
     }
