@@ -247,5 +247,33 @@ namespace AVL_Prototype_1
             modifiers[ModifierType.VELOCITY] = velocity;
         }
 
+        /// <summary>
+        /// Creates a copy of this <code>GraphElement</code>.
+        /// </summary>
+        /// <returns>
+        /// The copy
+        /// </returns>
+        public virtual GraphElement Copy() {
+            GraphElement e = new() {
+                graph = this.graph,
+                elementName = this.elementName,
+                nodeName = this.nodeName,
+                componentName = this.componentName,
+                deleted = this.deleted,
+                labels = new List<string>(),
+                connections = new List<Arc>(),
+                modifiers = new Dictionary<Graph.ModifierType, int>()
+            };
+            foreach (string label in this.labels) {
+                e.labels.Add(label);
+            }
+            foreach (Arc arc in this.connections) {
+                e.connections.Add(arc);
+            }
+            foreach (KeyValuePair<Graph.ModifierType, int> modifier in this.modifiers) {
+                e.modifiers[modifier.Key] = modifier.Value;
+            }
+            return e;
+        }
     }
 }

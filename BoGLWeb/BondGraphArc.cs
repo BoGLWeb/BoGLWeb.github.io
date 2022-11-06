@@ -12,6 +12,21 @@ namespace AVL_Prototype_1
         public int arrowDir;
         public int causalDir;
 
+        /// <summary>
+        /// Creates a new <code>BondGraphArc</code>
+        /// </summary>
+        /// <param name="element1">
+        /// The source endpoint element
+        /// </param>
+        /// <param name="element2">
+        /// The destination endpoint element
+        /// </param>
+        /// <param name="arrowDir">
+        /// The direction of the bond arrow
+        /// </param>
+        /// <param name="causalDir">
+        /// The direction of causality
+        /// </param>
         public BondGraphArc(GraphElement element1, GraphElement element2, int arrowDir, int causalDir)
         {
             this.element1 = element1;
@@ -30,6 +45,23 @@ namespace AVL_Prototype_1
             graph.arcs.Add(this);
         }
 
+        /// <summary>
+        /// Creates a copy of this <code>BondGraphArc</code>
+        /// </summary>
+        /// <returns>
+        /// The copy
+        /// </returns>
+        public override BondGraphArc Copy() {
+            return new(this.element1, this.element2, this.arrowDir, this.causalDir) {
+                deleted = this.deleted,
+                velocity = this.velocity,
+                graph = this.graph
+            };
+        }
+
+        /// <summary>
+        /// Deletes this <code>BondGraphArc</code> from the graph.
+        /// </summary>
         public override void delete()
         {
             element1.connections.Remove(this);

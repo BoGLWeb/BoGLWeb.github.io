@@ -3080,7 +3080,6 @@ C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\service-worker-assets.js
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\obj\PlaywrightTests.csproj.nuget.dgspec.json
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\obj\project.assets.json
-C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\package.json
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\.playwright\node\LICENSE
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\.playwright\node\linux-arm64\node
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\.playwright\node\linux-arm64\playwright.sh
@@ -3946,3 +3945,5 @@ C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\obj\Debug\net
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\obj\Debug\net6.0\service-worker-assets.js.build
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.csproj.CopyComplete
 C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\bin\Debug\net6.0\PlaywrightTests.deps.json
+C:\Users\bdane\Dropbox\PC\Documents\GitHub\BoGLWeb\BoGLWeb\BoGLWeb\bin\Debug\net6.0\PlaywrightTests\bin\Debug\net6.0\PlaywrightTests.runtimeconfig.json

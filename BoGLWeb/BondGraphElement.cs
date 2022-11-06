@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework.Constraints;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -29,5 +30,31 @@ namespace AVL_Prototype_1
             graph.elements.Add(this);
         }
 
+        /// <summary>
+        /// Creates a copy of this <code>BondGraphElement</code>.
+        /// </summary>
+        /// <returns>
+        /// The copy
+        /// </returns>
+        public override BondGraphElement Copy() {
+            BondGraphElement e = new(this.graph, this.elementName, this.bondGraphText, false) {
+                nodeName = this.nodeName,
+                componentName = this.componentName,
+                deleted = this.deleted,
+                labels = new List<string>(),
+                connections = new List<Arc>(),
+                modifiers = new Dictionary<Graph.ModifierType, int>()
+            };
+            foreach (string label in this.labels) {
+                e.labels.Add(label);
+            }
+            foreach (Arc arc in this.connections) {
+                e.connections.Add(arc);
+            }
+            foreach (KeyValuePair<Graph.ModifierType, int> modifier in this.modifiers) {
+                e.modifiers[modifier.Key] = modifier.Value;
+            }
+            return e;
+        }
     }
 }

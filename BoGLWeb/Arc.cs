@@ -57,6 +57,19 @@ namespace AVL_Prototype_1
             graph.arcs.Add(this);
         }
 
+        /// <summary>
+        /// Creates a copy of this <code>Arc</code>
+        /// </summary>
+        /// <returns>
+        /// The copy
+        /// </returns>
+        public virtual Arc Copy() {
+            return new(this.graph, this.element1, this.element2) {
+                velocity = this.velocity,
+                deleted = this.deleted
+            };
+        }
+
         // Deletes all WPF controls and references to this arc
         public virtual void delete()
         {

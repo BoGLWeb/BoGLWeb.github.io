@@ -10,9 +10,9 @@ namespace BoGLWeb {
         /// The datatype stored in this <c>EditionList</c>.
         /// </typeparam> 
         public class EditionList<Edit> {
-            /// Fields storing the head (front), tail (end), and cursor (user location) in this 
+            /// Fields storing the head (front), tail (end), and pointer (user location) in this 
             /// <c>EditionList</c>.
-            private Node<Edit>? head, cursor;
+            private Node<Edit>? head, pointer;
             private int size, index;
 
             /// <summary>
@@ -30,12 +30,12 @@ namespace BoGLWeb {
             /// </param>
             public void Add(Edit unit) {
                 Node<Edit> node = new(unit);
-                if (this.head == null || this.cursor == null) {
+                if (this.head == null || this.pointer == null) {
                     Assign(node, node);
                 } else {
-                    node.prev = this.cursor;
-                    this.cursor.next = node;
-                    this.cursor = this.cursor.next;
+                    node.prev = this.pointer;
+                    this.pointer.next = node;
+                    this.pointer = this.pointer.next;
                 }
                 this.index++;
                 this.size = this.index + 1;
@@ -48,12 +48,12 @@ namespace BoGLWeb {
             /// <c>true</c> if there exists a next element, else <c>false</c>.
             /// </returns>
             public bool Next() {
-                if (this.cursor == null) {
+                if (this.pointer == null) {
                     return false;
                 }
-                bool hasNext = this.cursor.next != null;
+                bool hasNext = this.pointer.next != null;
                 if (hasNext) {
-                    this.cursor = this.cursor.next;
+                    this.pointer = this.pointer.next;
                     this.index++;
                 }
                 return hasNext;
@@ -66,12 +66,12 @@ namespace BoGLWeb {
             /// <c>true</c> if there exists a previous element, else <c>false</c>.
             /// </returns>
             public bool Prev() {
-                if (this.cursor == null) {
+                if (this.pointer == null) {
                     return false;
                 }
-                bool hasPrev = this.cursor.prev != null;
+                bool hasPrev = this.pointer.prev != null;
                 if (hasPrev) {
-                    this.cursor = this.cursor.prev;
+                    this.pointer = this.pointer.prev;
                     this.index--;
                 }
                 return hasPrev;
@@ -81,10 +81,10 @@ namespace BoGLWeb {
             /// Gets the current value in this <c>EditionList</c>.
             /// </summary>
             /// <returns>
-            /// The <c>Unit</c> value stored by this <c>cursor</c>.
+            /// The <c>Unit</c> value stored by this <c>pointer</c>.
             /// </returns>
             public Edit? Get() {
-                return (this.cursor == null) ? default : this.cursor.data;
+                return (this.pointer == null) ? default : this.pointer.data;
             }
 
             /// <summary>Clears all data from this <c>EditionList</c>.</summary>
@@ -100,12 +100,12 @@ namespace BoGLWeb {
             /// <param name="head">
             /// The new <c>head</c> value.
             /// </param>
-            /// <param name="cursor">
-            /// The new <c>cursor</c> value.
+            /// <param name="pointer">
+            /// The new <c>pointer</c> value.
             /// </param>
-            private void Assign(Node<Edit>? head, Node<Edit>? cursor) {
+            private void Assign(Node<Edit>? head, Node<Edit>? pointer) {
                 this.head = head;
-                this.cursor = cursor;
+                this.pointer = pointer;
             }
             
             /// <summary>
@@ -135,10 +135,10 @@ namespace BoGLWeb {
             /// The <c>Iterator</c>.
             /// </returns>
             public IEnumerable<Edit>? Iterator() {
-                Node<Edit>? iterableCursor = this.head;
-                while (iterableCursor != null) {
-                    Edit edit = iterableCursor.data;
-                    iterableCursor = iterableCursor.next;
+                Node<Edit>? iterablePointer = this.head;
+                while (iterablePointer != null) {
+                    Edit edit = iterablePointer.data;
+                    iterablePointer = iterablePointer.next;
                     yield return edit;
                 }
             }
