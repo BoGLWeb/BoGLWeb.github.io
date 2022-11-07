@@ -2,6 +2,7 @@
 using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text;
 using System.Xml;
@@ -10,6 +11,22 @@ using System.Xml.Serialization;
 
 namespace BoGLWeb {
     public class SystemDiagram {
+        public static readonly ImmutableDictionary<string, string> modifierLabelDict;
+
+        static SystemDiagram() {
+            var builder = ImmutableDictionary.CreateBuilder<string, string>();
+            builder.Add("MASS", "Include_Mass");
+            builder.Add("INERTIA", "Include_Inertia");
+            builder.Add("STIFFNESS", "Include_Stiffness");
+            builder.Add("FRICTION", "Include_Friction");
+            builder.Add("DAMPING", "Include_Damping");
+            builder.Add("PARALLEL", "PAR");
+            builder.Add("TOOTH WEAR", "Include_Tooth_Wear"); //This one is not present in desktop BoGL and doesn't appear to do anything
+
+
+            modifierLabelDict = builder.ToImmutable();
+        }
+
         [JsonProperty]
         protected List<Element> elements;
         [JsonProperty]
@@ -100,7 +117,8 @@ namespace BoGLWeb {
 
                 string tok = tokenQueue.Dequeue();
                 if (tok.Equals("name")) {
-                    name = tokenQueue.Dequeue().Substring(10) + elementId;
+                    name = tokenQueue.Dequeue();
+                    name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
@@ -268,7 +286,6 @@ namespace BoGLWeb {
         //From JSON
 
         //Convert to GraphSynth
-        //TODO Figure out if this should be a string
         public static SystemDiagram generateSystemDiagramFromJSON(string json) {
             var sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
             if (sysDiagram is not null) {
@@ -357,21 +374,13 @@ namespace BoGLWeb {
             foreach (Element element in elements) {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
-                // char delimit1 = ';';
                 builder.AppendLine("<localLabels>");
                 builder.AppendLine("<string>" + element.getName().Replace(@"\d", "") + "</string>");
-                //TODO Check that this can be commented out
-                //foreach (var n in item.labels) {
-                //    {
-                //        builder.AppendLine("<string>" + n + "</string>");
-                //    }
-                // }
+                foreach (var n in element.getLabelList()) {
+                    //This was in braces, don't know why. Removed them so that might cause a problem later
+                    builder.AppendLine("<string>" + n + "</string>");
+                }
                 builder.AppendLine("</localLabels>");
-                /*  else
-                {
-                builder.AppendLine("<localLabels />");
-            } */
-
                 builder.AppendLine("<localVariables />");
 
                 builder.AppendLine("<X>0</X>");
@@ -398,9 +407,6 @@ namespace BoGLWeb {
             var XGraphAndCanvas = XElement.Load(do1);
 
             var temp2 = XGraphAndCanvas.Element("{ignorableUri}" + "designGraph");
-            // var temp = doc_.Element("GraphSynth");
-
-            // if (temp != null)
             var temp = RemoveXAMLns(RemoveIgnorablePrefix(temp2.ToString()));
             Console.WriteLine("-------- temp --------");
             Console.WriteLine(temp);
@@ -481,6 +487,23 @@ namespace BoGLWeb {
                 return name;
             }
 
+            public List<string> getLabelList() {
+                List<string> strings = new List<string>();
+
+                foreach (var modifier in modifiers) {
+                    if (modifier.Value) {
+                        strings.Add(modifierLabelDict[modifier.Key]);
+                    }
+                }
+
+                if (!velocityDir.Equals("")) {
+                    strings.Add("veladded");
+                    strings.Add("vel" + velocityDir.Split(" ")[1]);
+                }
+
+                return strings;
+            }
+
             public string toString() {
                 string output = "Element\r\n ";
                 output += name + "\r\n";
@@ -488,6 +511,8 @@ namespace BoGLWeb {
                 foreach (KeyValuePair<string, bool> modifier in modifiers) {
                     output += modifier.Key + " " + modifier.Value + "\r\n";
                 }
+
+                output += velocityDir + "\r\n";
 
                 return output;
             }
