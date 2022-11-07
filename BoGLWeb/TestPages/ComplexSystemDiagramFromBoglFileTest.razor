@@ -1,4 +1,5 @@
 ﻿@page "/complexsystemdiagramfromboglfiletest"
+@using Newtonsoft.Json.Schema.Generation
 @using static BoGLWeb.SystemDiagram
 
 <h3>ComplexSystemDiagramFromBoGLFileTest</h3>
@@ -32,5 +33,11 @@
         foreach(Edge e in sysDiagram.getEdges()) {
             sysDiagramString += e.toString();
         }
+
+        JSchemaGenerator generateor = new JSchemaGenerator();
+        Console.WriteLine("-------- SYSTEM DIAGRAM SCHEMA --------");
+        Console.WriteLine(generateor.Generate(typeof(SystemDiagram)));
+        Console.WriteLine("-------- BOND GRAPH SCHEMA --------");
+        Console.WriteLine(generateor.Generate(typeof(BondGraph)));
     }
 }

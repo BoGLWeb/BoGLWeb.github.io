@@ -44,7 +44,8 @@
       "Microsoft.TestPlatform.Utilities.dll": "sha256-XnPSpyoWlWYEwXh0xO\/kBobo\/S0GszvfA59hAE1v3PI=",
       "Microsoft.VisualStudio.TestPlatform.Common.dll": "sha256-kyo2AY\/YtB\/d\/l6PfDCi4uuY1xohV\/ambx+RYp+BU+0=",
       "testhost.dll": "sha256-a7LZAbsRnet7KjBHzC1RvbHohUQpXm70l83CawG81XM=",
-      "Newtonsoft.Json.dll": "sha256-XZbuUbKv9ZIDnuvC7SA9n1X935wIgvs00\/DgeDdJVKU=",
+      "Newtonsoft.Json.dll": "sha256-cs8pHUurDt0IqbB8YXPh560au3q3J\/1wRL9jBddRVmE=",
+      "Newtonsoft.Json.Schema.dll": "sha256-nanp8bUnRe+S9qhLQKNarsRq8Ic9wvw7MDuKEIMAfLw=",
       "NuGet.Frameworks.dll": "sha256-enH0hqy+JAaqi86jiMWJafXfU+eXfuwuApVU7R\/JvoY=",
       "nunit.framework.dll": "sha256-ggnd6Ciy\/Wu4mv\/3YJFiCPuMDD2RcyZ2wyE+RslKreA=",
       "OneOf.dll": "sha256-K99lDyL6VrtTDYGRk5o+Q3caW25Uogee\/1e7aIvpgLY=",
@@ -215,13 +216,13 @@
       "mscorlib.dll": "sha256-TYLzIm125RbnX9+RAPqJnwZhd6CnQpJcrjiMpJfZ720=",
       "netstandard.dll": "sha256-HhuK9zDkd1N7hODAEiNJ11VF8T54IgrM6hZfLHmHdqM=",
       "System.Private.CoreLib.dll": "sha256-dXaTqyg1PnXPiSwywpic1PVrd7P8Vb5tN0i0\/urdt3E=",
-      "BoGLWeb.dll": "sha256-YqTy2A\/oiuZV2\/4dVgooa6\/cF99Twwfjfvu4pQpJIb8="
+      "BoGLWeb.dll": "sha256-cFmthFgyd0ws9J\/VV9oKaevFg17ceLdFIr\/uIO29CNY="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "BoGLWeb.pdb": "sha256-RIYlifBqgN+BkovyFkyxZnUhECXiTrooioXT77wA7Iw="
+      "BoGLWeb.pdb": "sha256-sJRRd+mHgPefmhUSrdv9BpOMQIQPHiA5+Kjwxin+VW4="
     },
     "runtime": {
       "dotnet.6.0.8.7wxfzf25ky.js": "sha256-WT60vnXnQtCNURE40qo+XSL1o4iYFvABy0NVaFhm7MI=",

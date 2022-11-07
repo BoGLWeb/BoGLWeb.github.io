@@ -1185,7 +1185,6 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\GXTIF1hv.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\p972SmeI.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\WlFpvMxK.gz
-C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\UtzIVwYa.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\tQ3zRJ7W.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\J5jddgH3.gz
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\YGhGjLkV.gz
@@ -1445,3 +1444,8 @@ C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Docu
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\refint\BoGLWeb.dll
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\BoGLWeb.pdb
 C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\ref\BoGLWeb.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\n6l9BcGu.gz
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\Newtonsoft.Json.Schema.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\wwwroot\_framework\Newtonsoft.Json.Schema.dll.gz
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\bin\Debug\net6.0\Newtonsoft.Json.Schema.dll
+C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\obj\Debug\net6.0\build-gz\i+s5ONEu.gz
