@@ -118,7 +118,7 @@ namespace BoGLWeb {
                 string tok = tokenQueue.Dequeue();
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
-                    name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "") + elementId;
+                    name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
