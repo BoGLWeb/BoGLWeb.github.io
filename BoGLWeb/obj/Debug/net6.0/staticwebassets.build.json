@@ -1,10 +1,6 @@
 {
   "Version": 1,
-<<<<<<< HEAD
-  "Hash": "ZHsOqxmX7rNVJ0K5Ahk++vyS7TIrkOxD3xNNbmL90L8=",
-=======
-  "Hash": "HvGnrfqXyzsz9+XLX8ql+D7qubba0QY8nOXgQJhu9ik=",
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
+  "Hash": "GhRtSH9psn2wYn5b32S6eHfW+g/9vTxUPecC+39p27g=",
   "Source": "BoGLWeb",
   "BasePath": "/",
   "Mode": "Root",
@@ -953,11 +949,7 @@
       "AssetTraitValue": "ko",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-<<<<<<< HEAD
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\16.11.0\\lib\\netcoreapp2.1\\ko\\Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
-=======
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\17.3.2\\lib\\netcoreapp2.1\\ko\\Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
     },
     {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ko\\Microsoft.TestPlatform.CoreUtilities.resources.dll",
@@ -7930,6 +7922,23 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pl\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
     },
     {
+      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\n6l9BcGu.gz",
+      "SourceId": "BoGLWeb",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "_framework/Newtonsoft.Json.dll.gz",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll"
+    },
+    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\nGnPGTva.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -7964,28 +7973,7 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CrossPlatEngine.dll"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\n6l9BcGu.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Newtonsoft.Json.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\NbTu7pGC.gz",
-=======
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\NjKBGLBQ.gz",
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
       "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
@@ -8393,28 +8381,7 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Transactions.Local.dll"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\qdrzD9vQ.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/it/Microsoft.TestPlatform.CoreUtilities.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.TestPlatform.CoreUtilities.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.TestPlatform.CoreUtilities.resources.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\QfJSWEnN.gz",
-=======
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\q9T8WN7+.gz",
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
       "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
@@ -8465,28 +8432,7 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.AspNetCore.Components.Forms.dll"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\QvKY75xQ.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/zh-Hans/Microsoft.TestPlatform.CrossPlatEngine.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\zh-Hans\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\zh-Hans\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\raVcUlUW.gz",
-=======
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\Qjr8QevF.gz",
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
       "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
@@ -8860,23 +8806,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Net.Security.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\TBmdWnsC.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Microsoft.TestPlatform.CrossPlatEngine.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CrossPlatEngine.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CrossPlatEngine.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\Tnzs+doG.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9064,8 +8993,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Resources.ResourceManager.dll"
     },
     {
-<<<<<<< HEAD
-=======
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\UQy7OuM9.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9083,24 +9010,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pl\\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\UtzIVwYa.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Newtonsoft.Json.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Newtonsoft.Json.dll"
-    },
-    {
->>>>>>> 2d9e1e346f8927ebc9dfb18d88ac2ef474445b91
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\v+HC6GUU.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9254,23 +9163,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.ComponentModel.DataAnnotations.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\Vpfe+YtY.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/pl/Microsoft.TestPlatform.CrossPlatEngine.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pl\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pl\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\vqwuN0Oc.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9373,23 +9265,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Diagnostics.Process.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\W1IlxR+W.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Microsoft.TestPlatform.CommunicationUtilities.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CommunicationUtilities.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CommunicationUtilities.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\W3tPPwnQ.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9439,23 +9314,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Resources.Writer.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\WlFpvMxK.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/testhost.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\testhost.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\testhost.dll"
     },
     {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\wLgaL2pR.gz",
@@ -9730,40 +9588,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Security.Cryptography.Cng.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\xiLwK3ml.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Microsoft.TestPlatform.CoreUtilities.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CoreUtilities.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.TestPlatform.CoreUtilities.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\XknEjMOt.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/it/Microsoft.VisualStudio.TestPlatform.Common.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.VisualStudio.TestPlatform.Common.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.VisualStudio.TestPlatform.Common.resources.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\XnLHI6H8.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9849,23 +9673,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Net.WebClient.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\ycfQM8F1.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/de/Microsoft.TestPlatform.CrossPlatEngine.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\de\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\de\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\YGhGjLkV.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -9934,40 +9741,6 @@
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\WindowsBase.dll"
     },
     {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\YtzKcfrB.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/ja/Microsoft.TestPlatform.CoreUtilities.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ja\\Microsoft.TestPlatform.CoreUtilities.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ja\\Microsoft.TestPlatform.CoreUtilities.resources.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\YvzURo5O.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/ja/Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ja\\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ja\\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll"
-    },
-    {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\YxT71ZID.gz",
       "SourceId": "BoGLWeb",
       "SourceType": "Computed",
@@ -10017,23 +9790,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\icudt_CJK.dat"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\Z7VgdKNZ.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/it/Microsoft.TestPlatform.CommunicationUtilities.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.TestPlatform.CommunicationUtilities.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\it\\Microsoft.TestPlatform.CommunicationUtilities.resources.dll"
     },
     {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\ZCl8DlZw.gz",
@@ -10136,57 +9892,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Net.ServicePoint.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\ZrHXBriJ.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/ru/Microsoft.TestPlatform.CrossPlatEngine.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ru\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\ru\\Microsoft.TestPlatform.CrossPlatEngine.resources.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\ZwVza6fC.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/Microsoft.VisualStudio.CodeCoverage.Shim.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.VisualStudio.CodeCoverage.Shim.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.VisualStudio.CodeCoverage.Shim.dll"
-    },
-    {
-      "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\build-gz\\Zxe5G3G+.gz",
-      "SourceId": "BoGLWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/pt-BR/Microsoft.TestPlatform.CoreUtilities.resources.dll.gz",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "RelatedAsset": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pt-BR\\Microsoft.TestPlatform.CoreUtilities.resources.dll",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\pt-BR\\Microsoft.TestPlatform.CoreUtilities.resources.dll"
     },
     {
       "Identity": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\Debug\\net6.0\\scopedcss\\bundle\\BoGLWeb.styles.css",

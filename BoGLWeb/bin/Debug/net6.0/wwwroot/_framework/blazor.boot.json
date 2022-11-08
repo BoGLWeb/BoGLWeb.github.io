@@ -16,7 +16,7 @@
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-YBkayjUkGHqPFwRfHSnDaZ62t4oeESWcId4vO\/nW7O4=",
       "Microsoft.AspNetCore.Metadata.dll": "sha256-Lvp1k0OPbcwUzvar9Ccd9xzXMqNnq3pyj39WLXIgvCE=",
       "Microsoft.Bcl.AsyncInterfaces.dll": "sha256-VwXSRQctPreEAFR7MhR9u24siwK6i9p2cpeY9e\/erss=",
-      "Microsoft.VisualStudio.CodeCoverage.Shim.dll": "sha256-6UOwx2TbYDEDECbJeg2JBX+iYCpxEOkBg0KQSLbrb8c=",
+      "Microsoft.VisualStudio.CodeCoverage.Shim.dll": "sha256-eOCAfKiH4Ii4ghL10LeLg2z52bDpXIdx+WztmjU9c+I=",
       "Microsoft.Extensions.Configuration.dll": "sha256-c8yYhfrOBLEnOBglLTu9peXSbJDwFpuT4UQiXSv28Og=",
       "Microsoft.Extensions.Configuration.Abstractions.dll": "sha256-5Otet+KKVUjNkE\/hqcNWmt75H1K2VNuKPFagpRd6Ces=",
       "Microsoft.Extensions.Configuration.Binder.dll": "sha256-wNKhG3Ovx8jqxbscz2AALlsTLfI6GL2dyDhe63mSsoM=",
@@ -36,14 +36,14 @@
       "Microsoft.Playwright.dll": "sha256-Gz\/k34U3sOcVw6uMHSIRMv7EW9N+wLEEyHbGzy1UBgo=",
       "Microsoft.Playwright.NUnit.dll": "sha256-39M\/kUpq6LCs5MkdgY+Dul6t4Vv0f6tOJnNl8J2mV1M=",
       "Microsoft.Playwright.TestAdapter.dll": "sha256-OReMvn2VezUs6KCaH76Jo3BmUe0F55NT\/OcCTRs6N8M=",
-      "Microsoft.TestPlatform.CoreUtilities.dll": "sha256-Xl8l5LhTsZTpvtCEAAQFdnpxRmSIx40l40HFosSNSyI=",
-      "Microsoft.TestPlatform.PlatformAbstractions.dll": "sha256-mjPc11uWmvAmprOoFjQNz+7JUj4Otumau1OPGZZZk\/M=",
-      "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": "sha256-0ViXzs5dlJxcR57oe\/rrBvS3wEO1IEvXdvIFvR7O0es=",
-      "Microsoft.TestPlatform.CommunicationUtilities.dll": "sha256-N1Ry3TmeTepmdERCa6R6sptleLjPutGnBqByqS6U3IA=",
-      "Microsoft.TestPlatform.CrossPlatEngine.dll": "sha256-w\/OfZDvsMLivMTN8s1eZnILNmAzrWi7CW21Jk2AGgF4=",
-      "Microsoft.TestPlatform.Utilities.dll": "sha256-XnPSpyoWlWYEwXh0xO\/kBobo\/S0GszvfA59hAE1v3PI=",
-      "Microsoft.VisualStudio.TestPlatform.Common.dll": "sha256-kyo2AY\/YtB\/d\/l6PfDCi4uuY1xohV\/ambx+RYp+BU+0=",
-      "testhost.dll": "sha256-a7LZAbsRnet7KjBHzC1RvbHohUQpXm70l83CawG81XM=",
+      "Microsoft.TestPlatform.CoreUtilities.dll": "sha256-pL9xjZUBpCCCNlPZS1RnkAZ9BgK4wZImlFUYUIcFNTE=",
+      "Microsoft.TestPlatform.PlatformAbstractions.dll": "sha256-21jtIpcdl63YS1U1u07rQuEjuS8MwFtKwqVgN0p1tMo=",
+      "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": "sha256-mnukoujlbzFaf4wBz5CRHjM7EsDgIIETJ2tCiMl0vNk=",
+      "Microsoft.TestPlatform.CommunicationUtilities.dll": "sha256-1v1PDnKNCT+AeR0xNjhS\/q4QVyj4WIXFzIT517Ha6u4=",
+      "Microsoft.TestPlatform.CrossPlatEngine.dll": "sha256-JnyqIHiY7NYW14e5T\/y595gCnWymehSqM1thFLbjM+o=",
+      "Microsoft.TestPlatform.Utilities.dll": "sha256-5vUaa7232+h0t6ikvhdGca55iAQ3LGM5rCW0JGiJOvI=",
+      "Microsoft.VisualStudio.TestPlatform.Common.dll": "sha256-0PBVFNNjWs\/ZshhagbzfwY0ZA+6pUd6Rbled2NKY9vw=",
+      "testhost.dll": "sha256-gWzF2whYqioe+QC4Tpu\/aB1U8ETdZE7gh2uEyV920rQ=",
       "Newtonsoft.Json.dll": "sha256-cs8pHUurDt0IqbB8YXPh560au3q3J\/1wRL9jBddRVmE=",
       "Newtonsoft.Json.Schema.dll": "sha256-nanp8bUnRe+S9qhLQKNarsRq8Ic9wvw7MDuKEIMAfLw=",
       "NuGet.Frameworks.dll": "sha256-enH0hqy+JAaqi86jiMWJafXfU+eXfuwuApVU7R\/JvoY=",
@@ -216,13 +216,13 @@
       "mscorlib.dll": "sha256-TYLzIm125RbnX9+RAPqJnwZhd6CnQpJcrjiMpJfZ720=",
       "netstandard.dll": "sha256-HhuK9zDkd1N7hODAEiNJ11VF8T54IgrM6hZfLHmHdqM=",
       "System.Private.CoreLib.dll": "sha256-dXaTqyg1PnXPiSwywpic1PVrd7P8Vb5tN0i0\/urdt3E=",
-      "BoGLWeb.dll": "sha256-pP8hHnTIWAaesm3hXcjgEWRTZAwfcKcMuLvh6FaddO8="
+      "BoGLWeb.dll": "sha256-76eoBVjoinazKQgEHnjjfpdAecW\/9JNSIG19rVH+iHI="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "BoGLWeb.pdb": "sha256-jYcb3pXlNMIgoagJJL7uOxM0UoLhOs1T\/6idDrdivjM="
+      "BoGLWeb.pdb": "sha256-p4Epk2frbTy1lzhx1g2fZWQQhgYVXPJ0LfOEJ8VYgIA="
     },
     "runtime": {
       "dotnet.6.0.8.7wxfzf25ky.js": "sha256-WT60vnXnQtCNURE40qo+XSL1o4iYFvABy0NVaFhm7MI=",
