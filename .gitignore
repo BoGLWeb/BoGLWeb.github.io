@@ -352,3 +352,4 @@ MigrationBackup/
 .ionide/
 
 BoGLWeb/.vs/*
+BoGLWeb/obj/Debug/net6.0/project.razor.vs.json
