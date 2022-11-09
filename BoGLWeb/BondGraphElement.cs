@@ -15,7 +15,7 @@ namespace AVL_Prototype_1
             this.graph = graph;
             this.elementName = elementName;
             this.bondGraphText = bondGraphText;
-
+            AssignID(0, true);
             labels = new List<string>();
 
             labels.Add(componentName);
@@ -33,28 +33,37 @@ namespace AVL_Prototype_1
         /// <summary>
         /// Creates a copy of this <code>BondGraphElement</code>.
         /// </summary>
+        /// <param name="isDistinct">
+        /// <code>true</code> if this Arc should have its own ID, else
+        /// <code>false</code>
+        /// </param>
         /// <returns>
         /// The copy
         /// </returns>
-        public override BondGraphElement Copy() {
-            BondGraphElement e = new(this.graph, this.elementName, this.bondGraphText, false) {
+        public override BondGraphElement Copy(bool isDistinct) {
+            BondGraphElement copy = new(this.graph, this.elementName, this.bondGraphText, false) {
                 nodeName = this.nodeName,
                 componentName = this.componentName,
                 deleted = this.deleted,
                 labels = new List<string>(),
                 connections = new List<Arc>(),
-                modifiers = new Dictionary<Graph.ModifierType, int>()
+                modifiers = new Dictionary<Graph.ModifierType, int>(),
+                velocityNum = new Dictionary<string, int>()
             };
             foreach (string label in this.labels) {
-                e.labels.Add(label);
+                copy.labels.Add(label);
             }
             foreach (Arc arc in this.connections) {
-                e.connections.Add(arc);
+                copy.connections.Add(arc);
             }
             foreach (KeyValuePair<Graph.ModifierType, int> modifier in this.modifiers) {
-                e.modifiers[modifier.Key] = modifier.Value;
+                copy.modifiers[modifier.Key] = modifier.Value;
             }
-            return e;
+            foreach (KeyValuePair<string, int> velocity in this.velocityNum) {
+                copy.velocityNum.Add(velocity.Key, velocity.Value);
+            }
+            copy.AssignID(this.ID, isDistinct);
+            return copy;
         }
     }
 }

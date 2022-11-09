@@ -20,8 +20,8 @@ namespace BoGLWeb {
             /// Alteration.
             /// </param>
             CanvasAlteration(BondGraphArc? arc, BondGraphElement? element) {
-                this.arc = arc?.Copy();
-                this.element = element?.Copy();
+                this.arc = arc?.Copy(false);
+                this.element = element?.Copy(false);
             }
         }
     }

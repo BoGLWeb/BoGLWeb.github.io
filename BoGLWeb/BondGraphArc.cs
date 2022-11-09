@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace AVL_Prototype_1
@@ -35,6 +36,8 @@ namespace AVL_Prototype_1
             this.arrowDir = arrowDir;
             this.causalDir = causalDir;
 
+            AssignID(0, true);
+
             // Add this arc to the elements' list of connections
             element1.connections.Add(this);
             element2.connections.Add(this);
@@ -48,15 +51,21 @@ namespace AVL_Prototype_1
         /// <summary>
         /// Creates a copy of this <code>BondGraphArc</code>
         /// </summary>
+        /// <param name="isDistinct">
+        /// <code>true</code> if the copy should have its own ID, else
+        /// <code>false</code>
+        /// </param>
         /// <returns>
         /// The copy
         /// </returns>
-        public override BondGraphArc Copy() {
-            return new(this.element1, this.element2, this.arrowDir, this.causalDir) {
+        public override BondGraphArc Copy(bool isDistinct) {
+            BondGraphArc arc = new(this.element1, this.element2, this.arrowDir, this.causalDir) {
                 deleted = this.deleted,
                 velocity = this.velocity,
                 graph = this.graph
             };
+            arc.AssignID(this.ID, isDistinct);
+            return arc;
         }
 
         /// <summary>

@@ -22,6 +22,9 @@ namespace AVL_Prototype_1
         public String nodeName = null;
         public List<String> labels;
 
+        public static int totalID = 0; // Provides a new, unique ID
+        public int? ID;                // Stores thie element ID
+
         //TODO These might be important, might need to figure out how to bring them back
        // Applicable velocity modifiers
         //public List<TextBlock> velocities;
@@ -73,6 +76,7 @@ namespace AVL_Prototype_1
         protected GraphElement()
         {
             // Default constructor...
+            AssignID(0, true);
         }
 
         public GraphElement(Graph graph, String elementName, bool topLeft = false, string specialCases = null)
@@ -81,6 +85,7 @@ namespace AVL_Prototype_1
             this.graph = graph;
             this.elementName = elementName;           
             this.componentName = findComponentName(elementName, specialCases);
+            AssignID(0, true);
             labels = new List<String>();
 
             labels.Add(componentName);
@@ -250,11 +255,15 @@ namespace AVL_Prototype_1
         /// <summary>
         /// Creates a copy of this <code>GraphElement</code>.
         /// </summary>
+        /// <param name="isDistinct">
+        /// <code>true</code> if this Arc should have its own ID, else
+        /// <code>false</code>
+        /// </param>
         /// <returns>
         /// The copy
         /// </returns>
-        public virtual GraphElement Copy() {
-            GraphElement e = new() {
+        public virtual GraphElement Copy(bool isDistinct) {
+            GraphElement copy = new() {
                 graph = this.graph,
                 elementName = this.elementName,
                 nodeName = this.nodeName,
@@ -262,18 +271,41 @@ namespace AVL_Prototype_1
                 deleted = this.deleted,
                 labels = new List<string>(),
                 connections = new List<Arc>(),
-                modifiers = new Dictionary<Graph.ModifierType, int>()
+                modifiers = new Dictionary<Graph.ModifierType, int>(),
+                velocityNum = new Dictionary<string, int>()
             };
             foreach (string label in this.labels) {
-                e.labels.Add(label);
+                copy.labels.Add(label);
             }
             foreach (Arc arc in this.connections) {
-                e.connections.Add(arc);
+                copy.connections.Add(arc);
             }
             foreach (KeyValuePair<Graph.ModifierType, int> modifier in this.modifiers) {
-                e.modifiers[modifier.Key] = modifier.Value;
+                copy.modifiers.Add(modifier.Key, modifier.Value);
             }
-            return e;
+            foreach (KeyValuePair<string, int> velocity in this.velocityNum) {
+                copy.velocityNum.Add(velocity.Key, velocity.Value);
+            }
+            copy.AssignID(this.ID, isDistinct);
+            return copy;
+        }
+
+        /// <summary>
+        /// Assigns an ID value to this <code>GraphElement</code>
+        /// </summary>
+        /// <param name="ID">
+        /// The target ID value
+        /// </param>
+        /// <param name="isDistinct">
+        /// <code>true</code> if the ID should be unique (copy.g. for clipboard)
+        /// or if it should match the ID of the copied object (copy.g. for undo/redo)
+        /// </param>
+        public void AssignID(int? ID, bool isDistinct) {
+            if (this.ID == null || isDistinct) {
+                this.ID = (totalID++);
+            } else {
+                this.ID = ID;
+            }
         }
     }
 }
