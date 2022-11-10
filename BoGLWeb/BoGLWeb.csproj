@@ -799,12 +799,19 @@
     <PackageReference Include="AntDesign" Version="0.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
+<<<<<<< HEAD
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+=======
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
   </ItemGroup>
 
   <ItemGroup>
@@ -812,6 +819,35 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+    <None Remove=".gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\build\build.js" />
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css" />
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+    <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\README.md" />
+    <None Include="wwwroot\favicon.ico" />
+    <None Include="wwwroot\icon-192.png" />
+    <None Include="wwwroot\icon-512.png" />
+    <None Include="wwwroot\index.html" />
+    <None Include="wwwroot\service-worker.js" />
+    <None Include="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\" />
+  </ItemGroup>
+=======
     <None Update="Graph.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -820,5 +856,6 @@
 	<ItemGroup>
 		<TrimmerRootAssembly Include="System.Xml.XmlSerializer" />
 	</ItemGroup>
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
 
 </Project>

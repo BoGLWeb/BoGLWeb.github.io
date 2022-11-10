@@ -1,6 +1,19 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
+    "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "projectName": "BoGLWeb",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\BoGLWeb\\BoGLWeb\\obj\\",
+=======
     "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
   },
   "projects": {
@@ -12,6 +25,7 @@
         "projectPath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
         "packagesPath": "C:\\Users\\Jakob Misbach\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\obj\\",
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Jakob Misbach\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -22,7 +36,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2": {}
         },
         "frameworks": {
           "net6.0": {
@@ -53,6 +68,13 @@
               "target": "Package",
               "version": "[6.0.8, )"
             },
+<<<<<<< HEAD
+            "Microsoft.TypeScript.MSBuild": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.8.4, )"
+=======
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[17.3.2, )"
@@ -76,6 +98,7 @@
             "Newtonsoft.Json.Schema": {
               "target": "Package",
               "version": "[3.0.14, )"
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
             }
           },
           "imports": [
