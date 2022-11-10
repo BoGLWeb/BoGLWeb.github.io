@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kR7tEIoXqlsxi+r4CB3xWDdD+W27ngPp59NfxY3MYaknWV9T+tg4D3gC5QdI9YtFfpVz4PGUx9ehre9m5pqz8Q==",
+  "dgSpecHash": "mAT+VcMCRbrorZtslverSL9WtitTrYmJ6ogCHcwhWBaCRAMwOOGZHE8yMvZWeVYyXFY8/v0rg0E8moWh8tYWlw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\OneDrive - Worcester Polytechnic Institute (wpi.edu)\\Documents\\GitHub\\MQP\\BoGLWeb2\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -53,7 +53,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\system.text.json\\6.0.5\\system.text.json.6.0.5.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\6.0.8\\microsoft.netcore.app.runtime.mono.browser-wasm.6.0.8.nupkg.sha512"
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\6.0.11\\microsoft.netcore.app.runtime.mono.browser-wasm.6.0.11.nupkg.sha512"
   ],
   "logs": []
 }

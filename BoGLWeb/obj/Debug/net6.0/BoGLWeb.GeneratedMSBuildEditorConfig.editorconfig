@@ -5,10 +5,8 @@ build_property.UsingMicrosoftNETSdkWeb =
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = false
 build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = browser
-build_property.EnableSingleFileAnalyzer = 
-build_property.EnableTrimAnalyzer = true
-build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = BoGLWeb
 build_property.RootNamespace = BoGLWeb
 build_property.ProjectDir = C:\Users\Jakob Misbach\OneDrive - Worcester Polytechnic Institute (wpi.edu)\Documents\GitHub\MQP\BoGLWeb2\BoGLWeb\BoGLWeb\
@@ -20,10 +18,6 @@ build_property._RazorSourceGeneratorDebug =
 
 [C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/GraphProcessor.razor]
-build_metadata.AdditionalFiles.TargetPath = R3JhcGhQcm9jZXNzb3IucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jakob Misbach/OneDrive - Worcester Polytechnic Institute (wpi.edu)/Documents/GitHub/MQP/BoGLWeb2/BoGLWeb/BoGLWeb/Pages/Index.razor]
