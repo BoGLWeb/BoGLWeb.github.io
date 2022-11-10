@@ -1,0 +1,223 @@
+﻿<UserControl x:Class="AVL_Prototype_1.Graph"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AVL_Prototype_1"
+             mc:Ignorable="d" 
+             d:DesignWidth="791" d:DesignHeight="697">
+    <!--For setting indeterminate state to question mark -->
+    <UserControl.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="OptionMarkFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FFF3F9FF"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="#FFD9ECFF"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070"/>
+        <Style x:Key="CheckBoxStyle1" TargetType="{x:Type CheckBox}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource OptionMark.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OptionMark.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="checkBoxBorder" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid">
+                                    <Path x:Name="optionMark" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Fill="{StaticResource OptionMark.Static.Glyph}" Margin="1" Opacity="0" Stretch="None"/>
+                                    <TextBlock x:Name="indeterminateMark" Text="?" FontSize="9" FontWeight="Bold" Opacity="0" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,-1,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Canvas Name="bigCanvas" Background="White" DragEnter="Graph_DragEnter" Drop="Graph_Drop" MouseDown="Graph_MouseDown" MouseMove="Graph_MouseMove" MouseUp="Graph_MouseUp" ClipToBounds="True" RenderTransformOrigin="0,0" SizeChanged="Graph_SizeChanged" MouseWheel="Graph_MouseWheel" AllowDrop="True">
+        <StackPanel Name="zoomPanel" Canvas.Bottom="50" Canvas.Right="0" Background="#d6eeff" Panel.ZIndex="105">
+            <Expander IsExpanded="True" FlowDirection="RightToLeft" ExpandDirection="Up">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FlowDirection="LeftToRight" Margin="0,0,5,0"> Zoom</TextBlock>
+                    </Grid>
+                </Expander.Header>
+                <Grid FlowDirection="LeftToRight" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Name="plus" Grid.Column="0" Grid.Row="0"  Content="+" FontWeight="ExtraBold" FontSize="15" Foreground="#A9A9A9" HorizontalAlignment="left" VerticalAlignment="Top" />
+                    <Slider Name="sliZoom" Grid.Column="1" Grid.Row="0" Orientation="Vertical" ValueChanged="sliZoom_ValueChanged" Width="30"  Height="190" Margin="0,0,0,0" Minimum="25" Maximum="175" Value="100" SmallChange="10" LargeChange="25" TickFrequency="5" TickPlacement="BottomRight" IsSnapToTickEnabled="True" AutoToolTipPlacement="BottomRight" Canvas.Right="0" Canvas.Bottom="40"/>
+                    <Label Name="minus" Grid.Column="0" Grid.Row="0" Content="-" FontWeight="ExtraBold" FontSize="15" Foreground="#A9A9A9" HorizontalAlignment="left" VerticalAlignment="Bottom" />
+                    <Border Grid.Column="0" CornerRadius="5" Grid.Row="1" Grid.ColumnSpan="40" Height="25" Width="50" Margin="0" Background="#abdcff" BorderBrush="#abdcff" BorderThickness="2,2,2,2"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button x:Name="zoomFit"  Click="canvasReset" Background="Transparent" BorderThickness="0">
+                            <Button.Content>
+                                <TextBlock Text="Reset" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+                </Grid>
+
+            </Expander>
+        </StackPanel>
+        <Border Name="generateBorder" CornerRadius="5" Canvas.Right="10" Canvas.Bottom="10" Width="60" Height="25" Background="#abdcff" BorderBrush="#abdcff" BorderThickness="2,2,2,2" Canvas.ZIndex="105">
+            <Button x:Name="generateButton" Background="Transparent" BorderThickness="0" Click="generateButton_Clicked">
+                <Button.Content>
+                    <TextBlock Text="Generate" TextAlignment="Center" HorizontalAlignment="Center" FontSize="12" VerticalAlignment="Center"/>
+                </Button.Content>
+            </Button>
+        </Border>
+        <!-- Button x:Name="generateButton" Canvas.Right="10" Canvas.Bottom="10" FontSize="15" MaxWidth="90" MaxHeight="25">Generate</-->
+        <ComboBox x:Name="CausalOptions" Canvas.Right="0" Canvas.Top="0" Width="128" SelectionChanged="CausalOptions_SelectionChanged"/>
+        <StackPanel x:Name="modifierList" Canvas.Right="0" Canvas.Top="0" Background="#d6eeff" Panel.ZIndex="105">
+            <Expander x:Name="modExpander" IsExpanded="True" FlowDirection="RightToLeft">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="96"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel FlowDirection="LeftToRight" Margin="0,0,5,0" Orientation="Horizontal">
+                            <TextBlock>Modifiers</TextBlock>
+                            <TextBlock x:Name="modExpanderIndicator" Margin="5,0,0,0" Visibility="Hidden">*</TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Expander.Header>
+                <StackPanel x:Name="modStackPanel" HorizontalAlignment="Center" Margin="4,0,4,4" FlowDirection="LeftToRight">
+                    <CheckBox x:Name="modcheckbox_mass" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click" Content="Mass"/>
+                    <CheckBox x:Name="modcheckbox_inertia" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Inertia</CheckBox>
+                    <CheckBox x:Name="modcheckbox_stiffness" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Stiffness</CheckBox>
+                    <CheckBox x:Name="modcheckbox_friction" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Friction</CheckBox>
+                    <CheckBox x:Name="modcheckbox_dampening" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Damping</CheckBox>
+                    <CheckBox x:Name="modcheckbox_parallel" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Parallel</CheckBox>
+                      <CheckBox x:Name="modcheckbox_tooth_wear" Style="{DynamicResource CheckBoxStyle1}" Margin="3" IsEnabled="False" Opacity="0.4" Click="ModCheckBox_Click">Tooth Wear</CheckBox>
+                    <RibbonSeparator/>
+                    <StackPanel x:Name="modpanel_velocity" IsEnabled="False" Opacity="0.4"  Margin="0,3,0,0" HorizontalAlignment="Left" Height="136">
+                        <TextBlock Text="Velocity Direction" HorizontalAlignment="Left" Margin="6,0,0,0"/>
+                        <DockPanel Margin="0,-10,0,0">
+                            <TextBlock x:Name="upLeft" Text="&#x2ba2;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="25,0,0,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                            <TextBlock x:Name="upRight" Text="&#x2ba3;" FontSize="30" Foreground="Gray" HorizontalAlignment="Right" Margin="0,0,25,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <StackPanel>
+                                <TextBlock x:Name="leftUp" Text="&#x2ba4;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="0,-10,5,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                                <TextBlock x:Name="leftDown" Text="&#x2ba6;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="0,0,5,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Border BorderThickness="2" Width="60" Height="60">
+                                    <Border.BorderBrush>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Rectangle StrokeThickness="1" Stroke="Black" StrokeDashArray="4 2"
+									            RadiusX="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=CornerRadius.TopRight}"
+									            RadiusY="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=CornerRadius.BottomLeft}"
+									            Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+									            Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Border.BorderBrush>
+                                    <Border CornerRadius="5" Height="38" Width="50" Margin="0" Background="#abdcff" BorderBrush="#abdcff" BorderThickness="2,2,2,2"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button x:Name="removeVelocityButton" Click="clearVelocity_Click" Background="Transparent" BorderThickness="0">
+                                            <Button.Content>
+                                                <TextBlock Text="Clear Velocity" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="12" VerticalAlignment="Center"/>
+                                            </Button.Content>
+                                        </Button>
+                                    </Border>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock x:Name="rightUp" Text="&#x2ba5;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="5,-10,0,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                                <TextBlock x:Name="rightDown" Text="&#x2ba7;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="5,0,0,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock x:Name="downLeft" Text="&#x2ba0;" FontSize="30" Foreground="Gray" HorizontalAlignment="Left" Margin="25,-10,0,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                            <TextBlock x:Name="downRight" Text="&#x2ba1;" FontSize="30" Foreground="Gray" HorizontalAlignment="Right" Margin="0,-10,35,0" MouseUp="velocityModifier_MouseUp" Cursor="Hand"/>
+                        </DockPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+        <Canvas Name="theCanvas">
+            <Rectangle x:Name="selectionRectangle" Visibility="Hidden" IsHitTestVisible="False" Stroke="Black" Fill="Blue" Opacity="0.3" Canvas.ZIndex="100"/>
+            <Line x:Name="connectLine" Visibility="Hidden" Stroke="Black"/>
+            <Canvas.RenderTransform>
+                <MatrixTransform x:Name="mt"/>
+            </Canvas.RenderTransform>
+        </Canvas>
+    </Canvas>
+</UserControl>

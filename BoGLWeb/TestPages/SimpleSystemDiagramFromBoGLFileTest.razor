@@ -1,0 +1,36 @@
+﻿@page "/simplesystemdiagramfromboglfiletest"
+@using static BoGLWeb.SystemDiagram
+
+<h3>SimpleSystemDiagramFromBoGLFileTest</h3>
+
+<p>
+    System Diagram String: <br>
+    <pre>
+        @sysDiagramString
+    </pre>
+</p>
+
+@code {
+    private string xmlString;
+    private SystemDiagram sysDiagram;
+    private string sysDiagramString = "";
+
+    protected override async Task OnInitializedAsync(){
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        Console.WriteLine(xmlString);
+        genSystemDiagram();
+    }
+
+    public void genSystemDiagram(){
+        sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        foreach(Element e in  sysDiagram.getElements()) {
+            sysDiagramString += e.toString();
+        }
+
+        foreach(Edge e in sysDiagram.getEdges()) {
+            sysDiagramString += e.toString();
+        }
+    }
+}

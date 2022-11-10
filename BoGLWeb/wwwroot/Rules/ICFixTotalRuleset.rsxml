@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet7</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>0JuncInvd.grxml</string>
+    <string>0JuncInvdNA.grxml</string>
+    <string>1JuncInvd.grxml</string>
+    <string>1JuncInvdNA.grxml</string>
+    <string>0CapacitorFlip.grxml</string>
+    <string>0InductorFlip.grxml</string>
+    <string>1CapacitorFlip.grxml</string>
+    <string>1InductorFlip.grxml</string>
+    <string>0CapacitorFlipCorrect.grxml</string>
+    <string>0InductorFlipCorrect.grxml</string>
+    <string>1CapacitorFlipCorrect.grxml</string>
+    <string>1InductorFlipCorrect.grxml</string>
+  </ruleFileNames>
+  <name>ICFixTotalRuleset</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet7</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

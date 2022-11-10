@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>beforeBG_checkdir1.grxml</string>
+    <string>beforeBG_checkdir1_1.grxml</string>
+    <string>beforeBG_checkdir2.grxml</string>
+    <string>beforeBG_checkdir2_1.grxml</string>
+    <string>beforeBG_checkdir3.grxml</string>
+    <string>beforeBG_checkdir3_1.grxml</string>
+    <string>beforeBG_checkdir4.grxml</string>
+    <string>beforeBG_checkdir4_1.grxml</string>
+  </ruleFileNames>
+  <name>BeforeBG-VerifyDirRuleSet</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>Stop</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

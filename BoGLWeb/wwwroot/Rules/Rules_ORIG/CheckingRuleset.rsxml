@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>CheckingAdj0Rule.grxml</string>
+    <string>CheckingAdj1Rule.grxml</string>
+    <string>CheckingFlowThr0Rule.grxml</string>
+    <string>CheckingFlowThr1Rule.grxml</string>
+    <string>CheckingINVDJunc10Rule.grxml</string>
+    <string>CheckingINVDJunc10Rule1.grxml</string>
+    <string>CheckingINVDJunc11Rule.grxml</string>
+    <string>CheckingINVDJuncRule.grxml</string>
+    <string>CheckingINVDJuncRule1.grxml</string>
+    <string>CheckingINVDJuncRule1C.grxml</string>
+    <string>CheckingINVDJuncRule1GY.grxml</string>
+    <string>CheckingINVDJuncRule1I.grxml</string>
+    <string>CheckingINVDJuncRule1R.grxml</string>
+    <string>CheckingINVDJuncRule1Se.grxml</string>
+    <string>CheckingINVDJuncRule1TF.grxml</string>
+    <string>CheckingINVDJuncRuleGY.grxml</string>
+    <string>CheckingINVDJuncRuleI.grxml</string>
+    <string>CheckingINVDJuncRuleR.grxml</string>
+    <string>CheckingINVDJuncRuleSe.grxml</string>
+    <string>CheckingINVDJuncRuleSf.grxml</string>
+    <string>CheckingINVDJuncRuleTF.grxml</string>
+    <string>0JuncInvd.grxml</string>
+    <string>0JuncInvdNA.grxml</string>
+    <string>1JuncInvd.grxml</string>
+    <string>1JuncInvdNA.grxml</string>
+  </ruleFileNames>
+  <name>CheckingRuleset</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>Stop</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

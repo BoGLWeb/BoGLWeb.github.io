@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet3</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>CausalityGY.grxml</string>
+    <string>CausalityGY2.grxml</string>
+    <string>CausalityIntegralC.grxml</string>
+    <string>CausalityIntegralI.grxml</string>
+    <string>CausalityResistorJunc.grxml</string>
+    <string>CausalityResistorR.grxml</string>
+    <string>CausalitySe.grxml</string>
+    <string>CausalitySf.grxml</string>
+    <string>CausalityTF.grxml</string>
+    <string>CausalityTF2.grxml</string>
+    <string>Causality10.grxml</string>
+    <string>Causality102.grxml</string>
+    <string>Causality101Down.grxml</string>
+  </ruleFileNames>
+  <name>CausalityRuleset</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet3</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

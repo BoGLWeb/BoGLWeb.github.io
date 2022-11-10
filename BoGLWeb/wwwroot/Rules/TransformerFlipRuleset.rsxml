@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet8</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet3</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>TranformerFlipRule.grxml</string>
+  </ruleFileNames>
+  <name>TransformerFlipRuleset</name>
+  <TriggerRuleNum>1</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet8</generationAfterNoRules>
+  <generationAfterTriggerRule>GoToRuleSet3</generationAfterTriggerRule>
+</ruleSet>
