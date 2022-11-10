@@ -11,6 +11,13 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Shared\**" />
+	  <Content Remove="Shared\**" />
+	  <EmbeddedResource Remove="Shared\**" />
+	  <None Remove="Shared\**" />
+	</ItemGroup>
+
   <ItemGroup>
     <None Include="wwwroot\examples\classic.bogl" />
     <None Include="wwwroot\examples\current_multi_parallel.bogl" />
@@ -799,19 +806,16 @@
     <PackageReference Include="AntDesign" Version="0.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
-<<<<<<< HEAD
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-=======
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
->>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
   </ItemGroup>
 
   <ItemGroup>
@@ -819,7 +823,6 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <None Remove=".gitignore" />
   </ItemGroup>
 
@@ -845,9 +848,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\" />
-  </ItemGroup>
-=======
     <None Update="Graph.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -856,6 +856,5 @@
 	<ItemGroup>
 		<TrimmerRootAssembly Include="System.Xml.XmlSerializer" />
 	</ItemGroup>
->>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
 
 </Project>

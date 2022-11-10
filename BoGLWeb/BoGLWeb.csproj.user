@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<<<<<<< HEAD
-=======
   <PropertyGroup />
   <ItemGroup>
     <None Update="Graph.xaml">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
->>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
 </Project>
