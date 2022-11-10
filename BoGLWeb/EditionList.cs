@@ -142,6 +142,26 @@ namespace BoGLWeb {
                     yield return edit;
                 }
             }
+
+            /// <summary>
+            /// Converts this <code>EditionList</code> to a printable
+            /// format.
+            /// </summary>
+            /// <returns>
+            /// This <code>EditionList</code> as a String
+            /// </returns>
+            public override String ToString() {
+                String print = "";
+                Node<Edit>? pointer = this.head;
+                int index = 0;
+                while (pointer != null) {
+                    char delimiter = (index == this.index) ? '*' : ' ';
+                    print += delimiter + pointer.data?.ToString() + delimiter;
+                    pointer = pointer.next;
+                    index++;
+                }
+                return print;
+            }
         }
 
         /// <summary>
