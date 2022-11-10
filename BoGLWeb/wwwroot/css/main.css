@@ -1,0 +1,332 @@
+html, body {
+    font-family: "Segoe UI" !important;
+}
+
+h1:focus {
+    outline: none;
+}
+
+a, .btn-link {
+    color: #0071c1;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow:hidden;
+    background-color: white !important;
+}
+
+p { 
+     text-align: center; 
+     position: relative;
+}
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(248, 248, 248)
+}
+
+g.selected > g > g > .outline {
+    stroke: rgb(6, 82, 255);
+}
+
+.outline {
+    stroke-width: 2;
+    stroke: black;
+    fill: white;
+}
+
+.selectable {
+    fill: white;
+}
+
+g {
+    fill: none;
+    pointer-events: all;
+}
+
+.boglElem {
+    cursor: pointer;
+}
+
+path.link {
+    fill: none;
+    stroke: #333;
+    stroke-width: 4px;
+}
+
+path.link.selected, path.link.selected:hover {
+    stroke: rgb(6, 82, 255);
+}
+
+.hoverablePath:hover {
+    stroke: rgb(94, 196, 204);
+    cursor: pointer;
+}
+
+path.link.hidden {
+    stroke-width: 0;
+}
+
+.pageContainer {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+#graphMenu {
+    flex: 0 0 242px;
+    display: flex;
+}
+
+.ant-collapse {
+    width: 100%;
+}
+
+.anticon-down-circle {
+    margin-right: 10px;
+    font-size: 18px;
+    margin-top: 3px;
+}
+
+.ant-collapse-expand-icon {
+    display: flex;
+    align-items: center;
+}
+
+.ant-collapse-header {
+    background-color: #D6EEFF;
+    border-color: #D6EEFF;
+}
+
+.ant-collapse {
+    background-color: #D6EEFF;
+    overflow-y: auto;
+    height: calc(100vh - 42px);
+    padding-bottom: 10px;
+    margin: 5px;
+}
+
+.ant-collapse > .ant-collapse-item {
+    border: none;
+}
+
+.elementHolder {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.groupDiv {
+    width: fit-content;
+    height: fit-content;
+    cursor: grab;
+    margin: 2px;
+}
+
+.box {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.elemImage {
+    max-width: 45px;
+    max-height: 45px;
+}
+
+.ant-collapse-content-box {
+    padding: 0 16px 5px 16px !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 5px;
+}
+
+.ant-tabs {
+    margin: 5px 5px 5px 0px;
+}
+
+.ant-menu {
+    background-color: #ABDCFF;
+}
+
+.ant-menu-horizontal {
+    line-height: 30px;
+}
+
+.ant-tabs-tab {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    border: 1.5px solid lightgray !important;
+    border-bottom-color: #fff !important;
+}
+
+.ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
+    margin: 0 0 3px 0;
+}
+
+.ant-tabs-tab:not(.ant-tabs-tab-active) {
+    background-color: #D6EEFF !important;
+}
+
+.ant-tabs-tab .ant-tabs-tab-btn {
+    color: black !important;
+    text-shadow: none !important;
+}
+
+.ant-tabs-tab:not(.ant-tabs-tab-active):hover {
+    background-color: #c2d9ff !important;
+    transition: background-color 0.1s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.ant-tabs-tabpane {
+    border: 1px solid lightgray;
+}
+
+.ant-tabs-top > .ant-tabs-nav::before, .ant-tabs-bottom > .ant-tabs-nav::before, .ant-tabs-top > div > .ant-tabs-nav::before, .ant-tabs-bottom > div > .ant-tabs-nav::before {
+    border: none !important;
+}
+
+.ant-tabs-content {
+    height: calc(100vh - 79px);
+}
+
+.expand {
+    /*this is not necessary long term, as SVGs will handle width / height*/
+    width: 83.8vw;
+    height: 89.3vh;
+    padding: 10px;
+}
+
+.ant-menu-submenu:hover:after, .ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {
+    border: none !important;
+}
+
+.ant-menu-submenu-title {
+}
+
+.card-container {
+    flex: 1 1 0;
+}
+
+.graphSVG {
+    width: 100%;
+    height: calc(100vh - 79px);
+}
+
+.boglLogo {
+    padding-right: 20px !important;
+}
+
+.iconDiv {
+    padding-left: 20px !important;
+}
+
+.boglLogo > img {
+    margin-top: -3px;
+}
+
+.boglLogo > div {
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    left: -5px;
+}
+
+.boglLogo:hover > div {
+    color: black !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item, .ant-menu-horizontal > .ant-menu-submenu {
+    top: 0;
+    vertical-align: unset;
+}
+
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu {
+    padding: 0 10px;
+}
+
+.menuIcon {
+    margin-top: -7px;
+    height: 15px;
+}
+
+.ant-btn-text[disabled] {
+    opacity: 40% !important;
+}
+
+.topMenu {
+    font-weight: bold;
+}
+
+circle {
+    pointer-events: none;
+}

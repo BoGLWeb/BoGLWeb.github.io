@@ -216,13 +216,21 @@
       "mscorlib.dll": "sha256-TYLzIm125RbnX9+RAPqJnwZhd6CnQpJcrjiMpJfZ720=",
       "netstandard.dll": "sha256-HhuK9zDkd1N7hODAEiNJ11VF8T54IgrM6hZfLHmHdqM=",
       "System.Private.CoreLib.dll": "sha256-dXaTqyg1PnXPiSwywpic1PVrd7P8Vb5tN0i0\/urdt3E=",
+<<<<<<< HEAD
+      "BoGLWeb.dll": "sha256-LT4qRiS3wNbdXCFaxJPUBErTl8CtpIbitYTcKKBIybw="
+=======
       "BoGLWeb.dll": "sha256-76eoBVjoinazKQgEHnjjfpdAecW\/9JNSIG19rVH+iHI="
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
+<<<<<<< HEAD
+      "BoGLWeb.pdb": "sha256-5XTEtW2f2hAIBEdyeH5xx8zZCCKr1pOBJ2wESZvckno="
+=======
       "BoGLWeb.pdb": "sha256-p4Epk2frbTy1lzhx1g2fZWQQhgYVXPJ0LfOEJ8VYgIA="
+>>>>>>> d00c8f5debb030f4dd987acb4f71e18a7f5a897b
     },
     "runtime": {
       "dotnet.6.0.8.7wxfzf25ky.js": "sha256-WT60vnXnQtCNURE40qo+XSL1o4iYFvABy0NVaFhm7MI=",
