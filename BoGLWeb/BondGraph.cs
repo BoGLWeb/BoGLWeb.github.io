@@ -24,6 +24,8 @@ namespace BoGLWeb {
         //Generate BondGraph from GraphSynth designGraph
         //TODO Check if we can ensure a designGraph is a Bond Graph and produce error if it is not
         public static BondGraph generateBondGraphFromGraphSynth(designGraph graph) {
+            
+
             return null;
         }
 
@@ -50,15 +52,17 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly double flow, effort;
 
-            //True means the causal stroke is at the source
             private readonly bool causalStroke;
+            //True means the causal stroke is at the source
+            private readonly bool causalStrokeDirection;
 
             //The arrow will always point at the sink
-            private Bond(Element source, Element sink, string label, bool causalStroke, double flow, double effort) {
+            private Bond(Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
                 this.source = source;
                 this.sink = sink;
                 this.label = label;
                 this.causalStroke = causalStroke;
+                this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
             }
