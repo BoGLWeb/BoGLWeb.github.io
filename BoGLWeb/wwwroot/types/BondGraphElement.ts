@@ -1,13 +1,11 @@
-﻿class BondGraphElement {
-    id: number;
-    img: string;
-    x: number;
-    y: number;
+﻿import { GraphElement } from "./GraphElement";
 
-    constructor(id: number, img: string, x: number, y: number) {
-        this.id = id;
-        this.img = img;
-        this.x = x;
-        this.y = y;
+export class BondGraphElement extends GraphElement {
+    label: string;
+    labelSize: { width: number, height: number } = null;
+
+    constructor(id: number, label: string, x: number, y: number) {
+        super(id, x, y);
+        this.label = label;
     }
 }

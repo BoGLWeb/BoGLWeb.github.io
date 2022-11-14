@@ -1,12 +1,14 @@
-﻿import { BGBondSelection, BGElementSelection, SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
+import { GraphBond } from "./GraphBond";
+import { SystemDiagramElement } from "./SystemDiagramElement";
 
 export class SystemDiagram extends BaseGraph {
     edgeCircle: SVGSelection;
-    edgeOrigin: BondGraphElement = null;
+    edgeOrigin: SystemDiagramElement = null;
 
-    constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
+    constructor(svg: SVGSelection, nodes: SystemDiagramElement[], edges: GraphBond[]) {
         super(svg, nodes, edges);
 
         let graph = this;
@@ -15,9 +17,9 @@ export class SystemDiagram extends BaseGraph {
         d3.select(window).on("keydown", function () {
             graph.svgKeyDown.call(graph);
         })
-        .on("keyup", function () {
-            graph.svgKeyUp.call(graph);
-        });
+            .on("keyup", function () {
+                graph.svgKeyUp.call(graph);
+            });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         this.edgeCircle = this.svgG.append("circle");
@@ -26,7 +28,7 @@ export class SystemDiagram extends BaseGraph {
             .attr("style", "cursor: pointer; visibility: hidden;");
     }
 
-    moveCircle(e: BondGraphElement) {
+    moveCircle(e: SystemDiagramElement) {
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
         let x = coordinates[0];
         let y = coordinates[1];
@@ -47,7 +49,7 @@ export class SystemDiagram extends BaseGraph {
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
     }
 
-    setFollowingEdge(sourceNode: BondGraphElement) {
+    setFollowingEdge(sourceNode: SystemDiagramElement) {
         this.edgeOrigin = sourceNode;
         if (sourceNode == null) {
             // hide edge
@@ -58,12 +60,25 @@ export class SystemDiagram extends BaseGraph {
         }
     }
 
-    pathExtraRendering(paths: BGBondSelection) {
-        paths.classed("hoverablePath", true);
-    }
-
-    addEdgeHover(group: BGElementSelection) {
+    renderElements(newElements: GraphElementSelection) {
         let graph = this;
+        newElements.classed("boglElem", true)
+            .on("mouseover", function () {
+                if (graph.state.shiftNodeDrag) {
+                    d3.select(this).classed(graph.bondClass, true);
+                }
+            })
+            .on("mouseout", function () {
+                d3.select(this).classed(graph.bondClass, false);
+            })
+            .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
+            .call(this.drag);
+
+        let group = newElements.append("g");
+        group.attr("style", "fill:inherit;")
+            .attr("index", function (d, i) { return d.id.toString(); });
 
         let edgeHover = group.append("rect");
         edgeHover.attr("width", "80px")
@@ -86,40 +101,58 @@ export class SystemDiagram extends BaseGraph {
                 graph.handleEdgeDown.call(graph, d);
             })
             .call(this.edgeDrag);
-    }
 
-    addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) {
-        let graph = this;
+        let hoverBox = group.append("g");
+
+        let box = hoverBox.append("rect");
+        box.classed("outline", true)
+            .attr("width", "60px")
+            .attr("height", "60px")
+            .attr("x", "-30px")
+            .attr("y", "-30px");
+
+        let image = hoverBox.append("image");
+        image.attr("href", function (d) { return (<SystemDiagramElement>d).img; })
+            .classed("hoverImg", true)
+            .attr("x", "-25px")
+            .attr("y", "-25px")
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("height", "50px")
+            .attr("width", "50px");
 
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
             graph.edgeCircle.style("visibility", "hidden");
         })
-        .on("mouseup", function (d) {
-            graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
-        })
-        .on("mouseleave", function () {
-            graph.edgeCircle.style("visibility", "visible");
-        });
+            .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
+            })
+            .on("mouseleave", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-        .on("mouseenter", function () {
-            graph.edgeCircle.style("visibility", "visible");
-        })
-        .on("mouseup", function (d) {
-            graph.handleEdgeUp.call(graph, d);
-        })
-        .on("mousedown", function (d) {
-            graph.handleEdgeDown.call(graph, d);
-        })
-        .call(this.edgeDrag);
+            .on("mouseenter", function () {
+                graph.edgeCircle.style("visibility", "visible");
+            })
+            .on("mouseup", function (d) {
+                graph.handleEdgeUp.call(graph, d);
+            })
+            .on("mousedown", function (d) {
+                graph.handleEdgeDown.call(graph, d);
+            })
+            .call(this.edgeDrag);
+    }
+
+    pathExtraRendering(paths: BGBondSelection) {
+        paths.classed("hoverablePath", true);
     }
 
     // remove bonds associated with a node
-    spliceLinksForNode(el: BondGraphElement) {
+    spliceLinksForNode(el: SystemDiagramElement) {
         let graph = this;
 
         let toSplice = this.bonds.filter(function (l) {
@@ -130,7 +163,7 @@ export class SystemDiagram extends BaseGraph {
         });
     }
 
-    replaceSelectEdge(d3Bond: SVGSelection, bond: BondGraphBond) {
+    replaceSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
         d3Bond.classed(this.selectedClass, true);
         if (this.state.selectedBond) {
             this.removeSelectFromEdge();
@@ -138,7 +171,7 @@ export class SystemDiagram extends BaseGraph {
         this.state.selectedBond = bond;
     }
 
-    replaceSelectNode(d3Elem: SVGSelection, el: BondGraphElement) {
+    replaceSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
         d3Elem.classed(this.selectedClass, true);
         if (this.state.selectedElement) {
             this.removeSelectFromNode();
@@ -158,7 +191,7 @@ export class SystemDiagram extends BaseGraph {
         this.state.selectedElement = null;
     }
 
-    pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) {
+    pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
         (<Event>d3.event).stopPropagation();
         this.state.mouseDownLink = bond;
 
@@ -174,7 +207,7 @@ export class SystemDiagram extends BaseGraph {
         }
     }
 
-    handleEdgeDown(el: BondGraphElement) {
+    handleEdgeDown(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
         if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
@@ -182,10 +215,10 @@ export class SystemDiagram extends BaseGraph {
         }
     }
 
-    handleEdgeUp(el: BondGraphElement) {
+    handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
         if (this.edgeOrigin && this.edgeOrigin != el) {
-            this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+            this.bonds.push(new GraphBond(this.edgeOrigin, el));
             this.setFollowingEdge(null);
             this.edgeOrigin = null;
             this.updateGraph();
@@ -196,20 +229,20 @@ export class SystemDiagram extends BaseGraph {
     }
 
     // mousedown on element
-    nodeMouseDown(el: BondGraphElement) {
+    nodeMouseDown(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
         this.state.mouseDownNode = el;
         this.state.justDragged = false;
     }
 
-    nodeMouseUp(d3Elem: SVGSelection, el: BondGraphElement) {
+    nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
         let state = this.state;
 
         (<Event>d3.event).stopPropagation();
 
         state.mouseDownNode = null;
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-            this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+            this.bonds.push(new GraphBond(this.edgeOrigin, el));
             this.setFollowingEdge(null);
             this.edgeOrigin = null;
             this.updateGraph();
@@ -243,7 +276,7 @@ export class SystemDiagram extends BaseGraph {
         if (this.draggingElement) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+            this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {
@@ -303,15 +336,7 @@ export class SystemDiagram extends BaseGraph {
             });
     }
 
-    dragmove(el: BondGraphElement) {
-        if (this.state.mouseDownNode) {
-            el.x += (<DragEvent>d3.event).dx;
-            el.y += (<DragEvent>d3.event).dy;
-            this.updateGraph();
-        }
-    }
-
-    dragmoveEdge(el: BondGraphElement) {
+    dragmoveEdge(el: SystemDiagramElement) {
         if (this.edgeOrigin) {
             this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }

@@ -1,9 +1,13 @@
-﻿class BondGraphBond {
-    source: BondGraphElement;
-    target: BondGraphElement;
+﻿import { GraphBond } from "./GraphBond";
+import { GraphElement } from "./GraphElement";
 
-    constructor(source: BondGraphElement, target: BondGraphElement) {
-        this.source = source;
-        this.target = target;
+export class BondGraphBond extends GraphBond {
+    sourceMarker: string;
+    targetMarker: string;
+
+    constructor(source: GraphElement, target: GraphElement, sourceMarker: string, targetMarker: string) {
+        super(source, target);
+        this.sourceMarker = sourceMarker;
+        this.targetMarker = targetMarker;
     }
 }
