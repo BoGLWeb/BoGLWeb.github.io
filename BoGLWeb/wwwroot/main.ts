@@ -2,8 +2,7 @@
 import { BaseGraph } from "./types/BaseGraph";
 import { BondGraph } from "./types/BondGraph";
 import { BondGraphBond } from "./types/BondGraphBond";
-import { BondGraphElement } from "./types/BondGraphElement";
-import { GraphBond } from "./types/GraphBond";
+import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { SystemDiagram } from "./types/SystemDiagram";
 
 function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {

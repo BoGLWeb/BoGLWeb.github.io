@@ -2,7 +2,7 @@
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
 import { GraphBond } from "./GraphBond";
-import { SystemDiagramElement } from "./SystemDiagramElement";
+import { SystemDiagramElement } from "./elements/SystemDiagramElement";
 
 export class SystemDiagram extends BaseGraph {
     edgeCircle: SVGSelection;
