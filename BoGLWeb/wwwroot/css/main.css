@@ -335,3 +335,33 @@ text {
     fill: black;
     dominant-baseline: middle;
 }
+
+#app {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+}
+
+#loadingImage {
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    width: 15%;
+    animation-duration: 3s;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.5);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
