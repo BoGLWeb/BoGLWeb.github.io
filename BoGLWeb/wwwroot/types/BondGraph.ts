@@ -90,17 +90,15 @@ export class BondGraph extends BaseGraph {
 
     renderElements(newElements: GraphElementSelection) {
         let graph = this;
-        newElements.call(this.drag);
-        let text = newElements.append("text");
-        text.attr("text-anchor", "middle")
-            .text((d) => (<BondGraphElement>d).label)
+        newElements.classed("boglElem", true)
             .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
-            .on("mouseup", () => {
-                (<Event>d3.event).stopPropagation();
-                graph.state.mouseDownNode = null;
-            })
+            .call(this.drag);
+
+        let text = newElements.append("text");
+        text.attr("text-anchor", "middle")
+            .text((d) => (<BondGraphElement>d).label)
             .each((d: BondGraphElement) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
@@ -114,18 +112,5 @@ export class BondGraph extends BaseGraph {
         paths.style('marker-end', (d) => 'url(#' + (d as BondGraphBond).targetMarker + ')')
             .style('marker-start', (d) => 'url(#' + (d as BondGraphBond).sourceMarker + ')')
             .style('stroke-width', 2);
-    }
-
-    dragmove(el: GraphElement) {
-        el.x += (<DragEvent>d3.event).dx;
-        el.y += (<DragEvent>d3.event).dy;
-        this.updateGraph();
-    }
-
-    zoomed() {
-        if (!this.state.mouseDownNode) {
-            this.state.justScaleTransGraph = true;
-            this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
-        }
     }
 }

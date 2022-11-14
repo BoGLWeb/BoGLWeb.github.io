@@ -44,7 +44,6 @@ export class BaseGraph {
     }
 
     // functions needed in system diagram are called from this class but not defined by default
-    zoomed() { }
     svgKeyDown() { }
     svgKeyUp() { }
     svgMouseDown() { }
@@ -61,7 +60,6 @@ export class BaseGraph {
     }
 
     dragmove(el: GraphElement) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         if (this.state.mouseDownNode) {
             el.x += (<DragEvent>d3.event).dx;
             el.y += (<DragEvent>d3.event).dy;
@@ -149,5 +147,10 @@ export class BaseGraph {
     updateGraph() {
         this.drawPaths();
         this.fullRenderElements();
+    }
+
+    zoomed() {
+        this.state.justScaleTransGraph = true;
+        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
     }
 }

@@ -80,7 +80,6 @@ define("types/BaseGraph", ["require", "exports", "types/GraphState"], function (
             this.elementSelection = svgG.append("g").selectAll("g");
             svg.call(this.dragSvg).on("dblclick.zoom", null);
         }
-        zoomed() { }
         svgKeyDown() { }
         svgKeyUp() { }
         svgMouseDown() { }
@@ -94,7 +93,6 @@ define("types/BaseGraph", ["require", "exports", "types/GraphState"], function (
             this.state.justDragged = false;
         }
         dragmove(el) {
-            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             if (this.state.mouseDownNode) {
                 el.x += d3.event.dx;
                 el.y += d3.event.dy;
@@ -163,6 +161,10 @@ define("types/BaseGraph", ["require", "exports", "types/GraphState"], function (
         updateGraph() {
             this.drawPaths();
             this.fullRenderElements();
+        }
+        zoomed() {
+            this.state.justScaleTransGraph = true;
+            this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
         }
     }
     exports.BaseGraph = BaseGraph;
@@ -268,17 +270,14 @@ define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (r
         }
         renderElements(newElements) {
             let graph = this;
-            newElements.call(this.drag);
-            let text = newElements.append("text");
-            text.attr("text-anchor", "middle")
-                .text((d) => d.label)
+            newElements.classed("boglElem", true)
                 .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
-                .on("mouseup", () => {
-                d3.event.stopPropagation();
-                graph.state.mouseDownNode = null;
-            })
+                .call(this.drag);
+            let text = newElements.append("text");
+            text.attr("text-anchor", "middle")
+                .text((d) => d.label)
                 .each((d) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
@@ -291,17 +290,6 @@ define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (r
             paths.style('marker-end', (d) => 'url(#' + d.targetMarker + ')')
                 .style('marker-start', (d) => 'url(#' + d.sourceMarker + ')')
                 .style('stroke-width', 2);
-        }
-        dragmove(el) {
-            el.x += d3.event.dx;
-            el.y += d3.event.dy;
-            this.updateGraph();
-        }
-        zoomed() {
-            if (!this.state.mouseDownNode) {
-                this.state.justScaleTransGraph = true;
-                this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-            }
         }
     }
     exports.BondGraph = BondGraph;
