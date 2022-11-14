@@ -1,6 +1,9 @@
 "use strict";
 import { BaseGraph } from "./types/BaseGraph";
 import { BondGraph } from "./types/BondGraph";
+import { BondGraphBond } from "./types/BondGraphBond";
+import { BondGraphElement } from "./types/BondGraphElement";
+import { GraphBond } from "./types/GraphBond";
 import { SystemDiagram } from "./types/SystemDiagram";
 
 function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {
@@ -56,9 +59,13 @@ function loadPage() {
 
     var bondGraphSVG = d3.select("#bondGraph").append("svg");
     bondGraphSVG.classed("graphSVG", true);
-    let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
-    let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
-    var bondGraph = new BondGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+    let n1 = new BondGraphElement(0, "1", 50, 50);
+    let n2 = new BondGraphElement(1, "R:b", 50, -50);
+    let n3 = new BondGraphElement(2, "I:m", 150, 50);
+    let n4 = new BondGraphElement(3, "C:1/k", 50, 150);
+    let n5 = new BondGraphElement(4, "Se:F(t)", -50, 50);
+    var bondGraph = new BondGraph(bondGraphSVG, [n1, n2, n3, n4, n5], [new BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond(n1, n3, "", "flat_and_arrow"),
+    new BondGraphBond(n1, n4, "flat", "arrow"), new BondGraphBond(n1, n5, "flat_and_arrow", "")]);
     bondGraph.updateGraph();
 }
 

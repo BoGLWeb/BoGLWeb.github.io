@@ -8,6 +8,9 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
+import { GraphBond } from "../types/GraphBond";
+import { GraphElement } from "../types/GraphElement";
+
 // Last module patch version validated against: 2.0.0
 
 // --------------------------------------------------------------------------
@@ -1228,5 +1231,5 @@ export function selector<DescElement extends Element>(selector: string): (this: 
 export function selectorAll<DescElement extends Element>(selector: string): (this: BaseType) => NodeListOf<DescElement>;
 
 export type SVGSelection = Selection<SVGElement, SVGElement, SVGElement, SVGElement>;
-export type BGElementSelection = Selection<SVGElement, BondGraphElement, SVGElement, SVGElement>;
-export type BGBondSelection = Selection<SVGElement, BondGraphBond, SVGElement, SVGElement>;
+export type GraphElementSelection = Selection<SVGElement, GraphElement, SVGElement, SVGElement>;
+export type BGBondSelection = Selection<SVGElement, GraphBond, SVGElement, SVGElement>;

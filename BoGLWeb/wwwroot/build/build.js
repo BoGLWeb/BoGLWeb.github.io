@@ -1,4 +1,60 @@
-define("types/BaseGraph", ["require", "exports"], function (require, exports) {
+define("types/GraphElement", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GraphElement = void 0;
+    class GraphElement {
+        constructor(id, x, y) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+        }
+    }
+    exports.GraphElement = GraphElement;
+});
+define("types/GraphBond", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GraphBond = void 0;
+    class GraphBond {
+        constructor(source, target) {
+            this.source = source;
+            this.target = target;
+        }
+    }
+    exports.GraphBond = GraphBond;
+});
+define("types/SystemDiagramElement", ["require", "exports", "types/GraphElement"], function (require, exports, GraphElement_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SystemDiagramElement = void 0;
+    class SystemDiagramElement extends GraphElement_1.GraphElement {
+        constructor(id, img, x, y) {
+            super(id, x, y);
+            this.img = img;
+        }
+    }
+    exports.SystemDiagramElement = SystemDiagramElement;
+});
+define("types/GraphState", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GraphState = void 0;
+    class GraphState {
+        constructor() {
+            this.selectedElement = null;
+            this.selectedBond = null;
+            this.mouseDownNode = null;
+            this.mouseDownLink = null;
+            this.justDragged = false;
+            this.justScaleTransGraph = false;
+            this.lastKeyDown = -1;
+            this.shiftNodeDrag = false;
+            this.graphMouseDown = false;
+        }
+    }
+    exports.GraphState = GraphState;
+});
+define("types/BaseGraph", ["require", "exports", "types/GraphState"], function (require, exports, GraphState_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BaseGraph = void 0;
@@ -10,7 +66,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             this.DELETE_KEY = 46;
             this.ENTER_KEY = 13;
             this.idct = 0;
-            this.state = new GraphState();
+            this.state = new GraphState_1.GraphState();
             this.draggingElement = null;
             this.elements = nodes || [];
             this.bonds = edges || [];
@@ -24,24 +80,30 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             this.elementSelection = svgG.append("g").selectAll("g");
             svg.call(this.dragSvg).on("dblclick.zoom", null);
         }
+        zoomed() { }
         svgKeyDown() { }
         svgKeyUp() { }
         svgMouseDown() { }
         svgMouseUp() { }
         pathMouseDown(d3Bond, bond) { }
         pathExtraRendering(path) { }
-        addEdgeHover(group) { }
-        addHover(image, hoverBox, box) { }
+        renderElements(newElements) { }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
+            this.state.mouseDownNode = el;
+            this.state.justDragged = false;
         }
-        ;
         dragmove(el) {
-            el.x += d3.event.dx;
-            el.y += d3.event.dy;
-            this.updateGraph();
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            if (this.state.mouseDownNode) {
+                el.x += d3.event.dx;
+                el.y += d3.event.dy;
+                this.updateGraph();
+            }
         }
-        ;
+        drawPath(d) {
+            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+        }
         get drag() {
             let graph = this;
             return d3.behavior.drag()
@@ -68,7 +130,7 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
                 d3.select("body").style("cursor", "auto");
             });
         }
-        updateGraph() {
+        drawPaths() {
             let graph = this;
             this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
                 return String(d.source.id) + "+" + String(d.target.id);
@@ -76,16 +138,11 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             let paths = this.bondSelection;
             paths.classed(this.selectedClass, function (d) {
                 return d === graph.state.selectedBond;
-            })
-                .attr("d", function (d) {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            });
+            }).attr("d", function (d) { return graph.drawPath.call(graph, d); });
             paths.enter()
                 .append("path")
                 .classed("link", true)
-                .attr("d", function (d) {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            })
+                .attr("d", function (d) { return graph.drawPath.call(graph, d); })
                 .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
             })
@@ -94,53 +151,47 @@ define("types/BaseGraph", ["require", "exports"], function (require, exports) {
             });
             this.pathExtraRendering(paths);
             paths.exit().remove();
+        }
+        fullRenderElements() {
             this.elementSelection = this.elementSelection.data(this.elements, function (d) { return d.id.toString(); });
             this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             let newElements = this.elementSelection.enter().append("g");
-            newElements.classed("boglElem", true)
-                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-                .on("mouseover", function () {
-                if (graph.state.shiftNodeDrag) {
-                    d3.select(this).classed(graph.bondClass, true);
-                }
-            })
-                .on("mouseout", function () {
-                d3.select(this).classed(graph.bondClass, false);
-            })
-                .on("mousedown", function (d) {
-                graph.nodeMouseDown.call(graph, d);
-            })
-                .call(this.drag);
-            let group = newElements.append("g");
-            group.attr("style", "fill:inherit;")
-                .attr("index", function (d, i) { return d.id.toString(); });
-            this.addEdgeHover(group);
-            let hoverBox = group.append("g");
-            let box = hoverBox.append("rect");
-            box.classed("outline", true)
-                .attr("width", "60px")
-                .attr("height", "60px")
-                .attr("x", "-30px")
-                .attr("y", "-30px");
-            let image = hoverBox.append("image");
-            image.attr("href", function (d, i) { return d.img; })
-                .classed("hoverImg", true)
-                .attr("x", "-25px")
-                .attr("y", "-25px")
-                .attr("preserveAspectRatio", "xMidYMid meet")
-                .attr("height", "50px")
-                .attr("width", "50px");
-            this.addHover(image, hoverBox, box);
+            newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+            this.renderElements(newElements);
             this.elementSelection.exit().remove();
         }
-        ;
-        zoomed() {
-            this.state.justScaleTransGraph = true;
-            this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+        updateGraph() {
+            this.drawPaths();
+            this.fullRenderElements();
         }
-        ;
     }
     exports.BaseGraph = BaseGraph;
+});
+define("types/BondGraphBond", ["require", "exports", "types/GraphBond"], function (require, exports, GraphBond_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BondGraphBond = void 0;
+    class BondGraphBond extends GraphBond_1.GraphBond {
+        constructor(source, target, sourceMarker, targetMarker) {
+            super(source, target);
+            this.sourceMarker = sourceMarker;
+            this.targetMarker = targetMarker;
+        }
+    }
+    exports.BondGraphBond = BondGraphBond;
+});
+define("types/BondGraphElement", ["require", "exports", "types/GraphElement"], function (require, exports, GraphElement_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BondGraphElement = void 0;
+    class BondGraphElement extends GraphElement_2.GraphElement {
+        constructor(id, label, x, y) {
+            super(id, x, y);
+            this.labelSize = null;
+            this.label = label;
+        }
+    }
+    exports.BondGraphElement = BondGraphElement;
 });
 define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_1) {
     "use strict";
@@ -149,33 +200,113 @@ define("types/BondGraph", ["require", "exports", "types/BaseGraph"], function (r
     class BondGraph extends BaseGraph_1.BaseGraph {
         constructor(svg, nodes, edges) {
             super(svg, nodes, edges);
-            let defs = svg.append("svg:defs");
-            defs.append("svg:marker")
-                .attr("id", "end-arrow")
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", "32")
-                .attr("markerWidth", 3.5)
-                .attr("markerHeight", 3.5)
-                .attr("orient", "auto")
-                .append("svg:path")
-                .attr("d", "M0,-5L10,0L0,5");
-            defs.append("svg:marker")
-                .attr("id", "mark-end-arrow")
-                .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 7)
-                .attr("markerWidth", 3.5)
-                .attr("markerHeight", 3.5)
-                .attr("orient", "auto")
-                .append("svg:path")
-                .attr("d", "M0,-5L10,0L0,5");
+            this.dragging = false;
+            this.testSVG = d3.select("#app").append("svg");
+            this.testSVG.style("position", "absolute")
+                .style("left", "-10000000px")
+                .style("top", "-10000000px");
+            this.defs = svg.append("svg:defs");
+            this.makeBaseMarker("flat", 1, 5, 10, 10)
+                .append("path")
+                .attr("d", "M1,10L1,-10");
+            this.makeBaseMarker("arrow", 10, 0, 10, 10)
+                .append("path")
+                .attr("d", "M10,0L2,5");
+            let arrowAndFlat = this.makeBaseMarker("flat_and_arrow", 10, 10, 20, 20);
+            arrowAndFlat.append("path")
+                .attr("d", "M10,10L2,15");
+            arrowAndFlat.append("path")
+                .attr("d", "M10,5L10,15");
+        }
+        makeBaseMarker(id, refX, refY, w, h) {
+            let marker = this.defs.append("svg:marker");
+            marker.attr("id", id)
+                .attr("refX", refX)
+                .attr("refY", refY)
+                .attr("markerWidth", w)
+                .attr("markerHeight", h)
+                .attr("orient", "auto-start-reverse")
+                .style("stroke", "#333");
+            return marker;
+        }
+        updateGraph() {
+            this.fullRenderElements();
+            this.drawPaths();
+        }
+        getEdgePosition(source, target) {
+            let sourceEl = source;
+            let targetEl = target;
+            let margin = 10;
+            let width = sourceEl.labelSize.width / 2 + margin;
+            let height = sourceEl.labelSize.height / 2 + margin;
+            let x = targetEl.x - sourceEl.x;
+            let y = targetEl.y - sourceEl.y;
+            let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+            let thetaUR = Math.atan2(height, width);
+            let thetaUL = Math.PI - thetaUR;
+            let thetaLL = Math.PI + thetaUR;
+            let thetaLR = 2 * Math.PI - thetaUR;
+            let coords = [];
+            if ((theta >= 0 && theta < thetaUR) || (theta >= thetaLR && theta < 2 * Math.PI)) {
+                coords = [width, -width * Math.tan(theta)];
+            }
+            else if (theta >= thetaUR && theta < thetaUL) {
+                coords = [height * 1 / Math.tan(theta), -height];
+            }
+            else if (theta >= thetaUL && theta < thetaLL) {
+                coords = [-width, width * Math.tan(theta)];
+            }
+            else {
+                coords = [-height * 1 / Math.tan(theta), height];
+            }
+            return coords;
+        }
+        drawPath(d) {
+            let sourceEnd = this.getEdgePosition(d.source, d.target);
+            let targetEnd = this.getEdgePosition(d.target, d.source);
+            return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
+        }
+        renderElements(newElements) {
+            let graph = this;
+            newElements.call(this.drag);
+            let text = newElements.append("text");
+            text.attr("text-anchor", "middle")
+                .text((d) => d.label)
+                .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
+                .on("mouseup", () => {
+                d3.event.stopPropagation();
+                graph.state.mouseDownNode = null;
+            })
+                .each((d) => {
+                let testText = this.testSVG.append("text");
+                testText.attr("text-anchor", "middle")
+                    .text(() => d.label);
+                let bb = testText.node().getBBox();
+                d.labelSize = { width: bb.width, height: bb.height };
+            });
         }
         pathExtraRendering(paths) {
-            paths.style('marker-end', 'url(#mark-end-arrow)');
+            paths.style('marker-end', (d) => 'url(#' + d.targetMarker + ')')
+                .style('marker-start', (d) => 'url(#' + d.sourceMarker + ')')
+                .style('stroke-width', 2);
+        }
+        dragmove(el) {
+            el.x += d3.event.dx;
+            el.y += d3.event.dy;
+            this.updateGraph();
+        }
+        zoomed() {
+            if (!this.state.mouseDownNode) {
+                this.state.justScaleTransGraph = true;
+                this.svgG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+            }
         }
     }
     exports.BondGraph = BondGraph;
 });
-define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], function (require, exports, BaseGraph_2) {
+define("types/SystemDiagram", ["require", "exports", "types/BaseGraph", "types/GraphBond", "types/SystemDiagramElement"], function (require, exports, BaseGraph_2, GraphBond_2, SystemDiagramElement_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SystemDiagram = void 0;
@@ -229,11 +360,24 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 this.dragBond.classed("hidden", false);
             }
         }
-        pathExtraRendering(paths) {
-            paths.classed("hoverablePath", true);
-        }
-        addEdgeHover(group) {
+        renderElements(newElements) {
             let graph = this;
+            newElements.classed("boglElem", true)
+                .on("mouseover", function () {
+                if (graph.state.shiftNodeDrag) {
+                    d3.select(this).classed(graph.bondClass, true);
+                }
+            })
+                .on("mouseout", function () {
+                d3.select(this).classed(graph.bondClass, false);
+            })
+                .on("mousedown", function (d) {
+                graph.nodeMouseDown.call(graph, d);
+            })
+                .call(this.drag);
+            let group = newElements.append("g");
+            group.attr("style", "fill:inherit;")
+                .attr("index", function (d, i) { return d.id.toString(); });
             let edgeHover = group.append("rect");
             edgeHover.attr("width", "80px")
                 .attr("height", "80px")
@@ -255,9 +399,21 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.handleEdgeDown.call(graph, d);
             })
                 .call(this.edgeDrag);
-        }
-        addHover(image, hoverBox, box) {
-            let graph = this;
+            let hoverBox = group.append("g");
+            let box = hoverBox.append("rect");
+            box.classed("outline", true)
+                .attr("width", "60px")
+                .attr("height", "60px")
+                .attr("x", "-30px")
+                .attr("y", "-30px");
+            let image = hoverBox.append("image");
+            image.attr("href", function (d) { return d.img; })
+                .classed("hoverImg", true)
+                .attr("x", "-25px")
+                .attr("y", "-25px")
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .attr("height", "50px")
+                .attr("width", "50px");
             image.on("mouseenter", function () {
                 graph.edgeCircle.style("visibility", "hidden");
             })
@@ -280,6 +436,9 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.handleEdgeDown.call(graph, d);
             })
                 .call(this.edgeDrag);
+        }
+        pathExtraRendering(paths) {
+            paths.classed("hoverablePath", true);
         }
         spliceLinksForNode(el) {
             let graph = this;
@@ -338,7 +497,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
         handleEdgeUp(el) {
             d3.event.stopPropagation();
             if (this.edgeOrigin && this.edgeOrigin != el) {
-                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.bonds.push(new GraphBond_2.GraphBond(this.edgeOrigin, el));
                 this.setFollowingEdge(null);
                 this.edgeOrigin = null;
                 this.updateGraph();
@@ -358,7 +517,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             d3.event.stopPropagation();
             state.mouseDownNode = null;
             if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-                this.bonds.push(new BondGraphBond(this.edgeOrigin, el));
+                this.bonds.push(new GraphBond_2.GraphBond(this.edgeOrigin, el));
                 this.setFollowingEdge(null);
                 this.edgeOrigin = null;
                 this.updateGraph();
@@ -388,7 +547,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
             if (this.draggingElement) {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
-                this.elements.push(new BondGraphElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+                this.elements.push(new SystemDiagramElement_1.SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
                 this.updateGraph();
             }
             if (state.justScaleTransGraph) {
@@ -438,13 +597,6 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
                 graph.dragmoveEdge.call(graph, d);
             });
         }
-        dragmove(el) {
-            if (this.state.mouseDownNode) {
-                el.x += d3.event.dx;
-                el.y += d3.event.dy;
-                this.updateGraph();
-            }
-        }
         dragmoveEdge(el) {
             if (this.edgeOrigin) {
                 this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
@@ -460,7 +612,7 @@ define("types/SystemDiagram", ["require", "exports", "types/BaseGraph"], functio
     }
     exports.SystemDiagram = SystemDiagram;
 });
-define("main", ["require", "exports", "types/BondGraph", "types/SystemDiagram"], function (require, exports, BondGraph_1, SystemDiagram_1) {
+define("main", ["require", "exports", "types/BondGraph", "types/BondGraphBond", "types/BondGraphElement", "types/SystemDiagram"], function (require, exports, BondGraph_1, BondGraphBond_1, BondGraphElement_1, SystemDiagram_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function makeElementSource(graph, section, link) {
@@ -504,9 +656,13 @@ define("main", ["require", "exports", "types/BondGraph", "types/SystemDiagram"],
         systemDiagram.updateGraph();
         var bondGraphSVG = d3.select("#bondGraph").append("svg");
         bondGraphSVG.classed("graphSVG", true);
-        let node1 = new BondGraphElement(0, "images/mechTrans/mass.svg", 50, 50);
-        let node2 = new BondGraphElement(1, "images/mechTrans/ground.svg", 200, 200);
-        var bondGraph = new BondGraph_1.BondGraph(bondGraphSVG, [node1, node2], [new BondGraphBond(node1, node2)]);
+        let n1 = new BondGraphElement_1.BondGraphElement(0, "1", 50, 50);
+        let n2 = new BondGraphElement_1.BondGraphElement(1, "R:b", 50, -50);
+        let n3 = new BondGraphElement_1.BondGraphElement(2, "I:m", 150, 50);
+        let n4 = new BondGraphElement_1.BondGraphElement(3, "C:1/k", 50, 150);
+        let n5 = new BondGraphElement_1.BondGraphElement(4, "Se:F(t)", -50, 50);
+        var bondGraph = new BondGraph_1.BondGraph(bondGraphSVG, [n1, n2, n3, n4, n5], [new BondGraphBond_1.BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond_1.BondGraphBond(n1, n3, "", "flat_and_arrow"),
+            new BondGraphBond_1.BondGraphBond(n1, n4, "flat", "arrow"), new BondGraphBond_1.BondGraphBond(n1, n5, "flat_and_arrow", "")]);
         bondGraph.updateGraph();
     }
     function pollDOM() {
@@ -520,31 +676,4 @@ define("main", ["require", "exports", "types/BondGraph", "types/SystemDiagram"],
     }
     pollDOM();
 });
-class BondGraphBond {
-    constructor(source, target) {
-        this.source = source;
-        this.target = target;
-    }
-}
-class BondGraphElement {
-    constructor(id, img, x, y) {
-        this.id = id;
-        this.img = img;
-        this.x = x;
-        this.y = y;
-    }
-}
-class GraphState {
-    constructor() {
-        this.selectedElement = null;
-        this.selectedBond = null;
-        this.mouseDownNode = null;
-        this.mouseDownLink = null;
-        this.justDragged = false;
-        this.justScaleTransGraph = false;
-        this.lastKeyDown = -1;
-        this.shiftNodeDrag = false;
-        this.graphMouseDown = false;
-    }
-}
 //# sourceMappingURL=build.js.map

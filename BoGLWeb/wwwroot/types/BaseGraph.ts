@@ -1,7 +1,10 @@
-﻿import { BGBondSelection, BGElementSelection, Selection, SVGSelection } from "../type_libraries/d3-selection";
+﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
+import { GraphBond } from "./GraphBond";
+import { GraphState } from "./GraphState";
+import { GraphElement } from "./GraphElement";
 
-class BaseGraph {
+export class BaseGraph {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";
@@ -10,17 +13,17 @@ class BaseGraph {
     readonly ENTER_KEY: number = 13;
 
     idct: number = 0;
-    elements: BondGraphElement[];
-    bonds: BondGraphBond[];
+    elements: GraphElement[];
+    bonds: GraphBond[];
     state: GraphState = new GraphState();
     svg: SVGSelection;
     svgG: SVGSelection;
     dragBond: SVGSelection;
     bondSelection: BGBondSelection;
-    elementSelection: BGElementSelection;
+    elementSelection: GraphElementSelection;
     draggingElement: string = null;
 
-    constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: BondGraphBond[]) {
+    constructor(svg: SVGSelection, nodes: GraphElement[], edges: GraphBond[]) {
         this.elements = nodes || [];
         this.bonds = edges || [];
 
@@ -41,25 +44,34 @@ class BaseGraph {
     }
 
     // functions needed in system diagram are called from this class but not defined by default
+    zoomed() { }
     svgKeyDown() { }
     svgKeyUp() { }
     svgMouseDown() { }
     svgMouseUp() { }
-    pathMouseDown(d3Bond: SVGSelection, bond: BondGraphBond) { }
+    pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) { }
     pathExtraRendering(path: BGBondSelection) { }
-    addEdgeHover(group: BGElementSelection) { }
-    addHover(image: BGElementSelection, hoverBox: BGElementSelection, box: BGElementSelection) { }
+    renderElements(newElements: GraphElementSelection) { }
 
     // mousedown on element
-    nodeMouseDown(el: BondGraphElement) {
+    nodeMouseDown(el: GraphElement) {
         (<Event>d3.event).stopPropagation();
-    };
+        this.state.mouseDownNode = el;
+        this.state.justDragged = false;
+    }
 
-    dragmove(el: BondGraphElement) {
-        el.x += (<DragEvent>d3.event).dx;
-        el.y += (<DragEvent>d3.event).dy;
-        this.updateGraph();
-    };
+    dragmove(el: GraphElement) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        if (this.state.mouseDownNode) {
+            el.x += (<DragEvent>d3.event).dx;
+            el.y += (<DragEvent>d3.event).dy;
+            this.updateGraph();
+        }
+    }
+
+    drawPath(d: GraphBond) {
+        return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+    }
 
     get drag() {
         let graph = this;
@@ -89,10 +101,8 @@ class BaseGraph {
             });
     }
 
-    // call to propagate changes to graph
-    updateGraph() {
+    drawPaths() {
         let graph = this;
-
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
@@ -100,18 +110,13 @@ class BaseGraph {
         // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
             return d === graph.state.selectedBond;
-        })
-            .attr("d", function (d) {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            });
+        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         // add new bondSelection
         paths.enter()
             .append("path")
             .classed("link", true)
-            .attr("d", function (d) {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            })
+            .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
             })
@@ -123,63 +128,26 @@ class BaseGraph {
 
         // remove old links
         paths.exit().remove();
+    }
 
+    fullRenderElements() {
         // update existing elements
-        this.elementSelection = this.elementSelection.data<BondGraphElement>(this.elements, function (d) { return d.id.toString(); });
+        this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
         // add new elementSelection
         let newElements = this.elementSelection.enter().append("g");
+        newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
-        newElements.classed("boglElem", true)
-            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-            .on("mouseover", function () {
-                if (graph.state.shiftNodeDrag) {
-                    d3.select(this).classed(graph.bondClass, true);
-                }
-            })
-            .on("mouseout", function () {
-                d3.select(this).classed(graph.bondClass, false);
-            })
-            .on("mousedown", function (d) {
-                graph.nodeMouseDown.call(graph, d);
-            })
-            .call(this.drag);
-
-        let group = newElements.append("g");
-        group.attr("style", "fill:inherit;")
-            .attr("index", function (d, i) { return d.id.toString(); });
-
-        this.addEdgeHover(group);
-
-        let hoverBox = group.append("g");
-
-        let box = hoverBox.append("rect");
-        box.classed("outline", true)
-            .attr("width", "60px")
-            .attr("height", "60px")
-            .attr("x", "-30px")
-            .attr("y", "-30px");
-
-        let image = hoverBox.append("image");
-        image.attr("href", function (d, i) { return d.img; })
-            .classed("hoverImg", true)
-            .attr("x", "-25px")
-            .attr("y", "-25px")
-            .attr("preserveAspectRatio", "xMidYMid meet")
-            .attr("height", "50px")
-            .attr("width", "50px");
-
-        this.addHover(image, hoverBox, box);
+        this.renderElements(newElements);
 
         // remove old elements
         this.elementSelection.exit().remove();
-    };
+    }
 
-    zoomed() {
-        this.state.justScaleTransGraph = true;
-        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
-    };
+    // call to propagate changes to graph
+    updateGraph() {
+        this.drawPaths();
+        this.fullRenderElements();
+    }
 }
-
-export { BaseGraph }
