@@ -21,7 +21,7 @@ export class BaseGraph {
     dragBond: SVGSelection;
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
-    draggingElement: string = null;
+    draggingElement: number = null;
 
     constructor(svg: SVGSelection, nodes: GraphElement[], edges: GraphBond[]) {
         this.elements = nodes || [];

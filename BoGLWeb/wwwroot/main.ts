@@ -3,15 +3,17 @@ import { BaseGraph } from "./types/BaseGraph";
 import { BondGraph } from "./types/BondGraph";
 import { BondGraphBond } from "./types/BondGraphBond";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
+import { ElementNamespace } from "./types/elements/ElementNamespace";
+import { ElementType } from "./types/elements/ElementType";
 import { SystemDiagram } from "./types/SystemDiagram";
 
-function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string) {
+function makeElementSource(graph: BaseGraph, section: HTMLElement, elementID: number, link: string) {
     const group = document.createElement('div');
 
     group.classList.add("groupDiv");
     group.addEventListener("mousedown", function () {
         document.body.style.cursor = "grabbing";
-        graph.draggingElement = link;
+        graph.draggingElement = elementID;
     });
 
     section.appendChild(group);
@@ -27,18 +29,15 @@ function makeElementSource(graph: BaseGraph, section: HTMLElement, link: string)
     box.appendChild(image);
 }
 
-function makeSection(graph: BaseGraph, sectionName: string, images: string[]) {
+function makeSection(graph: BaseGraph, sectionName: string, elements: ElementType[]) {
     let sectionElem = document.getElementById(sectionName);
-    images.forEach(image => makeElementSource(graph, sectionElem, "images/" + sectionName + "/" + image + ".svg"));
+    elements.forEach(e => makeElementSource(graph, sectionElem, e.id, "images/elements/" + e.image + ".svg"));
 }
 
 function populateMenu(graph: BaseGraph) {
-    // eventually want to pass these in from C#, which can likely access files easier
-    makeSection(graph, "mechTrans", ["mass", "spring", "damper", "ground", "force_input", "gravity", "velocity_input"]);
-    makeSection(graph, "mechRot", ["flywheel", "spring", "damper", "torque_input", "velocity_input"]);
-    makeSection(graph, "transElem", ["lever", "pulley", "belt", "shaft", "gear", "gear_pair", "rack", "rack_pinion"]);
-    makeSection(graph, "electrical", ["inductor", "capacitor", "resistor", "transformer", "junction_palette", "ground", "current_input", "voltage_input"]);
-    makeSection(graph, "actuators", ["pm_motor", "vc_transducer"]);
+    ElementNamespace.categories.map((c, i) => {
+        makeSection(graph, c.folderName, ElementNamespace.elementTypes.filter(e => e.category === i));
+    });
 }
 
 function loadPage() {

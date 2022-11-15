@@ -1,10 +1,10 @@
 ﻿import { GraphElement } from "./GraphElement";
 
 export class SystemDiagramElement extends GraphElement {
-    img: string;
+    type: number;
 
-    constructor(id: number, img: string, x: number, y: number) {
+    constructor(id: number, type: number, x: number, y: number) {
         super(id, x, y);
-        this.img = img;
+        this.type = type;
     }
 }
