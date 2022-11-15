@@ -4,39 +4,31 @@ import { BondGraph } from "./types/BondGraph";
 import { BondGraphBond } from "./types/BondGraphBond";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
-import { ElementType } from "./types/elements/ElementType";
 import { SystemDiagram } from "./types/SystemDiagram";
-
-function makeElementSource(graph: BaseGraph, section: HTMLElement, elementID: number, link: string) {
-    const group = document.createElement('div');
-
-    group.classList.add("groupDiv");
-    group.addEventListener("mousedown", function () {
-        document.body.style.cursor = "grabbing";
-        graph.draggingElement = elementID;
-    });
-
-    section.appendChild(group);
-
-    var box = document.createElement('div');
-    box.classList.add("box");
-    group.appendChild(box);
-
-    var image = document.createElement('img');
-    image.src = link;
-    image.draggable = false;
-    image.classList.add("elemImage");
-    box.appendChild(image);
-}
-
-function makeSection(graph: BaseGraph, sectionName: string, elements: ElementType[]) {
-    let sectionElem = document.getElementById(sectionName);
-    elements.forEach(e => makeElementSource(graph, sectionElem, e.id, "images/elements/" + e.image + ".svg"));
-}
 
 function populateMenu(graph: BaseGraph) {
     ElementNamespace.categories.map((c, i) => {
-        makeSection(graph, c.folderName, ElementNamespace.elementTypes.filter(e => e.category === i));
+        ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
+            const group = document.createElement('div');
+
+            group.classList.add("groupDiv");
+            group.addEventListener("mousedown", function () {
+                document.body.style.cursor = "grabbing";
+                graph.draggingElement = e.id;
+            });
+
+            document.getElementById(c.folderName).appendChild(group);
+
+            var box = document.createElement('div');
+            box.classList.add("box");
+            group.appendChild(box);
+
+            var image = document.createElement('img');
+            image.src = "images/elements/" + e.image + ".svg";
+            image.draggable = false;
+            image.classList.add("elemImage");
+            box.appendChild(image);
+        });
     });
 }
 
@@ -57,6 +49,8 @@ function loadPage() {
 
     var bondGraphSVG = d3.select("#bondGraph").append("svg");
     bondGraphSVG.classed("graphSVG", true);
+
+    // example bond graph
     let n1 = new BondGraphElement(0, "1", 50, 50);
     let n2 = new BondGraphElement(1, "R:b", 50, -50);
     let n3 = new BondGraphElement(2, "I:m", 150, 50);
