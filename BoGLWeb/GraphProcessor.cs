@@ -11,12 +11,18 @@ namespace BoGLWeb {
 
         //First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
-            BondGraphFactory factory = new BondGraphFactory(systemGraph);
+            BondGraphFactory factory = new(systemGraph);
+
+            if (factory.simplifiedBG is null || factory.unsimplifiedBG is null) {
+                //TODO Need to figure out what this error means and figure out how to show it to the user
+                //TODO Might want to split these to make error messages clearer
+                throw new Exception("simplifiedBG or unsimplifiedBG is null");
+            }
 
             BondGraph unsimplified = BondGraph.generateBondGraphFromGraphSynth(factory.unsimplifiedBG);
             BondGraph simplified = BondGraph.generateBondGraphFromGraphSynth(factory.simplifiedBG);
 
-            List<BondGraph> causalBGs = new List<BondGraph>();
+            List<BondGraph> causalBGs = new();
             foreach (var graph in factory.finalresult) {
                 causalBGs.Add(BondGraph.generateBondGraphFromGraphSynth(graph));
             }
@@ -24,27 +30,25 @@ namespace BoGLWeb {
             return (unsimplified, simplified, causalBGs);
         }
 
-        private designGraph systemGraph;
+        private readonly designGraph systemGraph;
 
-        private List<designGraph> optiGraphs;
-        private List<int> indiceswithoutINVD;
-        private List<int> maxIntegralCausality;
+        private readonly List<designGraph> optiGraphs;
+        private readonly List<int> indiceswithoutINVD;
+        private readonly List<int> maxIntegralCausality;
 
         //I think these are our causal BGs
-        private List<designGraph> finalresult;
+        private readonly List<designGraph> finalresult;
 
-        private HashSet<string> nodeLabelSorted;
-        private HashSet<int> sortedIndices;
+        private readonly HashSet<string> nodeLabelSorted;
+        private readonly HashSet<int> sortedIndices;
 
-        private List<designGraph> sys_Graphs;
+        private readonly List<designGraph> sys_Graphs;
 
         private List<option> options;
 
-        private int index1;
-
-        private designGraph unsimplifiedBG;
-        private designGraph simplifiedBG;
-        private List<designGraph> causalBGs;
+        private designGraph? unsimplifiedBG;
+        private designGraph? simplifiedBG;
+        private readonly List<designGraph> causalBGs;
 
         private BondGraphFactory(designGraph systemGraph) {
             this.systemGraph = systemGraph;
@@ -56,12 +60,15 @@ namespace BoGLWeb {
             this.sortedIndices = new HashSet<int>();
             this.sys_Graphs = new List<designGraph>();
             this.options = new List<option>();
-            this.index1 = 0;
+
+            this.unsimplifiedBG = null;
+            this.simplifiedBG = null;
+            this.causalBGs = new List<designGraph>();
 
             generateBondGraph();
         }
 
-        public void generateBondGraph() {
+        private void generateBondGraph() {
             //now remove all the labels that we added
             //need to return bool value if vel directions are fine or not. 
             //assigning I: and C: nodes with some identifier
@@ -102,7 +109,7 @@ namespace BoGLWeb {
             //will just do one option for now, will figure out 
 
             #region initial causality
-            Stack<designGraph> sysGraphs = new Stack<designGraph>();
+            Stack<designGraph> sysGraphs = new();
 
             sysGraphs.Push(systemGraph.copy());
             var sys = sysGraphs.Pop();
@@ -152,8 +159,8 @@ namespace BoGLWeb {
                     options = RuleSetMap.getInstance().getRuleSet("INVDMarkerRules").recognize(sys, false, null);
                 }
 
-                Stack<designGraph> graphss = new Stack<designGraph>();
-                List<designGraph> graph_SSS = new List<designGraph>();
+                Stack<designGraph> graphss = new();
+                List<designGraph> graph_SSS = new();
                 graphss.Push(sys);
 
                 {
@@ -302,7 +309,7 @@ namespace BoGLWeb {
                 int currentHashSetcount = 0;
                 int nn = 0;
                 foreach (var n in indiceswithoutINVD) {
-                    List<string> nodeLabels_Cau = new List<string>();
+                    List<string> nodeLabels_Cau = new();
                     var cauGraph = finalresult[n];
 
                     foreach (var arcC in cauGraph.arcs) {
@@ -355,7 +362,7 @@ namespace BoGLWeb {
                 // nodeNames_Cau.Sort();
                 // nodeNames.Add(nodeNames_Cau);
 
-                List<int> maxIntegralCaus = new List<int>();
+                List<int> maxIntegralCaus = new();
 
                 foreach (var n in sortedIndices) {
                     //use the indiceswithoutINVD to obtain the index in that list
@@ -364,8 +371,6 @@ namespace BoGLWeb {
                     maxIntegralCaus.Add(maxIntegralCausality[indexindex]);
 
                 }
-
-                index1 = maxIntegralCausality.IndexOf(maxIntegralCausality.Max());
 
                 //  foreach (var no in finalresult[index1].nodes)
 
@@ -513,8 +518,9 @@ namespace BoGLWeb {
 
             }
 
-            List<string> nodeLabels = new List<string>();
-            List<int> nodeNames = new List<int>();
+            List<string> nodeLabels = new();
+            List<int> list = new();
+            List<int> nodeNames = list;
             int ll = 0;
             foreach (var no in systemGraph.nodes) {
                 nodeLabels.Add(String.Join(String.Empty, no.localLabels.ToArray()));
@@ -523,7 +529,7 @@ namespace BoGLWeb {
             ll = 0;
             foreach (var opt in systemGraph.nodes) {
                 opt.name = "name" + nodeNames[ll];
-                ll = ll + 1;
+                ll++;
             }
 
             //try to update the positions of each node
@@ -700,20 +706,20 @@ namespace BoGLWeb {
             }
         }
 
-        private int checkICs(designGraph designGraph) {
+        private static int checkICs(designGraph designGraph) {
             int xx = 0;
             foreach (arc a in designGraph.arcs) {
                 if (a.localLabels.Contains("I2") && a.localLabels.Contains("SAME"))
-                    xx = xx + 1;
+                    xx++;
                 if (a.localLabels.Contains("C3") && a.localLabels.Contains("OPP"))
-                    xx = xx + 1;
+                    xx++;
             }
 
             return (xx);
 
         }
 
-        private bool checkINVD(designGraph designGraph) {
+        private static bool checkINVD(designGraph designGraph) {
             foreach (node n in designGraph.nodes) {
                 foreach (string x in n.localLabels) {
                     if (x.Contains("INVD"))

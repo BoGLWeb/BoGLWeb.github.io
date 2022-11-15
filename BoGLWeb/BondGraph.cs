@@ -30,6 +30,10 @@ namespace BoGLWeb {
         //Generate BondGraph from GraphSynth designGraph
         //TODO Check if we can ensure a designGraph is a Bond Graph and produce error if it is not
         public static BondGraph generateBondGraphFromGraphSynth(designGraph graph) {
+            if (graph is null) {
+                throw new ArgumentException("Graph was null");
+            }
+
             BondGraph bondGraph = new BondGraph();
 
             foreach(var node in graph.nodes) {
