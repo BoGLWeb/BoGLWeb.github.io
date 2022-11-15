@@ -2,7 +2,8 @@
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 import { BaseGraph } from "./BaseGraph";
 import { GraphBond } from "./GraphBond";
-import { SystemDiagramElement } from "./SystemDiagramElement";
+import { SystemDiagramElement } from "./elements/SystemDiagramElement";
+import { ElementNamespace } from "./elements/ElementNamespace";
 
 export class SystemDiagram extends BaseGraph {
     edgeCircle: SVGSelection;
@@ -112,7 +113,7 @@ export class SystemDiagram extends BaseGraph {
             .attr("y", "-30px");
 
         let image = hoverBox.append("image");
-        image.attr("href", function (d) { return (<SystemDiagramElement>d).img; })
+        image.attr("href", function (d) { return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg"; })
             .classed("hoverImg", true)
             .attr("x", "-25px")
             .attr("y", "-25px")

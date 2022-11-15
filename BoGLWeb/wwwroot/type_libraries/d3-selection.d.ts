@@ -9,7 +9,7 @@
 // TypeScript Version: 2.3
 
 import { GraphBond } from "../types/GraphBond";
-import { GraphElement } from "../types/GraphElement";
+import { GraphElement } from "../types/elements/GraphElement";
 
 // Last module patch version validated against: 2.0.0
 

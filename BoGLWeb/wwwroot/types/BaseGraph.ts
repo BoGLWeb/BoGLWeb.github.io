@@ -2,7 +2,7 @@
 import { DragEvent, ZoomEvent } from "../type_libraries/d3";
 import { GraphBond } from "./GraphBond";
 import { GraphState } from "./GraphState";
-import { GraphElement } from "./GraphElement";
+import { GraphElement } from "./elements/GraphElement";
 
 export class BaseGraph {
     // constants
@@ -21,7 +21,7 @@ export class BaseGraph {
     dragBond: SVGSelection;
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
-    draggingElement: string = null;
+    draggingElement: number = null;
 
     constructor(svg: SVGSelection, nodes: GraphElement[], edges: GraphBond[]) {
         this.elements = nodes || [];

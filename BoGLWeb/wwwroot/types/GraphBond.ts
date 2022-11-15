@@ -1,4 +1,4 @@
-﻿import { GraphElement } from "./GraphElement";
+﻿import { GraphElement } from "./elements/GraphElement";
 
 export class GraphBond {
     source: GraphElement;

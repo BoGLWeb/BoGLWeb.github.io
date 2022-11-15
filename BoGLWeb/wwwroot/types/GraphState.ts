@@ -1,6 +1,6 @@
-﻿import { GraphBond } from "./GraphBond";
-import { GraphElement } from "./GraphElement";
-import { SystemDiagramElement } from "./SystemDiagramElement";
+﻿import { GraphElement } from "./elements/GraphElement";
+import { SystemDiagramElement } from "./elements/SystemDiagramElement";
+import { GraphBond } from "./GraphBond";
 
 export class GraphState {
     selectedElement: SystemDiagramElement = null;

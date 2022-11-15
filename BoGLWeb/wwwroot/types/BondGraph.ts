@@ -2,9 +2,9 @@
 import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
 import { BaseGraph } from "./BaseGraph";
 import { BondGraphBond } from "./BondGraphBond";
-import { BondGraphElement } from "./BondGraphElement";
+import { BondGraphElement } from "./elements/BondGraphElement";
 import { GraphBond } from "./GraphBond";
-import { GraphElement } from "./GraphElement";
+import { GraphElement } from "./elements/GraphElement";
 
 export class BondGraph extends BaseGraph {
     dragging: boolean = false;
