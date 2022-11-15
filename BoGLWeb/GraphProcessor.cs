@@ -9,12 +9,19 @@ using static System.Net.Mime.MediaTypeNames;
 namespace BoGLWeb {
     public class BondGraphFactory {
 
-        //Returns a list. First element is the Unsimplified BG,
-        //Second is the Simplified BG and rest are the Causal BGs
-        public static List<BondGraph> generateBondGraphs(designGraph systemGraph) {
+        //First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs
+        public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
             BondGraphFactory factory = new BondGraphFactory(systemGraph);
 
-            return null;
+            BondGraph unsimplified = BondGraph.generateBondGraphFromGraphSynth(factory.unsimplifiedBG);
+            BondGraph simplified = BondGraph.generateBondGraphFromGraphSynth(factory.simplifiedBG);
+
+            List<BondGraph> causalBGs = new List<BondGraph>();
+            foreach (var graph in factory.finalresult) {
+                causalBGs.Add(BondGraph.generateBondGraphFromGraphSynth(graph));
+            }
+
+            return (unsimplified, simplified, causalBGs);
         }
 
         private designGraph systemGraph;
@@ -22,6 +29,8 @@ namespace BoGLWeb {
         private List<designGraph> optiGraphs;
         private List<int> indiceswithoutINVD;
         private List<int> maxIntegralCausality;
+
+        //I think these are our causal BGs
         private List<designGraph> finalresult;
 
         private HashSet<string> nodeLabelSorted;
@@ -32,6 +41,10 @@ namespace BoGLWeb {
         private List<option> options;
 
         private int index1;
+
+        private designGraph unsimplifiedBG;
+        private designGraph simplifiedBG;
+        private List<designGraph> causalBGs;
 
         private BondGraphFactory(designGraph systemGraph) {
             this.systemGraph = systemGraph;
@@ -44,6 +57,8 @@ namespace BoGLWeb {
             this.sys_Graphs = new List<designGraph>();
             this.options = new List<option>();
             this.index1 = 0;
+
+            generateBondGraph();
         }
 
         public void generateBondGraph() {
@@ -77,13 +92,9 @@ namespace BoGLWeb {
         }
 
         private void obtainCausality() {
-            rectangles_BG_Causality.Clear();
-            lines_BG_Causality.Clear();
-            connections_BG_Causality.Clear();
-            Graph_BG3.CausalOptions.IsEnabled = true;
+            causalBGs.Clear();
             nodeLabelSorted.Clear();
             sortedIndices.Clear();
-            Graph_BG3.CausalOptions.Items.Clear();
 
             finalresult.Clear();
             optiGraphs.Clear();
@@ -360,19 +371,7 @@ namespace BoGLWeb {
 
                 //now add to the combo-box
 
-                for (int pp = 0; pp < nodeLabelSorted.Count; pp++) {
-                    var stringtobeadded = "Option " + (pp + 1).ToString();
-
-                    Graph_BG3.CausalOptions.Items.Add(stringtobeadded);
-                }
-
-                Graph_BG3.CausalOptions.IsEnabled = true;
-
-
-                rectangles_BG_Causality.Clear();
-                lines_BG_Causality.Clear();
-                connections_BG_Causality.Clear();
-                causality = true;
+                causalBGs.Clear();
 
                 /*
                 foreach (var no in finalresult[indiceswithoutINVD[index1]].nodes)
@@ -503,9 +502,6 @@ namespace BoGLWeb {
                 }
                 */
             }
-
-            Graph_BG3.CausalOptions.SelectedIndex = 0;
-            causaloptions_selection();
         }
 
         private void bondgraphBeforeSimplification() {
@@ -532,97 +528,7 @@ namespace BoGLWeb {
 
             //try to update the positions of each node
 
-            rectangles_BG.Clear();
-            lines_BG.Clear();
-            connections_BG.Clear();
-
-            foreach (var no in systemGraph.nodes) {
-                var rect = new RectangleViewModel();
-
-                rect.NodeName = no.name;
-                List<string> localLabels = no.localLabels.ToList();
-
-                List<string> localLabels_Copy = no.localLabels.ToList();
-
-                foreach (var uu in localLabels_Copy) {
-                    if (uu.Contains("vel"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("good"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("multiple"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("system"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("iadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("cadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("rackadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("gearadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("layoutadded"))
-                        localLabels.Remove(uu);
-
-                }
-
-                rect.Content = string.Join(" ", localLabels.ToArray());
-                rect.X = no.X;
-                rect.Y = no.Y;
-                rect.Color = "Black";
-                rect.Font = "Segoe UI";
-                rect.Width = 75;
-                rect.Height = 20;
-                rectangles_BG.Add(rect);
-
-            }
-
-            //  int p = 101;
-            foreach (var no in systemGraph.arcs) {
-                var line = new LineConnections();
-
-                line.Name = no.name;
-                line.LC = "Red";
-                line.LTA = "noarrow";
-                line.LTD = string.Join(" ", no.localLabels.ToArray());
-
-                line.Thickness = 1;
-                line.X1 = no.From.X;
-                line.Y1 = no.From.Y;
-                line.X2 = no.To.X;
-                line.Y2 = no.To.Y;
-
-                var connect = new ConnectionViewModel();
-
-                lines_BG.Add(line);
-                connect.Line = line;
-
-                foreach (var rects in rectangles_BG) {
-                    if (rects.NodeName == no.From.name)
-                        connect.Rect1 = rects;
-                    if (rects.NodeName == no.To.name)
-                        connect.Rect2 = rects;
-                }
-
-                connect.ConnectionMultiple = 1;
-                connect.ConnectionSide = "Middle";
-                connections_BG.Add(connect);
-            }
-
-            Dictionary<RectangleViewModel, BondGraphElement> rectElements = new Dictionary<RectangleViewModel, BondGraphElement>();
-
-            // Create all BondGraphElements
-            foreach (RectangleViewModel r in rectangles_BG) {
-                BondGraphElement bgElement = new BondGraphElement(Graph_BG1, r.NodeName, r.Content, new Point(r.X, r.Y));
-                rectElements.Add(r, bgElement);
-            }
-
-            // Create all BondArcs
-            foreach (ConnectionViewModel c in connections_BG) {
-                BondGraphElement el1 = rectElements[c.Rect1];
-                BondGraphElement el2 = rectElements[c.Rect2];
-                Arc bgArc = new Arc(el1, el2);
-            }
+            unsimplifiedBG = systemGraph.copy();
 
             /*
             List<string> stringLine = new List<string>();
@@ -677,7 +583,7 @@ namespace BoGLWeb {
                 options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("directionRuleSet").recognize(systemGraph, false, null));
+            options = RuleSetMap.getInstance().getRuleSet("directionRuleSet").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
@@ -709,140 +615,12 @@ namespace BoGLWeb {
 
             //  designGraph SimplifiedGraphWithDir = systemGraph.copy(true);
 
-            rectangles_BG_Simplified.Clear();
-            lines_BG_Simplified.Clear();
-            connections_BG_Simplified.Clear();
-
-            foreach (var no in systemGraph.nodes) {
-                var rect = new RectangleViewModel();
-
-                rect.NodeName = no.name;
-                List<string> localLabels = no.localLabels.ToList();
-
-                List<string> localLabels_Copy = no.localLabels.ToList();
-
-                foreach (var uu in localLabels_Copy) {
-                    if (uu.Contains("vel"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("good"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("multiple"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("system"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("iadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("cadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("rackadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("gearadded"))
-                        localLabels.Remove(uu);
-                    if (uu.Contains("layoutadded"))
-                        localLabels.Remove(uu);
-
-                }
-
-                rect.Content = string.Join(" ", localLabels.ToArray());
-                rect.X = no.X;
-                rect.Y = no.Y;
-                rect.Color = "Black";
-                rect.Font = "Segoe UI";
-                rect.Width = 75;
-                rect.Height = 20;
-                rectangles_BG_Simplified.Add(rect);
-            }
-
-            int p = 101;
-            foreach (var no in systemGraph.arcs) {
-                if (no.localLabels.Contains("dir")) {
-                    var line = new LineConnections();
-
-                    line.Name = no.name;
-                    line.LC = "Red";
-                    line.LTA = "arrow";
-                    line.LTD = string.Join(" ", no.localLabels.ToArray());
-
-                    line.Thickness = 1;
-                    line.X1 = no.From.X;
-                    line.Y1 = no.From.Y;
-                    line.X2 = no.To.X;
-                    line.Y2 = no.To.Y;
-
-                    var connect = new ConnectionViewModel();
-
-                    lines_BG_Simplified.Add(line);
-                    connect.Line = line;
-
-                    foreach (var rects in rectangles_BG_Simplified) {
-                        if (rects.NodeName == no.From.name)
-                            connect.Rect1 = rects;
-                        if (rects.NodeName == no.To.name)
-                            connect.Rect2 = rects;
-
-                    }
-
-                    connect.ConnectionMultiple = 1;
-                    connect.ConnectionSide = "dir";
-                    connections_BG_Simplified.Add(connect);
-                } else {
-                    var line = new LineConnections();
-
-                    line.Name = no.name;
-                    line.LC = "Red";
-                    line.LTA = "noarrow";
-                    line.LTD = string.Join(" ", no.localLabels.ToArray());
-
-                    line.Thickness = 1;
-                    line.X1 = no.From.X;
-                    line.Y1 = no.From.Y;
-                    line.X2 = no.To.X;
-                    line.Y2 = no.To.Y;
-
-                    var connect = new ConnectionViewModel();
-
-                    lines_BG_Simplified.Add(line);
-                    connect.Line = line;
-
-                    foreach (var rects in rectangles_BG_Simplified) {
-                        if (rects.NodeName == no.From.name)
-                            connect.Rect1 = rects;
-                        if (rects.NodeName == no.To.name)
-                            connect.Rect2 = rects;
-
-                    }
-
-                    connect.ConnectionMultiple = 1;
-                    connect.ConnectionSide = "nondir";
-                    connections_BG_Simplified.Add(connect);
-                }
-            }
+            simplifiedBG = systemGraph.copy();
 
             //now let us apply directions - first let us do the sources and i-c-r 
 
             //all sources should have arrow heads away from source 
             //all I-C-R should have arrow heads into them. 
-
-            Dictionary<RectangleViewModel, BondGraphElement> rectElements = new Dictionary<RectangleViewModel, BondGraphElement>();
-
-            // Create all BondGraphElements
-            foreach (RectangleViewModel r in rectangles_BG_Simplified) {
-                BondGraphElement bgElement = new BondGraphElement(Graph_BG2, r.NodeName, r.Content, new Point(r.X, r.Y));
-                rectElements.Add(r, bgElement);
-            }
-
-            // Create all BondArcs
-            foreach (ConnectionViewModel c in connections_BG_Simplified) {
-                if (!c.ConnectionSide.Contains("nondir")) {
-                    BondGraphElement el1 = rectElements[c.Rect1];
-                    BondGraphElement el2 = rectElements[c.Rect2];
-
-                    int arrowDir = c.Line.ArrowEnd == "rect1" ? 1 : 2;
-                    int causalDir = 0;
-
-                    BondGraphArc bgArc = new BondGraphArc(el1, el2, new SolidColorBrush(Colors.Red), arrowDir, causalDir);
-                }
-            }
 
             /*
             List<string> stringLine = new List<string>();
