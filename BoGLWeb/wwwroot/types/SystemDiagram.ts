@@ -274,7 +274,7 @@ export class SystemDiagram extends BaseGraph {
     svgMouseUp() {
         let state = this.state;
         this.setFollowingEdge(null);
-        if (this.draggingElement) {
+        if (this.draggingElement != null) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
             this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
