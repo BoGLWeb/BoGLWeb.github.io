@@ -84,15 +84,6 @@
                     </Button>
                 </li>
             </Menu>
-
-            @code
-            {
-                RenderFragment sub1Title =
-                @<Template>
-                    <Icon Type="setting" Theme="outline"></Icon>
-                    Navigation Three - Submenu
-                </Template>;
-            }
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">
@@ -121,7 +112,42 @@
                 <div class="card-container">
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
-                            <div id="systemDiagram"></div>
+                            <div id="modifierMenu">
+                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                                    <ChildContent>
+                                        <Panel Header="Modifers" Key="1">
+                                            <div id="modifierCheckboxWrapper">
+                                                <Checkbox>Mass</Checkbox>
+                                                <Checkbox>Inertia</Checkbox>
+                                                <Checkbox>Stiffness</Checkbox>
+                                                <Checkbox>Friction</Checkbox>
+                                                <Checkbox>Damping</Checkbox>
+                                                <Checkbox>Parallel</Checkbox>
+                                                <Checkbox>Tooth Wear</Checkbox>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <div>Velocity Direction</div>
+                                                <div style="position: relative">
+                                                    <div id="clearVelocityWrapper"></div>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -35px; left: 20px"><div class="arrowButton">⮢</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -35px; right: 20px"><div class="arrowButton">⮣</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 0px; right: -10px"><div class="arrowButton">⮥</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 35px; right: -10px"><div class="arrowButton">⮧</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 70px; right: 30px"><div class="arrowButton">⮡</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 70px; left: 20px"><div class="arrowButton">⮠</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 35px; left: -10px"><div class="arrowButton">⮦</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 0px; left: -10px"><div class="arrowButton">⮤</div></Button>
+                                                </div>
+                                            </div>
+                                        </Panel>
+                                    </ChildContent>
+                                    <ExpandIconTemplate>
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
+                                    </ExpandIconTemplate>
+                                </Collapse>
+                                <div id="systemDiagram"></div>
+                            </div>
                         </TabPane>
                         <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
                             <div id="bondGraph"></div>

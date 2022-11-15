@@ -335,3 +335,58 @@ text {
     fill: black;
     dominant-baseline: middle;
 }
+
+/* Fix for bug in Ant Design: https://github.com/ant-design/ant-design/issues/30758 */
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header > .ant-collapse-expand-icon {
+    left: auto;
+    right: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+#modifierMenu {
+    width: 150px;
+    height: fit-content;
+    position: absolute;
+    right: 15px;
+}
+
+#modifierMenu > .ant-collapse {
+    height: 100%;
+}
+
+#modifierCheckboxWrapper > .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+    margin-left: 10px;
+}
+
+hr {
+    margin: 10px 0;
+    color: white;
+    opacity: 1;
+}
+
+.arrowButton {
+    font-size: 35px;
+    margin-top: -15px;
+    margin-left: -2px;
+}
+
+.ant-btn-lg:has(.arrowButton) {
+    padding: 8px !important;
+    position: absolute;
+    top: 0;
+}
+
+#clearVelocityWrapper {
+    margin: 30px auto;
+    width: 70px;
+    height: 70px;
+    border: 1px dashed;
+    border-radius: 3px;
+}
