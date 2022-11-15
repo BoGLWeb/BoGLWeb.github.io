@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DcTJgRFWPspfp0eKVIIjiKqSo6R8B6GXODY3JZQnBGtBZk2+ChmDKf+/FZKGstcAuElqRPAXnIO4cAiINKNYjA==",
+  "dgSpecHash": "MoXC8RcxU27E+7M4LLHsLlYmICOAJGe5OPfIjJ++0pfMd9SDs63uKrGdczPPpfjehQqh+22mm0wuKvDJcwWDuA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -39,6 +39,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.playwright.testadapter\\1.27.1\\microsoft.playwright.testadapter.1.27.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.3.2\\microsoft.testplatform.objectmodel.17.3.2.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\17.3.2\\microsoft.testplatform.testhost.17.3.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.typescript.msbuild\\4.8.4\\microsoft.typescript.msbuild.4.8.4.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json.schema\\3.0.14\\newtonsoft.json.schema.3.0.14.nupkg.sha512",
