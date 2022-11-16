@@ -1,11 +1,11 @@
-﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { DragEvent, ZoomEvent } from "../type_libraries/d3";
-import { BaseGraph } from "./BaseGraph";
-import { GraphBond } from "./GraphBond";
-import { SystemDiagramElement } from "./elements/SystemDiagramElement";
-import { ElementNamespace } from "./elements/ElementNamespace";
+﻿import { ZoomEvent } from "../../type_libraries/d3";
+import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { GraphBond } from "../bonds/GraphBond";
+import { ElementNamespace } from "../elements/ElementNamespace";
+import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
-export class SystemDiagram extends BaseGraph {
+export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
 

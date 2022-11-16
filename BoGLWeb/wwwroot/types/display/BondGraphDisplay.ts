@@ -1,12 +1,11 @@
-﻿import { ZoomEvent, DragEvent } from "../type_libraries/d3";
-import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { BaseGraph } from "./BaseGraph";
-import { BondGraphBond } from "./BondGraphBond";
-import { BondGraphElement } from "./elements/BondGraphElement";
-import { GraphBond } from "./GraphBond";
-import { GraphElement } from "./elements/GraphElement";
+﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { BondGraphBond } from "../bonds/BondGraphBond";
+import { GraphBond } from "../bonds/GraphBond";
+import { BondGraphElement } from "../elements/BondGraphElement";
+import { GraphElement } from "../elements/GraphElement";
+import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
-export class BondGraph extends BaseGraph {
+export class BondGraphDisplay extends BaseGraphDisplay {
     dragging: boolean = false;
     testSVG: SVGSelection;
     defs: SVGSelection;

@@ -1,10 +1,10 @@
-﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { DragEvent, ZoomEvent } from "../type_libraries/d3";
-import { GraphBond } from "./GraphBond";
+﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { GraphBond } from "../bonds/GraphBond";
+import { GraphElement } from "../elements/GraphElement";
 import { GraphState } from "./GraphState";
-import { GraphElement } from "./elements/GraphElement";
+import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 
-export class BaseGraph {
+export class BaseGraphDisplay {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";

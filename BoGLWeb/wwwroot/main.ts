@@ -1,12 +1,12 @@
 "use strict";
-import { BaseGraph } from "./types/BaseGraph";
-import { BondGraph } from "./types/BondGraph";
-import { BondGraphBond } from "./types/BondGraphBond";
+import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
+import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
+import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
-import { SystemDiagram } from "./types/SystemDiagram";
+import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 
-function populateMenu(graph: BaseGraph) {
+function populateMenu(graph: BaseGraphDisplay) {
     ElementNamespace.categories.map((c, i) => {
         ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
             const group = document.createElement('div');
@@ -36,7 +36,7 @@ function loadPage() {
     var systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     systemDiagramSVG.classed("graphSVG", true);
 
-    var systemDiagram = new SystemDiagram(systemDiagramSVG, [], []);
+    var systemDiagram = new SystemDiagramDisplay(systemDiagramSVG, [], []);
     systemDiagram.draggingElement = null;
 
     document.addEventListener("mouseup", function () {
@@ -56,7 +56,7 @@ function loadPage() {
     let n3 = new BondGraphElement(2, "I:m", 150, 50);
     let n4 = new BondGraphElement(3, "C:1/k", 50, 150);
     let n5 = new BondGraphElement(4, "Se:F(t)", -50, 50);
-    var bondGraph = new BondGraph(bondGraphSVG, [n1, n2, n3, n4, n5], [new BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond(n1, n3, "", "flat_and_arrow"),
+    var bondGraph = new BondGraphDisplay(bondGraphSVG, [n1, n2, n3, n4, n5], [new BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond(n1, n3, "", "flat_and_arrow"),
     new BondGraphBond(n1, n4, "flat", "arrow"), new BondGraphBond(n1, n5, "flat_and_arrow", "")]);
     bondGraph.updateGraph();
 }
