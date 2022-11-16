@@ -32,22 +32,18 @@ using System.Collections.Generic;
 using System.Windows;
 #endif
 
-namespace GraphSynth
-{
+namespace BoGLWeb.Logistics {
     /// <summary>
     ///   The static class that handles input and output statements from a
     ///   Search Process.
     /// </summary>
-    public static class SearchIO
-    {
+    public static class SearchIO {
         /// <summary>
         ///   Gets the process number.
         /// </summary>
         /// <value>The process number.</value>
-        public static int processNum
-        {
-            get
-            {
+        public static int processNum {
+            get {
                 var namelength = Thread.CurrentThread.Name.Length;
                 return int.Parse(Thread.CurrentThread.Name.Substring(1, namelength - 3));
             }
@@ -62,17 +58,15 @@ namespace GraphSynth
         ///   Gets or sets the iteration.
         /// </summary>
         /// <value>The iteration.</value>
-        public static int iteration
-        {
-            set
-            {
+        public static int iteration {
+            set {
                 var searchThreadName = Thread.CurrentThread.Name ?? "";
                 if (iterations.ContainsKey(searchThreadName))
                     iterations[searchThreadName] = value;
-                else iterations.Add(searchThreadName, value);
+                else
+                    iterations.Add(searchThreadName, value);
             }
-            get
-            {
+            get {
                 return getIteration(Thread.CurrentThread.Name);
             }
         }
@@ -82,10 +76,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <returns></returns>
-        public static int getIteration(string threadName)
-        {
-            if ((!string.IsNullOrWhiteSpace(threadName)) && iterations.ContainsKey(threadName))
-                return (int)iterations[threadName];
+        public static int getIteration(string threadName) {
+            if (!string.IsNullOrWhiteSpace(threadName) && iterations.ContainsKey(threadName))
+                return (int) iterations[threadName];
             return defaultIteration;
         }
 
@@ -100,17 +93,15 @@ namespace GraphSynth
         ///   Gets or sets the misc object.
         /// </summary>
         /// <value>The misc object.</value>
-        public static object miscObject
-        {
-            set
-            {
+        public static object miscObject {
+            set {
                 var searchThreadName = Thread.CurrentThread.Name ?? "";
                 if (miscHash.ContainsKey(searchThreadName))
                     miscHash[searchThreadName] = value;
-                else miscHash.Add(searchThreadName, value);
+                else
+                    miscHash.Add(searchThreadName, value);
             }
-            get
-            {
+            get {
                 return getMiscObject(Thread.CurrentThread.Name);
             }
         }
@@ -120,9 +111,8 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <returns></returns>
-        public static string getMiscObject(string threadName)
-        {
-            if ((!string.IsNullOrWhiteSpace(threadName)) && miscHash.ContainsKey(threadName))
+        public static string getMiscObject(string threadName) {
+            if (!string.IsNullOrWhiteSpace(threadName) && miscHash.ContainsKey(threadName))
                 return miscHash[threadName].ToString();
             return defaultMiscObject;
         }
@@ -137,9 +127,10 @@ namespace GraphSynth
         ///   Gets a value indicating whether [terminate request].
         /// </summary>
         /// <value><c>true</c> if [terminate request]; otherwise, <c>false</c>.</value>
-        public static Boolean terminateRequest
-        {
-            get { return GetTerminateRequest(Thread.CurrentThread.Name); }
+        public static bool terminateRequest {
+            get {
+                return GetTerminateRequest(Thread.CurrentThread.Name);
+            }
         }
 
         /// <summary>
@@ -147,11 +138,11 @@ namespace GraphSynth
         /// </summary>
         /// <param name="searchThreadName">Name of the search thread.</param>
         /// <returns></returns>
-        public static Boolean GetTerminateRequest(string searchThreadName = null)
-        {
-            if (!string.IsNullOrWhiteSpace(searchThreadName)) searchThreadName = Thread.CurrentThread.Name;
+        public static bool GetTerminateRequest(string searchThreadName = null) {
+            if (!string.IsNullOrWhiteSpace(searchThreadName))
+                searchThreadName = Thread.CurrentThread.Name;
             if (!string.IsNullOrWhiteSpace(searchThreadName) && termRequests.ContainsKey(searchThreadName))
-                return (Boolean)termRequests[searchThreadName];
+                return (bool) termRequests[searchThreadName];
             return false;
         }
 
@@ -159,12 +150,13 @@ namespace GraphSynth
         ///   Sets the termination request.
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
-        public static void setTerminationRequest(string threadName)
-        {
-            if (threadName == null) throw new Exception("The theadname was null in setTerminationRequest");
-            if ((!string.IsNullOrWhiteSpace(threadName)) && termRequests.ContainsKey(threadName))
+        public static void setTerminationRequest(string threadName) {
+            if (threadName == null)
+                throw new Exception("The theadname was null in setTerminationRequest");
+            if (!string.IsNullOrWhiteSpace(threadName) && termRequests.ContainsKey(threadName))
                 termRequests[threadName] = true;
-            else termRequests.Add(threadName, true);
+            else
+                termRequests.Add(threadName, true);
         }
 
         #endregion
@@ -178,10 +170,8 @@ namespace GraphSynth
         ///   Gets the time interval.
         /// </summary>
         /// <value>The time interval.</value>
-        public static TimeSpan timeInterval
-        {
-            get
-            {
+        public static TimeSpan timeInterval {
+            get {
                 return getTimeInterval(Thread.CurrentThread.Name);
             }
         }
@@ -191,11 +181,11 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <param name = "value">The value.</param>
-        public static void setTimeInterval(string threadName, TimeSpan value)
-        {
+        public static void setTimeInterval(string threadName, TimeSpan value) {
             if (timeIntervals.ContainsKey(threadName))
                 timeIntervals[threadName] = value;
-            else timeIntervals.Add(threadName, value);
+            else
+                timeIntervals.Add(threadName, value);
         }
 
         /// <summary>
@@ -203,10 +193,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <returns></returns>
-        public static TimeSpan getTimeInterval(string threadName)
-        {
-            if ((!string.IsNullOrWhiteSpace(threadName)) && timeIntervals.ContainsKey(threadName))
-                return (TimeSpan)timeIntervals[threadName];
+        public static TimeSpan getTimeInterval(string threadName) {
+            if (!string.IsNullOrWhiteSpace(threadName) && timeIntervals.ContainsKey(threadName))
+                return (TimeSpan) timeIntervals[threadName];
             return zeroTimeInterval;
         }
 
@@ -226,10 +215,8 @@ namespace GraphSynth
         ///   Gets the verbosity.
         /// </summary>
         /// <value>The verbosity.</value>
-        private static int verbosity
-        {
-            get
-            {
+        private static int verbosity {
+            get {
                 return getVerbosity(Thread.CurrentThread.Name);
             }
         }
@@ -239,11 +226,11 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <param name = "value">The value.</param>
-        public static void setVerbosity(string threadName, int value)
-        {
+        public static void setVerbosity(string threadName, int value) {
             if (verbosities.ContainsKey(threadName))
                 verbosities[threadName] = value;
-            else verbosities.Add(threadName, value);
+            else
+                verbosities.Add(threadName, value);
         }
 
         /// <summary>
@@ -251,10 +238,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "threadName">Name of the thread.</param>
         /// <returns></returns>
-        public static int getVerbosity(string threadName)
-        {
-            if ((!string.IsNullOrWhiteSpace(threadName)) && verbosities.ContainsKey(threadName))
-                return (int)verbosities[threadName];
+        public static int getVerbosity(string threadName) {
+            if (!string.IsNullOrWhiteSpace(threadName) && verbosities.ContainsKey(threadName))
+                return (int) verbosities[threadName];
             return defaultVerbosity;
         }
 
@@ -286,10 +272,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="verbosityLimit">The verbosity limit.</param>
-        public static Boolean output(object message, int verbosityLimit = 0)
-        {
-            if ((verbosityLimit > verbosity)
-                || (string.IsNullOrWhiteSpace(message.ToString())))
+        public static bool output(object message, int verbosityLimit = 0) {
+            if (verbosityLimit > verbosity
+                || string.IsNullOrWhiteSpace(message.ToString()))
                 return false;
             Console.WriteLine(message);
             return true;
@@ -299,10 +284,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name="list">The list.</param>
         /// <returns></returns>
-        public static Boolean output(params object[] list)
-        {
-            if ((verbosity >= list.Length)
-                || (string.IsNullOrWhiteSpace(list[verbosity].ToString())))
+        public static bool output(params object[] list) {
+            if (verbosity >= list.Length
+                || string.IsNullOrWhiteSpace(list[verbosity].ToString()))
                 return false;
             Console.WriteLine(list[verbosity]);
             return true;
@@ -456,26 +440,26 @@ namespace GraphSynth
         /// <param name="defaultResultStr">The default result string.</param>
         /// <param name="optionsStr">The options string.</param>
         /// <returns></returns>
-        public static bool MessageBoxShow(string messageBoxText, string caption = "", string iconStr = "", string buttonStr = "OK", string defaultResultStr = "", string optionsStr = "")
-        {
-            if (!string.IsNullOrWhiteSpace(iconStr)) iconStr = " " + iconStr + ":";
-            if (!string.IsNullOrWhiteSpace(caption)) caption = " " + caption.Trim() + " ";
-            else iconStr.Replace(':', ' ');
+        public static bool MessageBoxShow(string messageBoxText, string caption = "", string iconStr = "", string buttonStr = "OK", string defaultResultStr = "", string optionsStr = "") {
+            if (!string.IsNullOrWhiteSpace(iconStr))
+                iconStr = " " + iconStr + ":";
+            if (!string.IsNullOrWhiteSpace(caption))
+                caption = " " + caption.Trim() + " ";
+            else
+                iconStr.Replace(':', ' ');
 
             output("**" + iconStr + caption + "**\n" + messageBoxText + "\n");
-            if (buttonStr.StartsWith("OK"))
-            {
+            if (buttonStr.StartsWith("OK")) {
                 output("Hit any key to continue.");
                 Console.ReadKey();
                 return true;
             }
             ConsoleKey response;
-            do
-            {
+            do {
                 output("Please Respond Y/N:");
                 response = Console.ReadKey().Key;
             } while (response != ConsoleKey.N && response != ConsoleKey.Y);
-            return (response == ConsoleKey.Y);
+            return response == ConsoleKey.Y;
         }
 
         /// <summary>
@@ -483,8 +467,7 @@ namespace GraphSynth
         /// </summary>
         /// <param name="graphObjects">The graph objects.</param>
         /// <param name="title">The title.</param>
-        public static void addAndShowGraphWindow(object graphObjects, string title = "")
-        {
+        public static void addAndShowGraphWindow(object graphObjects, string title = "") {
             //throw new NotImplementedException();
         }
 
@@ -493,8 +476,7 @@ namespace GraphSynth
         /// </summary>
         /// <param name="ruleObjects">The rule objects.</param>
         /// <param name="title">The title.</param>
-        public static void addAndShowRuleWindow(object ruleObjects, string title)
-        {
+        public static void addAndShowRuleWindow(object ruleObjects, string title) {
             //throw new NotImplementedException();
         }
         /// <summary>
@@ -502,8 +484,7 @@ namespace GraphSynth
         /// </summary>
         /// <param name="ruleObjects">The rule objects.</param>
         /// <param name="title">The title.</param>
-        public static void addAndShowRuleSetWindow(object ruleObjects, string title)
-        {
+        public static void addAndShowRuleSetWindow(object ruleObjects, string title) {
             //throw new NotImplementedException();
         }
 #endif

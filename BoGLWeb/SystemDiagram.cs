@@ -1,4 +1,4 @@
-﻿using GraphSynth.Representation;
+﻿using BoGLWeb.BaseClasses;
 using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
@@ -202,7 +202,7 @@ namespace BoGLWeb {
                     while (!foundCloseBrace) {
                         int e1 = 0;
                         int e2 = 0;
-                        int velocity = -1;
+                        string velocity = "";
 
 
                         //Check element1
@@ -231,12 +231,12 @@ namespace BoGLWeb {
                         tok = arcsTokenQueue.Dequeue();
                         //TODO Confirm that this is the only modifier
                         if (tok.Equals("velocity")) {
-                            velocity = Convert.ToInt32(arcsTokenQueue.Dequeue());
+                            velocity = "VELOCITY" + Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else if (tok.Equals("}")) {
                             foundCloseBrace = true;
                         }
 
-                        if (velocity == -1) {
+                        if (velocity == "VELOCITY") {
                             arcs.Add(new Edge(elements[e1], elements[e2]));
                         } else {
                             arcs.Add(new Edge(elements[e1], elements[e2], velocity));
@@ -536,18 +536,18 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly Element e2;
             [JsonProperty]
-            protected readonly int velocity;
+            protected readonly string velocityDir;
 
             public Edge(Element e1, Element e2) {
                 this.e1 = e1;
                 this.e2 = e2;
-                this.velocity = -1;
+                this.velocityDir = "";
             }
 
-            public Edge(Element e1, Element e2, int velocity) {
+            public Edge(Element e1, Element e2, string velocity) {
                 this.e1 = e1;
                 this.e2 = e2;
-                this.velocity = velocity;
+                this.velocityDir = velocity;
             }
 
             public Element getE1() {
@@ -559,7 +559,7 @@ namespace BoGLWeb {
             }
 
             public string toString() {
-                return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity + "\r\n";
+                return velocityDir == "" ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocityDir + "\r\n";
             }
         }
     }

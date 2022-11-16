@@ -119,6 +119,7 @@
                     </Collapse>
                 </div>
                 <div class="card-container">
+                    <Button @onclick="generateButtonClicked">Generate</Button>
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="systemDiagram"></div>
@@ -138,3 +139,9 @@
         </main>
     </div>
 </body>
+
+@code {
+    public async void generateButtonClicked() {
+
+    }
+}

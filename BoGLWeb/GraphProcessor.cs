@@ -1,10 +1,5 @@
-﻿using AVL_Prototype_1;
-using GraphSynth.Representation;
-using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
-using static AVL_Prototype_1.Graph;
-using static System.Net.Mime.MediaTypeNames;
+﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.Prop;
 
 namespace BoGLWeb {
     public class BondGraphFactory {

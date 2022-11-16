@@ -1,4 +1,5 @@
-﻿using GraphSynth.Representation;
+﻿using BoGLWeb.BaseClasses;
+using GraphSynth.Representation;
 using Newtonsoft.Json;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
