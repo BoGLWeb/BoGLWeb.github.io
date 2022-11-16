@@ -127,23 +127,25 @@
                                             </div>
                                             <hr />
                                             <div>
-                                                <div>Velocity Direction</div>
-                                                <div style="position: relative">
-                                                    <div id="clearVelocityWrapper"></div>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -35px; left: 20px"><div class="arrowButton">⮢</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -35px; right: 20px"><div class="arrowButton">⮣</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 0px; right: -10px"><div class="arrowButton">⮥</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 35px; right: -10px"><div class="arrowButton">⮧</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 70px; right: 30px"><div class="arrowButton">⮡</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 70px; left: 20px"><div class="arrowButton">⮠</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 35px; left: -10px"><div class="arrowButton">⮦</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 0px; left: -10px"><div class="arrowButton">⮤</div></Button>
+                                                <div style="font-size: 12px">Velocity Direction</div>
+                                                <div id="velocities">
+                                                    <div id="clearVelocityWrapper">
+                                                        <Button Class="bogl_button">Clear<br />Velocity</Button>
+                                                    </div>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px" Class="longArrow"><div class="arrowButton topArrow">⮢</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px" Class="longArrow"><div class="arrowButton topArrow">⮣</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮥</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px" Class="tallArrow"><div class="arrowButton">⮧</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮡</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮠</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px" Class="tallArrow"><div class="arrowButton">⮦</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮤</div></Button>
                                                 </div>
                                             </div>
                                         </Panel>
                                     </ChildContent>
                                     <ExpandIconTemplate>
-                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
                                     </ExpandIconTemplate>
                                 </Collapse>
                                 <div id="systemDiagram"></div>
