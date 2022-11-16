@@ -25,7 +25,9 @@
     }
 
     public void genSystemDiagram(){
+        Console.WriteLine("-------- PARSING --------");
         sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        Console.WriteLine("-------- DISPLAYING STRING --------");
         foreach(Element e in  sysDiagram.getElements()) {
             sysDiagramString += e.toString();
         }
@@ -34,6 +36,8 @@
             sysDiagramString += e.toString();
         }
 
+        Console.WriteLine("-------- JSON STRING --------");
+        Console.WriteLine(sysDiagram.convertToJson());
         JSchemaGenerator generateor = new JSchemaGenerator();
         Console.WriteLine("-------- SYSTEM DIAGRAM SCHEMA --------");
         Console.WriteLine(generateor.Generate(typeof(SystemDiagram)));
