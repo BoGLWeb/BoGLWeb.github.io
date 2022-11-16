@@ -230,13 +230,15 @@ namespace BoGLWeb {
                         //Modifiers
                         tok = arcsTokenQueue.Dequeue();
                         //TODO Confirm that this is the only modifier
+                        Console.WriteLine(tok);
                         if (tok.Equals("velocity")) {
                             velocity = "VELOCITY" + Convert.ToInt32(arcsTokenQueue.Dequeue());
+                            Console.WriteLine(velocity);
                         } else if (tok.Equals("}")) {
                             foundCloseBrace = true;
                         }
 
-                        if (velocity == "VELOCITY") {
+                        if (!velocity.Contains("VELOCITY")) {
                             arcs.Add(new Edge(elements[e1], elements[e2]));
                         } else {
                             arcs.Add(new Edge(elements[e1], elements[e2], velocity));
@@ -521,7 +523,7 @@ namespace BoGLWeb {
         public static Dictionary<string, bool> generateModifierDictionary() {
             Dictionary<string, bool> modifierDictionary = new Dictionary<string, bool>();
             modifierDictionary.Add("MASS", false);
-            modifierDictionary.Add("INTERTIA", false);
+            modifierDictionary.Add("INERTIA", false);
             modifierDictionary.Add("STIFFNESS", false);
             modifierDictionary.Add("FRICTION", false);
             modifierDictionary.Add("DAMPING", false);
