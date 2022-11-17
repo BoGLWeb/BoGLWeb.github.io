@@ -61,7 +61,6 @@ function loadPage() {
     bondGraph.updateGraph();
 }
 
-
 function pollDOM() {
     const el = document.getElementById('graphMenu');
 

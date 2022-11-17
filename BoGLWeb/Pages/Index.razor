@@ -1,4 +1,5 @@
-﻿@page "/"
+﻿@inject IJSRuntime JS
+@page "/"
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -143,6 +144,7 @@
 
 @code {
     public async void generateButtonClicked() {
-
+        var module = await JS.InvokeAsync<IJSObjectReference>("test.getTest");
+        await module.InvokeVoidAsync("test", "test string");
     }
 }
