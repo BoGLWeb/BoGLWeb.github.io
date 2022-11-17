@@ -32,7 +32,7 @@ namespace BoGLWeb {
         [JsonProperty]
         protected List<Edge> edges;
         [JsonProperty]
-        protected Dictionary<string, double> header;
+        protected Dictionary<string, double> header;   
 
         public SystemDiagram(Dictionary<string, double> header) {
             elements = new List<Element>();
@@ -459,10 +459,15 @@ namespace BoGLWeb {
             //TODO Create a way to modify these values
             private double x, y;
 
+            // Assigns a unique ID to each Element
+            private static int universalID = 0;
+            private int? ID;
+
             public Element(string name) {
                 this.name = name;
                 this.modifiers = generateModifierDictionary();
                 velocityDir = "";
+                assignID(0, true);
             }
 
             public Element(string name, double x, double y) {
@@ -471,6 +476,7 @@ namespace BoGLWeb {
                 velocityDir = "";
                 this.x = x;
                 this.y = y;
+                assignID(0, true);
             }
 
             //TODO Error checking
@@ -502,6 +508,53 @@ namespace BoGLWeb {
                 }
 
                 return strings;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <code>Element</code>.
+            /// </summary>
+            /// <param name="ID">
+            /// A reference ID for this <code>Element</code>.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be
+            /// tied to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            private void assignID(int? ID, bool isDistinct) {
+                if (this.ID == null || isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <code>Element</code>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be
+            /// tied to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element copy(bool isDistinct) {
+                Element copy = new(this.name, this.x, this.y) {
+                    modifiers = generateModifierDictionary(),
+                    velocityDir = this.velocityDir
+                };
+                copy.assignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Finds the hashing code for this <code>Element</code>
+            /// </summary>
+            /// <returns>
+            /// <code>this.ID</code>
+            /// </returns>
+            public override int GetHashCode() {
+                return this.ID is int ID ? ID : 0;
             }
 
             public string toString() {
@@ -538,6 +591,10 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int velocity;
 
+            // Assigns a unique ID to each Element
+            private static int universalID = 0;
+            private int? ID;
+
             public Edge(Element e1, Element e2) {
                 this.e1 = e1;
                 this.e2 = e2;
@@ -556,6 +613,50 @@ namespace BoGLWeb {
 
             public Element getE2() {
                 return e2;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <code>Edge</code>.
+            /// </summary>
+            /// <param name="ID">
+            /// A reference ID for this <code>Edge</code>.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Edge</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            private void assignID(int? ID, bool isDistinct) {
+                if (this.ID == null || isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <code>Edge</code>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Edge</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Edge copy(bool isDistinct) {
+                Edge copy = new(this.e1, this.e2, this.velocity);
+                copy.assignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Finds the hashing code for this <code>Edge</code>
+            /// </summary>
+            /// <returns>
+            /// <code>this.ID</code>
+            /// </returns>
+            public override int GetHashCode() {
+                return this.ID is int ID ? ID : 0;
             }
 
             public string toString() {
