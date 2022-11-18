@@ -1,6 +1,7 @@
-﻿@page "/"
+﻿@inject IJSRuntime JS
+@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>BoGLWeb</PageTitle>
 
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
@@ -91,8 +92,9 @@
                 @<Template>
                     <Icon Type="setting" Theme="outline"></Icon>
                     Navigation Three - Submenu
-                </Template>;
-            }
+                </Template>
+                ;
+}
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">
@@ -142,6 +144,17 @@
 
 @code {
     public async void generateButtonClicked() {
+        string xmlString = "";
 
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_wheels_with_damper_&_spring.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        //SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("test", "some string");
+
+        var str = await module.InvokeAsync<string>("getSystemDiagram");
+        Console.WriteLine(str); 
     }
 }
