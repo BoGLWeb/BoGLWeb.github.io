@@ -3,6 +3,7 @@ import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 import { GraphState } from "./GraphState";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
+import { BaseGraph } from "../graphs/BaseGraph";
 
 export class BaseGraphDisplay {
     // constants
@@ -23,9 +24,9 @@ export class BaseGraphDisplay {
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
 
-    constructor(svg: SVGSelection, nodes: GraphElement[], edges: GraphBond[]) {
-        this.elements = nodes || [];
-        this.bonds = edges || [];
+    constructor(svg: SVGSelection, baseGraph: BaseGraph) {
+        this.elements = baseGraph.nodes || [];
+        this.bonds = baseGraph.edges || [];
 
         this.svg = svg;
         this.svgG = svg.append("g");
@@ -130,6 +131,7 @@ export class BaseGraphDisplay {
 
     fullRenderElements() {
         // update existing elements
+        console.log(this.elements);
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 

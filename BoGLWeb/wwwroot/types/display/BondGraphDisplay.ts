@@ -3,6 +3,7 @@ import { BondGraphBond } from "../bonds/BondGraphBond";
 import { GraphBond } from "../bonds/GraphBond";
 import { BondGraphElement } from "../elements/BondGraphElement";
 import { GraphElement } from "../elements/GraphElement";
+import { BondGraph } from "../graphs/BondGraph";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
 export class BondGraphDisplay extends BaseGraphDisplay {
@@ -10,8 +11,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     testSVG: SVGSelection;
     defs: SVGSelection;
 
-    constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: GraphBond[]) {
-        super(svg, nodes, edges);
+    constructor(svg: SVGSelection, bondGraph: BondGraph) {
+        super(svg, bondGraph);
 
         this.testSVG = d3.select("#app").append("svg");
         this.testSVG.style("position", "absolute")

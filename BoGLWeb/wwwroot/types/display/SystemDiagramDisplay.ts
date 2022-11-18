@@ -3,14 +3,15 @@ import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type
 import { GraphBond } from "../bonds/GraphBond";
 import { ElementNamespace } from "../elements/ElementNamespace";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
 
-    constructor(svg: SVGSelection, nodes: SystemDiagramElement[], edges: GraphBond[]) {
-        super(svg, nodes, edges);
+    constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
+        super(svg, systemDiagram);
 
         let graph = this;
 
