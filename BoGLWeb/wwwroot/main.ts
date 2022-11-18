@@ -36,6 +36,9 @@ export function populateMenu(graph: BaseGraphDisplay) {
 
 function loadPage() {
     (<any>window).backendManager = backendManager;
+    (<any>window).systemDiagram = null;
+    (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    (<any>window).systemDiagramSVG.classed("graphSVG", true);
 
     var bondGraphSVG = d3.select("#bondGraph").append("svg");
     bondGraphSVG.classed("graphSVG", true);

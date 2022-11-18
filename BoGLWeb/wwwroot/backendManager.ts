@@ -25,8 +25,6 @@ export namespace backendManager {
         }
 
         public loadSystemDiagram(jsonString: string) {
-            console.log(jsonString);
-
             let parsedJson = JSON.parse(jsonString);
             let elements = []
             let i = 0;
@@ -41,9 +39,9 @@ export namespace backendManager {
                 edges.push(new GraphBond(elements[edge.source], elements[edge.target]));
             }
 
-            var systemDiagramSVG = d3.select("#systemDiagram").append("svg");
-            systemDiagramSVG.classed("graphSVG", true);
-            var systemDiagram = new SystemDiagramDisplay(systemDiagramSVG, new SystemDiagram(elements, edges));
+            (<any>window).systemDiagramSVG.selectAll('*').remove();
+
+            var systemDiagram = new SystemDiagramDisplay((<any> window).systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
 
             document.addEventListener("mouseup", function () {
