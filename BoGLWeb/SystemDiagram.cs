@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using GraphSynth.Representation;
 using BoGLWeb.BaseClasses;
 using static BoGLWeb.Graph;
+using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -107,6 +108,7 @@ namespace BoGLWeb {
         //TODO Figure out if this should be a string
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
+            Console.WriteLine("CREATING SYSTEM DIAGRAM FROM XML");
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 becuase then we have an error
@@ -411,7 +413,10 @@ namespace BoGLWeb {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
                 builder.AppendLine("<localLabels>");
-                builder.AppendLine("<string>" + element.getName().Replace(@"\d", "") + "</string>");
+                Regex r = new Regex(@"\d+", RegexOptions.None);
+                Console.WriteLine(element.getName());
+                Console.WriteLine(r.Replace(element.getName(), ""));
+                builder.AppendLine("<string>" + r.Replace(element.getName(), "") + "</string>");
                 foreach (var n in element.getLabelList()) {
                     //This was in braces, don't know why. Removed them so that might cause a problem later
                     builder.AppendLine("<string>" + n + "</string>");
@@ -526,7 +531,7 @@ namespace BoGLWeb {
                     strings.Add(modifier.ToString());
                 }
 
-                if (!velocity.Equals("")) {
+                if (this.velocity != 0){
                     strings.Add("veladded");
                     strings.Add("vel" + velocity);
                 }

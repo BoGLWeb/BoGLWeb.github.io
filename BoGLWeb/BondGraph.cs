@@ -28,6 +28,10 @@ namespace BoGLWeb {
             return elements[name];
         }
 
+        public string convertToJson() {
+            return "testJson";
+        }
+
         //Generate BondGraph from GraphSynth designGraph
         //TODO Check if we can ensure a designGraph is a Bond Graph and produce error if it is not
         public static BondGraph generateBondGraphFromGraphSynth(designGraph graph) {

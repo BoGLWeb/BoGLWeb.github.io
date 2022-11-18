@@ -4,8 +4,18 @@
             console.log(text);
         }
 
-        public displayBondGraph(jsonString: string) {
+        public displayUnsimplifiedBondGraph(jsonString: string) {
+            console.log(jsonString);
+        }
 
+        public displaySimplifiedBondGraph(jsonString: string) {
+            console.log(jsonString);
+        }
+
+        public displayCausalBondGraphOptions(jsonStrings: Array<string>) {
+            jsonStrings.forEach(function (value) {
+                console.log(value);
+            });
         }
 
         public getSystemDiagram() {

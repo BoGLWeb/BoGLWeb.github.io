@@ -143,18 +143,53 @@
 </body>
 
 @code {
+    private readonly List<string> ruleNames = new List<string>();
+
+    protected override async Task OnInitializedAsync() {
+        ruleNames.Add("BondGraphRuleset"); //58
+        ruleNames.Add("SimplificationRuleset"); //28
+        ruleNames.Add("DirRuleset"); //5
+        ruleNames.Add("newDirectionRuleSet_2"); //17
+        ruleNames.Add("DirRuleset3"); //4
+        ruleNames.Add("Simplification2"); //32
+        ruleNames.Add("NewCausalityMethodRuleset"); //6
+        ruleNames.Add("NewCausalityMethodRuleset_2"); //4
+        ruleNames.Add("NewCausalityMethodRuleset_3"); //2
+        ruleNames.Add("INVDMarkerRules"); //6
+        ruleNames.Add("INVDMarkerRules_2"); //0?
+        ruleNames.Add("CalibrationNewRuleset"); //12
+        ruleNames.Add("CalibrationNewRuleset_2"); //0?
+        ruleNames.Add("RFlagCleanRuleset"); //1
+        ruleNames.Add("ICFixTotalRuleset"); //12
+        ruleNames.Add("TransformerFlipRuleset"); //1
+        ruleNames.Add("TransformerFlipRuleset2"); //1
+        ruleNames.Add("Clean23Ruleset"); //4
+        ruleNames.Add("BeforeBG-VerifyDirRuleSet"); //8
+
+        foreach(string str in ruleNames){
+            await RuleSetMap.getInstance().loadRuleSet(str);
+        }
+    }
+
     public async void generateButtonClicked() {
         string xmlString = "";
 
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_wheels_with_damper_&_spring.bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
-        //SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
+        var unsimplified = graphs.Item1;
+        var simplified = graphs.Item2;
+        var causal = graphs.Item3;
+        List<string> causalOptions = new();
+        foreach(BondGraph g in causal) {
+            causalOptions.Add(g.convertToJson() + " option");
+        }
 
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("test", "some string");
-
-        var str = await module.InvokeAsync<string>("getSystemDiagram");
-        Console.WriteLine(str); 
+        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson() + " unsimplified");
+        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", simplified.convertToJson() + " simplified");
+        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", causalOptions);
     }
 }
