@@ -30,8 +30,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace GraphSynth
-{
+namespace BoGLWeb.Logistics {
 #if WPF
     /// <summary>
     ///   this class simply helps SearchIO get its output to the sidebar in GraphSynth.

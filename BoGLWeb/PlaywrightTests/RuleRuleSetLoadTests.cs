@@ -6,13 +6,13 @@ using Microsoft.Playwright.NUnit;
 using NuGet.Frameworks;
 using NUnit.Framework;
 
-namespace PlaywrightTests {
+namespace BoGLWeb.PlaywrightTests {
 
     [TestFixture]
-    public class RuleRuleSetLoadTests : PageTest{
+    public class RuleRuleSetLoadTests : PageTest {
 
         private readonly int timeout = 20000;
-       
+
         [SetUp]
         public void setup() {
 
@@ -32,16 +32,16 @@ namespace PlaywrightTests {
                 Timeout = timeout
             });
             await Expect(Page.Locator("text=BondGraphRuleset : 58")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = timeout 
+                Timeout = timeout
             });
             await Expect(Page.Locator("text=SimplificationRuleset : 28")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = timeout 
+                Timeout = timeout
             });
             await Expect(Page.Locator("text=DirRuleset : 5")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = timeout 
+                Timeout = timeout
             });
             await Expect(Page.Locator("text=newDirectionRuleSet_2 : 17")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
-                Timeout = timeout 
+                Timeout = timeout
             });
             await Expect(Page.Locator("text=DirRuleset3 : 4")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
                 Timeout = timeout
@@ -85,7 +85,7 @@ namespace PlaywrightTests {
             await Expect(Page.Locator("text=Clean23Ruleset : 4")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
                 Timeout = timeout
             });
-           await Expect(Page.Locator("text=BeforeBG-VerifyDirRuleSet : 8")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
+            await Expect(Page.Locator("text=BeforeBG-VerifyDirRuleSet : 8")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions {
                 Timeout = timeout
             });
         }

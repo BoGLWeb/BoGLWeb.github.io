@@ -33,10 +33,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using BoGLWeb.Logistics;
 using Microsoft.CSharp;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /// <summary>
     ///   The ruleset class represents one of the three main file types of GraphSynth. A ruleset is saved as a .rsxml. It represents a
     ///   language of rules that operate in concert. The included rules are all loaded at once, and used to populate a list of

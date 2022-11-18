@@ -2,10 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-namespace AVL_Prototype_1
-{
-    class BondGraphArc : Arc
-    {
+namespace BoGLWeb {
+    class BondGraphArc : Arc {
         private static double arrowLength = 20;
         private static double arrowAngleOffset = Math.PI / 5;
         private static double causalLength = 20;

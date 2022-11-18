@@ -27,13 +27,14 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /// <summary>
     /// All of these functions are static Booleans functions that match the graph or graph elements between host and rule.
     /// </summary>

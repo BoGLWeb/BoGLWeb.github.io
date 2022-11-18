@@ -31,13 +31,11 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace GraphSynth
-{
+namespace BoGLWeb.Logistics {
     /// <summary>
     ///   A converter class for changing a collection of doubles into a string and vice-versa.
     /// </summary>
-    public class DoubleCollectionConverter : TypeConverter
-    {
+    public class DoubleCollectionConverter : TypeConverter {
         /// <summary>
         ///   Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
         /// </summary>
@@ -46,8 +44,7 @@ namespace GraphSynth
         /// <returns>
         ///   true if this converter can perform the conversion; otherwise, false.
         /// </returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
             return sourceType == typeof(string);
         }
 
@@ -61,10 +58,9 @@ namespace GraphSynth
         ///   An <see cref = "T:System.Object" /> that represents the converted value.
         /// </returns>
         /// <exception cref = "T:System.NotSupportedException">The conversion cannot be performed. </exception>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
             if (value is string)
-                return convert((string)value);
+                return convert((string) value);
             return null;
         }
 
@@ -92,10 +88,9 @@ namespace GraphSynth
         /// <param name = "s">The s.</param>
         /// <returns></returns>
         public override object ConvertTo(ITypeDescriptorContext context,
-                                         CultureInfo culture, object value, Type s)
-        {
+                                         CultureInfo culture, object value, Type s) {
             if (value is IEnumerable<double>)
-                return convert((IEnumerable<double>)value);
+                return convert((IEnumerable<double>) value);
             return null;
         }
 
@@ -105,15 +100,14 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "value">The value.</param>
         /// <returns></returns>
-        public static List<double> convert(string value)
-        {
+        public static List<double> convert(string value) {
             var items = new List<double>();
             var charSeparators = new[] { ',', '(', ')', ' ', ':', ';', '/', '\\', '\'', '\"' };
             double temp;
             var results = value.Split(charSeparators);
 
             for (var i = 0; i < results.GetLength(0); i++)
-                if ((results[i] != "") && (double.TryParse(results[i].Trim(), out temp)))
+                if (results[i] != "" && double.TryParse(results[i].Trim(), out temp))
                     items.Add(temp);
 
             return items;
@@ -124,11 +118,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "values">The values.</param>
         /// <returns></returns>
-        public static string convert(IEnumerable<double> values)
-        {
+        public static string convert(IEnumerable<double> values) {
             var text = "";
-            foreach (var value in values)
-            {
+            foreach (var value in values) {
                 text += ", " + value.ToString(CultureInfo.InvariantCulture);
             }
             return text.Length < 2 ? text : text.Remove(0, 2);
