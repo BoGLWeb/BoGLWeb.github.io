@@ -219,7 +219,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
         if (this.edgeOrigin && this.edgeOrigin != el) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
             this.setFollowingEdge(null);
             this.edgeOrigin = null;
             this.updateGraph();
@@ -277,7 +277,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.draggingElement != null) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+            this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1], 0));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {

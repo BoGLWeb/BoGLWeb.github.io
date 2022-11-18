@@ -2,11 +2,11 @@
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
 export class SystemDiagram {
-    nodes: SystemDiagramElement[];
+    elements: SystemDiagramElement[];
     edges: GraphBond[];
 
-    constructor(nodes: SystemDiagramElement[], edges: GraphBond[]) {
-        this.nodes = nodes;
+    constructor(elements: SystemDiagramElement[], edges: GraphBond[]) {
+        this.elements = elements;
         this.edges = edges;
     }
 }

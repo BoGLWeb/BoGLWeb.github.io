@@ -20,7 +20,7 @@ export namespace ElementNamespace {
         new ElementType(6, "Velocity Input", 0, "velocity_input", []),
         new ElementType(7, "Flywheel", 1, "flywheel", []),
         new ElementType(8, "Rotational Spring", 1, "spring", []),
-        new ElementType(9, "Damper", 1, "damper", []),
+        new ElementType(9, "Rotational Damper", 1, "damper", []),
         new ElementType(10, "Torque Input", 1, "torque_input", []),
         new ElementType(11, "Velocity Input", 1, "velocity_input", []),
         new ElementType(12, "Lever", 2, "lever", []),

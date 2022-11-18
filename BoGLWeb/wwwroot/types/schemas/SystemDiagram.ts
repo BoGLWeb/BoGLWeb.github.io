@@ -16,8 +16,4 @@ export type Edge = {
 export interface SystemDiagram{
     elements: Element[] | null
     edges: Edge[] | null
-    header: {
-        [k: string]: number
-    } | null
-    [k: string]: unknown
 }
