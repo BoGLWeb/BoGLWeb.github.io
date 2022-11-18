@@ -500,27 +500,11 @@ namespace BoGLWeb {
 
             //For graph visualization
             //TODO Create a way to modify these values
-            private double x, y;
+            //private double x, y;
 
             // Assigns a unique ID to each Element
             private static int universalID = 0;
             private int? ID;
-
-            public Element(string name) {
-                this.name = name;
-                this.modifiers = generateModifierDictionary();
-                velocityDir = "";
-                assignID(0, true);
-            }
-
-            public Element(string name, double x, double y) {
-                this.name = name;
-                this.modifiers = generateModifierDictionary();
-                velocityDir = "";
-                this.x = x;
-                this.y = y;
-                assignID(0, true);
-            }
 
             public Element(int type, string name, double x, double y) {
                 this.type = type;
@@ -590,9 +574,8 @@ namespace BoGLWeb {
             /// The copy.
             /// </returns>
             public Element copy(bool isDistinct) {
-                Element copy = new(this.name, this.x, this.y) {
-                    modifiers = generateModifierDictionary(),
-                    velocityDir = this.velocityDir
+                Element copy = new(this.type, this.name, this.x, this.y) {
+                    velocity = this.velocity
                 };
                 copy.assignID(this.ID, isDistinct);
                 return copy;
@@ -695,7 +678,7 @@ namespace BoGLWeb {
             /// The copy.
             /// </returns>
             public Edge copy(bool isDistinct) {
-                Edge copy = new(this.e1, this.e2, this.velocity);
+                Edge copy = new(this.e1, this.e2, this.source, this.target, this.velocity);
                 copy.assignID(this.ID, isDistinct);
                 return copy;
             }
