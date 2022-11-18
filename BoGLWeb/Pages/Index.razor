@@ -207,7 +207,7 @@
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
-        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 }
