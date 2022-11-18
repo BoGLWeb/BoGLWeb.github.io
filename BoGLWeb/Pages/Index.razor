@@ -123,6 +123,7 @@
                 <div class="card-container">
                     <Button @onclick="generateButtonClicked">Generate</Button>
                     <Button @onclick="loadFile">LoadFile</Button>
+                    <input @bind="fileToLoad"/>
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="systemDiagram"></div>
@@ -145,6 +146,7 @@
 
 @code {
     private readonly List<string> ruleNames = new List<string>();
+    private string fileToLoad = "";
 
     protected override async Task OnInitializedAsync() {
         ruleNames.Add("BondGraphRuleset"); //58
@@ -196,9 +198,12 @@
 
     public async void loadFile() {
         string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
 
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + fileToLoad);
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
