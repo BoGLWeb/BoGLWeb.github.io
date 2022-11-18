@@ -23,6 +23,7 @@
     <Import Project="$(NuGetPackageRoot)antdesign\0.12.2\buildTransitive\AntDesign.props" Condition="Exists('$(NuGetPackageRoot)antdesign\0.12.2\buildTransitive\AntDesign.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgNuGet_CommandLine Condition=" '$(PkgNuGet_CommandLine)' == '' ">C:\Users\Jakob Misbach\.nuget\packages\nuget.commandline\6.3.1</PkgNuGet_CommandLine>
     <PkgMicrosoft_TypeScript_MSBuild Condition=" '$(PkgMicrosoft_TypeScript_MSBuild)' == '' ">C:\Users\Jakob Misbach\.nuget\packages\microsoft.typescript.msbuild\4.8.4</PkgMicrosoft_TypeScript_MSBuild>
     <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">C:\Users\Jakob Misbach\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\6.0.8</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>
   </PropertyGroup>
