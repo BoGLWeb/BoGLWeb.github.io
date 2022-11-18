@@ -18,7 +18,8 @@
 
     protected override async Task OnInitializedAsync(){
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_wheels_with_damper_&_spring.bogl");
+    C:
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/json_test.bogl");
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
         Console.WriteLine(xmlString);
         genSystemDiagram();
