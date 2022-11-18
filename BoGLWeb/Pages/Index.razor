@@ -144,7 +144,17 @@
 
 @code {
     public async void generateButtonClicked() {
-        var module = await JS.InvokeAsync<IJSObjectReference>("test.getTest");
-        await module.InvokeVoidAsync("test", "test string");
+        string xmlString = "";
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_wheels_with_damper_&_spring.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        //SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("test", "some string");
+
+        var str = await module.InvokeAsync<string>("getSystemDiagram");
+        Console.WriteLine(str); 
     }
 }
