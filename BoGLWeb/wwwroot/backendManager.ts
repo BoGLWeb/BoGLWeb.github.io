@@ -18,6 +18,10 @@
             });
         }
 
+        public loadSystemDiagram(jsonString: string) {
+            console.log(jsonString);
+        }
+
         public getSystemDiagram() {
             return "sysDiagram";
         }

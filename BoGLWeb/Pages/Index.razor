@@ -122,6 +122,7 @@
                 </div>
                 <div class="card-container">
                     <Button @onclick="generateButtonClicked">Generate</Button>
+                    <Button @onclick="loadFile">LoadFile</Button>
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="systemDiagram"></div>
@@ -191,5 +192,17 @@
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson() + " unsimplified");
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", simplified.convertToJson() + " simplified");
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", causalOptions);
+    }
+
+    public async void loadFile() {
+        string xmlString = "";
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 }
