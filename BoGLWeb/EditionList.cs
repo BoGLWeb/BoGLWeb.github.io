@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using System.Collections;
+using System.Text;
+
+/// <summary>
 /// Namespace <c>EditorHelper</c> provides undo/redo functionality.
 /// </summary>
 namespace BoGLWeb {
@@ -9,7 +12,7 @@ namespace BoGLWeb {
         /// <typeparam name="Edit">
         /// The datatype stored in this <c>EditionList</c>.
         /// </typeparam> 
-        public class EditionList<Edit> {
+        public class EditionList<Edit> : IEnumerable<Edit> {
             /// Fields storing the head (front), tail (end), and pointer (user location) in this 
             /// <c>EditionList</c>.
             private Node<Edit>? head, pointer;
@@ -129,12 +132,28 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            ///  Returns an <c>Iterator</c> over the elements in this <c>EditionList</c>.
+            ///  Returns an <c>Enumerator</c> over the elements in this <c>EditionList</c>.
             /// </summary>
             /// <returns>
-            /// The <c>Iterator</c>.
+            /// The <c>Enumerator</c>.
             /// </returns>
-            public IEnumerable<Edit>? Iterator() {
+            public IEnumerator<Edit> GetEnumerator() {
+                Node<Edit>? iterablePointer = this.head;
+                while (iterablePointer != null) {
+                    Edit edit = iterablePointer.data;
+                    iterablePointer = iterablePointer.next;
+                    yield return edit;
+                }
+            }
+
+            /// <summary>
+            /// Returns an <code>Enumerator</code> over the elements in this
+            /// <code>HashList</code>.
+            /// </summary>
+            /// <returns>
+            /// Each <code>Data</code> element, one at a time.
+            /// </returns>
+            IEnumerator IEnumerable.GetEnumerator() {
                 Node<Edit>? iterablePointer = this.head;
                 while (iterablePointer != null) {
                     Edit edit = iterablePointer.data;
@@ -151,16 +170,14 @@ namespace BoGLWeb {
             /// This <code>EditionList</code> as a String
             /// </returns>
             public override String ToString() {
-                String print = "";
-                Node<Edit>? pointer = this.head;
+                StringBuilder builder = new();
                 int index = 0;
-                while (pointer != null) {
+                foreach (Edit edit in this) {
                     char delimiter = (index == this.index) ? '*' : ' ';
-                    print += delimiter + pointer.data?.ToString() + delimiter;
-                    pointer = pointer.next;
+                    builder.Append(delimiter).Append(edit).Append(delimiter);
                     index++;
                 }
-                return print;
+                return builder.ToString();
             }
         }
 

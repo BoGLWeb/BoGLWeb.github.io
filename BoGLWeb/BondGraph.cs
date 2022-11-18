@@ -1,4 +1,5 @@
 ﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
 using System.Reflection.Metadata;
@@ -72,6 +73,10 @@ namespace BoGLWeb {
             protected readonly double value;
             protected readonly string name;
 
+            // Assigns a unique ID to each Element
+            private static int universalID = 0;
+            private int? ID;
+
             //For graph visualization
             //TODO Create a way to modify these values
 
@@ -79,6 +84,50 @@ namespace BoGLWeb {
                 this.name = name;
                 this.label = label;
                 this.value = value;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <code>Element</code>.
+            /// </summary>
+            /// <param name="ID">
+            /// A reference ID for this <code>Element</code>.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null || isDistinct) {
+                    this.ID = (universalID++);
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <code>Element</code>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element Copy(bool isDistinct) {
+                Element copy = new(name, label, value);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Finds the hashing code for this <code>Element</code>
+            /// </summary>
+            /// <returns>
+            /// <code>this.ID</code>
+            /// </returns>
+            public override int GetHashCode() {
+                return this.ID is int ID ? ID : 0;
             }
         }
 
@@ -94,6 +143,10 @@ namespace BoGLWeb {
             //True means the causal stroke is at the source
             private readonly bool causalStrokeDirection;
 
+            // Assigns a unique ID to each Element
+            private static int universalID = 0;
+            private int? ID;
+
             //The arrow will always point at the sink
             public Bond(Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
                 this.source = source;
@@ -103,6 +156,52 @@ namespace BoGLWeb {
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <code>Bond</code>.
+            /// </summary>
+            /// <param name="ID">
+            /// A reference ID for this <code>Bond</code>.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Bond</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null || isDistinct) {
+                    this.ID = (universalID++);
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <code>Bond</code>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Bond</code> should not be tied 
+            /// to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Bond Copy(bool isDistinct) {
+                Bond copy = new(this.source, this.sink, this.label, 
+                    this.causalStroke, this.causalStrokeDirection, 
+                    this.flow, this.effort);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Finds the hashing code for this <code>Element</code>
+            /// </summary>
+            /// <returns>
+            /// <code>this.ID</code>
+            /// </returns>
+            public override int GetHashCode() {
+                return this.ID is int ID ? ID : 0;
             }
         }
     }

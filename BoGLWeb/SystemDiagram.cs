@@ -575,8 +575,12 @@ namespace BoGLWeb {
             /// </returns>
             public Element copy(bool isDistinct) {
                 Element copy = new(this.type, this.name, this.x, this.y) {
+                    modifiers = new(),
                     velocity = this.velocity
                 };
+                foreach (int modifier in this.modifiers) {
+                    copy.addModifier(modifier + "");
+                }
                 copy.assignID(this.ID, isDistinct);
                 return copy;
             }
