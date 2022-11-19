@@ -54,7 +54,14 @@ export namespace backendManager {
 
             let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
             let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
-            d3.select('#systemDiagram > svg > g').style("transform", "translate(" + ((-svgDim.x + (windowDim.width / 2) - (svgDim.width / 2))) + "px, " + ((-svgDim.y + (windowDim.height / 2) - (svgDim.height / 2))) + "px)");
+            let scale = 1;
+            if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
+                scale = (0.8 * windowDim.width) / svgDim.width;
+            } else {
+                scale = (0.8 * windowDim.height) / svgDim.height;
+            }
+            d3.select('#systemDiagram > svg > g').style("transform", "translate(" + ((-svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2))) + "px, "
+                + ((-svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2))) + "px) scale(" + scale + ")");
         }
 
         public getSystemDiagram() {
