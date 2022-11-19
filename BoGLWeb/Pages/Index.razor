@@ -34,19 +34,19 @@
                     <MenuItem Key="setting:2">Tutorial</MenuItem>
                     <SubMenu Title="Example Files">
                         <SubMenu Title="Mechanical Translation">
-                            <MenuItem Key="mt:1">Basic Two Mass System - 1</MenuItem>
-                            <MenuItem Key="mt:2">Basic Two Mass System - 2</MenuItem>
-                            <MenuItem Key="mt:3">Basic Two Mass System - 3</MenuItem>
-                            <MenuItem Key="mt:4">Quarter Car Model</MenuItem>
-                            <MenuItem Key="mt:5">Basic Mass, Spring System with Directions</MenuItem>
-                            <MenuItem Key="mt:6">Spring and Damper with Force</MenuItem>
+                            <MenuItem Key="mt:1" OnClick="loadBasicTwoMass">Basic Two Mass System - 1</MenuItem>
+                            <MenuItem Key="mt:2" OnClick="loadBasicTwoMass2">Basic Two Mass System - 2</MenuItem>
+                            <MenuItem Key="mt:3" OnClick="loadBasicTwoMass3">Basic Two Mass System - 3</MenuItem>
+                            <MenuItem Key="mt:4" OnClick="loadBasicQuarterCar">Quarter Car Model</MenuItem>
+                            <MenuItem Key="mt:5" OnClick="loadBasicMassSpringDirections">Basic Mass, Spring System with Directions</MenuItem>
+                            <MenuItem Key="mt:6" OnClick="loadSpringAndDamper">Spring and Damper with Force</MenuItem>
                         </SubMenu>
                         <SubMenu Title="Mechanical Rotation">
-                            <MenuItem Key="mr:1">Rack and Pinion System</MenuItem>
-                            <MenuItem Key="mr:2">Motor, Shaft and Gear Pair</MenuItem>
+                            <MenuItem Key="mr:1" OnClick="loadRackandPinion">Rack and Pinion System</MenuItem>
+                            <MenuItem Key="mr:2" OnClick="loadMotorShaft">Motor, Shaft and Gear Pair</MenuItem>
                         </SubMenu>
                         <SubMenu Title="Electrical">
-                            <MenuItem Key="elec:1">LRC Circuit</MenuItem>
+                            <MenuItem Key="elec:1" OnClick="loadLRCCircuit">LRC Circuit</MenuItem>
                         </SubMenu>
                     </SubMenu>
                     <MenuItem Key="setting:4">Report Bugs</MenuItem>
@@ -206,5 +206,140 @@
 
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass2() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system1.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass3() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system2.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicQuarterCar() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_a_spring.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicMassSpringDirections(){
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/moving_masses.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadSpringAndDamper() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/spring_&_damper.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadRackandPinion() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/rack_pinion.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadMotorShaft() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/motor-gear-pair.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadLRCCircuit() {
+         string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/lrc_circuit.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());       
     }
 }
