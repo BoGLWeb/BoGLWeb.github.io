@@ -44,12 +44,7 @@ export namespace backendManager {
             var systemDiagram = new SystemDiagramDisplay((<any> window).systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
 
-            document.addEventListener("mouseup", function () {
-                document.body.style.cursor = "auto";
-                systemDiagram.draggingElement = null;
-            });
-
-            populateMenu(systemDiagram);
+            (<any>window).systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
 
             let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();

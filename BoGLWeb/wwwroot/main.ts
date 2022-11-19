@@ -7,8 +7,9 @@ import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
 import { BondGraph } from "./types/graphs/BondGraph";
+import { SystemDiagram } from "./types/graphs/SystemDiagram";
 
-export function populateMenu(graph: BaseGraphDisplay) {
+export function populateMenu() {
     ElementNamespace.categories.map((c, i) => {
         ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
             const group = document.createElement('div');
@@ -16,7 +17,7 @@ export function populateMenu(graph: BaseGraphDisplay) {
             group.classList.add("groupDiv");
             group.addEventListener("mousedown", function () {
                 document.body.style.cursor = "grabbing";
-                graph.draggingElement = e.id;
+                (<any>window).systemDiagram.draggingElement = e.id;
             });
 
             document.getElementById(c.folderName).appendChild(group);
@@ -36,9 +37,16 @@ export function populateMenu(graph: BaseGraphDisplay) {
 
 function loadPage() {
     (<any>window).backendManager = backendManager;
-    (<any>window).systemDiagram = null;
     (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     (<any>window).systemDiagramSVG.classed("graphSVG", true);
+    (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));
+
+    document.addEventListener("mouseup", function () {
+        document.body.style.cursor = "auto";
+        (<any>window).systemDiagram.draggingElement = null;
+    });
+
+    populateMenu();
 
     var bondGraphSVG = d3.select("#bondGraph").append("svg");
     bondGraphSVG.classed("graphSVG", true);
