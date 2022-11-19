@@ -41,7 +41,7 @@ export class BaseGraphDisplay {
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
 
-        svg.call(this.dragSvg).on("dblclick.zoom", null);
+        svg.call(this.dragSvg()).on("dblclick.zoom", null);
     }
 
     // functions needed in system diagram are called from this class but not defined by default
@@ -85,7 +85,7 @@ export class BaseGraphDisplay {
     }
 
     // listen for dragging
-    get dragSvg() {
+    dragSvg() {
         let graph = this;
         return d3.behavior.zoom()
             .on("zoom", function () {
