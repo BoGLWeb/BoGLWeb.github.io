@@ -61,6 +61,14 @@ export namespace backendManager {
             systemDiagram.svg.call(systemDiagram.dragSvg().scale(scale).translate([xTrans, yTrans])).on("dblclick.zoom", null);
         }
 
+        public async openFile() {
+            let fileHandle;
+            [fileHandle] = await (<any>window).showOpenFilePicker();
+            const file = await fileHandle.getFile();
+            const contents = await file.text();
+            return contents;
+        }
+
         public getSystemDiagram() {
             return "sysDiagram";
         }

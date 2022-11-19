@@ -15,7 +15,7 @@
                 </li>
                 <SubMenu title="File" Class="topMenu">
                     <MenuItem Key="setting:1">New</MenuItem>
-                    <MenuItem Key="setting:2">Open</MenuItem>
+                    <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
                     <MenuItem Key="setting:3">Save</MenuItem>
                     <MenuItem Key="setting:4">Save As</MenuItem>
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
@@ -329,7 +329,7 @@
     }
 
     public async void loadLRCCircuit() {
-         string xmlString = "";
+        string xmlString = "";
         if(!fileToLoad.Equals("")) {
             Console.WriteLine(fileToLoad);
         }
@@ -341,5 +341,13 @@
 
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());       
+    }
+
+    public async void openBoGLFile() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        var file = await module.InvokeAsync<object>("openFile");
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 }
