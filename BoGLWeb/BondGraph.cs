@@ -28,6 +28,14 @@ namespace BoGLWeb {
             return elements[name];
         }
 
+        public Dictionary<string, Element> getElements() {
+            return elements;
+        }
+
+        public List<Bond> getBonds() {
+            return bonds;
+        }
+
         public string convertToJson() {
             return "testJson";
         }
@@ -77,12 +85,30 @@ namespace BoGLWeb {
             protected readonly string name;
 
             //For graph visualization
+            private double x, y;
             //TODO Create a way to modify these values
 
             public Element(string name, string label, double value) {
                 this.name = name;
                 this.label = label;
                 this.value = value;
+
+                Random rnd = new();
+                this.x = rnd.Next(2000);
+                this.y = rnd.Next(2000);
+            }
+
+            public void setPosition(double x, double y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public double getX() {
+                return x;
+            }
+
+            public double getY() {
+                return y;
             }
         }
 
@@ -107,6 +133,22 @@ namespace BoGLWeb {
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+            }
+
+            public bool isSource(Element e) {
+                return e.Equals(source);
+            }
+
+            public bool isSink(Element e) {
+                return e.Equals(sink);
+            }
+
+            public Element getSource() {
+                return source;
+            }
+
+            public Element getSink() {
+                return sink;
             }
         }
     }

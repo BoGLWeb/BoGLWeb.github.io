@@ -182,11 +182,18 @@
         xmlString= await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
         var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
-        var unsimplified = graphs.Item1;
-        var simplified = graphs.Item2;
+        //var unsimplified = graphs.Item1;
+        //var simplified = graphs.Item2;
+        //var causal = graphs.Item3;
+
+        var unsimplified = BondGraphEmbedder.embedBondGraph(graphs.Item1);
+        var simplified = BondGraphEmbedder.embedBondGraph(graphs.Item2);
         var causal = graphs.Item3;
+
+
         List<string> causalOptions = new();
         foreach(BondGraph g in causal) {
+            BondGraphEmbedder.embedBondGraph(g);
             causalOptions.Add(g.convertToJson() + " option");
         }
 
