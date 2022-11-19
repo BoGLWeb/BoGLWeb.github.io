@@ -85,16 +85,6 @@
                     </Button>
                 </li>
             </Menu>
-
-            @code
-            {
-                RenderFragment sub1Title =
-                @<Template>
-                    <Icon Type="setting" Theme="outline"></Icon>
-                    Navigation Three - Submenu
-                </Template>
-                ;
-}
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">
@@ -102,6 +92,9 @@
                             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
                         </ExpandIconTemplate>
                         <ChildContent>
+                            <Button @onclick="generateButtonClicked">Generate</Button>
+                            <Button @onclick="loadFile">LoadFile</Button>
+                            <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
                             </Panel>
@@ -121,9 +114,6 @@
                     </Collapse>
                 </div>
                 <div class="card-container">
-                    <Button @onclick="generateButtonClicked">Generate</Button>
-                    <Button @onclick="loadFile">LoadFile</Button>
-                    <input @bind="fileToLoad"/>
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="systemDiagram"></div>

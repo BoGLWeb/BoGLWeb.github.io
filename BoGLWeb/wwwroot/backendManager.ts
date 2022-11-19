@@ -34,7 +34,7 @@ export namespace backendManager {
                 elements.push(e);
                 i++;
             }
-            let edges = []
+            let edges = [];
             for (let edge of parsedJson.edges) {
                 edges.push(new GraphBond(elements[edge.source], elements[edge.target]));
             }
@@ -51,6 +51,10 @@ export namespace backendManager {
 
             populateMenu(systemDiagram);
             systemDiagram.updateGraph();
+
+            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
+            let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
+            d3.select('#systemDiagram > svg > g').style("transform", "translate(" + ((-svgDim.x + (windowDim.width / 2) - (svgDim.width / 2))) + "px, " + ((-svgDim.y + (windowDim.height / 2) - (svgDim.height / 2))) + "px)");
         }
 
         public getSystemDiagram() {
