@@ -14,6 +14,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         super(svg, systemDiagram);
 
         let graph = this;
+        this.state.elemId = systemDiagram.nodes.length;
 
         // listen for key events
         d3.select(window).on("keydown", function () {
@@ -278,7 +279,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.draggingElement != null) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1], 0));
+            this.elements.push(new SystemDiagramElement(this.state.elemId++, this.draggingElement, xycoords[0], xycoords[1], 0));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {

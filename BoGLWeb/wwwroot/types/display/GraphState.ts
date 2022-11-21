@@ -12,4 +12,5 @@ export class GraphState {
     lastKeyDown: number = -1;
     shiftNodeDrag: boolean = false;
     graphMouseDown: boolean = false;
+    elemId: number = 0;
 }
