@@ -31,12 +31,12 @@
             }
 
             /// <summary>
-            /// Finds the target <code>EditionList</code> for a specific
+            /// Finds the target <c>EditionList</c> for a specific
             /// operation.
             /// </summary>
             /// <param name="tab">The enum representing the tab.</param>
             /// <returns>
-            /// The <code>EditionList</code> representing the edit history
+            /// The <c>EditionList</c> representing the edit history
             /// for the target tab.
             /// </returns>
             /// <exception cref="Exception">

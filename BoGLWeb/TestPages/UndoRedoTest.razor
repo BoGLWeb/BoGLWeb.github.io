@@ -5,13 +5,25 @@
 <p>Current index: @list.Index()</p>
 <p>Current size: @list.Size()</p>
 <p>Current element: @list.Get()</p>
-<Button OnClick="undo">UndoAction</Button>
-<Button OnClick="redo">RedoAction</Button>
-<Button OnClick="edit">Edit</Button>
-<Button OnClick="clear">Clear</Button>
+<Button OnClick="undo">Undo EditionList</Button>
+<Button OnClick="redo">Redo EditionList</Button>
+<Button OnClick="edit">Edit EditionList</Button>
+<Button OnClick="clear">Clear EditionList</Button>
+<h3>HashListTest</h3>
+<p>Current HashList: @hashList.ToString()</p>
+<p>Current HashList size: @hashList.Size()</p>
+<p>Item at current HashList index: @itemAtCurrentHashListIndex</p>
+<Button OnClick="addToHashList">Add Element to HashList</Button>
+<Button OnClick="clearHashList">Clear HashList</Button>
+<Button OnClick="incrementHashListCounter">Increment HashList Counter</Button>
+<Button OnClick="decrementHashListCounter">Decrement HashList Counter</Button>
+<Button OnClick="updateCurrentHashListElement">Update Current HashList Element</Button>
+<Button OnClick="removeFromHashList">Remove HashList Element</Button>
 @code {
+	/// EDITIONLIST TESTS
+
 	/// The next element to be added to the <c>EditionList</c>
-	private int counter = 0;
+	private int editionListCounter = 0;
 	/// The test <c>EditionList</c>
 	private EditionList<int> list = new();
 
@@ -27,11 +39,66 @@
 
 	/// Activates the test "edit" button to add an element to the list
 	public void edit() {
-		list.Add(counter++);
+		list.Add(editionListCounter++);
 	}
 
 	/// Activates the test "clear" button to empty the list
 	public void clear() {
 		list.Clear();
+	}
+
+	/// HASHLIST TESTS
+
+	/// The next element to be added to the <c>EditionList</c>
+	private int hashListElement = 0;
+	/// The index of the test pointer in this <c>HashList</c>
+	private int hashListIndex = 0;
+	/// The test <c>HashList</c>
+	private HashList<int> hashList = new();
+	/// Item at current index in <c>HashList</c>
+	private int itemAtCurrentHashListIndex = -1;
+
+	/// Adds an element to the HashList
+	public void addToHashList() {
+		hashList.Add(hashListElement++);
+	}
+
+	/// Adds an element to the HashList
+	public void clearHashList() {
+		hashList.Clear();
+		hashListIndex = -1;
+	}
+
+	/// Moves the HashList pointer back by 1
+	public void decrementHashListCounter() {
+		hashListIndex--;
+		verifyIndexPlacement();
+	}
+
+	/// Moves the HashList pointer forward by 1
+	public void incrementHashListCounter() {
+		hashListIndex++;
+		verifyIndexPlacement();
+	}
+
+	/// Updates the listed element at the current <c>HashList</c> index
+	public void updateCurrentHashListElement() {
+		verifyIndexPlacement();
+		itemAtCurrentHashListIndex = hashList[hashListIndex];
+	}
+
+	/// Moves the <c>HashList</c> index to within proper bounds
+	private void verifyIndexPlacement() {
+		if(hashListIndex < 0) {
+			hashListIndex = 0;
+		} else if(hashListIndex >= hashList.Size()) {
+			hashListIndex = hashList.Size() - 1;
+		}
+	}
+
+	/// Removes the item at the current index from this <c>HashList</c>
+	public void removeFromHashList() {
+		hashList.Remove(hashList[hashListIndex]);
+		verifyIndexPlacement();
 	}
 }

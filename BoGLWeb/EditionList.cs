@@ -147,8 +147,8 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Returns an <code>Enumerator</code> over the elements in this
-            /// <code>HashList</code>.
+            /// Returns an <c>Enumerator</c> over the elements in this
+            /// <c>HashList</c>.
             /// </summary>
             /// <returns>
             /// Each <code>Data</code> element, one at a time.
@@ -163,11 +163,11 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <code>EditionList</code> to a printable
+            /// Converts this <c>EditionList</c> to a printable
             /// format.
             /// </summary>
             /// <returns>
-            /// This <code>EditionList</code> as a String
+            /// This <c>EditionList</c> as a String
             /// </returns>
             public override String ToString() {
                 StringBuilder builder = new();

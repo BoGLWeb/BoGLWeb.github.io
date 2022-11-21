@@ -7,21 +7,21 @@ namespace BoGLWeb {
         /// Creates an accessible <code>HashSet</code>.
         /// </summary>
         /// <typeparam name="Data">
-        /// The datatype of all objects in this <code>HashList</code>.
+        /// The datatype of all objects in this <c>HashList</c>.
         /// </typeparam>
         public class HashList<Data> : IEnumerable<Data> where Data : notnull {
             private readonly Dictionary<Data, Cell<Data>> data;
             private Cell<Data>? head, tail;
 
             /// <summary>
-            /// Creates a new, empty <code>HashList</code>.
+            /// Creates a new, empty <c>HashList</c>.
             /// </summary>
             public HashList() {
                 this.data = new();
             }
 
             /// <summary>
-            /// Creates a new <code>HashList</code>
+            /// Creates a new <c>HashList</c>
             /// </summary>
             /// <param name="data">
             /// The enumerable list of <code>Data</code> objects
@@ -34,7 +34,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Adds a <code>Data</code> element to this <code>HashList</code>.
+            /// Adds a <code>Data</code> element to this <c>HashList</c>.
             /// </summary>
             /// <param name="item">
             /// The new <code>Data</code> object.
@@ -57,7 +57,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the element of this <code>HashList</code> at a specific index.
+            /// Gets the element of this <c>HashList</c> at a specific index.
             /// </summary>
             /// <param name="index">
             /// The index of the target element.
@@ -66,10 +66,10 @@ namespace BoGLWeb {
             /// <code>this[index]</code>
             /// </returns>
             /// <exception cref="IndexOutOfRangeException">
-            /// If this <code>HashList</code> does not contain an element at the
+            /// If this <c>HashList</c> does not contain an element at the
             /// specified index. This can occur in the following cases:
             ///     - The index is less than 0, which is too small
-            ///     - The index is at least the size of this <code>HashList</code>
+            ///     - The index is at least the size of this <c>HashList</c>
             ///     Note that these checks occur at the beginning of the method.
             ///     The second IndexOutOfRangeException will never be thrown.
             /// </exception>
@@ -93,14 +93,14 @@ namespace BoGLWeb {
 
 
             /// <summary>
-            /// Removes an item from this <code>HashList</code>.
+            /// Removes an item from this <c>HashList</c>.
             /// </summary>
             /// <param name="item">
             /// The target item to be removed.
             /// </param>
             /// <returns>
             /// <code>true</code> if the item was successfully removed from 
-            /// this <code>HashList</code>, else <code>false</code> if there
+            /// this <c>HashList</c>, else <code>false</code> if there
             /// was no such item originally.
             /// </returns>
             public bool Remove(Data item) {
@@ -108,13 +108,15 @@ namespace BoGLWeb {
                 if (cell == null) {
                     return false;
                 }
-                if (cell.prev != null) {
+                if (cell.prev == null) {
+                    this.head = cell.next;
+                } else {
                     cell.prev.next = cell.next;
-                    this.head = this.head?.next;
                 }
-                if (cell.next != null) {
+                if (cell.next == null) {
+                    this.tail = cell.prev;
+                } else {
                     cell.next.prev = cell.prev;
-                    this.tail = this.tail?.prev;
                 }
                 cell.next = null;
                 cell.prev = null;
@@ -123,8 +125,17 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Returns an <code>Enumerator</code> over the elements in this
-            /// <code>HashList</code>.
+            /// Clears all elements from this <c>HashList</c>.
+            /// </summary>
+            public void Clear() {
+                this.head = null;
+                this.tail = null;
+                this.data.Clear();
+            }
+
+            /// <summary>
+            /// Returns an <c>Enumerator</c> over the elements in this
+            /// <c>HashList</c>.
             /// </summary>
             /// <returns>
             /// Each <code>Data</code> element, one at a time.
@@ -138,8 +149,8 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Returns an <code>Enumerator</code> over the elements in this
-            /// <code>HashList</code>.
+            /// Returns an <c>Enumerator</c> over the elements in this
+            /// <c>HashList</c>.
             /// </summary>
             /// <returns>
             /// Each <code>Data</code> element, one at a time.
@@ -154,7 +165,7 @@ namespace BoGLWeb {
 
             /// <summary>
             /// Pulls any copy of a specified <code>Data</code> object from
-            /// this <code>HashList</code>.
+            /// this <c>HashList</c>.
             /// </summary>
             /// <param name="item">
             /// The target item.
@@ -167,7 +178,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the size of this <code>HashList</code>.
+            /// Gets the size of this <c>HashList</c>.
             /// </summary>
             /// <returns>
             /// <code>this.data.Count</code>
@@ -177,10 +188,10 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <code>HashList</code> to a printable format.
+            /// Converts this <c>HashList</c> to a printable format.
             /// </summary>
             /// <returns>
-            /// This <code>HashList</code> as a <code>String</code>.
+            /// This <c>HashList</c> as a <code>String</code>.
             /// </returns>
             public override string ToString() {
                 StringBuilder builder = new();
@@ -194,7 +205,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// A single node of the <code>HashList</code> that 
+            /// A single node of the <c>HashList</c> that 
             /// contains a single piece of information.
             /// </summary>
             /// <typeparam name="CellData">
