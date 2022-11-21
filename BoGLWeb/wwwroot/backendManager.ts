@@ -1,7 +1,12 @@
-﻿import { GraphBond } from "./types/bonds/GraphBond";
+﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
+import { GraphBond } from "./types/bonds/GraphBond";
+import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
+import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
+import { BondGraph } from "./types/graphs/BondGraph";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
+import { SVGSelection } from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
@@ -9,22 +14,31 @@ export namespace backendManager {
             console.log(text);
         }
 
+        public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
+            let bg = JSON.parse(jsonString);
+            let elements = JSON.parse(bg.elements).map((e, i) => {
+                e.id = i;
+                return e;
+            }) as BondGraphElement[];
+            let bonds = JSON.parse(bg.bonds).map(b => {
+                b.source = elements[b.sourceID];
+                b.target = elements[b.targetID];
+                return b;
+            }) as BondGraphBond[];
+            let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
+            bondGraph.updateGraph();
+        }
+
         public displayUnsimplifiedBondGraph(jsonString: string) {
-            let bondGraph = JSON.parse(jsonString);
-            console.log(JSON.parse(bondGraph.elements));
-            console.log(JSON.parse(bondGraph.bonds));
+            this.parseAndDisplayBondGraph(0, jsonString, (<any>window).unsimpBGSVG);
         }
 
         public displaySimplifiedBondGraph(jsonString: string) {
-            let bondGraph = JSON.parse(jsonString);
-            console.log(JSON.parse(bondGraph.elements));
-            console.log(JSON.parse(bondGraph.bonds));
+            this.parseAndDisplayBondGraph(1, jsonString, (<any>window).simpBGSVG);
         }
 
         public displayCausalBondGraphOptions(jsonStrings: Array<string>) {
-            jsonStrings.forEach(function (value) {
-                console.log(JSON.parse(value));
-            });
+            this.parseAndDisplayBondGraph(2, jsonStrings[0], (<any>window).causalBGSVG);
         }
 
         public loadSystemDiagram(jsonString: string) {

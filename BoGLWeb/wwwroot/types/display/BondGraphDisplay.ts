@@ -10,10 +10,12 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     dragging: boolean = false;
     testSVG: SVGSelection;
     defs: SVGSelection;
+    id: number;
 
-    constructor(svg: SVGSelection, bondGraph: BondGraph) {
+    constructor(id: number, svg: SVGSelection, bondGraph: BondGraph) {
         super(svg, bondGraph);
 
+        this.id = id;
         this.testSVG = d3.select("#app").append("svg");
         this.testSVG.style("position", "absolute")
             .style("left", "-10000000px")
@@ -22,15 +24,15 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         // define arrow markers for graph links
         this.defs = svg.append("svg:defs");
 
-        this.makeBaseMarker("flat", 1, 5, 10, 10)
+        this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10)
             .append("path")
             .attr("d", "M1,10L1,-10");
 
-        this.makeBaseMarker("arrow", 10, 0, 10, 10)
+        this.makeBaseMarker("arrow_" + id, 10, 0, 10, 10)
             .append("path")
             .attr("d", "M10,0L2,5");
 
-        let arrowAndFlat = this.makeBaseMarker("flat_and_arrow", 10, 10, 20, 20);
+        let arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id, 10, 10, 20, 20);
         arrowAndFlat.append("path")
             .attr("d", "M10,10L2,15");
         arrowAndFlat.append("path")
@@ -109,8 +111,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
-        paths.style('marker-end', (d) => 'url(#' + (d as BondGraphBond).targetMarker + ')')
-            .style('marker-start', (d) => 'url(#' + (d as BondGraphBond).sourceMarker + ')')
+        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + ')')
+            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + ')' : ""))
             .style('stroke-width', 2);
     }
 }

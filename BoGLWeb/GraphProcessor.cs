@@ -88,18 +88,6 @@ namespace BoGLWeb {
             } else {
                 bondgraphBeforeSimplification();
                 bondgraphSimplified();
-
-                int ii = 0;
-                foreach (var n in systemGraph.nodes) {
-
-                    if (n.localLabels.Contains("I:"))
-
-                        n.localLabels.Add("iadded" + (ii.ToString()));
-                    if (n.localLabels.Contains("C:")
-                        )
-                        n.localLabels.Add("cadded" + (ii.ToString()));
-                    ii++;
-                }
                 obtainCausality();
             }
         }

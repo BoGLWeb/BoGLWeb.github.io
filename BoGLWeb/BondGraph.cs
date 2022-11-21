@@ -142,6 +142,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly bool causalStroke;
             //True means the causal stroke is at the source
+            [JsonProperty]
             protected readonly bool causalStrokeDirection;
 
             //The arrow will always point at the sink

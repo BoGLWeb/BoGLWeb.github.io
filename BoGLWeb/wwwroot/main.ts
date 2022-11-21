@@ -48,18 +48,12 @@ function loadPage() {
 
     populateMenu();
 
-    var bondGraphSVG = d3.select("#bondGraph").append("svg");
-    bondGraphSVG.classed("graphSVG", true);
-
-    // example bond graph
-    let n1 = new BondGraphElement(0, "1", 50, 50);
-    let n2 = new BondGraphElement(1, "R:b", 50, -50);
-    let n3 = new BondGraphElement(2, "I:m", 150, 50);
-    let n4 = new BondGraphElement(3, "C:1/k", 50, 150);
-    let n5 = new BondGraphElement(4, "Se:F(t)", -50, 50);
-    var bondGraph = new BondGraphDisplay(bondGraphSVG, new BondGraph([n1, n2, n3, n4, n5], [new BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond(n1, n3, "", "flat_and_arrow"),
-    new BondGraphBond(n1, n4, "flat", "arrow"), new BondGraphBond(n1, n5, "flat_and_arrow", "")]));
-    bondGraph.updateGraph();
+    (<any>window).unsimpBGSVG = d3.select("#unsimpBG").append("svg");
+    (<any>window).unsimpBGSVG.classed("graphSVG", true);
+    (<any>window).simpBGSVG = d3.select("#simpBG").append("svg");
+    (<any>window).simpBGSVG.classed("graphSVG", true);
+    (<any>window).causalBGSVG = d3.select("#causalBG").append("svg");
+    (<any>window).causalBGSVG.classed("graphSVG", true);
 }
 
 function pollDOM() {
