@@ -185,13 +185,13 @@
         List<string> causalOptions = new();
         foreach(BondGraph g in causal) {
             BondGraphEmbedder.embedBondGraph(g);
-            causalOptions.Add(g.convertToJson() + " option");
+            causalOptions.Add(g.convertToJson());
         }
 
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson() + " unsimplified");
-        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", simplified.convertToJson() + " simplified");
-        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", causalOptions);
+        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
+        await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
+        await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
     }
 
     public async void loadFile() {

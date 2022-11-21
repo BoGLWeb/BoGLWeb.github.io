@@ -4,7 +4,7 @@
         private static readonly double cRep = 10000.0;
         private static readonly double cSpring = 15.0;
         private static readonly double kL = 50.0;
-        private static readonly int maxIters = 10000;
+        private static readonly int maxIters = 10;
         private static readonly double epsilon = 0.1;
 
         public static BondGraph embedBondGraph(BondGraph bondGraph) {
@@ -64,7 +64,7 @@
                         sumSpring = new Vector(sumSpring.getXMag() + v.getXMag(), sumSpring.getYMag() + v.getYMag());
                     }
 
-                    forceMap.Add(e, new Vector(sumRep.getXMag() + sumSpring.getXMag(), sumRep.getXMag() + sumSpring.getXMag()));
+                    forceMap[e] = new Vector(sumRep.getXMag() + sumSpring.getXMag(), sumRep.getXMag() + sumSpring.getXMag());
                 }
 
                 foreach (KeyValuePair<string, BondGraph.Element> entry in bondGraph.getElements()) {

@@ -1,5 +1,4 @@
-﻿import { populateMenu } from "./main";
-import { GraphBond } from "./types/bonds/GraphBond";
+﻿import { GraphBond } from "./types/bonds/GraphBond";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
@@ -11,16 +10,20 @@ export namespace backendManager {
         }
 
         public displayUnsimplifiedBondGraph(jsonString: string) {
-            console.log(jsonString);
+            let bondGraph = JSON.parse(jsonString);
+            console.log(JSON.parse(bondGraph.elements));
+            console.log(JSON.parse(bondGraph.bonds));
         }
 
         public displaySimplifiedBondGraph(jsonString: string) {
-            console.log(jsonString);
+            let bondGraph = JSON.parse(jsonString);
+            console.log(JSON.parse(bondGraph.elements));
+            console.log(JSON.parse(bondGraph.bonds));
         }
 
         public displayCausalBondGraphOptions(jsonStrings: Array<string>) {
             jsonStrings.forEach(function (value) {
-                console.log(value);
+                console.log(JSON.parse(value));
             });
         }
 

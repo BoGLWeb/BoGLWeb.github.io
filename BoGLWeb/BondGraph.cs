@@ -1,10 +1,16 @@
-﻿using BoGLWeb.BaseClasses;
+﻿using AntDesign;
+using BoGLWeb.BaseClasses;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
+/*using Newtonsoft.Json;
+*/using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Globalization;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
 namespace BoGLWeb {
+
     public class BondGraph {
         [JsonProperty]
         protected Dictionary<string, Element> elements;
@@ -37,7 +43,10 @@ namespace BoGLWeb {
         }
 
         public string convertToJson() {
-            return "testJson";
+            return JsonConvert.SerializeObject(new {
+                elements = JsonConvert.SerializeObject(this.elements.Values.ToList()),
+                bonds = JsonConvert.SerializeObject(this.bonds)
+            });
         }
 
         //Generate BondGraph from GraphSynth designGraph
@@ -66,10 +75,12 @@ namespace BoGLWeb {
                 //TODO Make sure that this is an okay way to check if we should have a causal stroke
                 bool useCausalStroke = labels.Contains("OPP") || labels.Contains("SAME");
 
+                var sourceID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
+                var targetID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
                 if (flip) {
-                    bondGraph.addBond(new Bond(bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
+                    bondGraph.addBond(new Bond(sourceID, targetID, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
                 } else {
-                    bondGraph.addBond(new Bond(bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
+                    bondGraph.addBond(new Bond(targetID, sourceID, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
                 }
 
             }
@@ -85,8 +96,13 @@ namespace BoGLWeb {
             protected readonly string name;
 
             //For graph visualization
-            private double x, y;
+            [JsonProperty]
+            protected double x, y;
             //TODO Create a way to modify these values
+
+            public string getString() {
+                return this.label + " " + this.value + " " + this.name + " " + this.x + " " + this.y;
+            }
 
             public Element(string name, string label, double value) {
                 this.name = name;
@@ -110,22 +126,28 @@ namespace BoGLWeb {
             public double getY() {
                 return y;
             }
+
+            public string getName() {
+                return this.name;
+            }
         }
 
         public class Bond {
             [JsonProperty]
+            protected readonly int sourceID, targetID;
             protected readonly Element source, sink;
-            [JsonProperty]
             protected readonly string label;
-            [JsonProperty]
             protected readonly double flow, effort;
 
-            private readonly bool causalStroke;
+            [JsonProperty]
+            protected readonly bool causalStroke;
             //True means the causal stroke is at the source
-            private readonly bool causalStrokeDirection;
+            protected readonly bool causalStrokeDirection;
 
             //The arrow will always point at the sink
-            public Bond(Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+                this.sourceID = sourceID;
+                this.targetID = targetID;
                 this.source = source;
                 this.sink = sink;
                 this.label = label;
