@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
 @page "/"
+@using System.Text;
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -17,7 +18,7 @@
                     <MenuItem Key="setting:1">New</MenuItem>
                     <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
                     <MenuItem Key="setting:3">Save</MenuItem>
-                    <MenuItem Key="setting:4">Save As</MenuItem>
+                    <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
                     <MenuItem Key="setting:6">Exit</MenuItem>
                 </SubMenu>
@@ -349,5 +350,26 @@
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
 
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    private Stream getFileStream(string fileData) {
+        var testData = fileData;
+        var fileStream = new MemoryStream(Encoding.ASCII.GetBytes(testData));
+
+        return fileStream;
+    }
+
+    public async void saveAs() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        var file = await module.InvokeAsync<object>("getSystemDiagram");
+
+        //TODO Make this use the current system diagram
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        var fileName = "SystemDiagram.bogl";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
     }
 }

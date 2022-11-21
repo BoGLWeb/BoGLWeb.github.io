@@ -487,6 +487,11 @@ namespace BoGLWeb {
             }
         }
 
+        //Create .bogl string
+        public string generateBoGLString() {
+            //TODO Implement
+            return "";
+        }
 
         public class Element {
             protected string name;
