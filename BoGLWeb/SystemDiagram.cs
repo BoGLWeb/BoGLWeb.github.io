@@ -13,6 +13,7 @@ namespace BoGLWeb {
     public class SystemDiagram {
         public static readonly ImmutableDictionary<string, string> modifierLabelDict;
 
+        //Sets up our modifier dictionary
         static SystemDiagram() {
             var builder = ImmutableDictionary.CreateBuilder<string, string>();
             builder.Add("MASS", "Include_Mass");
@@ -34,38 +35,70 @@ namespace BoGLWeb {
         [JsonProperty]
         protected Dictionary<string, double> header;
 
+        /// <summary>
+        /// Creates a system diagram instance
+        /// </summary>
+        /// <param name="header">A dictionary of headers for the system diagram</param>
         public SystemDiagram(Dictionary<string, double> header) {
             elements = new List<Element>();
             edges = new List<Edge>();
             this.header = header;
         }
 
+        //Creates a system diagram with a list of elements and edges. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
         private SystemDiagram(Dictionary<string, double> header, List<Element> elements, List<Edge> edges) {
             this.header = header;
             this.elements = elements;
             this.edges = edges;
         }
 
+        /// <summary>
+        /// Adds an element to the system diagram
+        /// </summary>
+        /// <param name="name">The name of the element</param>
         public void addElement(string name) {
             elements.Add(new Element(name));
         }
 
+        /// <summary>
+        /// Adds an edge to the system diagram
+        /// </summary>
+        /// <param name="e1">The first element</param>
+        /// <param name="e2">The second element</param>
         public void addEdge(Element e1, Element e2) {
             edges.Add(new Edge(e1, e2));
         }
 
+        /// <summary>
+        /// Returns the element at a given position in the element list
+        /// </summary>
+        /// <param name="pos">The position of the element</param>
+        /// <returns>The element at the given position</returns>
         public Element getElement(int pos) {
             return elements[pos];
         }
 
+        /// <summary>
+        /// Returns the edge located at a given position in the list
+        /// </summary>
+        /// <param name="pos">The position in the list</param>
+        /// <returns>The edge as the given position</returns>
         public Edge getEdge(int pos) {
             return edges[pos];
         }
 
+        /// <summary>
+        /// Gets the list of elements in the system diagram
+        /// </summary>
+        /// <returns>The list of elements</returns>
         public List<Element> getElements() {
             return elements;
         }
 
+        /// <summary>
+        /// Gets the elements in the system diagram
+        /// </summary>
+        /// <returns>The list of elements</returns>
         public List<Edge> getEdges() {
             return edges;
         }
@@ -266,6 +299,7 @@ namespace BoGLWeb {
             return -1;
         }
 
+        //Splits the input xml file into tokens
         private static List<string> tokenize(string xml) {
             List<string> tokens = new List<string>();
 
@@ -286,7 +320,12 @@ namespace BoGLWeb {
         //From JSON
 
         //Convert to GraphSynth
-        public static SystemDiagram generateSystemDiagramFromJSON(string json) {
+        /// <summary>
+        /// Creates a system diagram from a JSON string
+        /// </summary>
+        /// <param name="json">A JSON String</param>
+        /// <returns>The system diagram from the json string</returns>
+        public static SystemDiagram? generateSystemDiagramFromJSON(string json) {
             var sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
             if (sysDiagram is not null) {
                 return sysDiagram;
@@ -296,15 +335,25 @@ namespace BoGLWeb {
             }
         }
 
+        /// <summary>
+        /// Converts the sytem diagram to a JSON string
+        /// </summary>
+        /// <returns>A JSON String</returns>
         public string convertToJson() {
             return JsonConvert.SerializeObject(this);
         }
 
         //To GraphSynth
+        /// <summary>
+        /// Converts a system diagram to a designGraph
+        /// </summary>
+        /// <returns>A GraphSynth designGraph</returns>
+        //This bulk of this code is from BOGLDesktop
         public designGraph convertToDesignGraph() {
             StringBuilder builder = new StringBuilder();
             string ruleFileName = "system_graph";
 
+            //XML Header
             #region GraphSynth Protocols
             builder.Append("<Page Background=\"#FF000000\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"").Append(
           " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"").Append(
@@ -351,6 +400,7 @@ namespace BoGLWeb {
             builder.AppendLine("<globalVariables />");
             int arc1 = 0;
             int name1 = 0;
+            //Add arcs
             if (edges.Count > 0) {
                 builder.AppendLine("<arcs>");
                 foreach (Edge edge in edges) {
@@ -371,6 +421,7 @@ namespace BoGLWeb {
                 builder.AppendLine("<arcs />");
             }
             builder.AppendLine("<nodes>");
+            //Add elements
             foreach (Element element in elements) {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
@@ -408,8 +459,7 @@ namespace BoGLWeb {
 
             var temp2 = XGraphAndCanvas.Element("{ignorableUri}" + "designGraph");
             var temp = RemoveXAMLns(RemoveIgnorablePrefix(temp2.ToString()));
-            Console.WriteLine("-------- temp --------");
-            Console.WriteLine(temp);
+            //Convert the xmlString into a designGraph
             designGraph systemGraph;
             {
                 var stringReader = new StringReader(temp.ToString());
@@ -425,14 +475,17 @@ namespace BoGLWeb {
             return systemGraph;
         }
 
+        //From BoGL Desktop
         private string RemoveXAMLns(string str) {
             return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", "");
         }
 
+        //From BoGL Desktop
         private string RemoveIgnorablePrefix(string str) {
             return str.Replace("GraphSynth:", "").Replace("xmlns=\"ignorableUri\"", "");
         }
 
+        //From BoGL Desktop
         private void removeNullWhiteSpaceEmptyLabels(designGraph g) {
             g.globalLabels.RemoveAll(string.IsNullOrWhiteSpace);
             foreach (var a in g.arcs) {
@@ -446,7 +499,6 @@ namespace BoGLWeb {
             }
         }
 
-
         public class Element {
             [JsonProperty]
             protected string name;
@@ -459,12 +511,22 @@ namespace BoGLWeb {
             //TODO Create a way to modify these values
             private double x, y;
 
+            /// <summary>
+            /// Creates an element of the system diagram
+            /// </summary>
+            /// <param name="name">The name for the element</param>
             public Element(string name) {
                 this.name = name;
                 this.modifiers = generateModifierDictionary();
                 velocityDir = "";
             }
 
+            /// <summary>
+            /// Creates an element of the system diagram
+            /// </summary>
+            /// <param name="name">The name of the element</param>
+            /// <param name="x">The x position of the element</param>
+            /// <param name="y">The y position of the element</param>
             public Element(string name, double x, double y) {
                 this.name = name;
                 this.modifiers = generateModifierDictionary();
@@ -474,19 +536,35 @@ namespace BoGLWeb {
             }
 
             //TODO Error checking
+            /// <summary>
+            /// Adds a modifier to the element
+            /// </summary>
+            /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
                 modifiers[name] = true;
             }
 
             //TODO Error checking
+            /// <summary>
+            /// Adds a velocity to the eleemtn
+            /// </summary>
+            /// <param name="vel">The direction of the velocity</param>
             public void setVelocity(string vel) {
                 velocityDir = vel;
             }
 
+            /// <summary>
+            /// Returns the name of the element 
+            /// </summary>
+            /// <returns>The name of the element</returns>
             public string getName() {
                 return name;
             }
 
+            /// <summary>
+            /// Returns a list of strings representing the labels the element had
+            /// </summary>
+            /// <returns>A list</returns>
             public List<string> getLabelList() {
                 List<string> strings = new List<string>();
 
@@ -504,6 +582,10 @@ namespace BoGLWeb {
                 return strings;
             }
 
+            /// <summary>
+            /// Creates a string representation of the element
+            /// </summary>
+            /// <returns>A string</returns>
             public string toString() {
                 string output = "Element\r\n ";
                 output += name + "\r\n";
@@ -518,6 +600,10 @@ namespace BoGLWeb {
             }
         }
 
+        /// <summary>
+        /// Creates a base modifier dictionary
+        /// </summary>
+        /// <returns>A modifier dictionary</returns>
         public static Dictionary<string, bool> generateModifierDictionary() {
             Dictionary<string, bool> modifierDictionary = new Dictionary<string, bool>();
             modifierDictionary.Add("MASS", false);
@@ -538,26 +624,49 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int velocity;
 
+            /// <summary>
+            /// Creates an edge between two elements
+            /// </summary>
+            /// <param name="e1">The first element</param>
+            /// <param name="e2">The second element</param>
             public Edge(Element e1, Element e2) {
                 this.e1 = e1;
                 this.e2 = e2;
                 this.velocity = -1;
             }
 
+            /// <summary>
+            /// Creates an edge between two elements witha  velocity
+            /// </summary>
+            /// <param name="e1">The first element</param>
+            /// <param name="e2">The second element</param>
+            /// <param name="velocity">The velocity of the element</param>
             public Edge(Element e1, Element e2, int velocity) {
                 this.e1 = e1;
                 this.e2 = e2;
                 this.velocity = velocity;
             }
 
+            /// <summary>
+            /// Gets the first element
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getE1() {
                 return e1;
             }
 
+            /// <summary>
+            /// Gets the second element
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getE2() {
                 return e2;
             }
 
+            /// <summary>
+            /// Returns a string representation of the edge
+            /// </summary>
+            /// <returns>A string</returns>
             public string toString() {
                 return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity + "\r\n";
             }
