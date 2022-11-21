@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace BoGLWeb {
     public class BondGraph {
@@ -59,13 +60,14 @@ namespace BoGLWeb {
 
             BondGraph bondGraph = new BondGraph();
 
-            //Construct and Element for each node
+            //Construct an Element for each node
             foreach(var node in graph.nodes) {
-                string label = "";
+                StringBuilder sb = new();
                 foreach (string l in node.localLabels) {
-                    label += l + " ";
+                    sb.Append(l);
+                    sb.Append(" ");
                 }
-                bondGraph.addElement(node.name, new Element(node.name, label.TrimEnd(), 0));
+                bondGraph.addElement(node.name, new Element(node.name, sb.ToString().TrimEnd(), 0));
             }
 
             //Construct each arc
