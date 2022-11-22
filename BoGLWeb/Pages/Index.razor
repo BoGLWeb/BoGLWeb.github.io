@@ -165,10 +165,8 @@
 
         foreach(string str in ruleNames){
             await RuleSetMap.getInstance().loadRuleSet(str);
-            Console.WriteLine("Num rules: " + RuleSetMap.getInstance().getNumRules());
-            Console.WriteLine(RuleSetMap.getInstance().getNumRules() / totalRules);
-            loadPercent = (RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0;
-            Console.WriteLine(loadPercent);
+            loadPercent = Math.Floor((RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0);
+            base.StateHasChanged();
         }
     }
 
