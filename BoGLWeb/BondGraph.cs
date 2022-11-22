@@ -139,7 +139,7 @@ namespace BoGLWeb {
 
             public Element(string name, string label, double value) {
                 this.name = name;
-                this.label = label;
+                this.label = label + " " + name;
                 this.value = value;
 
                 Random rnd = new();
@@ -162,6 +162,15 @@ namespace BoGLWeb {
 
             public string getName() {
                 return this.name;
+            }
+
+            public override bool Equals(object? obj) {
+                return obj is Element element &&
+                       this.name.Equals(element.name);
+            }
+
+            public override int GetHashCode() {
+                return HashCode.Combine(this.name);
             }
         }
 
@@ -216,6 +225,18 @@ namespace BoGLWeb {
 
             public Element getSink() {
                 return sink;
+            }
+
+            public override bool Equals(object? obj) {
+                return obj is Bond bond &&
+                       this.sourceID.Equals(bond.sourceID) &&
+                       this.targetID.Equals(bond.targetID) &&
+                       this.causalStroke.Equals(bond.causalStroke) &&
+                       this.causalStrokeDirection.Equals(bond.causalStrokeDirection);
+            }
+
+            public override int GetHashCode() {
+                return HashCode.Combine(this.sourceID, this.targetID, this.causalStroke, this.causalStrokeDirection);
             }
         }
     }
