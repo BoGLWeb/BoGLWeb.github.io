@@ -541,12 +541,11 @@ namespace BoGLWeb {
             protected List<int> modifiers;
             [JsonProperty]
             protected int velocity;
-            protected string velocityDir;
 
             /// <summary>
             /// Creates an element of the system diagram
             /// </summary>
-            /// TODO Add type
+            /// <param name="type">The id of the object</param>
             /// <param name="name">The name of the element</param>
             /// <param name="x">The x position of the element</param>
             /// <param name="y">The y position of the element</param>
