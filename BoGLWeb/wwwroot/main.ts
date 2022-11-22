@@ -1,12 +1,7 @@
 "use strict";
-import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
-import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
-import { BondGraphBond } from "./types/bonds/BondGraphBond";
-import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
-import { BondGraph } from "./types/graphs/BondGraph";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
 
 export function populateMenu() {

@@ -56,8 +56,6 @@ export namespace backendManager {
                 edges.push(new GraphBond(elements[edge.source], elements[edge.target]));
             }
 
-            (<any>window).systemDiagramSVG.selectAll('*').remove();
-
             var systemDiagram = new SystemDiagramDisplay((<any> window).systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
 
@@ -96,10 +94,6 @@ export namespace backendManager {
             anchorElement.click();
             anchorElement.remove();
             URL.revokeObjectURL(url);
-        }
-
-        public getSystemDiagram() {
-            return "sysDiagram";
         }
     }
 

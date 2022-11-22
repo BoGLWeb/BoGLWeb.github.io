@@ -28,6 +28,8 @@ export class BaseGraphDisplay {
         this.elements = baseGraph.nodes || [];
         this.bonds = baseGraph.edges || [];
 
+        svg.selectAll('*').remove();
+
         this.svg = svg;
         this.svgG = svg.append("g");
         let svgG = this.svgG;
