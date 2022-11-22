@@ -87,7 +87,7 @@ namespace BoGLWeb {
             this.edges = edges;
         }
 
-        public Element getElement(int pos) {
+       public Element getElement(int pos) {
             return elements[pos];
         }
 

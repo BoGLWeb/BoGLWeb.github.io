@@ -4,8 +4,8 @@
         private static readonly double cRep = 10000.0;
         private static readonly double cSpring = 15.0;
         private static readonly double kL = 50.0;
-        private static readonly int maxIters = 10;
-        private static readonly double epsilon = 0.1;
+        private static readonly int maxIters = 1000;
+        private static readonly double epsilon = 10;
 
         public static BondGraph embedBondGraph(BondGraph bondGraph) {
             double maxForceChange = double.MaxValue;

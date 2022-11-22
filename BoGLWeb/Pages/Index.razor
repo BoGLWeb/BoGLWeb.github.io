@@ -95,6 +95,7 @@
                         <ChildContent>
                             <Button @onclick="generateButtonClicked">Generate</Button>
                             <Button @onclick="loadFile">LoadFile</Button>
+                            <Progress Percent=@loadPercent/>
                             <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
@@ -137,7 +138,9 @@
 
 @code {
     private readonly List<string> ruleNames = new List<string>();
+    private readonly double totalRules = 19.0;
     private string fileToLoad = "";
+    private double loadPercent = 0;
 
     protected override async Task OnInitializedAsync() {
         ruleNames.Add("BondGraphRuleset"); //58
@@ -162,6 +165,10 @@
 
         foreach(string str in ruleNames){
             await RuleSetMap.getInstance().loadRuleSet(str);
+            Console.WriteLine("Num rules: " + RuleSetMap.getInstance().getNumRules());
+            Console.WriteLine(RuleSetMap.getInstance().getNumRules() / totalRules);
+            loadPercent = (RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0;
+            Console.WriteLine(loadPercent);
         }
     }
 
