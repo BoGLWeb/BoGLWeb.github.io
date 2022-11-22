@@ -352,6 +352,13 @@ text {
     animation-duration: 3s;
 }
 
+#loadingText {
+    position: relative;
+    top: 40%;
+    left: -12%;
+    font-size: 40px;
+}
+
 @keyframes bounce {
     0% {
         transform: scale(1);
