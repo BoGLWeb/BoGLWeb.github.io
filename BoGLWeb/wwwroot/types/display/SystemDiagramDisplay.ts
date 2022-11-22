@@ -1,18 +1,20 @@
-﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { DragEvent, ZoomEvent } from "../type_libraries/d3";
-import { BaseGraph } from "./BaseGraph";
-import { GraphBond } from "./GraphBond";
-import { SystemDiagramElement } from "./elements/SystemDiagramElement";
-import { ElementNamespace } from "./elements/ElementNamespace";
+﻿import { ZoomEvent } from "../../type_libraries/d3";
+import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { GraphBond } from "../bonds/GraphBond";
+import { ElementNamespace } from "../elements/ElementNamespace";
+import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { SystemDiagram } from "../graphs/SystemDiagram";
+import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
-export class SystemDiagram extends BaseGraph {
+export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
 
-    constructor(svg: SVGSelection, nodes: SystemDiagramElement[], edges: GraphBond[]) {
-        super(svg, nodes, edges);
+    constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
+        super(svg, systemDiagram);
 
         let graph = this;
+        this.state.elemId = systemDiagram.nodes.length;
 
         // listen for key events
         d3.select(window).on("keydown", function () {
@@ -219,7 +221,7 @@ export class SystemDiagram extends BaseGraph {
     handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
         if (this.edgeOrigin && this.edgeOrigin != el) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
             this.setFollowingEdge(null);
             this.edgeOrigin = null;
             this.updateGraph();
@@ -274,10 +276,10 @@ export class SystemDiagram extends BaseGraph {
     svgMouseUp() {
         let state = this.state;
         this.setFollowingEdge(null);
-        if (this.draggingElement) {
+        if (this.draggingElement != null) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.idct++, this.draggingElement, xycoords[0], xycoords[1]));
+            this.elements.push(new SystemDiagramElement(this.state.elemId++, this.draggingElement, xycoords[0], xycoords[1], 0));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {

@@ -9,7 +9,7 @@ using System.Runtime.ConstrainedExecution;
 /// NuGet\Install-Package Microsoft.Playwright -Version 1.27.1
 /// NuGet\Install-Package Microsoft.Playwright.NUnit -Version 1.27.1
 
-namespace PlaywrightTests {
+namespace BoGLWeb.PlaywrightTests {
     /// <summary>
     /// Runs unit tests for all areas of this program.
     /// </summary>

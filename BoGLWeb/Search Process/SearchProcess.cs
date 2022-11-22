@@ -27,10 +27,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Logistics;
+using BoGLWeb.Prop;
 using GraphSynth.Representation;
 
-namespace GraphSynth.Search
-{
+namespace GraphSynth.Search {
     /// <summary>
     ///   The abstract class that must be inherited in the Search plugins.
     /// </summary>

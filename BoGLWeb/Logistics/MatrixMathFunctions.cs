@@ -30,10 +30,8 @@
 
 using System;
 
-namespace GraphSynth
-{
-    internal static class MatrixMath
-    {
+namespace BoGLWeb.Logistics {
+    internal static class MatrixMath {
         /// <summary>
         ///   This is used below in the close enough to zero booleans to match points
         ///   (see below: sameCloseZero). In order to avoid strange round-off issues - 
@@ -43,30 +41,25 @@ namespace GraphSynth
         /// </summary>
         private const double epsilon = 0.000001;
 
-        internal static Boolean sameCloseZero(double x1)
-        {
+        internal static bool sameCloseZero(double x1) {
             return Math.Abs(x1) < epsilon;
         }
 
-        internal static Boolean sameCloseZero(double x1, double x2)
-        {
+        internal static bool sameCloseZero(double x1, double x2) {
             return sameCloseZero(x1 - x2);
         }
 
-        internal static double[,] Identity(int size)
-        {
+        internal static double[,] Identity(int size) {
             var identity = new double[size, size];
             for (var i = 0; i < size; i++)
                 identity[i, i] = 1.0;
             return identity;
         }
 
-        internal static double[] multiply(double[,] A, double[] x, int size)
-        {
+        internal static double[] multiply(double[,] A, double[] x, int size) {
             var b = new double[size];
 
-            for (int m = 0; m != size; m++)
-            {
+            for (int m = 0; m != size; m++) {
                 b[m] = 0.0;
                 for (int n = 0; n != size; n++)
                     b[m] += A[m, n] * x[n];
@@ -74,13 +67,11 @@ namespace GraphSynth
             return b;
         }
 
-        internal static double[,] multiply(double[,] A, double[,] B, int size)
-        {
+        internal static double[,] multiply(double[,] A, double[,] B, int size) {
             var C = new double[size, size];
 
             for (int m = 0; m != size; m++)
-                for (int n = 0; n != size; n++)
-                {
+                for (int n = 0; n != size; n++) {
                     C[m, n] = 0.0;
                     for (int p = 0; p != size; p++)
                         C[m, n] += A[m, p] * B[p, n];

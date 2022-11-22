@@ -27,6 +27,8 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,8 +36,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /* Get ready, this file is complicated. All the recognize and apply functions are found
      * here. There is a recognize function in ruleSet, and an apply in option but those are simply 
      * macros for the functions found here within grammarRule. */

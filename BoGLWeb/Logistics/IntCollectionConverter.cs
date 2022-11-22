@@ -30,13 +30,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace GraphSynth
-{
+namespace BoGLWeb.Logistics {
     /// <summary>
     ///   A converter class for changing a collection of ints into a string and vice-versa.
     /// </summary>
-    public class IntCollectionConverter : TypeConverter
-    {
+    public class IntCollectionConverter : TypeConverter {
         /// <summary>
         ///   Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.
         /// </summary>
@@ -45,8 +43,7 @@ namespace GraphSynth
         /// <returns>
         ///   true if this converter can perform the conversion; otherwise, false.
         /// </returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
             return sourceType == typeof(string);
         }
 
@@ -60,11 +57,9 @@ namespace GraphSynth
         ///   An <see cref = "T:System.Object" /> that represents the converted value.
         /// </returns>
         /// <exception cref = "T:System.NotSupportedException">The conversion cannot be performed. </exception>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if (value is string)
-            {
-                return convert((string)value);
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
+            if (value is string) {
+                return convert((string) value);
             }
             return null;
         }
@@ -77,9 +72,8 @@ namespace GraphSynth
         /// <returns>
         ///   <c>true</c> if this instance [can convert to] the specified context; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type sourceType)
-        {
-            return (sourceType == typeof(IEnumerable<int>)) || (sourceType == typeof(string[]));
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type sourceType) {
+            return sourceType == typeof(IEnumerable<int>) || sourceType == typeof(string[]);
         }
 
         /// <summary>
@@ -91,11 +85,9 @@ namespace GraphSynth
         /// <param name = "s">The s.</param>
         /// <returns></returns>
         public override object ConvertTo(ITypeDescriptorContext context,
-                                         CultureInfo culture, object value, Type s)
-        {
-            if (value is IEnumerable<int>)
-            {
-                return convert((IEnumerable<int>)value);
+                                         CultureInfo culture, object value, Type s) {
+            if (value is IEnumerable<int>) {
+                return convert((IEnumerable<int>) value);
             }
             return null;
         }
@@ -105,15 +97,14 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "value">The value.</param>
         /// <returns></returns>
-        public static List<int> convert(string value)
-        {
+        public static List<int> convert(string value) {
             var items = new List<int>();
             var charSeparators = new[] { ',', '(', ')', ' ', ':', ';', '/', '\\', '\'', '\"' };
             int temp;
             var results = value.Split(charSeparators);
 
             for (var i = 0; i < results.GetLength(0); i++)
-                if ((results[i] != "") && (int.TryParse(results[i].Trim(), out temp)))
+                if (results[i] != "" && int.TryParse(results[i].Trim(), out temp))
                     items.Add(temp);
 
             return items;
@@ -124,11 +115,9 @@ namespace GraphSynth
         /// </summary>
         /// <param name = "values">The values.</param>
         /// <returns></returns>
-        public static string convert(IEnumerable<int> values)
-        {
+        public static string convert(IEnumerable<int> values) {
             var text = "";
-            foreach (var value in values)
-            {
+            foreach (var value in values) {
                 text += ", " + value.ToString(CultureInfo.InvariantCulture);
             }
             return text.Length < 2 ? text : text.Remove(0, 2);

@@ -1,10 +1,11 @@
-﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../type_libraries/d3-selection";
-import { DragEvent, ZoomEvent } from "../type_libraries/d3";
-import { GraphBond } from "./GraphBond";
+﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { GraphBond } from "../bonds/GraphBond";
+import { GraphElement } from "../elements/GraphElement";
 import { GraphState } from "./GraphState";
-import { GraphElement } from "./elements/GraphElement";
+import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
+import { BaseGraph } from "../graphs/BaseGraph";
 
-export class BaseGraph {
+export class BaseGraphDisplay {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";
@@ -23,9 +24,11 @@ export class BaseGraph {
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
 
-    constructor(svg: SVGSelection, nodes: GraphElement[], edges: GraphBond[]) {
-        this.elements = nodes || [];
-        this.bonds = edges || [];
+    constructor(svg: SVGSelection, baseGraph: BaseGraph) {
+        this.elements = baseGraph.nodes || [];
+        this.bonds = baseGraph.edges || [];
+
+        svg.selectAll('*').remove();
 
         this.svg = svg;
         this.svgG = svg.append("g");
@@ -40,7 +43,7 @@ export class BaseGraph {
         this.bondSelection = svgG.append("g").selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
 
-        svg.call(this.dragSvg).on("dblclick.zoom", null);
+        svg.call(this.dragSvg()).on("dblclick.zoom", null);
     }
 
     // functions needed in system diagram are called from this class but not defined by default
@@ -84,7 +87,7 @@ export class BaseGraph {
     }
 
     // listen for dragging
-    get dragSvg() {
+    dragSvg() {
         let graph = this;
         return d3.behavior.zoom()
             .on("zoom", function () {
@@ -130,6 +133,7 @@ export class BaseGraph {
 
     fullRenderElements() {
         // update existing elements
+        console.log(this.elements);
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
