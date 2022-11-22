@@ -546,24 +546,21 @@ namespace BoGLWeb {
             protected int velocity;
             protected string velocityDir;
 
-            public Element(int type, string name, double x, double y) {
-                this.type = type;
-            }
-
             /// <summary>
             /// Creates an element of the system diagram
             /// </summary>
+            /// TODO Add type
             /// <param name="name">The name of the element</param>
             /// <param name="x">The x position of the element</param>
             /// <param name="y">The y position of the element</param>
-            public Element(string name, double x, double y) {
+            public Element(int type, string name, double x, double y) {
+                this.type = type;
                 this.name = name;
-                this.modifiers = new List<int>();
-                this.velocity = 0;
                 this.x = x;
                 this.y = y;
             }
 
+                        
             //TODO Error checking
             /// <summary>
             /// Adds a modifier to the element
