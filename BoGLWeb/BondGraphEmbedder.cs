@@ -1,11 +1,13 @@
-﻿namespace BoGLWeb {
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace BoGLWeb {
     public class BondGraphEmbedder {
 
         private static readonly double cRep = 10000.0;
         private static readonly double cSpring = 15.0;
-        private static readonly double kL = 50.0;
+        private static readonly double kL = 100.0;
         private static readonly int maxIters = 1000;
-        private static readonly double epsilon = 10;
+        private static readonly double epsilon = 0.1;
 
         public static BondGraph embedBondGraph(BondGraph bondGraph) {
             double maxForceChange = double.MaxValue;
@@ -33,12 +35,19 @@
                     HashSet<BondGraph.Element> notAdj = new();
 
                     //Find Edges adjacent to the element
+                    //TODO Factor this out, it will improve speed
                     foreach (BondGraph.Bond bond in bondGraph.getBonds()) {
                         if (bond.getSource().Equals(e)) {
                             adj.Add(bond.getSink());
+                            if (notAdj.Contains(e)) {
+                                notAdj.Remove(e);
+                            }
                         } else if (bond.getSink().Equals(e)) {
                             adj.Add(bond.getSource());
-                        } else {
+                            if (notAdj.Contains(e)) {
+                                notAdj.Remove(e);
+                            }
+                        } else if (!(adj.Contains(bond.getSource()) || adj.Contains(bond.getSink()))){
                             notAdj.Add(bond.getSource());
                             notAdj.Add(bond.getSink());
                         }
@@ -49,9 +58,9 @@
                         springList.Add(attractiveForce(e.getX(), e.getY(), adjElement.getX(), adjElement.getY()));
                     }
 
-                    foreach (BondGraph.Element adjElement in notAdj) {
-                        //Compute attractive force
-                        springList.Add(repulsiveForce(e.getX(), e.getY(), adjElement.getX(), adjElement.getY()));
+                    foreach (BondGraph.Element notAdjEle in notAdj) {
+                        //Compute repulsive force
+                        repList.Add(repulsiveForce(e.getX(), e.getY(), notAdjEle.getX(), notAdjEle.getY()));
                     }
 
                     Vector sumRep = new Vector(0, 0);
@@ -64,14 +73,13 @@
                         sumSpring = new Vector(sumSpring.getXMag() + v.getXMag(), sumSpring.getYMag() + v.getYMag());
                     }
 
-                    forceMap[e] = new Vector(sumRep.getXMag() + sumSpring.getXMag(), sumRep.getXMag() + sumSpring.getXMag());
+                    forceMap[e] = new Vector(sumRep.getXMag() + sumSpring.getXMag(), sumRep.getYMag() + sumSpring.getYMag());
                 }
 
                 foreach (KeyValuePair<string, BondGraph.Element> entry in bondGraph.getElements()) {
                     BondGraph.Element n = entry.Value;
                     Vector f = forceMap[n];
 
-                    forceMap[n] = f;
                     n.setPosition(n.getX() + f.getXMag(), n.getY() + f.getYMag());
                 }
 
@@ -137,6 +145,10 @@
 
             public double getYMag() {
                 return yMag;
+            }
+
+            public override string ToString() {
+                return "xMag: " + xMag + " yMag: " + yMag;
             }
         }
     }
