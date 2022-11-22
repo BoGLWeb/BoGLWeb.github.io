@@ -451,11 +451,8 @@ namespace BoGLWeb {
                 builder.AppendLine("<name>" + element.getName() + "</name>");
                 builder.AppendLine("<localLabels>");
                 Regex r = new Regex(@"\d+", RegexOptions.None);
-                Console.WriteLine(element.getName());
-                Console.WriteLine(r.Replace(element.getName(), ""));
                 builder.AppendLine("<string>" + r.Replace(element.getName(), "") + "</string>");
                 foreach (var n in element.getLabelList()) {
-                    //This was in braces, don't know why. Removed them so that might cause a problem later
                     builder.AppendLine("<string>" + n + "</string>");
                 }
                 builder.AppendLine("</localLabels>");
@@ -558,9 +555,9 @@ namespace BoGLWeb {
                 this.name = name;
                 this.x = x;
                 this.y = y;
+                modifiers = new();
             }
 
-                        
             //TODO Error checking
             /// <summary>
             /// Adds a modifier to the element
