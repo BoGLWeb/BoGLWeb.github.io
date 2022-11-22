@@ -27,14 +27,15 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /// <summary>
     /// </summary>
     public partial class grammarRule

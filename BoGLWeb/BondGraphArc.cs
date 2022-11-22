@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Windows;
 
-namespace AVL_Prototype_1
-{
-    class BondGraphArc : Arc
-    {
+namespace BoGLWeb {
+    class BondGraphArc : Arc {
         private static double arrowLength = 20;
         private static double arrowAngleOffset = Math.PI / 5;
         private static double causalLength = 20;
@@ -12,8 +10,7 @@ namespace AVL_Prototype_1
         public int arrowDir;
         public int causalDir;
 
-        public BondGraphArc(GraphElement element1, GraphElement element2, int arrowDir, int causalDir)
-        {
+        public BondGraphArc(GraphElement element1, GraphElement element2, int arrowDir, int causalDir) {
             this.element1 = element1;
             this.element2 = element2;
 
@@ -30,8 +27,7 @@ namespace AVL_Prototype_1
             graph.arcs.Add(this);
         }
 
-        public override void delete()
-        {
+        public override void delete() {
             element1.connections.Remove(this);
             element2.connections.Remove(this);
 

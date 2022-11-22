@@ -1,10 +1,5 @@
-﻿using AVL_Prototype_1;
-using GraphSynth.Representation;
-using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
-using static AVL_Prototype_1.Graph;
-using static System.Net.Mime.MediaTypeNames;
+﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.Prop;
 
 namespace BoGLWeb {
     public class BondGraphFactory {
@@ -16,12 +11,23 @@ namespace BoGLWeb {
         /// <returns>First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs</returns>
         /// <exception cref="Exception">Thrown if the any generated BondGraphs are null</exception>
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
+            Console.WriteLine("System Graph");
+            Console.WriteLine(systemGraph.ToString());
             BondGraphFactory factory = new(systemGraph);
 
-            if (factory.simplifiedBG is null || factory.unsimplifiedBG is null) {
+            if (factory.simplifiedBG is null && factory.unsimplifiedBG is null) {
                 //TODO Need to figure out what this error means and figure out how to show it to the user
-                //TODO Might want to split these to make error messages clearer
-                throw new Exception("simplifiedBG or unsimplifiedBG is null");
+                throw new Exception("simplifiedBG and unsimplifiedBG are null");
+            }
+
+            if (factory.simplifiedBG is null) {
+                //TODO Need to figure out what this error means and figure out how to show it to the user
+                throw new Exception("simplifiedBG is null");
+            }
+
+            if (factory.unsimplifiedBG is null) {
+                //TODO Need to figure out what this error means and figure out how to show it to the user
+                throw new Exception("unsimplifiedBG is null");
             }
 
             BondGraph unsimplified = BondGraph.generateBondGraphFromGraphSynth(factory.unsimplifiedBG);
@@ -89,18 +95,6 @@ namespace BoGLWeb {
             } else {
                 bondgraphBeforeSimplification();
                 bondgraphSimplified();
-
-                int ii = 0;
-                foreach (var n in systemGraph.nodes) {
-
-                    if (n.localLabels.Contains("I:"))
-
-                        n.localLabels.Add("iadded" + (ii.ToString()));
-                    if (n.localLabels.Contains("C:")
-                        )
-                        n.localLabels.Add("cadded" + (ii.ToString()));
-                    ii++;
-                }
                 obtainCausality();
             }
         }
@@ -114,7 +108,6 @@ namespace BoGLWeb {
             optiGraphs.Clear();
 
             //will just do one option for now, will figure out 
-
             #region initial causality
             Stack<designGraph> sysGraphs = new();
 
@@ -204,19 +197,6 @@ namespace BoGLWeb {
                     var graphS = graphss.Pop();
                     var options1 = RuleSetMap.getInstance().getRuleSet("RFlagCleanRuleset").recognize(graphS, false, null);
 
-                    /* if (options1.Count > 0)
-                     {
-                         foreach (var opt in options1)
-                         {
-                             var graphSS = graphS.copy();
-                             GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                                                                opt.arcs, opt.hyperarcs);
-                             opt.apply(graphSS, null);
-                             graphss.Push(graphSS);
-                         }
-                     }
-                     else
-                         graph_SSS.Add(graphS); */
                     while (options1.Count > 0) {
                         options1[0].apply(graphS, null);
                         options1 = RuleSetMap.getInstance().getRuleSet("RFlagCleanRuleset").recognize(graphS, false, null);
@@ -232,20 +212,6 @@ namespace BoGLWeb {
                 while (graphss.Count > 0) {
                     var graphS = graphss.Pop();
                     var options1 = RuleSetMap.getInstance().getRuleSet("ICFixTotalRuleset").recognize(graphS, false, null);
-
-                    /* if (options1.Count > 0)
-                     {
-                         foreach (var opt in options1)
-                         {
-                             var graphSS = graphS.copy();
-                             GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
-                                                                opt.arcs, opt.hyperarcs);
-                             opt.apply(graphSS, null);
-                             graphss.Push(graphSS);
-                         }
-                     }
-                     else
-                         graph_SSS.Add(graphS);*/
 
                     while (options1.Count > 0) {
                         options1[0].apply(graphS, null);
@@ -302,16 +268,11 @@ namespace BoGLWeb {
             }
 
             //now from the list of finalgraph, eliminate duplicate solutions
-
-
-
             if (indiceswithoutINVD.Count == 0) {
                 Console.WriteLine("Sorry, we have encountered an error with respect to Causality assignment");
 
             }
-
             //need to add exception here if the program is unable to added 
-
             else {
                 int currentHashSetcount = 0;
                 int nn = 0;
@@ -366,8 +327,6 @@ namespace BoGLWeb {
                     }
                     nn++;
                 }
-                // nodeNames_Cau.Sort();
-                // nodeNames.Add(nodeNames_Cau);
 
                 List<int> maxIntegralCaus = new();
 
@@ -384,144 +343,15 @@ namespace BoGLWeb {
                 //now add to the combo-box
 
                 causalBGs.Clear();
-
-                /*
-                foreach (var no in finalresult[indiceswithoutINVD[index1]].nodes)
-                {
-                    var rect = new RectangleViewModel();
-                    rect.NodeName = no.name;
-                    //rect.Content = "";
-                    List<string> localLabels = no.localLabels.ToList();
-                    List<string> localLabels_Copy = no.localLabels.ToList();
-                    foreach (var uu in localLabels_Copy)
-                    {
-                        if (uu.Contains("vel"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("good"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("multiple"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("system"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("iadded"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("cadded"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("rackadded"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("gearadded"))
-                            localLabels.Remove(uu);
-                        if (uu.Contains("layoutadded"))
-                            localLabels.Remove(uu);
-                    }
-                    rect.Content = string.Join(" ", localLabels.ToArray());
-                    rect.X = no.X;
-                    rect.Y = no.Y;
-                    rect.Color = "Black";
-                    rect.Font = "Segoe UI";
-                    rect.Width = 75;
-                    rect.Height = 20;
-                    rectangles_BG_Causality.Add(rect);
-                }
-                int p = 101;
-                //foreach (var no in finalresult[index1].arcs)
-                foreach (var no in finalresult[indiceswithoutINVD[index1]].arcs)
-                {
-                    var line = new LineConnections();
-                    line.Name = no.name;
-                    line.LC = "Red";
-                    line.LTA = "arrow";
-                    line.LTD = string.Join(" ", no.localLabels.ToArray());
-                    line.Thickness = 1;
-                    if (no.localLabels.Contains("SAME"))
-                    {
-                        line.X1 = no.From.X;
-                        line.Y1 = no.From.Y;
-                        line.X2 = no.To.X;
-                        line.Y2 = no.To.Y;
-                        line.ArrowEnd = "same";
-                        if (no.localLabels.Contains("I2"))
-                            line.LC = "Blue";
-                    }
-                    else
-                    {
-                        line.X1 = no.To.X;
-                        line.Y1 = no.To.Y;
-                        line.X2 = no.From.X;
-                        line.Y2 = no.From.Y;
-                        line.ArrowEnd = "opp";
-                        if (no.localLabels.Contains("C3"))
-                            line.LC = "Blue";
-                    }
-                    var connect = new ConnectionViewModel();
-                    lines_BG_Causality.Add(line);
-                    connect.Line = line;
-                    foreach (var rects in rectangles_BG_Causality)
-                    {
-                        if (rects.NodeName == no.From.name)
-                            connect.Rect1 = rects;
-                        if (rects.NodeName == no.To.name)
-                            connect.Rect2 = rects;
-                    }
-                    connect.ConnectionMultiple = 1;
-                    connect.ConnectionSide = "causal_assigned";
-                    connections_BG_Causality.Add(connect);
-                }
-                HashSet<string> rectNames = new HashSet<string>();
-                bool trial = false;
-                bool trial1 = false;
-                TextBlock ex = null;
-                Line redLine = null;
-                int i = 0;
-                List<string> stringLine = new List<string>();
-                List<int> indices = new List<int>();
-                for (int j = 0; j < rectangles_BG_Causality.Count; j++)
-                {
-                    int count = 0;
-                    foreach (var item in connections_BG_Causality)
-                        if (rectangles_BG_Causality[j].NodeName == item.Rect1.NodeName || rectangles_BG_Causality[j].NodeName == item.Rect2.NodeName)
-                            count++;
-                    if (count == 0)
-                        indices.Add(j);
-                }
-                if (indices.Count > 0)
-                {
-                    for (int j = 0; j < indices.Count; j++)
-                    {
-                        ex = new TextBlock();
-                        ex.Text = rectangles_BG_Causality[indices[j]].Content;
-                        ex.SetValue(Canvas.TopProperty, rectangles_BG_Causality[indices[j]].Y);
-                        ex.SetValue(Canvas.LeftProperty, rectangles_BG_Causality[indices[j]].X);
-                        ex.Visibility = System.Windows.Visibility.Visible;
-                        ex.Name = rectangles_BG_Causality[indices[j]].NodeName;
-                        ex.TextWrapping = TextWrapping.Wrap;
-                        ex.FontFamily = new FontFamily(rectangles_BG_Causality[indices[j]].Font);
-                        ex.Foreground = findColor(rectangles_BG_Causality[indices[j]].Color);
-                        ex.FontSize = FontSize;
-                        ex.MouseLeftButtonDown += new MouseButtonEventHandler(ex_B_G_C_MouseDown);
-                        ex.MouseMove += new MouseEventHandler(ex_B_G_C_MouseMove);
-                        ex.MouseLeftButtonUp += new MouseButtonEventHandler(ex_B_G_C_MouseUp);
-                        ex.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                        ex.Arrange(new Rect(ex.DesiredSize));
-                        foreach (var tmp in rectangles_BG_Causality)
-                            if (tmp.NodeName == ex.Name)
-                            {
-                                tmp.Width = ex.ActualWidth;
-                                tmp.Height = ex.ActualHeight;
-                            }
-                        Graph_BG3.theCanvas.Children.Add(ex);
-                    }
-                }
-                */
             }
         }
 
         private void bondgraphBeforeSimplification() {
-            options = RuleSetMap.getInstance().getRuleSet("systemToBondGraph").recognize(systemGraph, true, null);
+            options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(systemGraph, true, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("systemToBondGraph").recognize(systemGraph, true, null);
+                options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(systemGraph, true, null);
 
             }
 
@@ -541,51 +371,7 @@ namespace BoGLWeb {
 
             //try to update the positions of each node
 
-            unsimplifiedBG = systemGraph.copy();
-
-            /*
-            List<string> stringLine = new List<string>();
-            List<int> indices = new List<int>();
-            HashSet<string> rectNames = new HashSet<string>();
-            TextBlock ex = null;
-            for (int j = 0; j < rectangles_BG.Count; j++)
-            {
-                int count = 0;
-                foreach (var item in connections_BG)
-                    if (rectangles_BG[j].NodeName == item.Rect1.NodeName || rectangles_BG[j].NodeName == item.Rect2.NodeName)
-                        count++;
-                if (count == 0)
-                    indices.Add(j);
-            }
-            if (indices.Count > 0)
-            {
-                for (int j = 0; j < indices.Count; j++)
-                {
-                    ex = new TextBlock();
-                    ex.Text = rectangles_BG[indices[j]].Content;
-                    ex.SetValue(Canvas.TopProperty, rectangles_BG[indices[j]].Y);
-                    ex.SetValue(Canvas.LeftProperty, rectangles_BG[indices[j]].X);
-                    ex.Visibility = System.Windows.Visibility.Visible;
-                    ex.Name = rectangles_BG[indices[j]].NodeName;
-                    ex.TextWrapping = TextWrapping.Wrap;
-                    ex.FontFamily = new FontFamily(rectangles_BG[indices[j]].Font);
-                    ex.Foreground = findColor(rectangles_BG[indices[j]].Color);
-                    ex.FontSize = FontSize;
-                    ex.MouseLeftButtonDown += new MouseButtonEventHandler(ex_BG_MouseDown);
-                    ex.MouseMove += new MouseEventHandler(ex_BG_MouseMove);
-                    ex.MouseLeftButtonUp += new MouseButtonEventHandler(ex_BG_MouseUp);
-                    ex.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                    ex.Arrange(new Rect(ex.DesiredSize));
-                    foreach (var tmp in rectangles_BG)
-                        if (tmp.NodeName == ex.Name)
-                        {
-                            tmp.Width = ex.ActualWidth;
-                            tmp.Height = ex.ActualHeight;
-                        }
-                    Graph_BG1.theCanvas.Children.Add(ex);
-                }
-            }
-            */
+            unsimplifiedBG = systemGraph.copy(true);
         }
 
         private void bondgraphSimplified() {
@@ -596,90 +382,44 @@ namespace BoGLWeb {
                 options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("directionRuleSet").recognize(systemGraph, false, null);
+            options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("directionRuleSet").recognize(systemGraph, false, null);
+                options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("directionRuleSet2").recognize(systemGraph, false, null);
+            options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("directionRuleSet2").recognize(systemGraph, false, null);
+                options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("directionRuleSet3").recognize(systemGraph, false, null);
+            options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("directionRuleSet3").recognize(systemGraph, false, null);
+                options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset2").recognize(systemGraph, false, null);
+            options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset2").recognize(systemGraph, false, null);
+                options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(systemGraph, false, null);
             }
 
             //again do a deepcopy of the systemGraph 
 
             //  designGraph SimplifiedGraphWithDir = systemGraph.copy(true);
 
-            simplifiedBG = systemGraph.copy();
+            simplifiedBG = systemGraph.copy(true);
 
             //now let us apply directions - first let us do the sources and i-c-r 
 
             //all sources should have arrow heads away from source 
             //all I-C-R should have arrow heads into them. 
-
-            /*
-            List<string> stringLine = new List<string>();
-            List<int> indices = new List<int>();
-            HashSet<string> rectNames = new HashSet<string>();
-            TextBlock ex = null;
-            for (int j = 0; j < rectangles_BG_Simplified.Count; j++)
-            {
-                int count = 0;
-                foreach (var item in connections_BG_Simplified)
-                    if (rectangles_BG_Simplified[j].NodeName == item.Rect1.NodeName || rectangles_BG_Simplified[j].NodeName == item.Rect2.NodeName)
-                        count++;
-                if (count == 0)
-                    indices.Add(j);
-            }
-            if (indices.Count > 0)
-            {
-                for (int j = 0; j < indices.Count; j++)
-                {
-                    ex = new TextBlock();
-                    ex.Text = rectangles_BG_Simplified[indices[j]].Content;
-                    ex.SetValue(Canvas.TopProperty, rectangles_BG_Simplified[indices[j]].Y);
-                    ex.SetValue(Canvas.LeftProperty, rectangles_BG_Simplified[indices[j]].X);
-                    ex.Visibility = System.Windows.Visibility.Visible;
-                    ex.Name = rectangles_BG_Simplified[indices[j]].NodeName;
-                    ex.TextWrapping = TextWrapping.Wrap;
-                    ex.FontFamily = new FontFamily(rectangles_BG_Simplified[indices[j]].Font);
-                    ex.Foreground = findColor(rectangles_BG_Simplified[indices[j]].Color);
-                    ex.FontSize = FontSize;
-                    ex.MouseLeftButtonDown += new MouseButtonEventHandler(ex_BG_MouseDown);
-                    ex.MouseMove += new MouseEventHandler(ex_B_G_MouseMove);
-                    ex.MouseLeftButtonUp += new MouseButtonEventHandler(ex_B_G_MouseUp);
-                    ex.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                    ex.Arrange(new Rect(ex.DesiredSize));
-                    foreach (var tmp in rectangles_BG_Simplified)
-                    {
-                        if (tmp.NodeName == ex.Name)
-                        {
-                            tmp.Width = ex.ActualWidth;
-                            tmp.Height = ex.ActualHeight;
-                        }
-                    }
-                    Graph_BG2.theCanvas.Children.Add(ex);
-                }
-            }
-            */
         }
 
         private void checkIfVelocityDirectionsAreOkay(out bool noGood) {
@@ -687,14 +427,14 @@ namespace BoGLWeb {
 
             //first load the verify direction rules 
 
-            foreach (var item in RuleSetMap.getInstance().getRuleSet("VerifyBGDir").rules) {
+            foreach (var item in RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").rules) {
                 item.TransformNodePositions = false;
                 item.Rotate = false;
             }
 
             //second step is to verify if all nodes have velocity directions 
 
-            options = RuleSetMap.getInstance().getRuleSet("VerifyBGDir").recognize(systemGraph, false, null);
+            options = RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").recognize(systemGraph, false, null);
 
             while (options.Count > 0) {
                 options[0].apply(systemGraph, null);

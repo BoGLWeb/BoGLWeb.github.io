@@ -1,10 +1,17 @@
-﻿using GraphSynth.Representation;
+﻿using AntDesign;
+using BoGLWeb.BaseClasses;
+using GraphSynth.Representation;
 using Newtonsoft.Json;
+/*using Newtonsoft.Json;
+*/using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Globalization;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace BoGLWeb {
+
     public class BondGraph {
         //Class variables
         [JsonProperty]
@@ -46,6 +53,21 @@ namespace BoGLWeb {
             return elements[name];
         }
 
+        public Dictionary<string, Element> getElements() {
+            return elements;
+        }
+
+        public List<Bond> getBonds() {
+            return bonds;
+        }
+
+        public string convertToJson() {
+            return JsonConvert.SerializeObject(new {
+                elements = JsonConvert.SerializeObject(this.elements.Values.ToList()),
+                bonds = JsonConvert.SerializeObject(this.bonds)
+            });
+        }
+
         /// <summary>
         /// Returns the Bond Graph that can be constructed from a designGraph
         /// </summary>
@@ -80,10 +102,12 @@ namespace BoGLWeb {
                 //TODO Make sure that this is an okay way to check if we should have a causal stroke
                 bool useCausalStroke = labels.Contains("OPP") || labels.Contains("SAME");
 
+                var sourceID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
+                var targetID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
                 if (flip) {
-                    bondGraph.addBond(new Bond(bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
+                    bondGraph.addBond(new Bond(sourceID, targetID, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
                 } else {
-                    bondGraph.addBond(new Bond(bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
+                    bondGraph.addBond(new Bond(targetID, sourceID, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
                 }
 
             }
@@ -98,8 +122,13 @@ namespace BoGLWeb {
             protected readonly double value;
             protected readonly string name;
 
-            //TODO Add positions for graph visualization
-            //TODO Create a way to modify these values
+            //For graph visualization
+            [JsonProperty]
+            protected double x, y;
+
+            public string getString() {
+                return this.label + " " + this.value + " " + this.name + " " + this.x + " " + this.y;
+            }
 
             /// <summary>
             /// Creates an element of a bond graph
@@ -107,25 +136,47 @@ namespace BoGLWeb {
             /// <param name="name">The name of the element</param>
             /// <param name="label">Labels associated with the element</param>
             /// <param name="value">A value associated with the element</param>
+
             public Element(string name, string label, double value) {
                 this.name = name;
                 this.label = label;
                 this.value = value;
+
+                Random rnd = new();
+                this.x = rnd.Next(2000);
+                this.y = rnd.Next(2000);
+            }
+
+            public void setPosition(double x, double y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public double getX() {
+                return x;
+            }
+
+            public double getY() {
+                return y;
+            }
+
+            public string getName() {
+                return this.name;
             }
         }
 
         public class Bond {
             [JsonProperty]
+            protected readonly int sourceID, targetID;
             protected readonly Element source, sink;
-            [JsonProperty]
             protected readonly string label;
-            [JsonProperty]
             protected readonly double flow, effort;
+
             [JsonProperty]
-            private readonly bool causalStroke;
+            protected readonly bool causalStroke;
             //True means the causal stroke is at the source
             [JsonProperty]
-            private readonly bool causalStrokeDirection;
+            protected readonly bool causalStrokeDirection;
 
             //The arrow will always point at the sink
             /// <summary>
@@ -138,7 +189,10 @@ namespace BoGLWeb {
             /// <param name="causalStrokeDirection">The position of the causal stroke. True means the causal stroke is at the source. False means the causal stroke is at the sink.</param>
             /// <param name="flow">The flow value for the bond</param>
             /// <param name="effort">The effor value for the bond</param>
-            public Bond(Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+            
+            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+                this.sourceID = sourceID;
+                this.targetID = targetID;
                 this.source = source;
                 this.sink = sink;
                 this.label = label;
@@ -146,6 +200,22 @@ namespace BoGLWeb {
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+            }
+
+            public bool isSource(Element e) {
+                return e.Equals(source);
+            }
+
+            public bool isSink(Element e) {
+                return e.Equals(sink);
+            }
+
+            public Element getSource() {
+                return source;
+            }
+
+            public Element getSink() {
+                return sink;
             }
         }
     }

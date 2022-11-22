@@ -1,38 +1,79 @@
-﻿using GraphSynth.Representation;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using GraphSynth.Representation;
+using BoGLWeb.BaseClasses;
+using static BoGLWeb.Graph;
+using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
     public class SystemDiagram {
-        public static readonly ImmutableDictionary<string, string> modifierLabelDict;
+        public static readonly ImmutableDictionary<string, int> modifierIDDict;
+        public static readonly ImmutableDictionary<string, int> typeIDDict;
 
         //Sets up our modifier dictionary
         static SystemDiagram() {
-            var builder = ImmutableDictionary.CreateBuilder<string, string>();
-            builder.Add("MASS", "Include_Mass");
-            builder.Add("INERTIA", "Include_Inertia");
-            builder.Add("STIFFNESS", "Include_Stiffness");
-            builder.Add("FRICTION", "Include_Friction");
-            builder.Add("DAMPING", "Include_Damping");
-            builder.Add("PARALLEL", "PAR");
-            builder.Add("TOOTH WEAR", "Include_Tooth_Wear"); //This one is not present in desktop BoGL and doesn't appear to do anything
 
+            var idBuilder = ImmutableDictionary.CreateBuilder<string, int>();
+            idBuilder.Add("MASS", 0);
+            idBuilder.Add("INERTIA", 1);
+            idBuilder.Add("STIFFNESS", 2);
+            idBuilder.Add("FRICTION", 3);
+            idBuilder.Add("DAMPING", 4);
+            idBuilder.Add("PARALLEL", 5);
+            idBuilder.Add("TOOTH_WEAR", 6);
 
-            modifierLabelDict = builder.ToImmutable();
+            modifierIDDict = idBuilder.ToImmutable();
+
+            var typeBuilder = ImmutableDictionary.CreateBuilder<string, int>();
+            typeBuilder.Add("System_MT_Mass", 0);
+            typeBuilder.Add("System_MT_Spring", 1);
+            typeBuilder.Add("System_MT_Damper", 2);
+            typeBuilder.Add("System_MT_Ground", 3);
+            typeBuilder.Add("System_MT_Force_Input", 4);
+            typeBuilder.Add("System_MT_Gravity", 5);
+            typeBuilder.Add("System_MT_Velocity_Input", 6);
+            typeBuilder.Add("System_MR_Flywheel", 7);
+            typeBuilder.Add("System_MR_Spring", 8);
+            typeBuilder.Add("System_MR_Damper", 9);
+            typeBuilder.Add("System_MR_Torque_Input", 10);
+            typeBuilder.Add("System_MR_Velocity_Input", 11);
+            typeBuilder.Add("System_MR_Lever", 12);
+            // front-end doesn't seem to make distinction between grounded and non-grounded pulley
+            typeBuilder.Add("System_MR_Pulley", 13);
+            typeBuilder.Add("System_MR_Pulley_Grounded", 13);
+            typeBuilder.Add("System_MR_Belt", 14);
+            typeBuilder.Add("System_MR_Shaft", 15);
+            typeBuilder.Add("System_MR_Gear", 16);
+            typeBuilder.Add("System_MR_Gear_Pair", 17);
+            typeBuilder.Add("System_MR_Rack", 18);
+            typeBuilder.Add("System_MR_Rack_Pinion", 19);
+            typeBuilder.Add("System_E_Inductor", 20);
+            typeBuilder.Add("System_E_Capacitor", 21);
+            typeBuilder.Add("System_E_Resistor", 22);
+            typeBuilder.Add("System_E_Transformer", 23);
+            typeBuilder.Add("System_E_Junction", 24);
+            typeBuilder.Add("System_E_Ground", 25);
+            typeBuilder.Add("System_E_Current_Input", 26);
+            typeBuilder.Add("System_E_Voltage_Input", 27);
+            typeBuilder.Add("System_O_PM_Motor", 28);
+            typeBuilder.Add("System_O_VC_Transducer", 29);
+
+            typeIDDict = typeBuilder.ToImmutable();
         }
 
         [JsonProperty]
         protected List<Element> elements;
         [JsonProperty]
         protected List<Edge> edges;
-        [JsonProperty]
+        // Leaving this out of JSON for now because we're not expecting to use it currently
         protected Dictionary<string, double> header;
 
         /// <summary>
@@ -52,29 +93,7 @@ namespace BoGLWeb {
             this.edges = edges;
         }
 
-        /// <summary>
-        /// Adds an element to the system diagram
-        /// </summary>
-        /// <param name="name">The name of the element</param>
-        public void addElement(string name) {
-            elements.Add(new Element(name));
-        }
-
-        /// <summary>
-        /// Adds an edge to the system diagram
-        /// </summary>
-        /// <param name="e1">The first element</param>
-        /// <param name="e2">The second element</param>
-        public void addEdge(Element e1, Element e2) {
-            edges.Add(new Edge(e1, e2));
-        }
-
-        /// <summary>
-        /// Returns the element at a given position in the element list
-        /// </summary>
-        /// <param name="pos">The position of the element</param>
-        /// <returns>The element at the given position</returns>
-        public Element getElement(int pos) {
+       public Element getElement(int pos) {
             return elements[pos];
         }
 
@@ -108,6 +127,7 @@ namespace BoGLWeb {
         //TODO Figure out if this should be a string
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
+            Console.WriteLine("CREATING SYSTEM DIAGRAM FROM XML");
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 becuase then we have an error
@@ -146,11 +166,14 @@ namespace BoGLWeb {
                 string name = "";
                 double x = 0.0;
                 double y = 0.0;
+                int type = -1;
                 List<string> modifiers = new List<string>();
 
                 string tok = tokenQueue.Dequeue();
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
+                    type = typeIDDict.GetValueOrDefault(name);
+                    Console.Write("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
@@ -202,10 +225,11 @@ namespace BoGLWeb {
                 }
 
                 //Add element to element list
-                Element e = new Element(name, x, y);
+                Element e = new Element(type, name, x, y);
                 foreach (string str in modifiers) {
+                    Console.WriteLine("I FOUND THIS GUY: " + str);
                     if (str.Contains("VELOCITY")) {
-                        e.setVelocity(str);
+                        e.setVelocity(Int32.Parse(str.Replace("VELOCITY", "")));
                     } else {
                         e.addModifier(str);
                     }
@@ -235,8 +259,7 @@ namespace BoGLWeb {
                     while (!foundCloseBrace) {
                         int e1 = 0;
                         int e2 = 0;
-                        int velocity = -1;
-
+                        string velocity = "";
 
                         //Check element1
                         string tok = arcsTokenQueue.Dequeue();
@@ -263,16 +286,18 @@ namespace BoGLWeb {
                         //Modifiers
                         tok = arcsTokenQueue.Dequeue();
                         //TODO Confirm that this is the only modifier
+                        Console.WriteLine(tok);
                         if (tok.Equals("velocity")) {
-                            velocity = Convert.ToInt32(arcsTokenQueue.Dequeue());
+                            velocity = "VELOCITY" + Convert.ToInt32(arcsTokenQueue.Dequeue());
+                            Console.WriteLine(velocity);
                         } else if (tok.Equals("}")) {
                             foundCloseBrace = true;
                         }
 
-                        if (velocity == -1) {
-                            arcs.Add(new Edge(elements[e1], elements[e2]));
+                        if (!velocity.Contains("VELOCITY")) {
+                            arcs.Add(new Edge(elements[e1], elements[e2], e1, e2));
                         } else {
-                            arcs.Add(new Edge(elements[e1], elements[e2], velocity));
+                            arcs.Add(new Edge(elements[e1], elements[e2], e1, e2, Convert.ToInt32(velocity.Replace("VELOCITY", ""))));
                             foundCloseBrace = arcsTokenQueue.Dequeue().Equals("}");
                         }
                     }
@@ -285,7 +310,6 @@ namespace BoGLWeb {
             }
 
             //Create system diagram
-            Console.WriteLine("HERE");
             return new SystemDiagram(header, elements, arcs);
         }
 
@@ -426,9 +450,9 @@ namespace BoGLWeb {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
                 builder.AppendLine("<localLabels>");
-                builder.AppendLine("<string>" + element.getName().Replace(@"\d", "") + "</string>");
+                Regex r = new Regex(@"\d+", RegexOptions.None);
+                builder.AppendLine("<string>" + r.Replace(element.getName(), "") + "</string>");
                 foreach (var n in element.getLabelList()) {
-                    //This was in braces, don't know why. Removed them so that might cause a problem later
                     builder.AppendLine("<string>" + n + "</string>");
                 }
                 builder.AppendLine("</localLabels>");
@@ -499,40 +523,38 @@ namespace BoGLWeb {
             }
         }
 
+        //Create .bogl string
+        public string generateBoGLString() {
+            //TODO Implement
+            return "";
+        }
+
         public class Element {
-            [JsonProperty]
             protected string name;
             [JsonProperty]
-            protected Dictionary<string, bool> modifiers;
+            protected int type;
             [JsonProperty]
-            protected string velocityDir;
-
-            //For graph visualization
-            //TODO Create a way to modify these values
-            private double x, y;
-
-            /// <summary>
-            /// Creates an element of the system diagram
-            /// </summary>
-            /// <param name="name">The name for the element</param>
-            public Element(string name) {
-                this.name = name;
-                this.modifiers = generateModifierDictionary();
-                velocityDir = "";
-            }
+            protected double x;
+            [JsonProperty]
+            protected double y;
+            [JsonProperty]
+            protected List<int> modifiers;
+            [JsonProperty]
+            protected int velocity;
 
             /// <summary>
             /// Creates an element of the system diagram
             /// </summary>
+            /// <param name="type">The id of the object</param>
             /// <param name="name">The name of the element</param>
             /// <param name="x">The x position of the element</param>
             /// <param name="y">The y position of the element</param>
-            public Element(string name, double x, double y) {
+            public Element(int type, string name, double x, double y) {
+                this.type = type;
                 this.name = name;
-                this.modifiers = generateModifierDictionary();
-                velocityDir = "";
                 this.x = x;
                 this.y = y;
+                modifiers = new();
             }
 
             //TODO Error checking
@@ -541,7 +563,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
-                modifiers[name] = true;
+                modifiers.Add(modifierIDDict.GetValueOrDefault(name));
             }
 
             //TODO Error checking
@@ -549,8 +571,8 @@ namespace BoGLWeb {
             /// Adds a velocity to the eleemtn
             /// </summary>
             /// <param name="vel">The direction of the velocity</param>
-            public void setVelocity(string vel) {
-                velocityDir = vel;
+            public void setVelocity(int vel) {
+                velocity = vel;
             }
 
             /// <summary>
@@ -569,14 +591,12 @@ namespace BoGLWeb {
                 List<string> strings = new List<string>();
 
                 foreach (var modifier in modifiers) {
-                    if (modifier.Value) {
-                        strings.Add(modifierLabelDict[modifier.Key]);
-                    }
+                    strings.Add(modifier.ToString());
                 }
 
-                if (!velocityDir.Equals("")) {
+                if (this.velocity != 0){
                     strings.Add("veladded");
-                    strings.Add("vel" + velocityDir.Split(" ")[1]);
+                    strings.Add("vel" + velocity);
                 }
 
                 return strings;
@@ -590,37 +610,23 @@ namespace BoGLWeb {
                 string output = "Element\r\n ";
                 output += name + "\r\n";
 
-                foreach (KeyValuePair<string, bool> modifier in modifiers) {
-                    output += modifier.Key + " " + modifier.Value + "\r\n";
+                foreach (int modifier in modifiers) {
+                    output += modifier + "\r\n";
                 }
 
-                output += velocityDir + "\r\n";
+                output += velocity + "\r\n";
 
                 return output;
             }
         }
 
-        /// <summary>
-        /// Creates a base modifier dictionary
-        /// </summary>
-        /// <returns>A modifier dictionary</returns>
-        public static Dictionary<string, bool> generateModifierDictionary() {
-            Dictionary<string, bool> modifierDictionary = new Dictionary<string, bool>();
-            modifierDictionary.Add("MASS", false);
-            modifierDictionary.Add("INTERTIA", false);
-            modifierDictionary.Add("STIFFNESS", false);
-            modifierDictionary.Add("FRICTION", false);
-            modifierDictionary.Add("DAMPING", false);
-            modifierDictionary.Add("PARALLEL", false);
-            modifierDictionary.Add("TOOTH WEAR", false);
-            return modifierDictionary;
-        }
-
         public class Edge {
-            [JsonProperty]
             protected readonly Element e1;
-            [JsonProperty]
             protected readonly Element e2;
+            [JsonProperty]
+            protected readonly int source;
+            [JsonProperty]
+            protected readonly int target;
             [JsonProperty]
             protected readonly int velocity;
 
@@ -629,10 +635,12 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
-            public Edge(Element e1, Element e2) {
+            public Edge(Element e1, Element e2, int source, int target) {
                 this.e1 = e1;
                 this.e2 = e2;
-                this.velocity = -1;
+                this.source = source;
+                this.target = target;
+                this.velocity = 0;
             }
 
             /// <summary>
@@ -641,9 +649,11 @@ namespace BoGLWeb {
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
             /// <param name="velocity">The velocity of the element</param>
-            public Edge(Element e1, Element e2, int velocity) {
+            public Edge(Element e1, Element e2, int source, int target, int velocity) {
                 this.e1 = e1;
                 this.e2 = e2;
+                this.source = source;
+                this.target = target;
                 this.velocity = velocity;
             }
 
@@ -668,7 +678,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A string</returns>
             public string toString() {
-                return velocity == -1 ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity + "\r\n";
+                return velocity == 0 ? "Arc " + e1.getName() + " to " + e2.getName() + "\r\n" : "Arc " + e1.getName() + " to " + e2.getName() + " has velocity " + velocity + "\r\n";
             }
         }
     }

@@ -24,13 +24,13 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace GraphSynth.Representation
-{
+namespace BoGLWeb.BaseClasses {
     /* in order to "show" xml serialization that these are inherited from node and arc,
      * we need to add these two XmlInclude lines to the declaration of node and arc.
      * If you are developing your own inherited classes, remember to add this. NOTE: there
@@ -43,8 +43,7 @@ namespace GraphSynth.Representation
     /// </summary>
     [XmlInclude(typeof(vertex))]
     [XmlInclude(typeof(ruleNode))]
-    public class node : graphElement
-    {
+    public class node : graphElement {
         #region Fields & Properties
 
         #region List of arcs connected to the node
@@ -57,9 +56,10 @@ namespace GraphSynth.Representation
         /// </summary>
         /// <value>The arcs.</value>
         [XmlIgnore]
-        public List<graphElement> arcs
-        {
-            get { return _arcs ?? (_arcs = new List<graphElement>()); }
+        public List<graphElement> arcs {
+            get {
+                return _arcs ?? (_arcs = new List<graphElement>());
+            }
         }
 
         /* additionally these are divided into arcs coming into the 
@@ -73,12 +73,10 @@ namespace GraphSynth.Representation
         /// </summary>
         /// <value>The arcs to.</value>
         [XmlIgnore]
-        public List<arc> arcsTo
-        {
-            get
-            {
-                return arcs.Where(a => (a is arc)
-                    && (((arc)a).To == this)).Cast<arc>().ToList();
+        public List<arc> arcsTo {
+            get {
+                return arcs.Where(a => a is arc
+                    && ((arc) a).To == this).Cast<arc>().ToList();
             }
         }
 
@@ -88,12 +86,10 @@ namespace GraphSynth.Representation
         /// </summary>
         /// <value>The arcs from.</value>
         [XmlIgnore]
-        public List<arc> arcsFrom
-        {
-            get
-            {
-                return arcs.Where(a => (a is arc)
-                    && (((arc)a).From == this)).Cast<arc>().ToList();
+        public List<arc> arcsFrom {
+            get {
+                return arcs.Where(a => a is arc
+                    && ((arc) a).From == this).Cast<arc>().ToList();
             }
         }
 
@@ -114,19 +110,25 @@ namespace GraphSynth.Representation
         ///   Gets or sets the X coordinate.
         /// </summary>
         /// <value>The X coordinate.</value>
-        public double X { get; set; }
+        public double X {
+            get; set;
+        }
 
         /// <summary>
         ///   Gets or sets the Y coordinate.
         /// </summary>
         /// <value>The Y coordinate.</value>
-        public double Y { get; set; }
+        public double Y {
+            get; set;
+        }
 
         /// <summary>
         ///   Gets or sets the Z coordinate.
         /// </summary>
         /// <value>The Z coordinate.</value>
-        public double Z { get; set; }
+        public double Z {
+            get; set;
+        }
 
 
         /// <summary>
@@ -134,9 +136,10 @@ namespace GraphSynth.Representation
         ///   Currently this is used in recognition of a rule when the strictDegreeMatch is checked.
         /// </summary>
         /// <value>The degree.</value>
-        public int degree
-        {
-            get { return arcs.Count; }
+        public int degree {
+            get {
+                return arcs.Count;
+            }
         }
         #endregion
 
@@ -151,8 +154,7 @@ namespace GraphSynth.Representation
         ///   Initializes a new instance of the <see cref = "node" /> class.
         /// </summary>
         /// <param name = "newName">The new name.</param>
-        public node(string newName)
-        {
+        public node(string newName) {
             name = newName;
         }
 
@@ -166,8 +168,7 @@ namespace GraphSynth.Representation
         ///   Copies this instance.
         /// </summary>
         /// <returns></returns>
-        public virtual node copy()
-        {
+        public virtual node copy() {
             var copyOfNode = new node();
             copy(copyOfNode);
             return copyOfNode;
@@ -177,8 +178,7 @@ namespace GraphSynth.Representation
         ///   Copies the specified copy of node.
         /// </summary>
         /// <param name = "copyOfNode">The copy of node.</param>
-        public virtual void copy(node copyOfNode)
-        {
+        public virtual void copy(node copyOfNode) {
             base.copy(copyOfNode);
 
             copyOfNode.X = X;
@@ -197,30 +197,26 @@ namespace GraphSynth.Representation
     ///   nodes with spatial information. At any rate there is no need to have these inherited 
     ///   classes, but I keep them for backwards-compatible purposes.
     /// </summary>
-    public class vertex : node
-    {
+    public class vertex : node {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "vertex" /> class.
         /// </summary>
         /// <param name = "name">The name.</param>
         public vertex(string name)
-            : base(name)
-        {
+            : base(name) {
         }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "vertex" /> class.
         /// </summary>
-        public vertex()
-        {
+        public vertex() {
         }
 
         /// <summary>
         ///   Copies this instance.
         /// </summary>
         /// <returns></returns>
-        public override node copy()
-        {
+        public override node copy() {
             var copyOfVertex = new vertex(name);
             base.copy(copyOfVertex);
             return copyOfVertex;

@@ -845,6 +845,9 @@
           }
         }
       },
+      "NuGet.CommandLine/6.3.1": {
+        "type": "package"
+      },
       "NuGet.Frameworks/5.11.0": {
         "type": "package",
         "compile": {
@@ -1861,6 +1864,9 @@
             "related": ".xml"
           }
         }
+      },
+      "NuGet.CommandLine/6.3.1": {
+        "type": "package"
       },
       "NuGet.Frameworks/5.11.0": {
         "type": "package",
@@ -3908,6 +3914,22 @@
         "packageIcon.png"
       ]
     },
+    "NuGet.CommandLine/6.3.1": {
+      "sha512": "GYlR2Uq/cbL9anpMulAceUetsO33qT3VtJgz491s6Msv3+eTdKN7GboRQP9LXbL6tgR9XK3G2NHbpPvOg2p81A==",
+      "type": "package",
+      "path": "nuget.commandline/6.3.1",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "nuget.commandline.6.3.1.nupkg.sha512",
+        "nuget.commandline.nuspec",
+        "tools/NuGet.exe",
+        "tools/NuGet.pdb"
+      ]
+    },
     "NuGet.Frameworks/5.11.0": {
       "sha512": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q==",
       "type": "package",
@@ -4267,7 +4289,8 @@
       "NUnit >= 3.13.3",
       "NUnit3TestAdapter >= 4.2.1",
       "Newtonsoft.Json >= 13.0.1",
-      "Newtonsoft.Json.Schema >= 3.0.14"
+      "Newtonsoft.Json.Schema >= 3.0.14",
+      "NuGet.CommandLine >= 6.3.1"
     ]
   },
   "packageFolders": {
@@ -4351,6 +4374,12 @@
           "Newtonsoft.Json.Schema": {
             "target": "Package",
             "version": "[3.0.14, )"
+          },
+          "NuGet.CommandLine": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[6.3.1, )"
           }
         },
         "imports": [

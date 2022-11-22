@@ -1,6 +1,7 @@
 ﻿using GraphSynth.Representation;
 using System.Xml.Serialization;
 using System.Xml.Linq;
+using BoGLWeb.BaseClasses;
 
 namespace BoGLWeb {
     public sealed class RuleSetMap{

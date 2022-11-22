@@ -367,3 +367,4 @@ BoGLWeb/PlaywrightTests/obj/*
 BoGLWeb/PlaywrightTests/bin/*
 
 BoGLWeb/wwwroot/build
+BoGLWeb/obj
