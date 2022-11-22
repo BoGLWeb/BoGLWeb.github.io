@@ -1,4 +1,5 @@
 ﻿@inject IJSRuntime JS
+@inject NavigationManager NavManager
 @page "/"
 @using System.Text;
 
@@ -50,7 +51,7 @@
                             <MenuItem Key="elec:1" OnClick="loadLRCCircuit">LRC Circuit</MenuItem>
                         </SubMenu>
                     </SubMenu>
-                    <MenuItem Key="setting:4">Report Bugs</MenuItem>
+                    <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
                     <MenuItem Key="setting:5">About BoGL</MenuItem>
                 </SubMenu>
                 <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
@@ -376,5 +377,9 @@
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
         await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
+    }
+
+    public void reportBugs() {
+        NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
 }
