@@ -95,7 +95,7 @@
                         <ChildContent>
                             <Button @onclick="generateButtonClicked">Generate</Button>
                             <Button @onclick="loadFile">LoadFile</Button>
-                            <Progress Percent=@loadPercent/>
+                            <Progress Percent=@loadPercent ShowInfo="false"/>
                             <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
