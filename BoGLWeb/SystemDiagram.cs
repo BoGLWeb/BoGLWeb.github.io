@@ -525,8 +525,47 @@ namespace BoGLWeb {
 
         //Create .bogl string
         public string generateBoGLString() {
-            //TODO Implement
-            return "";
+            StringBuilder sb = new();
+
+            sb.Append("[Header]\n");
+            foreach (KeyValuePair<string, double> entry in header) {
+                sb.Append(entry.Key);
+                sb.Append(" ");
+                sb.Append(entry.Value);
+                sb.Append('\n');
+            }
+
+            sb.Append("[Elements]\n");
+            foreach (Element e in elements) {
+                sb.Append("{\n");
+                sb.Append("name");
+                sb.Append(" ");
+                sb.Append(e.getName());
+                sb.Append("\n");
+                sb.Append("x");
+                sb.Append(" ");
+                sb.Append(e.getX());
+                sb.Append("\n");
+                sb.Append("y");
+                sb.Append(" ");
+                sb.Append(e.getY());
+                sb.Append('\n');
+                sb.Append("modifiers {\n");
+                foreach (int mod in e.getModifiers()) {
+                    sb.Append(mod);
+                    sb.Append('\n');
+                }
+                
+                if (e.getVelocity() != 0){
+                    sb.Append("VELOCITY");
+                    sb.Append(" ");
+                    sb.Append(e.getVelocity());
+                }
+
+                sb.Append("}");
+            }
+
+            return sb.ToString();
         }
 
         public class Element {
@@ -575,12 +614,28 @@ namespace BoGLWeb {
                 velocity = vel;
             }
 
+            public List<int> getModifiers() {
+                return modifiers;
+            }
+
+            public int getVelocity() {
+                return velocity;
+            }
+
             /// <summary>
             /// Returns the name of the element 
             /// </summary>
             /// <returns>The name of the element</returns>
             public string getName() {
                 return name;
+            }
+
+            public double getX() {
+                return x;
+            }
+
+            public double getY() {
+                return y;
             }
 
             /// <summary>
