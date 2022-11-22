@@ -548,15 +548,6 @@ namespace BoGLWeb {
 
             public Element(int type, string name, double x, double y) {
                 this.type = type;
-
-            /// <summary>
-            /// Creates an element of the system diagram
-            /// </summary>
-            /// <param name="name">The name for the element</param>
-            public Element(string name) {
-                this.name = name;
-                this.modifiers = generateModifierDictionary();
-                velocityDir = "";
             }
 
             /// <summary>
