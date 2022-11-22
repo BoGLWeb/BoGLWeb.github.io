@@ -6,19 +6,23 @@ using BoGLWeb.BaseClasses;
 namespace BoGLWeb {
     public sealed class RuleSetMap{
 
-        //Singleton
+        //Singleton Setup
         private static RuleSetMap instance = null;
         private static readonly object padlock = new object();
 
-        //Other Stuff
+        //Class variables
         private Dictionary<string, ruleSet> ruleSetMap;
         private int numLoaded;
 
-        RuleSetMap() {
+        private RuleSetMap() {
             ruleSetMap = new Dictionary<string, ruleSet>();
             numLoaded = 0;
         }
 
+        /// <summary>
+        /// Returns the singleton instance of the RuleSetMap
+        /// </summary>
+        /// <returns>An instance of RuleSetMap</returns>
         public static RuleSetMap getInstance() {
             lock (padlock) {
                 if (instance == null) {
@@ -28,21 +32,33 @@ namespace BoGLWeb {
             }            
         }
 
+        /// <summary>
+        /// Loads the ruleset with a given name
+        /// </summary>
+        /// <param name="name">The name of the ruleset</param>
+        /// <returns>The completed Task</returns>
         public async Task loadRuleSet(string name) {
+            //Ensure that we only load each rule once
             if (ruleSetMap.ContainsKey(name)) {
                 Console.WriteLine("Rule " + name + " already loaded.");
                 return;
             }
 
+            //Setup HTTP client that we will use to load the file
             HttpClient client = new HttpClient();
 
+            //Load the file as plain text
             //TODO Figure out if this URL is okay, or is there something else that it should be
             HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name + ".rsxml");
             var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
+
+            //Deserialize the ruleset
             ruleSetMap.Add(name, (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
             var numRules = ruleSetMap[name].ruleFileNames.Count;
             string ruleDir = ruleSetMap[name].rulesDir;
+
+            //Load rules for the ruleset
             List<string> ruleFileNames = ruleSetMap[name].ruleFileNames;
 
             var progStart = 5;
@@ -88,14 +104,24 @@ namespace BoGLWeb {
             ruleSetMap[name].rules = rules;
         }
 
+        /// <summary>
+        /// Returns the number of loaded rules
+        /// </summary>
+        /// <returns>number of loaded rules as an int</returns>
         public int getNumRules() {
             return ruleSetMap.Count;
         }
 
+        /// <summary>
+        /// Returns a ruleset
+        /// </summary>
+        /// <param name="name">The name of the ruleset</param>
+        /// <returns>A ruleset</returns>
         public ruleSet getRuleSet(string name) {
             return ruleSetMap[name];
         }
 
+        //Helper methods from BoGL Desktop
         private grammarRule DeSerializeRuleFromXML(string xmlString)
         {
         var stringReader = new StringReader(xmlString);

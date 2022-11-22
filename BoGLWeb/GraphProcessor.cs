@@ -4,7 +4,12 @@ using BoGLWeb.Prop;
 namespace BoGLWeb {
     public class BondGraphFactory {
 
-        //First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs
+        /// <summary>
+        /// Creates a set of bondgraphs from a designGraph
+        /// </summary>
+        /// <param name="systemGraph">The design graph to process</param>
+        /// <returns>First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs</returns>
+        /// <exception cref="Exception">Thrown if the any generated BondGraphs are null</exception>
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
             Console.WriteLine("System Graph");
             Console.WriteLine(systemGraph.ToString());
@@ -74,6 +79,8 @@ namespace BoGLWeb {
             generateBondGraph();
         }
 
+        //Mainly code from desktop BoGL
+        //TODO cleanup variable names and old comments
         private void generateBondGraph() {
             //now remove all the labels that we added
             //need to return bool value if vel directions are fine or not. 
