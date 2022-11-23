@@ -119,6 +119,43 @@
                 <div class="card-container">
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
+                            <div id="modifierMenu">
+                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                                    <ChildContent>
+                                        <Panel Header="Modifers" Key="1">
+                                            <div id="modifierCheckboxWrapper">
+                                                <Checkbox Checked="@checkValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                                <Checkbox Checked="@checkValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                                <Checkbox Checked="@checkValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                                <Checkbox Checked="@checkValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                                <Checkbox Checked="@checkValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                                <Checkbox Checked="@checkValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                                <Checkbox Checked="@checkValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <div style="font-size: 12px">Velocity Direction</div>
+                                                <div id="velocities">
+                                                    <div id="clearVelocityWrapper">
+                                                        <Button Class="bogl_button">Clear<br />Velocity</Button>
+                                                    </div>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px" Class="longArrow"><div class="arrowButton topArrow">⮢</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px" Class="longArrow"><div class="arrowButton topArrow">⮣</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮥</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px" Class="tallArrow"><div class="arrowButton">⮧</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮡</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮠</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px" Class="tallArrow"><div class="arrowButton">⮦</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮤</div></Button>
+                                                </div>
+                                            </div>
+                                        </Panel>
+                                    </ChildContent>
+                                    <ExpandIconTemplate>
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                                    </ExpandIconTemplate>
+                                </Collapse>
+                            </div>
                             <div id="systemDiagram"></div>
                         </TabPane>
                         <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
@@ -138,6 +175,36 @@
 </body>
 
 @code {
+    private static Index? _app;
+
+    public Index() {
+        _app = this;
+    }
+
+    public static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+
+    [JSInvokable]
+    public static void ClearCheckboxes() {
+        for (int i = 0; i < Index.checkValues.Length; i++) {
+            Index.checkValues[i] = false;
+        }
+        _app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void SetCheckboxes(int[] indeces) {
+        for (int i = 0; i < Index.checkValues.Length; i++) {
+            Index.checkValues[i] = indeces.Contains(i);
+        }
+        _app?.StateHasChanged();
+    }
+
+    public async void CheckChange(bool b, int i) {
+        Index.checkValues[i] = b;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setModifier", i, b);
+    }
+
     private readonly List<string> ruleNames = new List<string>();
     private readonly double totalRules = 19.0;
     private string fileToLoad = "";

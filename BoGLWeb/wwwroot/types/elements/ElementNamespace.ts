@@ -1,13 +1,24 @@
 ﻿import { Category } from "./Category";
 import { ElementType } from "./ElementType";
+import { Modifier } from "./Modifier";
 
 export namespace ElementNamespace {
     export const categories: Category[] = [
-        new Category("Basic Mechanical Translation", "mechTrans"),
-        new Category("Basic Mechanical Rotation", "mechRot"),
-        new Category("Transmission Elements", "transElem"),
-        new Category("Electrical", "electrical"),
-        new Category("Actuators", "actuators")
+        new Category(0, "Basic Mechanical Translation", "mechTrans"),
+        new Category(1, "Basic Mechanical Rotation", "mechRot"),
+        new Category(2, "Transmission Elements", "transElem"),
+        new Category(3, "Electrical", "electrical"),
+        new Category(4, "Actuators", "actuators")
+    ];
+
+    export const modifiers: Modifier[] = [
+        new Modifier(0, "Mass"),
+        new Modifier(1, "Inertia"),
+        new Modifier(2, "Stiffness"),
+        new Modifier(3, "Friction"),
+        new Modifier(4, "Damping"),
+        new Modifier(5, "Parallel"),
+        new Modifier(6, "Tooth Wear")
     ];
 
     export const elementTypes: ElementType[] = [
