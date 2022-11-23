@@ -51,7 +51,7 @@
                         </SubMenu>
                     </SubMenu>
                     <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
-                    <MenuItem Key="setting:5">About BoGL</MenuItem>
+                    <MenuItem Key="setting:5" OnClick="onAboutDialogOpen">About BoGL</MenuItem>
                 </SubMenu>
                 <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
                     @{
@@ -171,6 +171,9 @@
             </div>
         </main>
     </div>
+    @if (aboutDialogOpen) {
+        <BoGLWeb.Components.AboutModal Title="About BoGL Web" OnClose="@onAboutDialogClose"></BoGLWeb.Components.AboutModal>
+    }
 </body>
 
 @code {
@@ -447,5 +450,17 @@
 
     public void reportBugs() {
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
+    }
+
+    public bool aboutDialogOpen { get; set; }
+
+    private void onAboutDialogClose(bool accepted) {
+        aboutDialogOpen = false;
+        base.StateHasChanged();
+    }
+
+    private void onAboutDialogOpen() {
+        aboutDialogOpen = true;
+        base.StateHasChanged();
     }
 }
