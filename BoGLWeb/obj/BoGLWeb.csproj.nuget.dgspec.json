@@ -42,7 +42,7 @@
           "dependencies": {
             "AntDesign": {
               "target": "Package",
-              "version": "[0.12.2, )"
+              "version": "[0.12.7, )"
             },
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
