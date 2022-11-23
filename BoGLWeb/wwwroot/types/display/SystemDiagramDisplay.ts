@@ -324,6 +324,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     this.elements.splice(this.elements.indexOf(selectedNode), 1);
                     graph.spliceLinksForNode(selectedNode);
                     state.selectedElement = null;
+                    this.updateModifierMenu();
                     this.updateGraph();
                 } else if (selectedEdge) {
                     this.bonds.splice(this.bonds.indexOf(selectedEdge), 1);

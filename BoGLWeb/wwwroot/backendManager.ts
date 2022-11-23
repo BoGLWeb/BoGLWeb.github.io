@@ -95,6 +95,17 @@ export namespace backendManager {
             anchorElement.remove();
             URL.revokeObjectURL(url);
         }
+
+        public setModifier(i: number, value: boolean) {
+            let element = (<any>window).systemDiagram.state.selectedElement;
+            if (element) {
+                if (value) { // adding modifier
+                    element.modifiers.push(i);
+                } else { // removing modifier
+                    element.modifiers.splice(element.modifiers.indexOf(i), 1);
+                }
+            }
+        }
     }
 
     export function getBackendManager(): BackendManager {

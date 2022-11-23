@@ -133,7 +133,6 @@ export class BaseGraphDisplay {
 
     fullRenderElements() {
         // update existing elements
-        console.log(this.elements);
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 

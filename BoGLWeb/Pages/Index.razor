@@ -123,13 +123,13 @@
                                     <ChildContent>
                                         <Panel Header="Modifers" Key="1">
                                             <div id="modifierCheckboxWrapper">
-                                                <Checkbox Checked="@checkValues[0]">Mass</Checkbox>
-                                                <Checkbox Checked="@checkValues[1]">Inertia</Checkbox>
-                                                <Checkbox Checked="@checkValues[2]">Stiffness</Checkbox>
-                                                <Checkbox Checked="@checkValues[3]">Friction</Checkbox>
-                                                <Checkbox Checked="@checkValues[4]">Damping</Checkbox>
-                                                <Checkbox Checked="@checkValues[5]">Parallel</Checkbox>
-                                                <Checkbox Checked="@checkValues[6]">Tooth Wear</Checkbox>
+                                                <Checkbox Checked="@checkValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                                <Checkbox Checked="@checkValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                                <Checkbox Checked="@checkValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                                <Checkbox Checked="@checkValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                                <Checkbox Checked="@checkValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                                <Checkbox Checked="@checkValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                                <Checkbox Checked="@checkValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
                                             </div>
                                             <hr />
                                             <div>
@@ -174,7 +174,7 @@
 </body>
 
 @code {
-    private static Index _app;
+    private static Index? _app;
 
     public Index() {
         _app = this;
@@ -187,7 +187,7 @@
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
         }
-        _app.StateHasChanged();
+        _app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -195,7 +195,13 @@
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = indeces.Contains(i);
         }
-        _app.StateHasChanged();
+        _app?.StateHasChanged();
+    }
+
+    public async void CheckChange(bool b, int i) {
+        Index.checkValues[i] = b;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setModifier", i, b);
     }
 
     private readonly List<string> ruleNames = new List<string>();
