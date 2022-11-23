@@ -27,12 +27,14 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Logistics;
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /* Here is the new overload of grammarRule that includes the ability to view
      * the graph as a 2-D shape where nodes are points or vertices, and arcs are
      * lines or edges. */

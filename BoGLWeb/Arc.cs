@@ -4,16 +4,13 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows;
 
-namespace AVL_Prototype_1
-{
-    public class Arc
-    {
+namespace BoGLWeb {
+    public class Arc {
         public GraphElement element1;
         public GraphElement element2;
 
         public int? velocity;
-        public bool canHaveVelocity
-        {
+        public bool canHaveVelocity {
             get => velocity != null;
         }
 
@@ -21,24 +18,20 @@ namespace AVL_Prototype_1
 
         protected Graph graph;
 
-        public bool selected
-        {
+        public bool selected {
             get => graph.selectedArcs.Contains(this);
-            set
-            {
+            set {
                 if (deleted)
                     return;
 
             }
         }
 
-        protected Arc()
-        {
+        protected Arc() {
             // Default constructor...
         }
 
-        public Arc(Graph graph, GraphElement element1, GraphElement element2)
-        {
+        public Arc(Graph graph, GraphElement element1, GraphElement element2) {
             this.element1 = element1;
             this.element2 = element2;
             this.graph = graph;
@@ -58,8 +51,7 @@ namespace AVL_Prototype_1
         }
 
         // Deletes all WPF controls and references to this arc
-        public virtual void delete()
-        {
+        public virtual void delete() {
             element1.connections.Remove(this);
             element2.connections.Remove(this);
 
@@ -70,8 +62,7 @@ namespace AVL_Prototype_1
 
             deleted = true;
         }
-        public string serialize(List<GraphElement> relativeList)
-        {
+        public string serialize(List<GraphElement> relativeList) {
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("{");
@@ -88,8 +79,7 @@ namespace AVL_Prototype_1
             return sb.ToString();
         }
 
-        public string serialize()
-        {
+        public string serialize() {
             return serialize(graph.elements);
         }
 

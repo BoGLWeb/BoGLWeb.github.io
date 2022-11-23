@@ -4,13 +4,10 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-namespace AVL_Prototype_1
-{
-    class BondGraphElement : GraphElement
-    {
+namespace BoGLWeb {
+    class BondGraphElement : GraphElement {
         string bondGraphText;
-        public BondGraphElement(Graph graph, string elementName, string bondGraphText, bool topLeft = false)
-        {
+        public BondGraphElement(Graph graph, string elementName, string bondGraphText, bool topLeft = false) {
             this.graph = graph;
             this.elementName = elementName;
             this.bondGraphText = bondGraphText;

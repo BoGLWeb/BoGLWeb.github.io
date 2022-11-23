@@ -26,13 +26,15 @@
  *     Please find further details and contact information on GraphSynth
  *     at http://www.GraphSynth.com.
  *************************************************************************/
+using BoGLWeb.BaseClasses;
+using BoGLWeb.Logistics;
+using BoGLWeb.Prop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace GraphSynth.Representation
-{
+namespace GraphSynth.Representation {
     /* As far as I can tell, this is the first time the idea of a rule set
      * has been developed to this degree. In many applications we find that 
      * different sets of rules are needed. Many of these characteristics

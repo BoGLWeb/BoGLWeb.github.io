@@ -1,6 +1,9 @@
-﻿@page "/"
+﻿@inject IJSRuntime JS
+@inject NavigationManager NavManager
+@page "/"
+@using System.Text;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>BoGLWeb</PageTitle>
 
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
@@ -14,11 +17,10 @@
                 </li>
                 <SubMenu title="File" Class="topMenu">
                     <MenuItem Key="setting:1">New</MenuItem>
-                    <MenuItem Key="setting:2">Open</MenuItem>
+                    <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
                     <MenuItem Key="setting:3">Save</MenuItem>
-                    <MenuItem Key="setting:4">Save As</MenuItem>
+                    <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
-                    <MenuItem Key="setting:6">Exit</MenuItem>
                 </SubMenu>
                 <SubMenu title="Edit" Class="topMenu">
                     <MenuItem Key="setting:1">Cut</MenuItem>
@@ -33,22 +35,22 @@
                     <MenuItem Key="setting:2">Tutorial</MenuItem>
                     <SubMenu Title="Example Files">
                         <SubMenu Title="Mechanical Translation">
-                            <MenuItem Key="mt:1">Basic Two Mass System - 1</MenuItem>
-                            <MenuItem Key="mt:2">Basic Two Mass System - 2</MenuItem>
-                            <MenuItem Key="mt:3">Basic Two Mass System - 3</MenuItem>
-                            <MenuItem Key="mt:4">Quarter Car Model</MenuItem>
-                            <MenuItem Key="mt:5">Basic Mass, Spring System with Directions</MenuItem>
-                            <MenuItem Key="mt:6">Spring and Damper with Force</MenuItem>
+                            <MenuItem Key="mt:1" OnClick="loadBasicTwoMass">Basic Two Mass System - 1</MenuItem>
+                            <MenuItem Key="mt:2" OnClick="loadBasicTwoMass2">Basic Two Mass System - 2</MenuItem>
+                            <MenuItem Key="mt:3" OnClick="loadBasicTwoMass3">Basic Two Mass System - 3</MenuItem>
+                            <MenuItem Key="mt:4" OnClick="loadBasicQuarterCar">Quarter Car Model</MenuItem>
+                            <MenuItem Key="mt:5" OnClick="loadBasicMassSpringDirections">Basic Mass, Spring System with Directions</MenuItem>
+                            <MenuItem Key="mt:6" OnClick="loadSpringAndDamper">Spring and Damper with Force</MenuItem>
                         </SubMenu>
                         <SubMenu Title="Mechanical Rotation">
-                            <MenuItem Key="mr:1">Rack and Pinion System</MenuItem>
-                            <MenuItem Key="mr:2">Motor, Shaft and Gear Pair</MenuItem>
+                            <MenuItem Key="mr:1" OnClick="loadRackandPinion">Rack and Pinion System</MenuItem>
+                            <MenuItem Key="mr:2" OnClick="loadMotorShaft">Motor, Shaft and Gear Pair</MenuItem>
                         </SubMenu>
                         <SubMenu Title="Electrical">
-                            <MenuItem Key="elec:1">LRC Circuit</MenuItem>
+                            <MenuItem Key="elec:1" OnClick="loadLRCCircuit">LRC Circuit</MenuItem>
                         </SubMenu>
                     </SubMenu>
-                    <MenuItem Key="setting:4">Report Bugs</MenuItem>
+                    <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
                     <MenuItem Key="setting:5">About BoGL</MenuItem>
                 </SubMenu>
                 <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
@@ -84,15 +86,6 @@
                     </Button>
                 </li>
             </Menu>
-
-            @code
-            {
-                RenderFragment sub1Title =
-                @<Template>
-                    <Icon Type="setting" Theme="outline"></Icon>
-                    Navigation Three - Submenu
-                </Template>;
-            }
             <div class="pageContainer">
                 <div id="graphMenu">
                     <Collapse Bordered="false">
@@ -100,6 +93,10 @@
                             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
                         </ExpandIconTemplate>
                         <ChildContent>
+                            <Button @onclick="generateButtonClicked">Generate</Button>
+                            <Button @onclick="loadFile">LoadFile</Button>
+                            <Progress Percent=@loadPercent ShowInfo="false"/>
+                            <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
                             </Panel>
@@ -121,16 +118,53 @@
                 <div class="card-container">
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
+                            <div id="modifierMenu">
+                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                                    <ChildContent>
+                                        <Panel Header="Modifers" Key="1">
+                                            <div id="modifierCheckboxWrapper">
+                                                <Checkbox Checked="@checkValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                                <Checkbox Checked="@checkValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                                <Checkbox Checked="@checkValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                                <Checkbox Checked="@checkValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                                <Checkbox Checked="@checkValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                                <Checkbox Checked="@checkValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                                <Checkbox Checked="@checkValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                            </div>
+                                            <hr />
+                                            <div>
+                                                <div style="font-size: 12px">Velocity Direction</div>
+                                                <div id="velocities">
+                                                    <div id="clearVelocityWrapper">
+                                                        <Button Class="bogl_button">Clear<br />Velocity</Button>
+                                                    </div>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px" Class="longArrow"><div class="arrowButton topArrow">⮢</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px" Class="longArrow"><div class="arrowButton topArrow">⮣</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮥</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px" Class="tallArrow"><div class="arrowButton">⮧</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮡</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮠</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px" Class="tallArrow"><div class="arrowButton">⮦</div></Button>
+                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮤</div></Button>
+                                                </div>
+                                            </div>
+                                        </Panel>
+                                    </ChildContent>
+                                    <ExpandIconTemplate>
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                                    </ExpandIconTemplate>
+                                </Collapse>
+                            </div>
                             <div id="systemDiagram"></div>
                         </TabPane>
                         <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
-                            <div id="bondGraph"></div>
+                            <div id="unsimpBG"></div>
                         </TabPane>
                         <TabPane Key="3" Tab="Simplified BG" ForceRender=true>
-                            <div class="expand">Content of Tab Pane 3</div>
+                            <div id="simpBG"></div>
                         </TabPane>
                         <TabPane Key="4" Tab="Causal BG" ForceRender=true>
-                            <div class="expand">Content of Tab Pane 4</div>
+                            <div id="causalBG"></div>
                         </TabPane>
                     </Tabs>
                 </div>
@@ -138,3 +172,280 @@
         </main>
     </div>
 </body>
+
+@code {
+    private static Index? _app;
+
+    public Index() {
+        _app = this;
+    }
+
+    public static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+
+    [JSInvokable]
+    public static void ClearCheckboxes() {
+        for (int i = 0; i < Index.checkValues.Length; i++) {
+            Index.checkValues[i] = false;
+        }
+        _app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void SetCheckboxes(int[] indeces) {
+        for (int i = 0; i < Index.checkValues.Length; i++) {
+            Index.checkValues[i] = indeces.Contains(i);
+        }
+        _app?.StateHasChanged();
+    }
+
+    public async void CheckChange(bool b, int i) {
+        Index.checkValues[i] = b;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setModifier", i, b);
+    }
+
+    private readonly List<string> ruleNames = new List<string>();
+    private readonly double totalRules = 19.0;
+    private string fileToLoad = "";
+    private double loadPercent = 0;
+
+    protected override async Task OnInitializedAsync() {
+        ruleNames.Add("BondGraphRuleset"); //58
+        ruleNames.Add("SimplificationRuleset"); //28
+        ruleNames.Add("DirRuleset"); //5
+        ruleNames.Add("newDirectionRuleSet_2"); //17
+        ruleNames.Add("DirRuleset3"); //4
+        ruleNames.Add("Simplification2"); //32
+        ruleNames.Add("NewCausalityMethodRuleset"); //6
+        ruleNames.Add("NewCausalityMethodRuleset_2"); //4
+        ruleNames.Add("NewCausalityMethodRuleset_3"); //2
+        ruleNames.Add("INVDMarkerRules"); //6
+        ruleNames.Add("INVDMarkerRules_2"); //0?
+        ruleNames.Add("CalibrationNewRuleset"); //12
+        ruleNames.Add("CalibrationNewRuleset_2"); //0?
+        ruleNames.Add("RFlagCleanRuleset"); //1
+        ruleNames.Add("ICFixTotalRuleset"); //12
+        ruleNames.Add("TransformerFlipRuleset"); //1
+        ruleNames.Add("TransformerFlipRuleset2"); //1
+        ruleNames.Add("Clean23Ruleset"); //4
+        ruleNames.Add("BeforeBG-VerifyDirRuleSet"); //8
+
+        foreach(string str in ruleNames){
+            await RuleSetMap.getInstance().loadRuleSet(str);
+            loadPercent = Math.Floor((RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0);
+            base.StateHasChanged();
+        }
+    }
+
+    public async void generateButtonClicked() {
+        string xmlString = "";
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+        var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
+        //var unsimplified = graphs.Item1;
+        //var simplified = graphs.Item2;
+        //var causal = graphs.Item3;
+
+        var unsimplified = BondGraphEmbedder.embedBondGraph(graphs.Item1);
+        var simplified = BondGraphEmbedder.embedBondGraph(graphs.Item2);
+        var causal = graphs.Item3;
+
+
+        List<string> causalOptions = new();
+        foreach(BondGraph g in causal) {
+            BondGraphEmbedder.embedBondGraph(g);
+            causalOptions.Add(g.convertToJson());
+        }
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
+        await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
+        await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
+    }
+
+    public async void loadFile() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + fileToLoad);
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass2() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system1.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicTwoMass3() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system2.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicQuarterCar() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/masses_on_a_spring.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadBasicMassSpringDirections(){
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/moving_masses.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadSpringAndDamper() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/spring_&_damper.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadRackandPinion() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/rack_pinion.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadMotorShaft() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/motor-gear-pair.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    public async void loadLRCCircuit() {
+        string xmlString = "";
+        if(!fileToLoad.Equals("")) {
+            Console.WriteLine(fileToLoad);
+        }
+
+        HttpClient client = new HttpClient();
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/lrc_circuit.bogl");
+        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());       
+    }
+
+    public async void openBoGLFile() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        var file = await module.InvokeAsync<object>("openFile");
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+
+        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
+    }
+
+    private Stream getFileStream(string fileData) {
+        var testData = fileData;
+        var fileStream = new MemoryStream(Encoding.ASCII.GetBytes(testData));
+
+        return fileStream;
+    }
+
+    public async void saveAs() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        var file = await module.InvokeAsync<object>("getSystemDiagram");
+
+        //TODO Make this use the current system diagram
+        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        var fileName = "SystemDiagram.bogl";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
+    }
+
+    public void reportBugs() {
+        NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
+    }
+}
