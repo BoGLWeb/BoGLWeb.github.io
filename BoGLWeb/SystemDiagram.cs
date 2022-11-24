@@ -565,6 +565,26 @@ namespace BoGLWeb {
                 sb.Append("}");
             }
 
+            sb.Append('}');
+
+            sb.Append("[Arcs]");
+            foreach(Edge edge in edges) {
+                sb.Append('{');
+                sb.Append("element1");
+                sb.Append(' ');
+                sb.Append(edge.getSource());
+                sb.Append("element2");
+                sb.Append(' ');
+                sb.Append(edge.getTarget());
+                if (edge.getVelocity() != 0) {
+                    sb.Append("velocity");
+                    sb.Append(' ');
+                    sb.Append(edge.getVelocity());
+                }
+                sb.Append('}');
+            }
+            
+
             return sb.ToString();
         }
 
@@ -726,6 +746,18 @@ namespace BoGLWeb {
             /// <returns>An element</returns>
             public Element getE2() {
                 return e2;
+            }
+
+            public int getSource() {
+                return this.source;
+            }
+
+            public int getTarget() {
+                return this.target;
+            }
+
+            public int getVelocity() {
+                return this.velocity;
             }
 
             /// <summary>
