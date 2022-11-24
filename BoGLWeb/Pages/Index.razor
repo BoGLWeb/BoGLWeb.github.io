@@ -154,7 +154,7 @@
                             <Button Id="generateButton" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
                             @if(!allRulesLoaded) {
                                 <p id="ruleLoadProgressText">Loading Rulesets:</p>
-                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false"/>
+                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
                             }
                             <div id="systemDiagram"></div>
                         </TabPane>
