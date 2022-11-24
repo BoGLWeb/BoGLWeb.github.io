@@ -93,7 +93,6 @@
                             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
                         </ExpandIconTemplate>
                         <ChildContent>
-                            <Progress Percent=@loadPercent ShowInfo="false"/>
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
                             </Panel>
@@ -152,7 +151,11 @@
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
-                            <Button Id="generateButton" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                            <Button Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                            @if(!allRulesLoaded) {
+                                <p id="ruleLoadProgressText">Loading Rulesets:</p>
+                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
+                            }
                             <div id="systemDiagram"></div>
                         </TabPane>
                         <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
@@ -211,6 +214,7 @@
     private double loadPercent = 0;
 
     protected override async Task OnInitializedAsync() {
+        allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
         ruleNames.Add("DirRuleset"); //5
@@ -236,6 +240,9 @@
             loadPercent = Math.Floor((RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0);
             base.StateHasChanged();
         }
+
+        allRulesLoaded = true;
+        base.StateHasChanged();
     }
 
     public async void generateButtonClicked() {
@@ -436,6 +443,8 @@
     }
 
     public bool aboutDialogOpen { get; set; }
+
+    public bool allRulesLoaded { get; set; } = false;
 
     private void onAboutDialogClose(bool accepted) {
         aboutDialogOpen = false;

@@ -456,7 +456,7 @@ hr:not([size]) {
     height: auto;
     background-color: #ABDCFF;
     border: 1.5px solid #ABDCFF;
-    padding: 2px 5px;
+    padding: 4px 5px;
     border-radius: 5px;
     color: black !important;
     font-size: 12px;
@@ -514,4 +514,18 @@ hr:not([size]) {
     position: absolute;
     right: 20px;
     bottom: 20px;
+}
+
+#ruleLoadProgress {
+    position: absolute;
+    bottom: 20px;
+    left: 370px;
+    width: calc(100% - 470px);
+}
+
+#ruleLoadProgressText {
+    position: absolute;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
 }
