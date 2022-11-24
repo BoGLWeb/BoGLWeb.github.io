@@ -509,3 +509,9 @@ hr:not([size]) {
 #modifierMenu > div > div > .ant-collapse-header {
     font-size: 12px;
 }
+
+#generateButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
