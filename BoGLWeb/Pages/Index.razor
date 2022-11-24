@@ -151,7 +151,7 @@
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
-                            <Button Id="generateButton" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                            <Button Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
                             @if(!allRulesLoaded) {
                                 <p id="ruleLoadProgressText">Loading Rulesets:</p>
                                 <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false"/>
@@ -444,7 +444,7 @@
 
     public bool aboutDialogOpen { get; set; }
 
-    public bool allRulesLoaded { get; set; }
+    public bool allRulesLoaded { get; set; } = false;
 
     private void onAboutDialogClose(bool accepted) {
         aboutDialogOpen = false;
