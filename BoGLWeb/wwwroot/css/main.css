@@ -456,7 +456,7 @@ hr:not([size]) {
     height: auto;
     background-color: #ABDCFF;
     border: 1.5px solid #ABDCFF;
-    padding: 2px 5px;
+    padding: 4px 5px;
     border-radius: 5px;
     color: black !important;
     font-size: 12px;
