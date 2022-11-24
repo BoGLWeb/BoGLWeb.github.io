@@ -510,17 +510,22 @@ hr:not([size]) {
     font-size: 12px;
 }
 
+#generateButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
 #ruleLoadProgress {
     position: absolute;
-    bottom: -25px;
-    left: 8px;
-    width: 225px;
-    margin: 30px auto;
+    bottom: 20px;
+    left: 370px;
+    width: calc(100% - 470px);
 }
 
 #ruleLoadProgressText {
     position: absolute;
-    bottom: -10px;
-    left: 10px;
-    margin: 30px auto;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
 }
