@@ -95,7 +95,6 @@
                         <ChildContent>
                             <Button @onclick="generateButtonClicked">Generate</Button>
                             <Button @onclick="loadFile">LoadFile</Button>
-                            <Progress Percent=@loadPercent ShowInfo="false"/>
                             <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
@@ -169,6 +168,10 @@
                     </Tabs>
                 </div>
             </div>
+            @if(!allRulesLoaded) {
+                <p id="ruleLoadProgressText">Loading Rulesets:</p>
+                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false"/>
+            }
         </main>
     </div>
     @if (aboutDialogOpen) {
@@ -213,6 +216,7 @@
     private double loadPercent = 0;
 
     protected override async Task OnInitializedAsync() {
+        allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
         ruleNames.Add("DirRuleset"); //5
@@ -238,6 +242,9 @@
             loadPercent = Math.Floor((RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0);
             base.StateHasChanged();
         }
+
+        //allRulesLoaded = true;
+        base.StateHasChanged();
     }
 
     public async void generateButtonClicked() {
@@ -453,6 +460,8 @@
     }
 
     public bool aboutDialogOpen { get; set; }
+
+    public bool allRulesLoaded { get; set; }
 
     private void onAboutDialogClose(bool accepted) {
         aboutDialogOpen = false;

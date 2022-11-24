@@ -509,3 +509,18 @@ hr:not([size]) {
 #modifierMenu > div > div > .ant-collapse-header {
     font-size: 12px;
 }
+
+#ruleLoadProgress {
+    position: absolute;
+    bottom: -25px;
+    left: 8px;
+    width: 225px;
+    margin: 30px auto;
+}
+
+#ruleLoadProgressText {
+    position: absolute;
+    bottom: -10px;
+    left: 10px;
+    margin: 30px auto;
+}
