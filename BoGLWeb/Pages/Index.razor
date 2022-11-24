@@ -93,10 +93,7 @@
                             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
                         </ExpandIconTemplate>
                         <ChildContent>
-                            <Button @onclick="generateButtonClicked">Generate</Button>
-                            <Button @onclick="loadFile">LoadFile</Button>
                             <Progress Percent=@loadPercent ShowInfo="false"/>
-                            <input @bind="fileToLoad" />
                             <Panel Header="Basic Mechanical Translation" Key="1">
                                 <div id="mechTrans" class="elementHolder"></div>
                             </Panel>
@@ -155,6 +152,7 @@
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
+                            <Button Id="generateButton" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
                             <div id="systemDiagram"></div>
                         </TabPane>
                         <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
@@ -267,21 +265,6 @@
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
-    }
-
-    public async void loadFile() {
-        string xmlString = "";
-        if(!fileToLoad.Equals("")) {
-            Console.WriteLine(fileToLoad);
-        }
-
-        HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + fileToLoad);
-        xmlString= await exampleResponse.Content.ReadAsStringAsync();
-        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
-
-        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     public async void loadBasicTwoMass() {
