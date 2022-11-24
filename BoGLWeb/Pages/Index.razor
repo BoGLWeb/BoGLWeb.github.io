@@ -271,6 +271,10 @@
         await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
     }
 
+    /// <summary>
+    /// Loads a file in the example directory
+    /// </summary>
+    /// <param name="filename">The name of the example file without .bogl</param>
     public async void loadExample(string filename){
         string xmlString = "";
         if(!fileToLoad.Equals("")) {
