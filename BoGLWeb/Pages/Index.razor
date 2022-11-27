@@ -267,11 +267,14 @@
     public async Task generateButtonClicked() {
         generatingBondGraph = true;
         base.StateHasChanged();
+        await Task.Delay(1);
         string xmlString = "";
 
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         xmlString = await exampleResponse.Content.ReadAsStringAsync();
+        base.StateHasChanged();
+        await Task.Delay(1);
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
         var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
 
@@ -279,7 +282,7 @@
 
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
-            await Task.Delay(1);
+            //await Task.Delay(1);
             unsimplifiedEmbedder.embedBondGraph();
         }
         var unsimplified = unsimplifiedEmbedder.getBondGraph();
@@ -288,7 +291,7 @@
 
         while (!simplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
-            await Task.Delay(1);
+            //await Task.Delay(1);
             simplifiedEmbedder.embedBondGraph();
         }
         
@@ -301,7 +304,7 @@
 
             while (!causalEmbedder.isOptimized()) {
                 base.StateHasChanged();
-                await Task.Delay(1);
+                //await Task.Delay(1);
                 causalEmbedder.embedBondGraph();
             }     
             causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
