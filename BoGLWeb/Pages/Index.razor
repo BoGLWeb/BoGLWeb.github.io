@@ -151,7 +151,7 @@
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
-                            <Button Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                            <Button Type="@ButtonType.Primary" Loading="generatingBondGraph" Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
                             @if (!allRulesLoaded) {
                                 <p id="ruleLoadProgressText">Loading Rulesets:</p>
                                 <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed" />
@@ -195,6 +195,8 @@
 </body>
 
 @code {
+    private bool generatingBondGraph = false;
+
     private static Index? _app;
 
     public Index() {
@@ -262,30 +264,58 @@
         base.StateHasChanged();
     }
 
-    public async void generateButtonClicked() {
+    public async Task generateButtonClicked() {
+        generatingBondGraph = true;
+        base.StateHasChanged();
+        await Task.Delay(1);
         string xmlString = "";
 
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         xmlString = await exampleResponse.Content.ReadAsStringAsync();
+        base.StateHasChanged();
+        await Task.Delay(1);
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
         var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
 
-        var unsimplified = BondGraphEmbedder.embedBondGraph(graphs.Item1);
-        var simplified = BondGraphEmbedder.embedBondGraph(graphs.Item2);
-        var causal = graphs.Item3;
+        BondGraphEmbedder unsimplifiedEmbedder = new(graphs.Item1);
 
+        while (!unsimplifiedEmbedder.isOptimized()) {
+            base.StateHasChanged();
+            //await Task.Delay(1);
+            unsimplifiedEmbedder.embedBondGraph();
+        }
+        var unsimplified = unsimplifiedEmbedder.getBondGraph();
+        
+        BondGraphEmbedder simplifiedEmbedder = new(graphs.Item2);
+
+        while (!simplifiedEmbedder.isOptimized()) {
+            base.StateHasChanged();
+            //await Task.Delay(1);
+            simplifiedEmbedder.embedBondGraph();
+        }
+        
+        var simplified = simplifiedEmbedder.getBondGraph();
+        var causal = graphs.Item3;
 
         List<string> causalOptions = new();
         foreach (BondGraph g in causal) {
-            BondGraphEmbedder.embedBondGraph(g);
-            causalOptions.Add(g.convertToJson());
+            BondGraphEmbedder causalEmbedder = new(graphs.Item2);
+
+            while (!causalEmbedder.isOptimized()) {
+                base.StateHasChanged();
+                //await Task.Delay(1);
+                causalEmbedder.embedBondGraph();
+            }     
+            causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
 
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
+        generatingBondGraph = false;
+        base.StateHasChanged();
     }
 
     /// <summary>
