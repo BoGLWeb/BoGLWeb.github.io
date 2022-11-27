@@ -280,18 +280,31 @@
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
-            Console.WriteLine("Optimizing");
             unsimplifiedEmbedder.embedBondGraph();
         }
-        var simplified = graphs.Item1;
-//        var unsimplified = BondGraphEmbedder.embedBondGraph(graphs.Item2);
-        var unsimplified = graphs.Item2;
+        var unsimplified = unsimplifiedEmbedder.getBondGraph();
+        
+        BondGraphEmbedder simplifiedEmbedder = new(graphs.Item2);
+
+        while (!simplifiedEmbedder.isOptimized()) {
+            base.StateHasChanged();
+            await Task.Delay(1);
+            simplifiedEmbedder.embedBondGraph();
+        }
+        
+        var simplified = simplifiedEmbedder.getBondGraph();
         var causal = graphs.Item3;
 
         List<string> causalOptions = new();
         foreach (BondGraph g in causal) {
-//            BondGraphEmbedder.embedBondGraph(g);
-            causalOptions.Add(g.convertToJson());
+            BondGraphEmbedder causalEmbedder = new(graphs.Item2);
+
+            while (!causalEmbedder.isOptimized()) {
+                base.StateHasChanged();
+                await Task.Delay(1);
+                causalEmbedder.embedBondGraph();
+            }     
+            causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
 
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
