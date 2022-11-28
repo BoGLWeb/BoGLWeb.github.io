@@ -282,7 +282,7 @@
 
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
-            //await Task.Delay(1);
+            await Task.Delay(1);
             unsimplifiedEmbedder.embedBondGraph();
         }
         var unsimplified = unsimplifiedEmbedder.getBondGraph();
@@ -291,7 +291,7 @@
 
         while (!simplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
-            //await Task.Delay(1);
+            await Task.Delay(1);
             simplifiedEmbedder.embedBondGraph();
         }
         
@@ -304,7 +304,7 @@
 
             while (!causalEmbedder.isOptimized()) {
                 base.StateHasChanged();
-                //await Task.Delay(1);
+                await Task.Delay(1);
                 causalEmbedder.embedBondGraph();
             }     
             causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
