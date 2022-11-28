@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -368,3 +368,6 @@ BoGLWeb/PlaywrightTests/bin/*
 
 BoGLWeb/wwwroot/build
 BoGLWeb/obj
+BoGLWeb/obj/*
+BoGLWeb/.idea/*
+*.cache

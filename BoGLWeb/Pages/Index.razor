@@ -51,17 +51,17 @@
                         </SubMenu>
                     </SubMenu>
                     <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
-                    <MenuItem Key="setting:5" OnClick="onAboutDialogOpen">About BoGL</MenuItem>
+                    <MenuItem Key="setting:5" OnClick="@(() => {_visible = true; })">About BoGL</MenuItem>
                 </SubMenu>
                 <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
                     @{
                         RenderFragment SaveSvg =@<img class="menuIcon" src="images/menuBar/save.png" title="Save" />;
-                        RenderFragment CutSvg=@<img class="menuIcon" src="images/menuBar/cut.png" title="Cut" />;
-                        RenderFragment CopySvg=@<img class="menuIcon" src="images/menuBar/copy.png" title="Copy" />;
-                        RenderFragment PasteSvg=@<img class="menuIcon" src="images/menuBar/paste.png" title="Paste" />;
-                        RenderFragment UndoSvg=@<img class="menuIcon" src="images/menuBar/undo.png" title="Undo" />;
-                        RenderFragment RedoSvg=@<img class="menuIcon" src="images/menuBar/redo.png" title="Redo" />;
-                        RenderFragment TrashSvg=@<img class="menuIcon" src="images/menuBar/trash.png" title="Trash" />;
+                        RenderFragment CutSvg =@<img class="menuIcon" src="images/menuBar/cut.png" title="Cut" />;
+                        RenderFragment CopySvg =@<img class="menuIcon" src="images/menuBar/copy.png" title="Copy" />;
+                        RenderFragment PasteSvg =@<img class="menuIcon" src="images/menuBar/paste.png" title="Paste" />;
+                        RenderFragment UndoSvg =@<img class="menuIcon" src="images/menuBar/undo.png" title="Undo" />;
+                        RenderFragment RedoSvg =@<img class="menuIcon" src="images/menuBar/redo.png" title="Redo" />;
+                        RenderFragment TrashSvg =@<img class="menuIcon" src="images/menuBar/trash.png" title="Trash" />;
                     }
                     <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
                         <Icon Component="SaveSvg" />
@@ -147,14 +147,14 @@
                                         </Panel>
                                     </ChildContent>
                                     <ExpandIconTemplate>
-                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
-                            <Button Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
-                            @if(!allRulesLoaded) {
+                            <Button Type="@ButtonType.Primary" Loading="generatingBondGraph" Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                            @if (!allRulesLoaded) {
                                 <p id="ruleLoadProgressText">Loading Rulesets:</p>
-                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
+                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed" />
                             }
                             <div id="systemDiagram"></div>
                         </TabPane>
@@ -183,12 +183,31 @@
             </div>
         </main>
     </div>
-    @if (aboutDialogOpen) {
-        <BoGLWeb.Components.AboutModal Title="About BoGL Web" OnClose="@onAboutDialogClose"></BoGLWeb.Components.AboutModal>
-    }
+    <Modal Title="About BoGL Web" Visible="@_visible" OnOk="@handleOk" OnCancel="@handleOk">
+        <div class="modal-body">
+            <p>Original application developed by:</p>
+            <p>Daniel Grande</p>
+            <p>Felice Mancini</p>
+            <p>Corey Alicchio</p>
+            <p>Justin Vitiello</p>
+            <p>Terry Hearst</p>
+            <p>Talal Jaber</p>
+            <p>Corrin Courville</p>
+            <p>BoGL Web Developed by:</p>
+            <p>Margaret Earnest</p>
+            <p>Jakob Misbach</p>
+            <p>Anthony Vuolo</p>
+            <p>Advisors:</p>
+            <p>Prof. David Brown</p>
+            <p>Prof. Pradeep Radhakrishan</p>
+            <p>Prof. Brigitte Servatius</p>
+        </div>
+    </Modal>
 </body>
 
 @code {
+    private bool generatingBondGraph = false;
+
     private static Index? _app;
     public class Option {
         public string label { get; set; }
@@ -262,7 +281,7 @@
         ruleNames.Add("Clean23Ruleset"); //4
         ruleNames.Add("BeforeBG-VerifyDirRuleSet"); //8
 
-        foreach(string str in ruleNames){
+        foreach (string str in ruleNames) {
             await RuleSetMap.getInstance().loadRuleSet(str);
             loadPercent = Math.Floor((RuleSetMap.getInstance().getNumRules() / totalRules) * 100.0);
             base.StateHasChanged();
@@ -272,45 +291,80 @@
         base.StateHasChanged();
     }
 
-    public async void generateButtonClicked() {
+    public async Task generateButtonClicked() {
+        generatingBondGraph = true;
+        base.StateHasChanged();
+        await Task.Delay(1);
         string xmlString = "";
 
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/rack_pinion.bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/basic-two-mass-system.bogl");
         xmlString = await exampleResponse.Content.ReadAsStringAsync();
+        base.StateHasChanged();
+        await Task.Delay(1);
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
         var graphs = BondGraphFactory.generateBondGraphs(sysDiagram.convertToDesignGraph());
 
-        var unsimplified = BondGraphEmbedder.embedBondGraph(graphs.Item1);
-        var simplified = BondGraphEmbedder.embedBondGraph(graphs.Item2);
+        BondGraphEmbedder unsimplifiedEmbedder = new(graphs.Item1);
+
+        while (!unsimplifiedEmbedder.isOptimized()) {
+            base.StateHasChanged();
+            //await Task.Delay(1);
+            unsimplifiedEmbedder.embedBondGraph();
+        }
+        var unsimplified = unsimplifiedEmbedder.getBondGraph();
+        
+        BondGraphEmbedder simplifiedEmbedder = new(graphs.Item2);
+
+        while (!simplifiedEmbedder.isOptimized()) {
+            base.StateHasChanged();
+            //await Task.Delay(1);
+            simplifiedEmbedder.embedBondGraph();
+        }
+        
+        var simplified = simplifiedEmbedder.getBondGraph();
         var causal = graphs.Item3;
 
-        Console.WriteLine("Causal number: " + causal.Count);
-        foreach(BondGraph g in causal) {
-            BondGraphEmbedder.embedBondGraph(g);
-            causalOptions.Add(g.convertToJson());
+        List<string> causalOptions = new();
+        foreach (BondGraph g in causal) {
+            BondGraphEmbedder causalEmbedder = new(g);
+
+            while (!causalEmbedder.isOptimized()) {
+                base.StateHasChanged();
+                //await Task.Delay(1);
+                causalEmbedder.embedBondGraph();
+            }     
+            causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
 
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
+        await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
+        generatingBondGraph = false;
+        base.StateHasChanged();
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
         Console.WriteLine("Num causal options " + causalOptions.Count);
         causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => {
             return new Option {label="Option " + (i + 1), value = i};
         }).ToList();
         finishedGenerating = true;
+        base.StateHasChanged();
     }
 
-    public async void loadExample(string filename){
+    /// <summary>
+    /// Loads a file in the example directory
+    /// </summary>
+    /// <param name="filename">The name of the example file without .bogl</param>
+    public async void loadExample(string filename) {
         string xmlString = "";
-        if(!fileToLoad.Equals("")) {
+        if (!fileToLoad.Equals("")) {
             Console.WriteLine(fileToLoad);
         }
 
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + filename + ".bogl");
-        xmlString= await exampleResponse.Content.ReadAsStringAsync();
+        xmlString = await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
@@ -350,17 +404,11 @@
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
 
-    public bool aboutDialogOpen { get; set; }
-
     public bool allRulesLoaded { get; set; } = false;
 
-    private void onAboutDialogClose(bool accepted) {
-        aboutDialogOpen = false;
-        base.StateHasChanged();
-    }
+    bool _visible = false;
 
-    private void onAboutDialogOpen() {
-        aboutDialogOpen = true;
-        base.StateHasChanged();
+    private void handleOk() {
+        _visible = false;
     }
 }
