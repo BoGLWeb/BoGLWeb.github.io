@@ -300,7 +300,7 @@
 
         List<string> causalOptions = new();
         foreach (BondGraph g in causal) {
-            BondGraphEmbedder causalEmbedder = new(graphs.Item2);
+            BondGraphEmbedder causalEmbedder = new(g);
 
             while (!causalEmbedder.isOptimized()) {
                 base.StateHasChanged();
