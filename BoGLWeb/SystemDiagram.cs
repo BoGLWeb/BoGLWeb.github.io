@@ -17,6 +17,7 @@ namespace BoGLWeb {
     public class SystemDiagram {
         public static readonly ImmutableDictionary<string, int> modifierIDDict;
         public static readonly ImmutableDictionary<string, int> typeIDDict;
+        public static readonly ImmutableDictionary<int, string> typeIDDictReverse;
 
         //Sets up our modifier dictionary
         static SystemDiagram() {
@@ -67,6 +68,42 @@ namespace BoGLWeb {
             typeBuilder.Add("System_O_VC_Transducer", 29);
 
             typeIDDict = typeBuilder.ToImmutable();
+            
+            var typeBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            typeBuilderReverse.Add(0, "System_MT_Mass");
+            typeBuilderReverse.Add(1, "System_MT_Spring");
+            typeBuilderReverse.Add(2, "System_MT_Damper");
+            typeBuilderReverse.Add(3, "System_MT_Ground");
+            typeBuilderReverse.Add(4, "System_MT_Force_Input");
+            typeBuilderReverse.Add(5, "System_MT_Gravity");
+            typeBuilderReverse.Add(6, "System_MT_Velocity_Input");
+            typeBuilderReverse.Add(7, "System_MR_Flywheel");
+            typeBuilderReverse.Add(8, "System_MR_Spring");
+            typeBuilderReverse.Add(9, "System_MR_Damper");
+            typeBuilderReverse.Add(10, "System_MR_Torque_Input");
+            typeBuilderReverse.Add(11, "System_MR_Velocity_Input");
+            typeBuilderReverse.Add(12, "System_MR_Lever");
+            // front-end doesn't seem to make distinction between grounded and non-grounded pulley
+            typeBuilderReverse.Add(13, "System_MR_Pulley");
+            //typeBuilderReverse.Add(13, "System_MR_Pulley_Grounded");
+            typeBuilderReverse.Add(14, "System_MR_Belt");
+            typeBuilderReverse.Add(15, "System_MR_Shaft");
+            typeBuilderReverse.Add(16, "System_MR_Gear");
+            typeBuilderReverse.Add(17, "System_MR_Gear_Pair");
+            typeBuilderReverse.Add(18, "System_MR_Rack");
+            typeBuilderReverse.Add(19, "System_MR_Rack_Pinion");
+            typeBuilderReverse.Add(20, "System_E_Inductor");
+            typeBuilderReverse.Add(21, "System_E_Capacitor");
+            typeBuilderReverse.Add(22, "System_E_Resistor");
+            typeBuilderReverse.Add(23, "System_E_Transformer");
+            typeBuilderReverse.Add(24, "System_E_Junction");
+            typeBuilderReverse.Add(25, "System_E_Ground");
+            typeBuilderReverse.Add(26, "System_E_Current_Input");
+            typeBuilderReverse.Add(27, "System_E_Voltage_Input");
+            typeBuilderReverse.Add(28, "System_O_PM_Motor");
+            typeBuilderReverse.Add(29, "System_O_VC_Transducer");
+
+            typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
 
         [JsonProperty]
@@ -546,7 +583,7 @@ namespace BoGLWeb {
                 sb.Append("{\n");
                 sb.Append("name");
                 sb.Append(" ");
-                sb.Append(e.getName());
+                sb.Append(typeIDDictReverse[e.getType()]);
                 sb.Append("\n");
                 sb.Append("x");
                 sb.Append(" ");
@@ -568,10 +605,10 @@ namespace BoGLWeb {
                     sb.Append(e.getVelocity());
                 }
 
-                sb.Append("}");
+                sb.Append("}\n");
             }
 
-            sb.Append('}');
+            sb.Append("}\n");
 
             sb.Append("[Arcs]");
             foreach(Edge edge in edges) {
@@ -654,6 +691,10 @@ namespace BoGLWeb {
             /// <returns>The name of the element</returns>
             public string getName() {
                 return name;
+            }
+
+            public int getType() {
+                return type;
             }
 
             public double getX() {
