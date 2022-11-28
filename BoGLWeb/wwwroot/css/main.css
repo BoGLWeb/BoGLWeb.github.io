@@ -515,3 +515,9 @@ hr:not([size]) {
     right: 20px;
     bottom: 20px;
 }
+
+#causalSelect {
+    position: absolute;
+    right: 10px;
+    top: 77px;
+}
