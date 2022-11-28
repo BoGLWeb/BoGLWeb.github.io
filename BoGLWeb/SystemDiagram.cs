@@ -528,6 +528,12 @@ namespace BoGLWeb {
             StringBuilder sb = new();
 
             sb.Append("[Header]\n");
+            if (header == null) {
+                header = new Dictionary<string, double>();
+                header.Add("panX", 0.0);
+                header.Add("panY", 0.0);
+                header.Add("zoom", 0.0);
+            }
             foreach (KeyValuePair<string, double> entry in header) {
                 sb.Append(entry.Key);
                 sb.Append(" ");
