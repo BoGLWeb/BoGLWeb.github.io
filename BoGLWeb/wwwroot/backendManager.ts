@@ -37,8 +37,8 @@ export namespace backendManager {
             this.parseAndDisplayBondGraph(1, jsonString, (<any>window).simpBGSVG);
         }
 
-        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
-            this.parseAndDisplayBondGraph(2, jsonStrings[index], (<any>window).causalBGSVG);
+        public displayCausalBondGraphOptions(jsonStrings: Array<string>) {
+            this.parseAndDisplayBondGraph(2, jsonStrings[0], (<any>window).causalBGSVG);
         }
 
         public loadSystemDiagram(jsonString: string) {

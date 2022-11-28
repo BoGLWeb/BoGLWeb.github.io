@@ -165,17 +165,6 @@
                             <div id="simpBG"></div>
                         </TabPane>
                         <TabPane Key="4" Tab="Causal BG" ForceRender=true>
-                            <Select Id="causalSelect"
-                                    TItem="Option"
-                                    TItemValue="int"
-                                    DataSource="@causalSwitchOptions"
-		                            @bind-Value="@selectedCausalOption"
-		                            DefaultValue="@(0)"
-                                    ValueName="@nameof(Option.value)"
-		                            LabelName="@nameof(Option.label)"
-		                            Style="width:120px"
-		                            OnSelectedItemChanged="ChangeCausalOption">
-                            </Select>
                             <div id="causalBG"></div>
                         </TabPane>
                     </Tabs>
@@ -209,14 +198,6 @@
     private bool generatingBondGraph = false;
 
     private static Index? _app;
-    public class Option {
-        public string label { get; set; }
-        public int value { get; set; }
-    }
-    List<Option> causalSwitchOptions = new List<Option> {};
-    int selectedCausalOption;
-    List<string> causalOptions = new();
-    Boolean finishedGenerating = false;
 
     public Index() {
         _app = this;
@@ -244,14 +225,6 @@
         Index.checkValues[i] = b;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
-    }
-
-    public async void ChangeCausalOption(Option selection) {
-        if (finishedGenerating) {
-            Console.WriteLine("Switched to " + selection.value);
-            var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-            await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
-        }
     }
 
     private readonly List<string> ruleNames = new List<string>();
@@ -342,13 +315,6 @@
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOptions", causalOptions);
         generatingBondGraph = false;
-        base.StateHasChanged();
-        await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
-        Console.WriteLine("Num causal options " + causalOptions.Count);
-        causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => {
-            return new Option {label="Option " + (i + 1), value = i};
-        }).ToList();
-        finishedGenerating = true;
         base.StateHasChanged();
     }
 
