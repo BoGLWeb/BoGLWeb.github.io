@@ -368,3 +368,9 @@ BoGLWeb/PlaywrightTests/bin/*
 
 BoGLWeb/wwwroot/build
 BoGLWeb/obj
+BoGLWeb/.idea/.idea.BoGLWeb/.idea/encodings.xml
+BoGLWeb/.idea/.idea.BoGLWeb/.idea/indexLayout.xml
+BoGLWeb/.idea/.idea.BoGLWeb/.idea/vcs.xml
+BoGLWeb/global.json
+BoGLWeb/obj/Debug/net6.0/BoGLWeb.csproj.CoreCompileInputs.cache
+BoGLWeb/obj/Debug/net6.0/BoGLWeb.GeneratedMSBuildEditorConfig.editorconfig
