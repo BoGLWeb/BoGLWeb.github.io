@@ -1,19 +1,19 @@
 ﻿namespace BoGLWeb {
     namespace EditorHelper {
         public class UndoRedoHandler {
-            private readonly EditionList<CanvasAlteration> systemStack;
-            private readonly EditionList<CanvasAlteration> unsimpStack;
-            private readonly EditionList<CanvasAlteration> simpleStack;
-            private readonly EditionList<CanvasAlteration> causalStack;
+            private readonly EditionList<CanvasChange> systemStack;
+            private readonly EditionList<CanvasChange> unsimpStack;
+            private readonly EditionList<CanvasChange> simpleStack;
+            private readonly EditionList<CanvasChange> causalStack;
 
             /// <summary>
             /// Creates a new UndoRedoHandler.
             /// </summary>
             public UndoRedoHandler() {
-                systemStack = new EditionList<CanvasAlteration>();
-                unsimpStack = new EditionList<CanvasAlteration>();
-                simpleStack = new EditionList<CanvasAlteration>();
-                causalStack = new EditionList<CanvasAlteration>();
+                systemStack = new EditionList<CanvasChange>();
+                unsimpStack = new EditionList<CanvasChange>();
+                simpleStack = new EditionList<CanvasChange>();
+                causalStack = new EditionList<CanvasChange>();
             }
 
             /// <summary>
@@ -25,8 +25,8 @@
             /// <param name="tab">
             /// The tab where the edit occurred.
             /// </param>
-            public void AddEdit(CanvasAlteration edit, CanvasTab tab) {
-                EditionList<CanvasAlteration> list = GetStackFromTab(tab);
+            public void AddEdit(CanvasChange edit, CanvasTab tab) {
+                EditionList<CanvasChange> list = GetStackFromTab(tab);
                 list.Add(edit);
             }
 
@@ -42,7 +42,7 @@
             /// <exception cref="Exception">
             /// If an invalid CanvasTab object is provided as a parameter.
             /// </exception>
-            private EditionList<CanvasAlteration> GetStackFromTab(CanvasTab tab) {
+            private EditionList<CanvasChange> GetStackFromTab(CanvasTab tab) {
                 return tab switch {
                     CanvasTab.SYSTEM_DIAGRAM => systemStack,
                     CanvasTab.UNSIMPLIFIED_BOND_GRAPH => unsimpStack,

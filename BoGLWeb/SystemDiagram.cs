@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using GraphSynth.Representation;
 using BoGLWeb.BaseClasses;
 using static BoGLWeb.Graph;
+using BoGLWeb.EditorHelper;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -75,16 +76,21 @@ namespace BoGLWeb {
         // Leaving this out of JSON for now because we're not expecting to use it currently
         protected Dictionary<string, double> header;
 
+        // Editor list for Canvas changes
+        private EditionList<CanvasChange> changes;
+
         public SystemDiagram(Dictionary<string, double> header) {
             elements = new List<Element>();
             edges = new List<Edge>();
             this.header = header;
+            this.changes = new();
         }
 
         private SystemDiagram(Dictionary<string, double> header, List<Element> elements, List<Edge> edges) {
             this.header = header;
             this.elements = elements;
             this.edges = edges;
+            this.changes = new();
         }
 
         public Element getElement(int pos) {

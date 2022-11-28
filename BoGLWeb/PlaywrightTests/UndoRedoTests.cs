@@ -147,7 +147,6 @@ namespace BoGLWeb.PlaywrightTests {
             await clearHashListButton.ClickAsync();
             await Expect(Page.Locator("text=Current HashList: []")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = timeout });
             await Expect(Page.Locator("text=Current HashList size: 0")).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = timeout });
-
         }
     }
 }
