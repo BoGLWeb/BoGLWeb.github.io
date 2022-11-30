@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
+    "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {
+    "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "projectUniqueName": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
         "projectName": "BoGLWeb",
-        "projectPath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
-        "packagesPath": "C:\\Users\\bdane\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bdane\\Dropbox\\PC\\Documents\\GitHub\\BoGLWeb\\BoGLWeb\\BoGLWeb\\obj\\",
+        "projectPath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
+        "packagesPath": "C:\\Users\\Jakob Misbach\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\bdane\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Jakob Misbach\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -104,7 +104,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-              "version": "[6.0.9, 6.0.9]"
+              "version": "[6.0.11, 6.0.11]"
             }
           ],
           "frameworkReferences": {
@@ -112,7 +112,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
