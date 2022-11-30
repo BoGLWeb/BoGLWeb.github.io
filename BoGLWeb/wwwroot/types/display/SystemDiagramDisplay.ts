@@ -218,7 +218,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathExtraRendering(paths: BGBondSelection) {
         let graph = this;
         paths.classed("hoverablePath", true);
-        d3.select(paths.node().parentNode).selectAll("text").html(null);
+        if (paths.node()) {
+            d3.select(paths.node().parentNode).selectAll("text").html(null);
+        }
         paths.each(e => {
             if (e.velocity != 0) {
                 let velocityClass = "";
