@@ -157,7 +157,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     updateModifierMenu() {
         if (this.state.selectedElement) {
             DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", this.state.selectedElement.modifiers);
-            //DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", this.state.selectedElement.type);
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", ElementNamespace.elementTypes[this.state.selectedElement.type].allowedModifiers);
         } else {
             DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
             DotNet.invokeMethodAsync("BoGLWeb", "ClearDisabled");

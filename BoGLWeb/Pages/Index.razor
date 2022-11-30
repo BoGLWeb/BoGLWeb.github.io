@@ -261,7 +261,7 @@
     [JSInvokable]
     public static void SetDisabled(int[] indices) {
         for (int i = 0; i < disabledValues.Length; i++) {
-            disabledValues[i] = indices.Contains(i);
+            disabledValues[i] = !indices.Contains(i);
         }
         _app?.StateHasChanged();
     }
