@@ -161,6 +161,7 @@ export namespace backendManager {
             } else if (edge) {
                 edge.velocity = velocity;
             }
+            (<any>window).systemDiagram.updateGraph();
         }
     }
 

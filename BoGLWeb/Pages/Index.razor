@@ -132,7 +132,7 @@
                                                 <div style="font-size: 12px">Velocity Direction</div>
                                                 <div id="velocities">
                                                     <div id="clearVelocityWrapper">
-                                                        <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(-1); }">Clear<br />Velocity</Button>
+                                                        <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">Clear<br />Velocity</Button>
                                                     </div>
                                                     <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 1 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px"><div class="arrowButton topArrow">⮢</div></Button>
                                                     <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 2 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px"><div class="arrowButton topArrow">⮣</div></Button>

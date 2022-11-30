@@ -133,6 +133,61 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "50px")
             .attr("width", "50px");
 
+        group.selectAll("text").html(null);
+
+        group.each(function (d: SystemDiagramElement) {
+            if (d.velocity != 0) {
+                let text = group.append("text");
+                text.text((d: SystemDiagramElement) => graph.velocityMap[d.velocity])
+                    .each(function (d: SystemDiagramElement) {
+                        if (d.velocity != 0) {
+                            let velocityClass = "";
+                            if (d.velocity == 1 || d.velocity == 2) {
+                                velocityClass = "topVelocity";
+                            } else if (d.velocity == 3 || d.velocity == 4) {
+                                velocityClass = "rightVelocity";
+                            } else if (d.velocity == 5 || d.velocity == 6) {
+                                velocityClass = "bottomVelocity";
+                            } else {
+                                velocityClass = "leftVelocity";
+                            }
+                            this.classList.add("velocityArrow");
+                            this.classList.add(velocityClass);
+                        }
+                    })
+                    .attr("x", (d: SystemDiagramElement) => {
+                        let xOffset = 0;
+                        if (d.velocity != 0) {
+                            if (d.velocity == 1 || d.velocity == 2) {
+                                xOffset = -5;
+                            } else if (d.velocity == 3 || d.velocity == 4) {
+                                xOffset = 30;
+                            } else if (d.velocity == 5 || d.velocity == 6) {
+                                xOffset = -5;
+                            } else {
+                                xOffset = -30;
+                            }
+                        }
+                        return xOffset;
+                    });
+                text.attr("y", (d: SystemDiagramElement) => {
+                    let yOffset = 0;
+                    if (d.velocity != 0) {
+                        if (d.velocity == 1 || d.velocity == 2) {
+                            yOffset = -37;
+                        } else if (d.velocity == 3 || d.velocity == 4) {
+                            yOffset = 7;
+                        } else if (d.velocity == 5 || d.velocity == 6) {
+                            yOffset = 38;
+                        } else {
+                            yOffset = 0;
+                        }
+                    }
+                    return yOffset;
+                });
+            }
+        });
+
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
             graph.edgeCircle.style("visibility", "hidden");
@@ -173,7 +228,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 if (e.velocity == 1 || e.velocity == 2) {
                     velocityClass = "topVelocity";
                     yOffset = -7 * mult;
-                    xOffset = -5;
+                    xOffset = -3;
                 } else if (e.velocity == 3 || e.velocity == 4) {
                     velocityClass = "rightVelocity";
                     yOffset = 7 * mult;
