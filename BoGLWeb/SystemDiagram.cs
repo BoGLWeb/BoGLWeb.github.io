@@ -16,7 +16,9 @@ using System.Text.RegularExpressions;
 namespace BoGLWeb {
     public class SystemDiagram {
         public static readonly ImmutableDictionary<string, int> modifierIDDict;
+        public static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
         public static readonly ImmutableDictionary<string, int> typeIDDict;
+        public static readonly ImmutableDictionary<int, string> typeIDDictReverse;
 
         //Sets up our modifier dictionary
         static SystemDiagram() {
@@ -31,6 +33,17 @@ namespace BoGLWeb {
             idBuilder.Add("TOOTH_WEAR", 6);
 
             modifierIDDict = idBuilder.ToImmutable();
+            
+            var idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            idBuilderReverse.Add(0, "MASS");
+            idBuilderReverse.Add(1, "INERTIA");
+            idBuilderReverse.Add(2, "STIFFNESS");
+            idBuilderReverse.Add(3, "FRICTION");
+            idBuilderReverse.Add(4, "DAMPING");
+            idBuilderReverse.Add(5, "PARALLEL");
+            idBuilderReverse.Add(6, "TOOTH_WEAR");
+
+            modifierIDDictReverse = idBuilderReverse.ToImmutable();
 
             var typeBuilder = ImmutableDictionary.CreateBuilder<string, int>();
             typeBuilder.Add("System_MT_Mass", 0);
@@ -67,6 +80,42 @@ namespace BoGLWeb {
             typeBuilder.Add("System_O_VC_Transducer", 29);
 
             typeIDDict = typeBuilder.ToImmutable();
+            
+            var typeBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            typeBuilderReverse.Add(0, "System_MT_Mass");
+            typeBuilderReverse.Add(1, "System_MT_Spring");
+            typeBuilderReverse.Add(2, "System_MT_Damper");
+            typeBuilderReverse.Add(3, "System_MT_Ground");
+            typeBuilderReverse.Add(4, "System_MT_Force_Input");
+            typeBuilderReverse.Add(5, "System_MT_Gravity");
+            typeBuilderReverse.Add(6, "System_MT_Velocity_Input");
+            typeBuilderReverse.Add(7, "System_MR_Flywheel");
+            typeBuilderReverse.Add(8, "System_MR_Spring");
+            typeBuilderReverse.Add(9, "System_MR_Damper");
+            typeBuilderReverse.Add(10, "System_MR_Torque_Input");
+            typeBuilderReverse.Add(11, "System_MR_Velocity_Input");
+            typeBuilderReverse.Add(12, "System_MR_Lever");
+            // front-end doesn't seem to make distinction between grounded and non-grounded pulley
+            typeBuilderReverse.Add(13, "System_MR_Pulley");
+            //typeBuilderReverse.Add(13, "System_MR_Pulley_Grounded");
+            typeBuilderReverse.Add(14, "System_MR_Belt");
+            typeBuilderReverse.Add(15, "System_MR_Shaft");
+            typeBuilderReverse.Add(16, "System_MR_Gear");
+            typeBuilderReverse.Add(17, "System_MR_Gear_Pair");
+            typeBuilderReverse.Add(18, "System_MR_Rack");
+            typeBuilderReverse.Add(19, "System_MR_Rack_Pinion");
+            typeBuilderReverse.Add(20, "System_E_Inductor");
+            typeBuilderReverse.Add(21, "System_E_Capacitor");
+            typeBuilderReverse.Add(22, "System_E_Resistor");
+            typeBuilderReverse.Add(23, "System_E_Transformer");
+            typeBuilderReverse.Add(24, "System_E_Junction");
+            typeBuilderReverse.Add(25, "System_E_Ground");
+            typeBuilderReverse.Add(26, "System_E_Current_Input");
+            typeBuilderReverse.Add(27, "System_E_Voltage_Input");
+            typeBuilderReverse.Add(28, "System_O_PM_Motor");
+            typeBuilderReverse.Add(29, "System_O_VC_Transducer");
+
+            typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
 
         [JsonProperty]
@@ -159,7 +208,7 @@ namespace BoGLWeb {
 
                 //The head of the queue should always be a brace here so we can pop it and add it to the stack
                 string stackTok = tokenQueue.Dequeue();
-                //Console.WriteLine(stackTok);
+                Console.WriteLine("HERE: " + stackTok);
                 braceStack.Push(stackTok);
 
                 //We expect the next string in the queue to be "name"
@@ -173,13 +222,13 @@ namespace BoGLWeb {
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
-                    Console.Write("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
+                    Console.WriteLine("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Name was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("x")) {
@@ -188,7 +237,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("X was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("X was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("y")) {
@@ -197,7 +246,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Y was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("modifiers")) {
@@ -221,11 +270,11 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Modifier was missing. Got: <" + tok + "> instead");
                 }
 
                 //Add element to element list
-                Element e = new Element(type, name, x, y);
+                Element e = new(type, name, x, y);
                 foreach (string str in modifiers) {
                     Console.WriteLine("I FOUND THIS GUY: " + str);
                     if (str.Contains("VELOCITY")) {
@@ -245,8 +294,8 @@ namespace BoGLWeb {
             }
 
             //Parse Arcs
-            List<Edge> arcs = new List<Edge>();
-            Queue<string> arcsTokenQueue = new Queue<string>();
+            List<Edge> arcs = new();
+            Queue<string> arcsTokenQueue = new();
             for (int i = arcsPos + 1; i < tokens.Count; i++) {
                 arcsTokenQueue.Enqueue(tokens[i]);
             }
@@ -257,8 +306,8 @@ namespace BoGLWeb {
                     //Parse
                     //TODO Need to add something that checks if this loop runs more than once because that should be an error
                     while (!foundCloseBrace) {
-                        int e1 = 0;
-                        int e2 = 0;
+                        int e1;
+                        int e2;
                         string velocity = "";
 
                         //Check element1
@@ -269,7 +318,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element1 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Check element2
@@ -280,7 +329,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element2 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Modifiers
@@ -305,7 +354,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Missing open brace");
-                    return null;
+                    throw new ArgumentException("Missing open brace");
                 }
             }
 
@@ -351,7 +400,17 @@ namespace BoGLWeb {
         /// <returns>The system diagram from the json string</returns>
         public static SystemDiagram? generateSystemDiagramFromJSON(string json) {
             var sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
+            Console.WriteLine(JsonConvert.DeserializeObject(json));
+            var parsedJSON = JsonConvert.DeserializeObject<dynamic>(json);
+
             if (sysDiagram is not null) {
+                foreach (var bond in parsedJSON.bonds) {
+                    Console.WriteLine("Bond!!! " + bond.source.id + ", " + bond.target.id);
+                    sysDiagram.edges.Add(new Edge(sysDiagram.getElement(int.Parse(bond.source.id.ToString())), 
+                        sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
+                        int.Parse(bond.velocity.ToString())));
+                }
+                
                 return sysDiagram;
             } else {
                 //TODO Throw error
@@ -525,8 +584,76 @@ namespace BoGLWeb {
 
         //Create .bogl string
         public string generateBoGLString() {
-            //TODO Implement
-            return "";
+            StringBuilder sb = new();
+
+            sb.Append("[Header]\n");
+            if (header == null) {
+                header = new Dictionary<string, double>();
+                header.Add("panX", 0.0);
+                header.Add("panY", 0.0);
+                header.Add("zoom", 0.0);
+            }
+            foreach (KeyValuePair<string, double> entry in header) {
+                sb.Append(entry.Key);
+                sb.Append(" ");
+                sb.Append(entry.Value);
+                sb.Append('\n');
+            }
+
+            sb.Append("[Elements]\n");
+            foreach (Element e in elements) {
+                sb.Append("{\n");
+                sb.Append("name");
+                sb.Append(" ");
+                sb.Append(typeIDDictReverse[e.getType()]);
+                sb.Append("\n");
+                sb.Append("x");
+                sb.Append(" ");
+                sb.Append(e.getX());
+                sb.Append("\n");
+                sb.Append("y");
+                sb.Append(" ");
+                sb.Append(e.getY());
+                sb.Append('\n');
+                sb.Append("modifiers {\n");
+                foreach (int mod in e.getModifiers()) {
+                    sb.Append(modifierIDDictReverse[mod]);
+                    sb.Append('\n');
+                }
+                
+                if (e.getVelocity() != 0){
+                    sb.Append("VELOCITY");
+                    sb.Append(" ");
+                    sb.Append(e.getVelocity());
+                    sb.Append('\n');
+                }
+
+                sb.Append("}\n");
+                sb.Append("}\n");
+            }
+
+            sb.Append("[Arcs]");
+            sb.Append('\n');
+            foreach (Edge edge in edges) {
+                sb.Append('{');
+                sb.Append('\n');
+                sb.Append("element1 ");
+                sb.Append(edge.getSource());
+                sb.Append('\n');
+                sb.Append("element2 ");
+                sb.Append(edge.getTarget());
+                if (edge.getVelocity() != 0) {
+                    sb.Append('\n');
+                    sb.Append("velocity ");
+                    sb.Append(edge.getVelocity());
+                }
+                sb.Append('\n');
+                sb.Append('}');
+                sb.Append('\n');
+            }
+            
+
+            return sb.ToString();
         }
 
         public class Element {
@@ -575,12 +702,32 @@ namespace BoGLWeb {
                 velocity = vel;
             }
 
+            public List<int> getModifiers() {
+                return modifiers;
+            }
+
+            public int getVelocity() {
+                return velocity;
+            }
+
             /// <summary>
             /// Returns the name of the element 
             /// </summary>
             /// <returns>The name of the element</returns>
             public string getName() {
                 return name;
+            }
+
+            public int getType() {
+                return type;
+            }
+
+            public double getX() {
+                return x;
+            }
+
+            public double getY() {
+                return y;
             }
 
             /// <summary>
@@ -671,6 +818,18 @@ namespace BoGLWeb {
             /// <returns>An element</returns>
             public Element getE2() {
                 return e2;
+            }
+
+            public int getSource() {
+                return this.source;
+            }
+
+            public int getTarget() {
+                return this.target;
+            }
+
+            public int getVelocity() {
+                return this.velocity;
             }
 
             /// <summary>
