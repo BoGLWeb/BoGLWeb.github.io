@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 namespace BoGLWeb {
     public class SystemDiagram {
         public static readonly ImmutableDictionary<string, int> modifierIDDict;
+        public static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
         public static readonly ImmutableDictionary<string, int> typeIDDict;
         public static readonly ImmutableDictionary<int, string> typeIDDictReverse;
 
@@ -32,6 +33,17 @@ namespace BoGLWeb {
             idBuilder.Add("TOOTH_WEAR", 6);
 
             modifierIDDict = idBuilder.ToImmutable();
+            
+            var idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            idBuilderReverse.Add(0, "MASS");
+            idBuilderReverse.Add(1, "INERTIA");
+            idBuilderReverse.Add(2, "STIFFNESS");
+            idBuilderReverse.Add(3, "FRICTION");
+            idBuilderReverse.Add(4, "DAMPING");
+            idBuilderReverse.Add(5, "PARALLEL");
+            idBuilderReverse.Add(6, "TOOTH_WEAR");
+
+            modifierIDDictReverse = idBuilderReverse.ToImmutable();
 
             var typeBuilder = ImmutableDictionary.CreateBuilder<string, int>();
             typeBuilder.Add("System_MT_Mass", 0);
@@ -595,7 +607,7 @@ namespace BoGLWeb {
                 sb.Append('\n');
                 sb.Append("modifiers {\n");
                 foreach (int mod in e.getModifiers()) {
-                    sb.Append(mod);
+                    sb.Append(modifierIDDictReverse[mod]);
                     sb.Append('\n');
                 }
                 
