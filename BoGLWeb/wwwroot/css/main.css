@@ -535,3 +535,16 @@ hr:not([size]) {
     right: 10px;
     top: 77px;
 }
+
+#zoomMenu {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    height: 175px;
+}
+
+#zoomSlider {
+    height: 100px;
+    margin-left: 70px;
+    display: inline-block;
+}
