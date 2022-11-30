@@ -400,7 +400,16 @@ namespace BoGLWeb {
         /// <returns>The system diagram from the json string</returns>
         public static SystemDiagram? generateSystemDiagramFromJSON(string json) {
             var sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
+            Console.WriteLine(JsonConvert.DeserializeObject(json));
+            var parsedJSON = JsonConvert.DeserializeObject<dynamic>(json);
+
             if (sysDiagram is not null) {
+                foreach (var bond in parsedJSON.bonds) {
+                    Console.WriteLine("Bond!!! " + bond.source.id + ", " + bond.target.id);
+                    sysDiagram.edges.Add(new Edge(sysDiagram.getElement(int.Parse(bond.source.id.ToString())), 
+                        sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
+                        int.Parse(bond.velocity.ToString())));
+                }
                 return sysDiagram;
             } else {
                 //TODO Throw error
@@ -615,6 +624,7 @@ namespace BoGLWeb {
                     sb.Append("VELOCITY");
                     sb.Append(" ");
                     sb.Append(e.getVelocity());
+                    sb.Append('\n');
                 }
 
                 sb.Append("}\n");
@@ -623,20 +633,23 @@ namespace BoGLWeb {
             sb.Append("}\n");
 
             sb.Append("[Arcs]");
-            foreach(Edge edge in edges) {
+            sb.Append('\n');
+            foreach (Edge edge in edges) {
                 sb.Append('{');
-                sb.Append("element1");
-                sb.Append(' ');
+                sb.Append('\n');
+                sb.Append("element1 ");
                 sb.Append(edge.getSource());
-                sb.Append("element2");
-                sb.Append(' ');
+                sb.Append('\n');
+                sb.Append("element2 ");
                 sb.Append(edge.getTarget());
                 if (edge.getVelocity() != 0) {
-                    sb.Append("velocity");
-                    sb.Append(' ');
+                    sb.Append('\n');
+                    sb.Append("velocity ");
                     sb.Append(edge.getVelocity());
                 }
+                sb.Append('\n');
                 sb.Append('}');
+                sb.Append('\n');
             }
             
 

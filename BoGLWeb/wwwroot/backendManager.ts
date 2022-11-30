@@ -53,7 +53,9 @@ export namespace backendManager {
             }
             let edges = [];
             for (let edge of parsedJson.edges) {
-                edges.push(new GraphBond(elements[edge.source], elements[edge.target]));
+                let bond = new GraphBond(elements[edge.source], elements[edge.target]);
+                bond.velocity = edge.velocity;
+                edges.push(bond);
             }
 
             var systemDiagram = new SystemDiagramDisplay((<any> window).systemDiagramSVG, new SystemDiagram(elements, edges));

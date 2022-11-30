@@ -367,7 +367,6 @@
     public async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
-        Console.WriteLine(file.ToString());
 
         //TODO Make this use the current system diagram
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
