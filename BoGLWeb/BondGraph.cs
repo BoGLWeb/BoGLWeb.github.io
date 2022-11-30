@@ -122,6 +122,8 @@ namespace BoGLWeb {
             protected readonly double value;
             protected readonly string name;
 
+            protected readonly Dictionary<Element, Bond> neighbors;
+
             //For graph visualization
             [JsonProperty]
             protected double x, y;
@@ -141,6 +143,7 @@ namespace BoGLWeb {
                 this.name = name;
                 this.label = label + " " + name;
                 this.value = value;
+                this.neighbors = new();
 
                 Random rnd = new();
                 this.x = rnd.Next(2000);
@@ -150,6 +153,10 @@ namespace BoGLWeb {
             public void setPosition(double x, double y) {
                 this.x = x;
                 this.y = y;
+            }
+
+            public void addNeighbor(Element neighbor, Bond bond) {
+                this.neighbors.Add(neighbor, bond);
             }
 
             public double getX() {
@@ -202,7 +209,9 @@ namespace BoGLWeb {
             public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
+                source.addNeighbor(sink, this);
                 this.source = source;
+                sink.addNeighbor(source, this);
                 this.sink = sink;
                 this.label = label;
                 this.causalStroke = causalStroke;
