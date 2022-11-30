@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static Microsoft.Playwright.NUnit.SkipAttribute;
 
 namespace BoGLWeb {
 
@@ -122,11 +123,15 @@ namespace BoGLWeb {
             protected readonly double value;
             protected readonly string name;
 
-            protected readonly Dictionary<Element, Bond> neighbors;
-
             //For graph visualization
             [JsonProperty]
             protected double x, y;
+
+            /// <summary>
+            /// Tracks the undo/redo and general IDs for this <c>Element</c>.
+            /// </summary>
+            private static int universalID = 0;
+            private int? ID;
 
             public string getString() {
                 return this.label + " " + this.value + " " + this.name + " " + this.x + " " + this.y;
@@ -143,7 +148,7 @@ namespace BoGLWeb {
                 this.name = name;
                 this.label = label + " " + name;
                 this.value = value;
-                this.neighbors = new();
+                AssignID(0, true);
 
                 Random rnd = new();
                 this.x = rnd.Next(2000);
@@ -153,10 +158,6 @@ namespace BoGLWeb {
             public void setPosition(double x, double y) {
                 this.x = x;
                 this.y = y;
-            }
-
-            public void addNeighbor(Element neighbor, Bond bond) {
-                this.neighbors.Add(neighbor, bond);
             }
 
             public double getX() {
@@ -169,6 +170,52 @@ namespace BoGLWeb {
 
             public string getName() {
                 return this.name;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <c>Element</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Element</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Element</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element Copy(bool isDistinct) {
+                Element copy = new(this.name, this.label, this.value) {
+                    x = this.x,
+                    y = this.y
+                };
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Element</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
             }
 
             public override bool Equals(object? obj) {
@@ -194,6 +241,12 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly bool causalStrokeDirection;
 
+            /// <summary>
+            /// Tracks the undo/redo and general IDs for this <c>Bond</c>.
+            /// </summary>
+            private static int universalID = 0;
+            private int? ID;
+
             //The arrow will always point at the sink
             /// <summary>
             /// Creates a Bond between two elements
@@ -209,15 +262,14 @@ namespace BoGLWeb {
             public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
-                source.addNeighbor(sink, this);
                 this.source = source;
-                sink.addNeighbor(source, this);
                 this.sink = sink;
                 this.label = label;
                 this.causalStroke = causalStroke;
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+                AssignID(0, true);
             }
 
             public bool isSource(Element e) {
@@ -234,6 +286,51 @@ namespace BoGLWeb {
 
             public Element getSink() {
                 return sink;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <c>Bond</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Bond</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Bond</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Bond Copy(bool isDistinct) {
+                Bond copy = new(this.sourceID, this.targetID, this.source, this.sink,
+                    this.label, this.causalStroke, this.causalStrokeDirection,
+                    this.flow, this.effort);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Bond</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
             }
 
             public override bool Equals(object? obj) {
