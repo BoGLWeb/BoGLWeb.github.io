@@ -55,7 +55,7 @@ export namespace backendManager {
             let edges = [];
             for (let edge of parsedJson.edges) {
                 let bond = new GraphBond(elements[edge.source], elements[edge.target]);
-                bond.velocity = edge.velocity;
+                bond.velocity = edge.velocity ?? 0;
                 edges.push(bond);
             }
 
@@ -151,6 +151,17 @@ export namespace backendManager {
                     element.modifiers.splice(element.modifiers.indexOf(i), 1);
                 }
             }
+        }
+
+        public setVelocity(velocity: number) {
+            let element = (<any>window).systemDiagram.state.selectedElement;
+            let edge = (<any>window).systemDiagram.state.selectedBond;
+            if (element) {
+                element.velocity = velocity;
+            } else if (edge) {
+                edge.velocity = velocity;
+            }
+            (<any>window).systemDiagram.updateGraph();
         }
     }
 
