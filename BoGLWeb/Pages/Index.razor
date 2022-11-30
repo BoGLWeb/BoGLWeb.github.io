@@ -132,16 +132,16 @@
                                                 <div style="font-size: 12px">Velocity Direction</div>
                                                 <div id="velocities">
                                                     <div id="clearVelocityWrapper">
-                                                        <Button Class="bogl_button" OnClick="b => { SetVelocity(-1); }">Clear<br />Velocity</Button>
+                                                        <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(-1); }">Clear<br />Velocity</Button>
                                                     </div>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 0 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { selectedVelocity = 0; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px"><div class="arrowButton topArrow">⮢</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 1 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { selectedVelocity = 1; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px"><div class="arrowButton topArrow">⮣</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 2 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { selectedVelocity = 2; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px"><div class="arrowButton sideTopArrow">⮥</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 3 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { selectedVelocity = 3; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px"><div class="arrowButton">⮧</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 4 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { selectedVelocity = 4; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px"><div class="arrowButton bottomArrow">⮡</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 5 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { selectedVelocity = 5; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px"><div class="arrowButton bottomArrow">⮠</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 6 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { selectedVelocity = 6; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px"><div class="arrowButton">⮦</div></Button>
-                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 7 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { selectedVelocity = 7; }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px"><div class="arrowButton sideTopArrow">⮤</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 1 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px"><div class="arrowButton topArrow">⮢</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 2 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px"><div class="arrowButton topArrow">⮣</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 3 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px"><div class="arrowButton sideTopArrow">⮥</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 4 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px"><div class="arrowButton">⮧</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 5 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px"><div class="arrowButton bottomArrow">⮡</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 6 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px"><div class="arrowButton bottomArrow">⮠</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 7 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px"><div class="arrowButton">⮦</div></Button>
+                                                    <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 8 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px"><div class="arrowButton sideTopArrow">⮤</div></Button>
                                                 </div>
                                             </div>
                                         </Panel>
@@ -216,8 +216,8 @@
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
-    static int selectedVelocity = 1;
-    static bool velocityDisabled = false;
+    static int selectedVelocity = 0;
+    static bool velocityDisabled = true;
 
     public Index() {
         _app = this;
@@ -229,7 +229,7 @@
     public static void SetVelocityDisabled(bool disabled) {
         Index.velocityDisabled = disabled;
         if (disabled) {
-            selectedVelocity = -1;
+            selectedVelocity = 0;
         }
         _app?.StateHasChanged();
     }
@@ -237,6 +237,13 @@
     [JSInvokable]
     public static void SetVelocity(int velocity) {
         Index.selectedVelocity = velocity;
+        _app?.StateHasChanged();
+    }
+
+    public async void ChangeVelocity(int velocity) {
+        Index.selectedVelocity = velocity;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setVelocity", velocity);
         _app?.StateHasChanged();
     }
 

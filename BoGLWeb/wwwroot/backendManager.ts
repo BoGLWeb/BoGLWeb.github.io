@@ -152,6 +152,16 @@ export namespace backendManager {
                 }
             }
         }
+
+        public setVelocity(velocity: number) {
+            let element = (<any>window).systemDiagram.state.selectedElement;
+            let edge = (<any>window).systemDiagram.state.selectedBond;
+            if (element) {
+                element.velocity = velocity;
+            } else if (edge) {
+                edge.velocity = velocity;
+            }
+        }
     }
 
     export function getBackendManager(): BackendManager {

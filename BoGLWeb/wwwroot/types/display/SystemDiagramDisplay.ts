@@ -162,6 +162,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    updateVelocityMenu() {
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.state.selectedElement == null && this.state.selectedBond == null);
+        if (this.state.selectedElement) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedElement.velocity);
+        } else if (this.state.selectedBond) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedBond.velocity);
+        }
+    }
+
     // remove bonds associated with a node
     spliceLinksForNode(el: SystemDiagramElement) {
         let graph = this;
@@ -172,6 +181,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         toSplice.map(function (l) {
             graph.bonds.splice(graph.bonds.indexOf(l), 1);
         });
+        this.updateVelocityMenu();
     }
 
     replaceSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
@@ -180,6 +190,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.removeSelectFromEdge();
         }
         this.state.selectedBond = bond;
+        this.updateVelocityMenu();
     }
 
     replaceSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
@@ -189,12 +200,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
         this.state.selectedElement = el;
         this.updateModifierMenu();
+        this.updateVelocityMenu();
     }
 
     removeSelectFromEdge() {
         let graph = this;
         graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
         this.state.selectedBond = null;
+        this.updateVelocityMenu();
     }
 
     removeSelectFromNode() {
@@ -202,6 +215,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
         this.state.selectedElement = null;
         this.updateModifierMenu();
+        this.updateVelocityMenu();
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
