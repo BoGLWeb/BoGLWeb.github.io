@@ -12,6 +12,7 @@ using GraphSynth.Representation;
 using BoGLWeb.BaseClasses;
 using static BoGLWeb.Graph;
 using System.Text.RegularExpressions;
+using System.Reflection.Emit;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -669,6 +670,9 @@ namespace BoGLWeb {
             [JsonProperty]
             protected int velocity;
 
+            private static int universalID = 0;
+            private int? ID;
+
             /// <summary>
             /// Creates an element of the system diagram
             /// </summary>
@@ -682,6 +686,7 @@ namespace BoGLWeb {
                 this.x = x;
                 this.y = y;
                 modifiers = new();
+                AssignID(0, true);
             }
 
             //TODO Error checking
@@ -750,6 +755,52 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Assigns an ID to this <c>Element</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Element</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Element</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element Copy(bool isDistinct) {
+                Element copy = new(this.type, this.name, this.x, this.y) {
+                    modifiers = new()
+                };
+                modifiers.AddRange(this.modifiers);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Element</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
+            }
+
+            /// <summary>
             /// Creates a string representation of the element
             /// </summary>
             /// <returns>A string</returns>
@@ -776,6 +827,12 @@ namespace BoGLWeb {
             protected readonly int target;
             [JsonProperty]
             protected readonly int velocity;
+
+            /// <summary>
+            /// Tracks the undo/redo and general IDs for this <c>Edge</c>.
+            /// </summary>
+            private static int universalID = 0;
+            private int? ID;
 
             /// <summary>
             /// Creates an edge between two elements
@@ -830,6 +887,49 @@ namespace BoGLWeb {
 
             public int getVelocity() {
                 return this.velocity;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <c>Edge</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Edge</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Edge</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Edge Copy(bool isDistinct) {
+                Edge copy = new(this.e1, this.e2, this.source, this.target, this.velocity);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Edge</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
             }
 
             /// <summary>
