@@ -538,13 +538,20 @@ hr:not([size]) {
 
 #zoomMenu {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 50px;
+    right: 30px;
+    width: 50px;
     height: 175px;
 }
 
 #zoomSlider {
+    position: absolute;
     height: 100px;
-    margin-left: 70px;
-    display: inline-block;
+    margin-left: 23%;
+}
+
+#zoomResetButton {
+    position: absolute;
+    top: 120px;
+    margin-left: 10%;
 }
