@@ -152,6 +152,19 @@
                                     </ExpandIconTemplate>
                                 </Collapse>
                             </div>
+                            <div id="zoomMenu">
+                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                                    <ChildContent>
+                                       <div style="height: 300px; margin-left: 70px; display: inline-block;">
+                                               <Slider TValue="double" Vertical DefaultValue="31" />
+                                       </div> 
+                                        <Button Type="@ButtonType.Primary" Loading="generatingBondGraph" Id="generateButton" Class="bogl_button">Generate</Button>
+                                    </ChildContent>
+                                    <ExpandIconTemplate>
+                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
+                                    </ExpandIconTemplate>
+                                </Collapse>
+                            </div>
                             <Button Type="@ButtonType.Primary" Loading="generatingBondGraph" Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
                             @if (!allRulesLoaded) {
                                 <p id="ruleLoadProgressText">Loading Rulesets:</p>
