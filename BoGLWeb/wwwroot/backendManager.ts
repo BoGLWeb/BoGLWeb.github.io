@@ -38,8 +38,8 @@ export namespace backendManager {
             this.parseAndDisplayBondGraph(1, jsonString, (<any>window).simpBGSVG);
         }
 
-        public displayCausalBondGraphOptions(jsonStrings: Array<string>) {
-            this.parseAndDisplayBondGraph(2, jsonStrings[0], (<any>window).causalBGSVG);
+        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
+            this.parseAndDisplayBondGraph(2, jsonStrings[index], (<any>window).causalBGSVG);
         }
 
         public loadSystemDiagram(jsonString: string) {
@@ -140,6 +140,17 @@ export namespace backendManager {
                 elements: (<any>window).systemDiagram.elements,
                 bonds: (<any>window).systemDiagram.bonds
             });
+        }
+
+        public setModifier(i: number, value: boolean) {
+            let element = (<any>window).systemDiagram.state.selectedElement;
+            if (element) {
+                if (value) { // adding modifier
+                    element.modifiers.push(i);
+                } else { // removing modifier
+                    element.modifiers.splice(element.modifiers.indexOf(i), 1);
+                }
+            }
         }
     }
 

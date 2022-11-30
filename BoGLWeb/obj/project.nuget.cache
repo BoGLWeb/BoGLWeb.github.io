@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Odfg5WE4dI2mslJn+XY3t59lEvyN8BC0LHRxwgPbrrT9TZI9myFGJRXo9bjzi38kxd//ZgX6WeZ0SY0bNyElyA==",
+  "dgSpecHash": "mwgHPLTfpTE4qkRdJsfde7ZaCr0AyjyQtXDFLkQw2tNSsWn6smBFKJlBe9vegQ5TY9RJ1ZSRmNohUJlmgNvWYQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\antdesign\\0.12.2\\antdesign.0.12.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\antdesign\\0.12.7\\antdesign.0.12.7.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.authorization\\6.0.8\\microsoft.aspnetcore.authorization.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.components\\6.0.8\\microsoft.aspnetcore.components.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\6.0.8\\microsoft.aspnetcore.components.analyzers.6.0.8.nupkg.sha512",

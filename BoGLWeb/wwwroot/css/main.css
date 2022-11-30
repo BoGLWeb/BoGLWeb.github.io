@@ -335,3 +335,203 @@ text {
     fill: black;
     dominant-baseline: middle;
 }
+
+#app {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+}
+
+#loadingImageWrapper {
+    display: block;
+}
+
+#loadingImage {
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-duration: 3s;
+}
+
+#loadingText {
+    font-size: 40px;
+    display: block;
+}
+
+#loadingWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0.65);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.65);
+    }
+}
+
+/* Fix for bug in Ant Design: https://github.com/ant-design/ant-design/issues/30758 */
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header > .ant-collapse-expand-icon {
+    left: auto;
+    right: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+#modifierMenu {
+    width: 120px;
+    height: fit-content;
+    position: absolute;
+    right: 15px;
+}
+
+#modifierMenu > .ant-collapse {
+    height: 100%;
+    padding-bottom: 0;
+    overflow: clip !important;
+}
+
+#modifierCheckboxWrapper > .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+    margin-left: 5px;
+}
+
+.ant-collapse-content-box:has(#modifierCheckboxWrapper) {
+    padding: 0 10px 5px 10px !important;
+}
+
+.ant-collapse-icon-position-right > div > .ant-collapse-header {
+    padding-bottom: 0 !important;
+    padding-top: 2px !important;
+}
+
+hr:not([size]) {
+    margin: 2px 0;
+    color: white;
+    opacity: 1;
+    height: 1.5px !important;
+}
+
+.arrowButton {
+    font-size: 30px;
+    line-height: 20px;
+}
+
+.ant-btn-lg:has(.arrowButton) {
+    padding: 0px !important;
+    position: absolute;
+    top: 0;
+}
+
+#clearVelocityWrapper {
+    margin: 30px auto;
+    width: 60px;
+    height: 60px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='2' stroke-dasharray='1%2c 5' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bogl_button {
+    height: auto;
+    background-color: #ABDCFF;
+    border: 1.5px solid #ABDCFF;
+    padding: 4px 5px;
+    border-radius: 5px;
+    color: black !important;
+    font-size: 12px;
+    line-height: 15px;
+}
+
+.bogl_button:hover:not(:disabled) {
+    background-color: #BEE6FD !important;
+}
+
+.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled) {
+    background-color: #ABDCFF !important;
+}
+
+.longArrow {
+    width: 30px !important;
+    height: 25px !important;
+}
+
+.tallArrow {
+    height: 30px !important;
+    width: 25px !important;
+}
+
+.tallArrow > span > .arrowButton {
+    line-height: 30px;
+}
+
+.topArrow {
+    margin-top: -5px;
+}
+
+.bottomArrow {
+    margin-left: -12px;
+    margin-top: 5px;
+}
+
+.sideTopArrow {
+    margin-top: -3px;
+}
+
+#modifierCheckboxWrapper > label {
+    font-size: 12px;
+}
+
+#velocities {
+    position: relative;
+}
+
+#modifierMenu > div > div > .ant-collapse-header {
+    font-size: 12px;
+}
+
+#generateButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+#ruleLoadProgress {
+    position: absolute;
+    bottom: 20px;
+    left: 370px;
+    width: calc(100% - 470px);
+}
+
+#ruleLoadProgressText {
+    position: absolute;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
+}
+
+#causalSelect {
+    position: absolute;
+    right: 10px;
+    top: 77px;
+}

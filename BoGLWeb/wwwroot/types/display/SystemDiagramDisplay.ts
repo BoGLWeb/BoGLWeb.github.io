@@ -154,6 +154,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         paths.classed("hoverablePath", true);
     }
 
+    updateModifierMenu() {
+        if (this.state.selectedElement) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", this.state.selectedElement.modifiers);
+        } else {
+            DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
+        }
+    }
+
     // remove bonds associated with a node
     spliceLinksForNode(el: SystemDiagramElement) {
         let graph = this;
@@ -180,6 +188,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.removeSelectFromNode();
         }
         this.state.selectedElement = el;
+        this.updateModifierMenu();
     }
 
     removeSelectFromEdge() {
@@ -192,6 +201,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
         this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
         this.state.selectedElement = null;
+        this.updateModifierMenu();
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
@@ -279,7 +289,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.draggingElement != null) {
             document.body.style.cursor = "auto";
             let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.state.elemId++, this.draggingElement, xycoords[0], xycoords[1], 0));
+            this.elements.push(new SystemDiagramElement(this.state.elemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
             this.updateGraph();
         }
         if (state.justScaleTransGraph) {
@@ -314,6 +324,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     this.elements.splice(this.elements.indexOf(selectedNode), 1);
                     graph.spliceLinksForNode(selectedNode);
                     state.selectedElement = null;
+                    this.updateModifierMenu();
                     this.updateGraph();
                 } else if (selectedEdge) {
                     this.bonds.splice(this.bonds.indexOf(selectedEdge), 1);

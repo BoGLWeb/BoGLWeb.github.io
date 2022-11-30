@@ -803,7 +803,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign" Version="0.12.2" />
+    <PackageReference Include="AntDesign" Version="0.12.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.4">
@@ -842,7 +842,6 @@
     <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
     <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
     <None Include="wwwroot\css\open-iconic\README.md" />
-    <None Include="wwwroot\favicon.ico" />
     <None Include="wwwroot\icon-192.png" />
     <None Include="wwwroot\icon-512.png" />
     <None Include="wwwroot\index.html" />

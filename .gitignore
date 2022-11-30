@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -374,3 +374,6 @@ BoGLWeb/.idea/.idea.BoGLWeb/.idea/vcs.xml
 BoGLWeb/global.json
 BoGLWeb/obj/Debug/net6.0/BoGLWeb.csproj.CoreCompileInputs.cache
 BoGLWeb/obj/Debug/net6.0/BoGLWeb.GeneratedMSBuildEditorConfig.editorconfig
+BoGLWeb/obj/*
+BoGLWeb/.idea/*
+*.cache
