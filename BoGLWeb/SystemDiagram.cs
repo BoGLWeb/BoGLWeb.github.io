@@ -228,7 +228,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Name was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("x")) {
@@ -237,7 +237,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("X was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("X was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("y")) {
@@ -246,7 +246,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Y was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("modifiers")) {
@@ -270,11 +270,11 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Modifier was missing. Got: <" + tok + "> instead");
                 }
 
                 //Add element to element list
-                Element e = new Element(type, name, x, y);
+                Element e = new(type, name, x, y);
                 foreach (string str in modifiers) {
                     Console.WriteLine("I FOUND THIS GUY: " + str);
                     if (str.Contains("VELOCITY")) {
@@ -294,8 +294,8 @@ namespace BoGLWeb {
             }
 
             //Parse Arcs
-            List<Edge> arcs = new List<Edge>();
-            Queue<string> arcsTokenQueue = new Queue<string>();
+            List<Edge> arcs = new();
+            Queue<string> arcsTokenQueue = new();
             for (int i = arcsPos + 1; i < tokens.Count; i++) {
                 arcsTokenQueue.Enqueue(tokens[i]);
             }
@@ -306,8 +306,8 @@ namespace BoGLWeb {
                     //Parse
                     //TODO Need to add something that checks if this loop runs more than once because that should be an error
                     while (!foundCloseBrace) {
-                        int e1 = 0;
-                        int e2 = 0;
+                        int e1;
+                        int e2;
                         string velocity = "";
 
                         //Check element1
@@ -318,7 +318,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element1 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Check element2
@@ -329,7 +329,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element2 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Modifiers
@@ -354,7 +354,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Missing open brace");
-                    return null;
+                    throw new ArgumentException("Missing open brace");
                 }
             }
 
