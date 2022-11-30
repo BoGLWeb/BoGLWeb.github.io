@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "VhJfDImIwg/A7Fm+gSrTRMEG0PZ5yO8kNq3XaEJ84+Heu+VLQ3tEO3alRDXANYhdSzQmaK2rgheIwBvxc9+o3Q==",
+  "dgSpecHash": "mwgHPLTfpTE4qkRdJsfde7ZaCr0AyjyQtXDFLkQw2tNSsWn6smBFKJlBe9vegQ5TY9RJ1ZSRmNohUJlmgNvWYQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -41,7 +41,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.testplatform.testhost\\17.3.2\\microsoft.testplatform.testhost.17.3.2.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.typescript.msbuild\\4.8.4\\microsoft.typescript.msbuild.4.8.4.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
-    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\newtonsoft.json.schema\\3.0.14\\newtonsoft.json.schema.3.0.14.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nuget.commandline\\6.3.1\\nuget.commandline.6.3.1.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\nuget.frameworks\\5.11.0\\nuget.frameworks.5.11.0.nupkg.sha512",
