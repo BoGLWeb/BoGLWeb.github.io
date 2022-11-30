@@ -77,7 +77,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[13.0.1, )"
+              "version": "[13.0.2, )"
             },
             "Newtonsoft.Json.Schema": {
               "target": "Package",

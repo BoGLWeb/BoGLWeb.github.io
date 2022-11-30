@@ -178,7 +178,7 @@ namespace BoGLWeb {
             /// The <c>Function</c> string.
             /// </param>
             /// <param name="index">
-            /// The index of the delimiter character.
+            /// The nextIndex of the delimiter character.
             /// </param>
             /// <param name="o1">
             /// The <c>FunctionOperator</c> to be used for the first child.
@@ -262,7 +262,7 @@ namespace BoGLWeb {
             /// <param name="proceedThroughLayers">
             /// <c>true</c> if the simplification process should continue 
             /// throughout the whole <c>Function</c>, else <c>false</c>
-            /// if the process should be confined to this layer.
+            /// if the process should be confined to this index.
             /// </param>
             public void Simplify(bool simplifyAllLayers) {
                 Stack<Function> fnStack = new();
@@ -430,6 +430,153 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Counts the number of instances of a specified variable
+            /// <c>Function</c> contained in this <c>Function</c>.
+            /// </summary>
+            /// <param name="var">
+            /// The target variable.
+            /// </param>
+            /// <param name="includeDifferentials">
+            /// <c>true</c> if the count includes derivatives of the target
+            /// variable, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The number of occurrences of the target variable.
+            /// </returns>
+            public int CountInstances(Function var, bool includeDifferentials) {
+                if (!var.IsVariable()) {
+                    throw new ArgumentException("Input must be a variable.");
+                } else if ((!includeDifferentials) & IsDifferential()) {
+                    return 0;
+                }
+                String varFn = var.fn;
+                int count = 0;
+                Stack<Function> thisStack = new();
+                thisStack.Push(this);
+                while (thisStack.Count > 0) {
+                    Function fn = thisStack.Pop();
+                    if (fn.fn.Equals(varFn)) {
+                        count++;
+                    } else {
+                        foreach (Function child in fn.children) {
+                            if (includeDifferentials | !child.IsDifferential()) {
+                                thisStack.Push(child);
+                            }
+                        }
+                    }
+                }
+                return count;
+            }
+
+            /// <summary>
+            /// Equates this <c>Function</c> with another specified <c>Function</c>
+            /// and isolates a specified variable. This variable must occur exactly
+            /// once in this <c>Function</c> and nowhere in the input <c>Function</c>.
+            /// </summary>
+            /// <param name="o">
+            /// The equated <c>Function</c>.
+            /// </param>
+            /// <param name="var">
+            /// The target variable.
+            /// </param>
+            /// <returns>
+            /// The <c>Function</c> equation as solved for the variable.
+            /// </returns>
+            public Function Isolate(Function o, Function var) {
+                Function thisCopy = Copy();
+                Function oCopy = o.Copy();
+                foreach (int index in GetListOfPathIndices(var)) {
+                    String fn = thisCopy.fn;
+                    Function targetChild = thisCopy.children[index];
+                    switch ((FunctionOperator) fn[0]) {
+                        case FunctionOperator.ADDITION:
+                            thisCopy.children.RemoveAt(index);
+                            oCopy = oCopy.Subtract(thisCopy);
+                            break;
+                        case FunctionOperator.SUBTRACTION:
+                            if (index == 0) {
+                                oCopy = oCopy.Add(thisCopy.children[1]);
+                            } else {
+                                oCopy = thisCopy.children[0].Subtract(oCopy);
+                            }
+                            break;
+                        case FunctionOperator.MULTIPLICATION:
+                            thisCopy.children.RemoveAt(index);
+                            oCopy = oCopy.Divide(thisCopy);
+                            break;
+                        case FunctionOperator.DIVISION:
+                            if (index == 0) {
+                                oCopy = oCopy.Multiply(thisCopy.children[1]);
+                            } else {
+                                oCopy = thisCopy.children[0].Divide(oCopy);
+                            }
+                            break;
+                        case FunctionOperator.NEGATION:
+                            oCopy = oCopy.Negate();
+                            break;
+                        case FunctionOperator.PARENTHETICAL:
+                            InsertParentheticalExpression(oCopy);
+                            break;
+                    }
+                    thisCopy = targetChild;
+                }
+                return oCopy;
+            }
+
+            /// <summary>
+            /// Gets the list of path indices leading from the base index
+            /// of this <c>Function</c> to a specified variable. This method
+            /// assumes that the variable occurs at most once in the 
+            /// <c>Function</c> and does not enter differential <c>Function</c> 
+            /// objects.
+            /// </summary>
+            /// <param name="var">
+            /// The specified variable.
+            /// </param>
+            /// <returns>
+            /// The list of indices.
+            /// </returns>
+            private List<int> GetListOfPathIndices(Function var) {
+                var.AssertVariable();
+                AssertNotDifferential();
+                Stack<Function> fnStack = new();
+                Stack<bool> checkStack = new();
+                Stack<int> indexStack = new();
+                fnStack.Push(this);
+                checkStack.Push(true);
+                indexStack.Push(0);
+                List<int> indices = new() { 0 };
+                String varFn = var.fn;
+                while (fnStack.Count > 0) {
+                    Function fn = fnStack.Pop();
+                    int index = indexStack.Pop();
+                    if (checkStack.Pop()) {
+                        if (fn.fn.Equals(varFn)) {
+                            indices.Reverse();
+                            return indices;
+                        } else {
+                            fnStack.Push(new());
+                            indexStack.Push(0);
+                            checkStack.Push(false);
+                            int nextIndex = 0;
+                            foreach (Function child in fn.children) {
+                                if (!child.IsDifferential()) {
+                                    fnStack.Push(child);
+                                    indexStack.Push(nextIndex);
+                                    checkStack.Push(true);
+                                }
+                                nextIndex++;
+                            }
+                            indices.Insert(0, index);
+                        }
+                    } else {
+                        indices.RemoveAt(0);
+                    }
+                }
+                throw new ArgumentException("Variable does not occur in path");
+            }
+
+            /// <summary>
             /// Makes a copy of this <c>Function</c>.
             /// </summary>
             /// <returns>
@@ -466,22 +613,58 @@ namespace BoGLWeb {
             /// The replacement <c>Function</c>.
             /// </param>
             public void Substitute(Function var, Function fn) {
-                if (!var.IsVariable()) {
-                    throw new ArgumentException("Function must be argument.");
-                }
-                String varFn = var.fn;
-                Stack<Function> thisStack = new();
-                thisStack.Push(this);
-                while (thisStack.Count > 0) {
-                    Function target = thisStack.Pop();
-                    if (target.fn.Equals(varFn)) {
-                        target.AssignValues("(", new() { fn });
-                        target.Simplify(false);
-                    } else {
-                        foreach (Function child in target.children) {
-                            thisStack.Push(child);
+                var.AssertVariable();
+                if (!IsDifferential()) {
+                    String varFn = var.fn;
+                    Stack<Function> thisStack = new();
+                    thisStack.Push(this);
+                    while (thisStack.Count > 0) {
+                        Function target = thisStack.Pop();
+                        if (target.fn.Equals(varFn)) {
+                            target.AssignValues("(", new() { fn });
+                            target.Simplify(false);
+                        } else {
+                            foreach (Function child in target.children) {
+                                if (!child.IsDifferential()) {
+                                    thisStack.Push(child);
+                                }
+                            }
                         }
                     }
+                }
+            }
+
+            /// <summary>
+            /// Determines whether <c>this</c> is a variable <c>Function</c.
+            /// </summary>
+            /// <exception cref="ArgumentException">
+            /// If <c>this</c> is not a variable.
+            /// </exception>
+            private void AssertVariable() {
+                if (!IsVariable()) {
+                    throw new ArgumentException("Function must be variable.");
+                }
+            }
+
+            /// <summary>
+            /// Determines whether this <c>Function</c> is a differential.
+            /// </summary>
+            /// <returns>
+            /// <c>true</c> if this is a differential, else <c>false</c>.
+            /// </returns>
+            private bool IsDifferential() {
+                return this.fn[0] == '\'';
+            }
+
+            /// <summary>
+            /// Asserts that <c>this</c> is not a differential <c>Function</c>.
+            /// </summary>
+            /// <exception cref="ArgumentException">
+            /// If <c>this</c> is a differential <c>Function</c>.
+            /// </exception>
+            private void AssertNotDifferential() {
+                if (IsDifferential()) {
+                    throw new ArgumentException("Function cannot be a differential.");
                 }
             }
 
@@ -496,8 +679,7 @@ namespace BoGLWeb {
             /// </returns>
             public Function Add(Function addend) {
                 Function sum = new();
-                List<Function> children = new() {Copy(), addend.Copy()};
-                sum.AssignValues("+", children);
+                sum.AssignValues("+", new() { Copy(), addend.Copy() });
                 sum.Simplify(false);
                 return sum;
             }
@@ -649,7 +831,7 @@ namespace BoGLWeb {
                     FunctionOperator.NEGATION => 5,
                     FunctionOperator.DIFFERENTIAL => 6,
                     FunctionOperator.PARENTHETICAL => 7,
-                    _ => 8
+                    _ => 7
                 };
             }
 
@@ -671,16 +853,21 @@ namespace BoGLWeb {
                             builder.Append(delimiter).Append(child);
                             delimiter = op;
                         }
-                        return builder.ToString();
+                        fn = builder.ToString();
+                        break;
                     case FunctionOperator.SUBTRACTION:
                     case FunctionOperator.DIVISION:
-                        return this.children[0].ToString() + op + this.children[1];
+                        fn = this.children[0].ToString() + op + this.children[1];
+                        break;
                     case FunctionOperator.PARENTHETICAL:
-                        return "(" + this.children[0] + ')';
+                        fn = "(" + this.children[0] + ')';
+                        break;
                     case FunctionOperator.DIFFERENTIAL:
-                        return this.children[0].fn + "'";
+                        fn = this.children[0].fn + "'";
+                        break;
                     case FunctionOperator.NEGATION:
-                        return "-" + this.children[0];
+                        fn = "-" + this.children[0];
+                        break;
                 }
                 return fn;  // If this statement is reached, this Function
             }               // is either a constant or a variable
@@ -698,8 +885,8 @@ namespace BoGLWeb {
                 ADDITION                    = 43, //    +
                 SUBTRACTION                 = 45, //    -
                 DIVISION                    = 47, //    /
-                ZERO                        = 49, //    0
-                ONE                         = 50  //    1
+                ZERO                        = 48, //    0
+                ONE                         = 49  //    1
             }
         }
     }
