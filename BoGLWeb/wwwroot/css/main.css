@@ -433,6 +433,7 @@ hr:not([size]) {
 .arrowButton {
     font-size: 30px;
     line-height: 20px;
+    color: darkgray;
 }
 
 .ant-btn-lg:has(.arrowButton) {
@@ -534,4 +535,8 @@ hr:not([size]) {
     position: absolute;
     right: 10px;
     top: 77px;
+}
+
+.selectedVelocity > span > div {
+    color: black !important;
 }
