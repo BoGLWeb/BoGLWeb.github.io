@@ -2,6 +2,7 @@
 @inject NavigationManager NavManager
 @page "/"
 @using System.Text;
+@using System.Diagnostics
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -203,10 +204,15 @@
             <p>Prof. Brigitte Servatius</p>
         </div>
     </Modal>
+    <Modal Title="Error Loading .bogl File" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
+        <div class="modal-body">
+            <p>@errorMessage</p>
+        </div>
+    </Modal>
 </body>
 
 @code {
-    private bool generatingBondGraph = false;
+    private bool generatingBondGraph;
 
     private static Index? _app;
     public class Option {
@@ -291,7 +297,6 @@
     }
 
     public async Task generateButtonClicked() {
-        Console.WriteLine("-------- GENERATE BUTTON CLICKED --------");
         generatingBondGraph = true;
         base.StateHasChanged();
         await Task.Delay(1);
@@ -364,10 +369,22 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
+    private string errorMessage = "";
+    
     public async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("openFile");
-        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+        SystemDiagram sysDiagram;
+        try {
+            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+        } catch (ArgumentException e) {
+            Console.WriteLine("Error Visible: " + errorVisible);
+            errorVisible = true;
+            Console.WriteLine("Error Visible: " + errorVisible);
+            errorMessage = e.Message;
+            base.StateHasChanged();
+            return;
+        }
 
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
@@ -418,5 +435,14 @@
 
     private void handleOk() {
         _visible = false;
+        base.StateHasChanged();
+    }
+    
+    bool errorVisible = false;
+
+    private void handleErrorOk() {
+        errorVisible = false;
+        Console.WriteLine("Error Visible: " + errorVisible);
+        base.StateHasChanged();
     }
 }
