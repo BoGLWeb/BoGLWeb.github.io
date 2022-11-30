@@ -209,6 +209,9 @@
             <p>@errorMessage</p>
         </div>
     </Modal>
+    <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleURLOk" OnCancel="@handleURLOk">
+        <p>@url</p>
+    </Modal>
 </body>
 
 @code {
@@ -378,9 +381,7 @@
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
         } catch (ArgumentException e) {
-            Console.WriteLine("Error Visible: " + errorVisible);
             errorVisible = true;
-            Console.WriteLine("Error Visible: " + errorVisible);
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
@@ -442,7 +443,14 @@
 
     private void handleErrorOk() {
         errorVisible = false;
-        Console.WriteLine("Error Visible: " + errorVisible);
+        base.StateHasChanged();
+    }
+
+    bool urlModalVisible = false;
+    string url = "";
+
+    private void handleURLOk() {
+        urlModalVisible = false;
         base.StateHasChanged();
     }
 }
