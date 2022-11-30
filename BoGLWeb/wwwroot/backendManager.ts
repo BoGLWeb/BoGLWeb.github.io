@@ -55,7 +55,7 @@ export namespace backendManager {
             let edges = [];
             for (let edge of parsedJson.edges) {
                 let bond = new GraphBond(elements[edge.source], elements[edge.target]);
-                bond.velocity = edge.velocity;
+                bond.velocity = edge.velocity ?? 0;
                 edges.push(bond);
             }
 

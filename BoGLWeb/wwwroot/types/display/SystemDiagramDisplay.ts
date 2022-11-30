@@ -9,6 +9,16 @@ import { BaseGraphDisplay } from "./BaseGraphDisplay";
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
+    velocityMap = {
+        1: "⮢",
+        2: "⮣",
+        3: "⮥",
+        4: "⮧",
+        5: "⮡",
+        6: "⮠",
+        7: "⮦",
+        8: "⮤"
+    };
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -151,7 +161,38 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
+        let graph = this;
         paths.classed("hoverablePath", true);
+        d3.select(paths.node().parentNode).selectAll("text").html(null);
+        paths.each(e => {
+            if (e.velocity != 0) {
+                let velocityClass = "";
+                let xOffset = 0;
+                let yOffset = 0;
+                let mult = Math.abs(Math.cos((Math.atan2(e.source.y - e.target.y, e.target.x - e.source.x) + Math.PI) % (2 * Math.PI)));
+                if (e.velocity == 1 || e.velocity == 2) {
+                    velocityClass = "topVelocity";
+                    yOffset = -7 * mult;
+                    xOffset = -5;
+                } else if (e.velocity == 3 || e.velocity == 4) {
+                    velocityClass = "rightVelocity";
+                    yOffset = 7 * mult;
+                    xOffset = 0;
+                } else if (e.velocity == 5 || e.velocity == 6) {
+                    velocityClass = "bottomVelocity";
+                    yOffset = 7 * mult;
+                    xOffset = -5;
+                } else {
+                    velocityClass = "leftVelocity";
+                    yOffset = -7 * mult;
+                    xOffset = 0;
+                }
+
+                d3.select(paths.node().parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                    .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
+                        (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
+            }
+        });
     }
 
     updateModifierMenu() {

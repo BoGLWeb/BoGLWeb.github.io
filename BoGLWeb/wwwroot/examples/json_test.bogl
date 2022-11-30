@@ -20,6 +20,7 @@ zoom 0.5999999999999995
 	y -80.42269005847902
 	modifiers {
 		FRICTION
+		VELOCITY 4
 	}
 }
 {
@@ -27,7 +28,7 @@ zoom 0.5999999999999995
 	x -160.33258145363413
 	y -40.42269005847925
 	modifiers {
-		VELOCITY 3
+		VELOCITY 6
 	}
 }
 {
@@ -35,6 +36,7 @@ zoom 0.5999999999999995
 	x 92.11186299081078
 	y -40.42269005847925
 	modifiers {
+		VELOCITY 8
 	}
 }
 {
@@ -70,9 +72,20 @@ zoom 0.5999999999999995
 {
 	element1 7
 	element2 5
-	velocity 1
+	velocity 2
 }
 {
 	element1 6
 	element2 5
+	velocity 4
+}
+{
+	element1 1
+	element2 2
+	velocity 6
+}
+{
+	element1 2
+	element2 3
+	velocity 8
 }

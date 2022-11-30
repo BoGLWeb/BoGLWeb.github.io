@@ -540,3 +540,28 @@ hr:not([size]) {
 .selectedVelocity > span > div {
     color: black !important;
 }
+
+.velocityArrow {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.topVelocity {
+    text-anchor: start;
+    dominant-baseline: middle;
+}
+
+.rightVelocity {
+    text-anchor: start;
+    alignment-baseline: central;
+}
+
+.bottomVelocity {
+    text-anchor: end;
+    dominant-baseline: central;
+}
+
+.leftVelocity {
+    text-anchor: end;
+    alignment-baseline: middle;
+}
