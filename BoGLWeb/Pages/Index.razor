@@ -120,13 +120,13 @@
                                     <ChildContent>
                                         <Panel Header="Modifers" Key="1">
                                             <div id="modifierCheckboxWrapper">
-                                                <Checkbox Checked="@checkValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                                <Checkbox Checked="@checkValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                                <Checkbox Checked="@checkValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                                <Checkbox Checked="@checkValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                                <Checkbox Checked="@checkValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                                <Checkbox Checked="@checkValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                                <Checkbox Checked="@checkValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                                <Checkbox Checked="@checkValues[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                                <Checkbox Checked="@checkValues[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                                <Checkbox Checked="@checkValues[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                                <Checkbox Checked="@checkValues[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                                <Checkbox Checked="@checkValues[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                                <Checkbox Checked="@checkValues[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                                <Checkbox Checked="@checkValues[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
                                             </div>
                                             <hr />
                                             <div>
@@ -230,7 +230,8 @@
         _app = this;
     }
 
-    public static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] disabledValues { get; set; } = { false, false, false, false, false, false, false };
 
     [JSInvokable]
     public static void ClearCheckboxes() {
