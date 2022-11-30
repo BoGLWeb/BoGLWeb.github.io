@@ -12,6 +12,7 @@ using GraphSynth.Representation;
 using BoGLWeb.BaseClasses;
 using static BoGLWeb.Graph;
 using System.Text.RegularExpressions;
+using System.Reflection.Emit;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -208,7 +209,7 @@ namespace BoGLWeb {
 
                 //The head of the queue should always be a brace here so we can pop it and add it to the stack
                 string stackTok = tokenQueue.Dequeue();
-                //Console.WriteLine(stackTok);
+                Console.WriteLine("HERE: " + stackTok);
                 braceStack.Push(stackTok);
 
                 //We expect the next string in the queue to be "name"
@@ -222,13 +223,13 @@ namespace BoGLWeb {
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
-                    Console.Write("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
+                    Console.WriteLine("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Name was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("x")) {
@@ -237,7 +238,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("X was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("X was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("y")) {
@@ -246,7 +247,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Y was missing. Got: <" + tok + "> instead");
                 }
 
                 if (tokenQueue.Dequeue().Equals("modifiers")) {
@@ -270,11 +271,11 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
-                    return null;
+                    throw new ArgumentException("Modifier was missing. Got: <" + tok + "> instead");
                 }
 
                 //Add element to element list
-                Element e = new Element(type, name, x, y);
+                Element e = new(type, name, x, y);
                 foreach (string str in modifiers) {
                     Console.WriteLine("I FOUND THIS GUY: " + str);
                     if (str.Contains("VELOCITY")) {
@@ -294,8 +295,8 @@ namespace BoGLWeb {
             }
 
             //Parse Arcs
-            List<Edge> arcs = new List<Edge>();
-            Queue<string> arcsTokenQueue = new Queue<string>();
+            List<Edge> arcs = new();
+            Queue<string> arcsTokenQueue = new();
             for (int i = arcsPos + 1; i < tokens.Count; i++) {
                 arcsTokenQueue.Enqueue(tokens[i]);
             }
@@ -306,8 +307,8 @@ namespace BoGLWeb {
                     //Parse
                     //TODO Need to add something that checks if this loop runs more than once because that should be an error
                     while (!foundCloseBrace) {
-                        int e1 = 0;
-                        int e2 = 0;
+                        int e1;
+                        int e2;
                         string velocity = "";
 
                         //Check element1
@@ -318,7 +319,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element1 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Check element2
@@ -329,7 +330,7 @@ namespace BoGLWeb {
                             // The grammar is not being followed
                             //TODO Figure out how we should handle this error
                             Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
-                            return null;
+                            throw new ArgumentException("Element2 was missing. Got: <" + tok + "> instead");
                         }
 
                         //Modifiers
@@ -354,7 +355,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Missing open brace");
-                    return null;
+                    throw new ArgumentException("Missing open brace");
                 }
             }
 
@@ -410,6 +411,7 @@ namespace BoGLWeb {
                         sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
                         int.Parse(bond.velocity.ToString())));
                 }
+                
                 return sysDiagram;
             } else {
                 //TODO Throw error
@@ -628,9 +630,8 @@ namespace BoGLWeb {
                 }
 
                 sb.Append("}\n");
+                sb.Append("}\n");
             }
-
-            sb.Append("}\n");
 
             sb.Append("[Arcs]");
             sb.Append('\n');
@@ -669,6 +670,9 @@ namespace BoGLWeb {
             [JsonProperty]
             protected int velocity;
 
+            private static int universalID = 0;
+            private int? ID;
+
             /// <summary>
             /// Creates an element of the system diagram
             /// </summary>
@@ -682,6 +686,7 @@ namespace BoGLWeb {
                 this.x = x;
                 this.y = y;
                 modifiers = new();
+                AssignID(0, true);
             }
 
             //TODO Error checking
@@ -750,6 +755,52 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Assigns an ID to this <c>Element</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Element</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Element</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element Copy(bool isDistinct) {
+                Element copy = new(this.type, this.name, this.x, this.y) {
+                    modifiers = new()
+                };
+                modifiers.AddRange(this.modifiers);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Element</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
+            }
+
+            /// <summary>
             /// Creates a string representation of the element
             /// </summary>
             /// <returns>A string</returns>
@@ -776,6 +827,12 @@ namespace BoGLWeb {
             protected readonly int target;
             [JsonProperty]
             protected readonly int velocity;
+
+            /// <summary>
+            /// Tracks the undo/redo and general IDs for this <c>Edge</c>.
+            /// </summary>
+            private static int universalID = 0;
+            private int? ID;
 
             /// <summary>
             /// Creates an edge between two elements
@@ -830,6 +887,49 @@ namespace BoGLWeb {
 
             public int getVelocity() {
                 return this.velocity;
+            }
+
+            /// <summary>
+            /// Assigns an ID to this <c>Edge</c>.
+            /// </summary>
+            /// <param name="ID">
+            /// A candidate ID.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the ID of this <c>Edge</c> should be unique,
+            /// else <c>false</c>.
+            /// </param>
+            public void AssignID(int? ID, bool isDistinct) {
+                if (this.ID == null | isDistinct) {
+                    this.ID = universalID++;
+                } else {
+                    this.ID = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <c>Edge</c>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <c>true</c> if the copy should have its own ID, else <c>false</c>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Edge Copy(bool isDistinct) {
+                Edge copy = new(this.e1, this.e2, this.source, this.target, this.velocity);
+                copy.AssignID(this.ID, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Gets the ID of this <c>Edge</c>.
+            /// </summary>
+            /// <returns>
+            /// <c>this.ID</c>
+            /// </returns>
+            public int GetID() {
+                return (this.ID is int ID) ? ID : 0;
             }
 
             /// <summary>
