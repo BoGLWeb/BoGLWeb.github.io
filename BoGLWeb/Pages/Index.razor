@@ -222,6 +222,7 @@
         public string label { get; set; }
         public int value { get; set; }
     }
+    
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
@@ -245,6 +246,22 @@
     public static void SetCheckboxes(int[] indeces) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = indeces.Contains(i);
+        }
+        _app?.StateHasChanged();
+    }
+    
+    [JSInvokable]
+    public static void ClearDisabled() {
+        for (int i = 0; i < disabledValues.Length; i++) {
+            disabledValues[i] = false;
+        }
+        _app?.StateHasChanged();
+    }
+    
+    [JSInvokable]
+    public static void SetModifiersDisabled(int[] indices) {
+        for (int i = 0; i < disabledValues.Length; i++) {
+            disabledValues[i] = indices.Contains(i);
         }
         _app?.StateHasChanged();
     }
