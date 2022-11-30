@@ -1,15 +1,16 @@
-﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
-import { GraphBond } from "./types/bonds/GraphBond";
-import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
-import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
-import { BondGraphElement } from "./types/elements/BondGraphElement";
-import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
-import { BondGraph } from "./types/graphs/BondGraph";
-import { SystemDiagram } from "./types/graphs/SystemDiagram";
-import { SVGSelection } from "./type_libraries/d3-selection";
+﻿import {BondGraphBond} from "./types/bonds/BondGraphBond";
+import {GraphBond} from "./types/bonds/GraphBond";
+import {BondGraphDisplay} from "./types/display/BondGraphDisplay";
+import {SystemDiagramDisplay} from "./types/display/SystemDiagramDisplay";
+import {BondGraphElement} from "./types/elements/BondGraphElement";
+import {SystemDiagramElement} from "./types/elements/SystemDiagramElement";
+import {BondGraph} from "./types/graphs/BondGraph";
+import {SystemDiagram} from "./types/graphs/SystemDiagram";
+import {SVGSelection} from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
+        
         public test(text: string) {
             console.log(text);
         }
@@ -89,13 +90,49 @@ export namespace backendManager {
         public async saveAsFile(fileName: string, contentStreamReference: any) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
-            const url = URL.createObjectURL(blob);
-            const anchorElement = document.createElement('a');
-            anchorElement.href = url;
-            anchorElement.download = fileName ?? '';
-            anchorElement.click();
-            anchorElement.remove();
-            URL.revokeObjectURL(url);
+            
+            const pickerOptions = {
+                suggestedName: `systemDiagram.bogl`,
+                types: [
+                    {
+                        description: 'A BoGL File',
+                        accept: {
+                            'text/plain': ['.bogl'],
+                        },
+                    },
+                ],
+            };
+            
+            const fileHandle = await (<any> window).showSaveFilePicker(pickerOptions);
+            (<any> window).filePath = fileHandle;
+            const writableFileStream = await fileHandle.createWritable();
+            await writableFileStream.write(blob);
+            await writableFileStream.close();
+        }
+        
+        public async saveFile(fileName: string, contentStreamReference: any) {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            
+            const pickerOptions = {
+                suggestedName: `systemDiagram.bogl`,
+                types: [
+                    {
+                        description: 'A BoGL File',
+                        accept: {
+                            'text/plain': ['.bogl'],
+                        },
+                    },
+                ],
+            };
+            
+            if ((<any> window).filePath == null) {
+                (<any> window).filePath = await (<any>window).showSaveFilePicker(pickerOptions);
+            }
+            
+            const writableFileStream = await (<any> window).filePath.createWritable();
+            await writableFileStream.write(blob);
+            await writableFileStream.close();
         }
 
         public getSystemDiagram() {
