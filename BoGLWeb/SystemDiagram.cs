@@ -208,7 +208,7 @@ namespace BoGLWeb {
 
                 //The head of the queue should always be a brace here so we can pop it and add it to the stack
                 string stackTok = tokenQueue.Dequeue();
-                //Console.WriteLine(stackTok);
+                Console.WriteLine("HERE: " + stackTok);
                 braceStack.Push(stackTok);
 
                 //We expect the next string in the queue to be "name"
@@ -222,7 +222,7 @@ namespace BoGLWeb {
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
-                    Console.Write("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
+                    Console.WriteLine("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
@@ -410,6 +410,7 @@ namespace BoGLWeb {
                         sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
                         int.Parse(bond.velocity.ToString())));
                 }
+                
                 return sysDiagram;
             } else {
                 //TODO Throw error
@@ -628,9 +629,8 @@ namespace BoGLWeb {
                 }
 
                 sb.Append("}\n");
+                sb.Append("}\n");
             }
-
-            sb.Append("}\n");
 
             sb.Append("[Arcs]");
             sb.Append('\n');
