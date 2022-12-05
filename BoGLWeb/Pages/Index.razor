@@ -113,6 +113,21 @@
                     </Collapse>
                 </div>
                 <div class="card-container">
+                    <div id="zoomMenu">
+                        <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                            <ChildContent>
+                                <Panel Header="Zoom" Key="1">
+                                    <div id="plusLabel" class="sliderLabel">+</div>
+                                    <div id="minusLabel" class="sliderLabel">-</div>
+                                    <Slider TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" />
+                                    <Button Type="@ButtonType.Primary" Class="bogl_button">Reset</Button>
+                                </Panel>
+                            </ChildContent>
+                            <ExpandIconTemplate>
+                                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
+                            </ExpandIconTemplate>
+                        </Collapse>
+                    </div>
                     <Tabs Type="@TabType.Card">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="modifierMenu">
@@ -146,19 +161,6 @@
                                                 </div>
                                             </div>
                                         </Panel>
-                                    </ChildContent>
-                                    <ExpandIconTemplate>
-                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
-                                    </ExpandIconTemplate>
-                                </Collapse>
-                            </div>
-                            <div id="zoomMenu">
-                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
-                                    <ChildContent>
-                                       <div id="zoomSlider">
-                                               <Slider TValue="double" Vertical DefaultValue="31" />
-                                       </div> 
-                                        <Button Type="@ButtonType.Primary" Id="zoomResetButton" Class="bogl_button">Reset</Button>
                                     </ChildContent>
                                     <ExpandIconTemplate>
                                         <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />

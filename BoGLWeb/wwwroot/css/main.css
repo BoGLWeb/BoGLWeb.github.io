@@ -506,7 +506,7 @@ hr:not([size]) {
     position: relative;
 }
 
-#modifierMenu > div > div > .ant-collapse-header {
+#modifierMenu .ant-collapse-header, #zoomMenu .ant-collapse-header {
     font-size: 12px;
 }
 
@@ -538,20 +538,103 @@ hr:not([size]) {
 
 #zoomMenu {
     position: absolute;
+    width: 70px;
+    right: 15px;
     bottom: 50px;
-    right: 30px;
-    width: 50px;
-    height: 175px;
 }
 
-#zoomSlider {
-    position: absolute;
-    height: 100px;
-    margin-left: 23%;
+#zoomMenu > div {
+    height: auto;
 }
 
-#zoomResetButton {
+#zoomMenu .ant-collapse-content-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#zoomMenu .ant-slider {
+    margin-bottom: 10px;
+}
+
+#zoomMenu .bogl_button {
+    padding: 4px 10px;
+}
+
+.ant-slider-mark {
+    display: none;
+}
+
+.ant-slider {
+    height: 180px;
+}
+
+.ant-slider-rail, .ant-slider:hover .ant-slider-rail {
+    background-color: #e3eaed !important;
+    border: solid 1px #d6d6d6;
+}
+
+.sliderLabel {
+    font-size: 15px;
+    font-weight: bold;
+    color: #a9a9a9;
+}
+
+.ant-slider-track, .ant-slider .ant-slider-track:hover {
+    background-color: transparent !important;
+}
+
+#plusLabel {
     position: absolute;
-    top: 120px;
-    margin-left: 10%;
+    left: 20px;
+    top: 7px;
+}
+
+#minusLabel {
+    position: absolute;
+    left: 20px;
+    top: 179px;
+}
+
+.ant-slider-handle {
+    width: 0;
+    height: 0;
+    background-color: transparent;
+}
+
+.ant-slider-vertical .ant-slider-handle {
+    margin: 0;
+}
+
+.ant-slider-handle:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.ant-slider-handle:hover {
+    outline: none;
+}
+
+#sliderImg {
+    position: absolute;
+    top: -5.5px;
+    left: -7px;
+    height: 11px;
+}
+
+.ant-slider-rail {
+    border-radius: 0 !important;
+}
+
+#zoomMenu .ant-collapse-item {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#zoomMenu .ant-collapse {
+    padding-bottom: 2px;
+}
+
+#zoomMenu .ant-collapse-content {
+    padding-top: 5px;
 }
