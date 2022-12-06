@@ -119,7 +119,7 @@
                                 <Panel Header="Zoom" Key="1">
                                     <div id="plusLabel" class="sliderLabel">+</div>
                                     <div id="minusLabel" class="sliderLabel">-</div>
-                                    <Slider TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" />
+                                    <Slider TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" Step="5" OnChange="SliderChange" />
                                     <Button Type="@ButtonType.Primary" Class="bogl_button">Reset</Button>
                                 </Panel>
                             </ChildContent>
@@ -262,6 +262,11 @@
             Index.checkValues[i] = indeces.Contains(i);
         }
         _app?.StateHasChanged();
+    }
+
+    public async void SliderChange(double i) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setZoom", i);
     }
 
     public async void CheckChange(bool b, int i) {

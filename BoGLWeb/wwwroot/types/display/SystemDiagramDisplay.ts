@@ -9,6 +9,8 @@ import { BaseGraphDisplay } from "./BaseGraphDisplay";
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
+    initXPos: number;
+    initYPos: number;
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -29,6 +31,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
             .attr("style", "cursor: pointer; visibility: hidden;");
+    }
+
+    changeScale(scale: number) {
+        d3.select('#systemDiagram > svg > g').attr("transform", "translate(" + this.initXPos + ", " + this.initYPos + ") scale(" + scale + ")");
+        this.svg.call(this.dragSvg().scale(scale).translate([this.initXPos, this.initYPos])).on("dblclick.zoom", null);
     }
 
     moveCircle(e: SystemDiagramElement) {

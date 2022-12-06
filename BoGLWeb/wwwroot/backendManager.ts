@@ -75,8 +75,9 @@ export namespace backendManager {
             }
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            d3.select('#systemDiagram > svg > g').attr("transform", "translate(" + xTrans + ", " + yTrans + ") scale(" + scale + ")");
-            systemDiagram.svg.call(systemDiagram.dragSvg().scale(scale).translate([xTrans, yTrans])).on("dblclick.zoom", null);
+            systemDiagram.initXPos = xTrans;
+            systemDiagram.initYPos = yTrans;
+            systemDiagram.changeScale(scale);
         }
 
         public async openFile() {
@@ -151,6 +152,10 @@ export namespace backendManager {
                     element.modifiers.splice(element.modifiers.indexOf(i), 1);
                 }
             }
+        }
+
+        public setZoom(i: number) {
+            (<any>window).systemDiagram.changeScale(i/100);
         }
     }
 
