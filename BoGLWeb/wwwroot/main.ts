@@ -31,6 +31,7 @@ export function populateMenu() {
 }
 
 function loadPage() {
+    (<any>window).tabNum = 1;
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img");
     sliderImg.src = "images/sliderIcon.svg";

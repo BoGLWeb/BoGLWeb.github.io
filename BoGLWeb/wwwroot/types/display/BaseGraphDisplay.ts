@@ -12,7 +12,9 @@ export class BaseGraphDisplay {
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
-
+    initXPos: number;
+    initYPos: number;
+    scale: number;
     idct: number = 0;
     elements: GraphElement[];
     bonds: GraphBond[];
@@ -86,6 +88,16 @@ export class BaseGraphDisplay {
             });
     }
 
+    changeScale(x: number, y: number, scale: number, holdValue: boolean) {
+        this.initXPos = !holdValue ? x : this.initXPos;
+        this.initYPos = !holdValue ? y : this.initYPos;
+        this.scale = scale ?? this.scale;
+        console.log("BAD BAD BAD", x, y, this.initXPos, this.initYPos, this.scale);
+        this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + this.scale + ")");
+        this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(this.scale).translate([x, y])).on("dblclick.zoom", null);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.scale);
+    }
+
     // listen for dragging
     dragSvg() {
         let graph = this;
@@ -154,6 +166,6 @@ export class BaseGraphDisplay {
 
     zoomed() {
         this.state.justScaleTransGraph = true;
-        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+        this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
     }
 }

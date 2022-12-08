@@ -27,6 +27,14 @@ export namespace backendManager {
                 return b;
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
+            bondGraph.changeScale(0, 0, 1, false);
+            if (id == 0) {
+                (<any>window).unsimpBG = bondGraph;
+            } else if (id == 1) {
+                (<any>window).simpBG = bondGraph;
+            } else {
+                (<any>window).causalBG = bondGraph;
+            }
             bondGraph.updateGraph();
         }
 
@@ -75,9 +83,7 @@ export namespace backendManager {
             }
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            systemDiagram.initXPos = xTrans;
-            systemDiagram.initYPos = yTrans;
-            systemDiagram.changeScale(scale);
+            systemDiagram.changeScale(xTrans, yTrans, scale, false);
         }
 
         public async openFile() {
@@ -154,8 +160,38 @@ export namespace backendManager {
             }
         }
 
+        public getGraphByIndex(i: string) {
+            if (i == "1") {
+                return (<any>window).systemDiagram;
+            } else if (i == "2") {
+                return (<any>window).unsimpBG;
+            } else if (i == "3") {
+                return (<any>window).simpBG;
+            } else {
+                return (<any>window).causalBG;
+            }
+        }
+
         public setZoom(i: number) {
-            (<any>window).systemDiagram.changeScale(i/100);
+            let graph = this.getGraphByIndex((<any>window).tabNum);
+
+            // converts SVG position to svg center of view window
+            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
+            let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
+            let scale = i / 100;
+            let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
+            let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
+
+            let scaleDiff = 1 - (i / 100);
+
+            /*console.log("Bad bois", scale);*/
+            // take graph.initXPos - xTrans, graph.initYPos - yTrans and store them, use them for entire zoom, reset these values when x or y are defined in changeScale
+            graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
+        }
+
+        public setTab(key: string) {
+            (<any>window).tabNum = key;
+            console.log(key);
         }
     }
 
