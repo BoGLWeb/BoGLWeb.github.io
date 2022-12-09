@@ -1,5 +1,6 @@
 ﻿using AntDesign;
 using BoGLWeb.BaseClasses;
+using BoGLWeb.DifferentialEquationHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
 /*using Newtonsoft.Json;
@@ -128,6 +129,11 @@ namespace BoGLWeb {
             protected double x, y;
 
             /// <summary>
+            /// Tracks all neighbors of this <c>BondGraph.Element</c>.
+            /// </summary>
+            protected readonly Dictionary<Element, Bond> neighbors;
+
+            /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Element</c>.
             /// </summary>
             private static int universalID = 0;
@@ -171,6 +177,47 @@ namespace BoGLWeb {
             public string getName() {
                 return this.name;
             }
+
+            /// <summary>
+            /// Adds a neighboring <c>BondGraph.Element</c> to this one.
+            /// </summary>
+            /// <param name="e">
+            /// The neighbor.
+            /// </param>
+            /// <param name="b">
+            /// The <c>BondGraph.Bond</c> bridging the two <c>Element</c> objects.
+            /// </param>
+            public void AddNeighbor(Element e, Bond b) {
+                this.neighbors.Add(e, b);
+            }
+
+            /// <summary>
+            /// Gets the set of all <c>FunctionEquations</c> for each variable
+            /// <c>Function</c> derived from the <c>Bonds</c> in this
+            /// <c>BondGraph</c>.
+            /// </summary>
+            /// <returns>
+            /// A <c>Dictionary</c> pairing <c>Functions</c> with their
+            /// corresponding equations around this <c>Bond</c>.
+            /// </returns>
+            protected Dictionary<Function, FunctionEquation> GetFunctionEquations() {
+                HashSet<Function> flowVars = new(), effortVars = new();
+                foreach (Bond bond in this.neighbors.Values) {
+                    flowVars.Add(new("F" + bond.GetID()));
+                    effortVars.Add(new("E" + bond.GetID()));
+                }
+                Dictionary<Function, FunctionEquation> equations = new();
+                Function incoming = new(), outgoing = new();
+                bool isZeroJunction = this.name.Equals("0_JUNCTION"); // replace with actual tag for zero junctions
+                foreach (Bond bond in this.neighbors.Values) {
+                    if (isZeroJunction) {
+                    } else {
+                    }
+                } //TODO: finish and update with GraphSynth tags
+                return equations;
+            }
+
+            public 
 
             /// <summary>
             /// Assigns an ID to this <c>Element</c>.
@@ -262,7 +309,9 @@ namespace BoGLWeb {
             public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
+                source.AddNeighbor(sink, this);
                 this.source = source;
+                sink.AddNeighbor(source, this);
                 this.sink = sink;
                 this.label = label;
                 this.causalStroke = causalStroke;

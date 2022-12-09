@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework.Constraints;
+using System.ComponentModel;
 using System.Text;
 
 namespace BoGLWeb {
@@ -22,7 +23,7 @@ namespace BoGLWeb {
             /// </summary>
             public Function() {
                 this.children = new();
-                this.fn = "";
+                this.fn = "0";
             }
 
             /// <summary>
@@ -833,6 +834,17 @@ namespace BoGLWeb {
                     FunctionOperator.PARENTHETICAL => 7,
                     _ => 7
                 };
+            }
+
+            /// <summary>
+            /// Gets the hashCode for this <c>Function</c>.
+            /// </summary>
+            /// <returns>
+            /// An identifier to be used in hash tables.
+            /// </returns>
+            public override int GetHashCode() {
+                AssertVariable();
+                return HashCode.Combine(this.ToString());
             }
 
             /// <summary>
