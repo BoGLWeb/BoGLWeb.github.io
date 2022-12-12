@@ -184,8 +184,13 @@ export namespace backendManager {
 
             let scaleDiff = 1 - (i / 100);
 
-            /*console.log("Bad bois", scale);*/
-            // take graph.initXPos - xTrans, graph.initYPos - yTrans and store them, use them for entire zoom, reset these values when x or y are defined in changeScale
+            console.log(graph.zoomWithSlider);
+            if (!graph.zoomWithSlider) {
+                graph.zoomWithSlider = true;
+                graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
+                graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
+            }
+
             graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 

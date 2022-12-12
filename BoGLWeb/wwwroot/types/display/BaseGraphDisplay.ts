@@ -14,7 +14,7 @@ export class BaseGraphDisplay {
     readonly ENTER_KEY: number = 13;
     initXPos: number;
     initYPos: number;
-    scale: number;
+    zoomWithSlider: boolean = false;
     idct: number = 0;
     elements: GraphElement[];
     bonds: GraphBond[];
@@ -88,14 +88,13 @@ export class BaseGraphDisplay {
             });
     }
 
-    changeScale(x: number, y: number, scale: number, holdValue: boolean) {
-        this.initXPos = !holdValue ? x : this.initXPos;
-        this.initYPos = !holdValue ? y : this.initYPos;
-        this.scale = scale ?? this.scale;
-        console.log("BAD BAD BAD", x, y, this.initXPos, this.initYPos, this.scale);
-        this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + this.scale + ")");
-        this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(this.scale).translate([x, y])).on("dblclick.zoom", null);
-        DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.scale);
+    changeScale(x: number, y: number, scale: number, slider: boolean) {
+        this.initXPos = !slider ? x : this.initXPos;
+        this.initYPos = !slider ? y : this.initYPos;
+        this.zoomWithSlider = slider;
+        this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
+        this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
     }
 
     // listen for dragging
