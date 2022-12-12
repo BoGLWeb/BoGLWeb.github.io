@@ -27,6 +27,7 @@ export namespace backendManager {
                 return b;
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
+
             bondGraph.changeScale(0, 0, 1, false);
             if (id == 0) {
                 (<any>window).unsimpBG = bondGraph;
@@ -176,21 +177,21 @@ export namespace backendManager {
             let graph = this.getGraphByIndex((<any>window).tabNum);
 
             // converts SVG position to svg center of view window
-            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
-            let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
+            let svgDim = graph.svgG.node().getBBox();
+            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
             let scale = i / 100;
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
 
             let scaleDiff = 1 - (i / 100);
 
-            console.log(graph.zoomWithSlider);
             if (!graph.zoomWithSlider) {
                 graph.zoomWithSlider = true;
                 graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
                 graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
             }
 
+            console.log(graph, svgDim, windowDim);
             graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 
