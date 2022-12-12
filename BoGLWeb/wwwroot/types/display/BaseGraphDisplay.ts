@@ -12,7 +12,9 @@ export class BaseGraphDisplay {
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
-
+    initXPos: number;
+    initYPos: number;
+    zoomWithSlider: boolean = false;
     idct: number = 0;
     elements: GraphElement[];
     bonds: GraphBond[];
@@ -84,6 +86,15 @@ export class BaseGraphDisplay {
                 graph.state.justDragged = true;
                 graph.dragmove.call(graph, args);
             });
+    }
+
+    changeScale(x: number, y: number, scale: number, slider: boolean) {
+        this.initXPos = !slider ? x : this.initXPos;
+        this.initYPos = !slider ? y : this.initYPos;
+        this.zoomWithSlider = slider;
+        this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
+        this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
     }
 
     // listen for dragging
@@ -158,6 +169,6 @@ export class BaseGraphDisplay {
 
     zoomed() {
         this.state.justScaleTransGraph = true;
-        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+        this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
     }
 }

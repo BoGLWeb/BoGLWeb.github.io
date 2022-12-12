@@ -112,7 +112,22 @@
                     </Collapse>
                 </div>
                 <div class="card-container">
-                    <Tabs Type="@TabType.Card">
+                    <div id="zoomMenu">
+                        <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
+                            <ChildContent>
+                                <Panel Header="Zoom" Key="1">
+                                    <div id="plusLabel" class="sliderLabel">+</div>
+                                    <div id="minusLabel" class="sliderLabel">-</div>
+                                    <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange" />
+                                    <Button Type="@ButtonType.Primary" Class="bogl_button" OnClick="e => { SliderChange(100); }">Reset</Button>
+                                </Panel>
+                            </ChildContent>
+                            <ExpandIconTemplate>
+                                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
+                            </ExpandIconTemplate>
+                        </Collapse>
+                    </div>
+                    <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
                         <TabPane Key="1" Tab="System" ForceRender=true>
                             <div id="modifierMenu">
                                 <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
@@ -225,6 +240,7 @@
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    static double zoomValue = 100;
     static int selectedVelocity = 0;
     static bool velocityDisabled = true;
 
@@ -289,10 +305,27 @@
         _app?.StateHasChanged();
     }
 
+    [JSInvokable]
+    public static void SetScale(double scale) {
+        zoomValue = scale * 100;
+        _app?.StateHasChanged();
+    }
+
+    public async void SliderChange(double i) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        zoomValue = i;
+        await module.InvokeVoidAsync("setZoom", i);
+    }
+
     public async void CheckChange(bool b, int i) {
         Index.checkValues[i] = b;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
+    }
+
+    public async void TabChange(string key) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setTab", key);
     }
 
     public async void ChangeCausalOption(Option selection) {

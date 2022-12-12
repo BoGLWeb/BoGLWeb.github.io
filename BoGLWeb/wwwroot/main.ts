@@ -31,6 +31,14 @@ export function populateMenu() {
 }
 
 function loadPage() {
+    (<any>window).tabNum = 1;
+    let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
+    let sliderImg: any = document.createElement("img");
+    sliderImg.src = "images/sliderIcon.svg";
+    sliderImg.id = "sliderImg";
+    sliderImg.draggable = false;
+    sliderHolder.appendChild(sliderImg);
+
     (<any>window).backendManager = backendManager;
     (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     (<any>window).systemDiagramSVG.classed("graphSVG", true);

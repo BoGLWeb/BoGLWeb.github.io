@@ -473,7 +473,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     zoomed() {
         if (!this.edgeOrigin) {
             this.state.justScaleTransGraph = true;
-            this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
         }
     };
 }

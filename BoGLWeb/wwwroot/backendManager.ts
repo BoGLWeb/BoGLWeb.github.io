@@ -27,6 +27,15 @@ export namespace backendManager {
                 return b;
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
+
+            bondGraph.changeScale(0, 0, 1, false);
+            if (id == 0) {
+                (<any>window).unsimpBG = bondGraph;
+            } else if (id == 1) {
+                (<any>window).simpBG = bondGraph;
+            } else {
+                (<any>window).causalBG = bondGraph;
+            }
             bondGraph.updateGraph();
         }
 
@@ -75,8 +84,7 @@ export namespace backendManager {
             }
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            d3.select('#systemDiagram > svg > g').attr("transform", "translate(" + xTrans + ", " + yTrans + ") scale(" + scale + ")");
-            systemDiagram.svg.call(systemDiagram.dragSvg().scale(scale).translate([xTrans, yTrans])).on("dblclick.zoom", null);
+            systemDiagram.changeScale(xTrans, yTrans, scale, false);
         }
 
         public async openFile() {
@@ -153,6 +161,45 @@ export namespace backendManager {
             }
         }
 
+        public getGraphByIndex(i: string) {
+            if (i == "1") {
+                return (<any>window).systemDiagram;
+            } else if (i == "2") {
+                return (<any>window).unsimpBG;
+            } else if (i == "3") {
+                return (<any>window).simpBG;
+            } else {
+                return (<any>window).causalBG;
+            }
+        }
+
+        public setZoom(i: number) {
+            let graph = this.getGraphByIndex((<any>window).tabNum);
+
+            // converts SVG position to svg center of view window
+            let svgDim = graph.svgG.node().getBBox();
+            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
+            let scale = i / 100;
+            let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
+            let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
+
+            let scaleDiff = 1 - (i / 100);
+
+            if (!graph.zoomWithSlider) {
+                graph.zoomWithSlider = true;
+                graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
+                graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
+            }
+
+            console.log(graph, svgDim, windowDim);
+            graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
+        }
+
+        public setTab(key: string) {
+            (<any>window).tabNum = key;
+            console.log(key);
+        }
+        
         public setVelocity(velocity: number) {
             let element = (<any>window).systemDiagram.state.selectedElement;
             let edge = (<any>window).systemDiagram.state.selectedBond;
