@@ -118,6 +118,7 @@ export class BaseGraphDisplay {
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
+
         let paths = this.bondSelection;
         // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
@@ -147,8 +148,11 @@ export class BaseGraphDisplay {
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
+        this.elementSelection.selectAll("*").remove();
+
+        let newElements = this.elementSelection;
         // add new elementSelection
-        let newElements = this.elementSelection.enter().append("g");
+        newElements.enter().append("g");
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
         this.renderElements(newElements);

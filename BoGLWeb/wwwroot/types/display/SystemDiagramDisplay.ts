@@ -9,6 +9,16 @@ import { BaseGraphDisplay } from "./BaseGraphDisplay";
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
+    velocityMap = {
+        1: "⮢",
+        2: "⮣",
+        3: "⮥",
+        4: "⮧",
+        5: "⮡",
+        6: "⮠",
+        7: "⮦",
+        8: "⮤"
+    };
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -123,6 +133,61 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "50px")
             .attr("width", "50px");
 
+        group.selectAll("text").html(null);
+
+        group.each(function (d: SystemDiagramElement) {
+            if (d.velocity != 0) {
+                let text = group.append("text");
+                text.text((d: SystemDiagramElement) => graph.velocityMap[d.velocity])
+                    .each(function (d: SystemDiagramElement) {
+                        if (d.velocity != 0) {
+                            let velocityClass = "";
+                            if (d.velocity == 1 || d.velocity == 2) {
+                                velocityClass = "topVelocity";
+                            } else if (d.velocity == 3 || d.velocity == 4) {
+                                velocityClass = "rightVelocity";
+                            } else if (d.velocity == 5 || d.velocity == 6) {
+                                velocityClass = "bottomVelocity";
+                            } else {
+                                velocityClass = "leftVelocity";
+                            }
+                            this.classList.add("velocityArrow");
+                            this.classList.add(velocityClass);
+                        }
+                    })
+                    .attr("x", (d: SystemDiagramElement) => {
+                        let xOffset = 0;
+                        if (d.velocity != 0) {
+                            if (d.velocity == 1 || d.velocity == 2) {
+                                xOffset = -5;
+                            } else if (d.velocity == 3 || d.velocity == 4) {
+                                xOffset = 30;
+                            } else if (d.velocity == 5 || d.velocity == 6) {
+                                xOffset = -5;
+                            } else {
+                                xOffset = -30;
+                            }
+                        }
+                        return xOffset;
+                    });
+                text.attr("y", (d: SystemDiagramElement) => {
+                    let yOffset = 0;
+                    if (d.velocity != 0) {
+                        if (d.velocity == 1 || d.velocity == 2) {
+                            yOffset = -37;
+                        } else if (d.velocity == 3 || d.velocity == 4) {
+                            yOffset = 7;
+                        } else if (d.velocity == 5 || d.velocity == 6) {
+                            yOffset = 38;
+                        } else {
+                            yOffset = 0;
+                        }
+                    }
+                    return yOffset;
+                });
+            }
+        });
+
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
             graph.edgeCircle.style("visibility", "hidden");
@@ -151,14 +216,58 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
+        let graph = this;
         paths.classed("hoverablePath", true);
+        if (paths.node()) {
+            d3.select(paths.node().parentNode).selectAll("text").html(null);
+        }
+        paths.each(e => {
+            if (e.velocity != 0) {
+                let velocityClass = "";
+                let xOffset = 0;
+                let yOffset = 0;
+                let mult = Math.abs(Math.cos((Math.atan2(e.source.y - e.target.y, e.target.x - e.source.x) + Math.PI) % (2 * Math.PI)));
+                if (e.velocity == 1 || e.velocity == 2) {
+                    velocityClass = "topVelocity";
+                    yOffset = -7 * mult;
+                    xOffset = -3;
+                } else if (e.velocity == 3 || e.velocity == 4) {
+                    velocityClass = "rightVelocity";
+                    yOffset = 7 * mult;
+                    xOffset = 0;
+                } else if (e.velocity == 5 || e.velocity == 6) {
+                    velocityClass = "bottomVelocity";
+                    yOffset = 7 * mult;
+                    xOffset = -5;
+                } else {
+                    velocityClass = "leftVelocity";
+                    yOffset = -7 * mult;
+                    xOffset = 0;
+                }
+
+                d3.select(paths.node().parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                    .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
+                        (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
+            }
+        });
     }
 
     updateModifierMenu() {
         if (this.state.selectedElement) {
             DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", this.state.selectedElement.modifiers);
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", ElementNamespace.elementTypes[this.state.selectedElement.type].allowedModifiers);
         } else {
             DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
+            DotNet.invokeMethodAsync("BoGLWeb", "ClearDisabled");
+        }
+    }
+
+    updateVelocityMenu() {
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.state.selectedElement == null && this.state.selectedBond == null || (this.state.selectedElement && !ElementNamespace.elementTypes[this.state.selectedElement.type].velocityAllowed));
+        if (this.state.selectedElement) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedElement.velocity);
+        } else if (this.state.selectedBond) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedBond.velocity);
         }
     }
 
@@ -172,6 +281,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         toSplice.map(function (l) {
             graph.bonds.splice(graph.bonds.indexOf(l), 1);
         });
+        this.updateVelocityMenu();
     }
 
     replaceSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
@@ -180,6 +290,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.removeSelectFromEdge();
         }
         this.state.selectedBond = bond;
+        this.updateVelocityMenu();
     }
 
     replaceSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
@@ -189,12 +300,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
         this.state.selectedElement = el;
         this.updateModifierMenu();
+        this.updateVelocityMenu();
     }
 
     removeSelectFromEdge() {
         let graph = this;
         graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
         this.state.selectedBond = null;
+        this.updateVelocityMenu();
     }
 
     removeSelectFromNode() {
@@ -202,6 +315,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
         this.state.selectedElement = null;
         this.updateModifierMenu();
+        this.updateVelocityMenu();
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
