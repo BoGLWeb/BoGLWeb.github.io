@@ -219,6 +219,8 @@ export namespace backendManager {
             return JSON.stringify({
                 elements: (<any>window).systemDiagram.elements,
                 bonds: (<any>window).systemDiagram.bonds
+            }, function (key, val) {
+                return val.toFixed ? Number(val.toFixed(3)) : val;
             });
         }
     }
