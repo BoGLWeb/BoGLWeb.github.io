@@ -49,7 +49,7 @@ namespace BoGLWeb {
 
             //Load the file as plain text
             //TODO Figure out if this URL is okay, or is there something else that it should be
-            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name + ".rsxml");
+            HttpResponseMessage ruleSetResponse = await client.GetAsync("https://boglweb.github.io/rules-and-examples/Rules/" + name + ".rsxml");
             var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
             var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
 
@@ -69,7 +69,7 @@ namespace BoGLWeb {
             {
                 var rulePath = "/Rules/" + ruleFileNames[numLoaded];
 
-                HttpResponseMessage ruleResponse = await client.GetAsync("http://localhost:5006/" + rulePath);
+                HttpResponseMessage ruleResponse = await client.GetAsync("https://boglweb.github.io/rules-and-examples/" + rulePath);
                 string ruleText = await ruleResponse.Content.ReadAsStringAsync();
 
                 var xeRule = XElement.Parse(ruleText);

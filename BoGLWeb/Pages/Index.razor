@@ -439,7 +439,7 @@
         }
 
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + filename + ".bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("https://boglweb.github.io/rules-and-examples/examples/" + filename + ".bogl");
         xmlString = await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
