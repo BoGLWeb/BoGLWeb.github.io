@@ -211,10 +211,6 @@ export namespace backendManager {
             (<any>window).systemDiagram.updateGraph();
         }
         
-        public processURL(url: string){
-            
-        }
-        
         public generateURL(){
             return JSON.stringify({
                 elements: (<any>window).systemDiagram.elements,
