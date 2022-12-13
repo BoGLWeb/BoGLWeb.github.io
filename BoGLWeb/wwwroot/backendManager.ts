@@ -210,6 +210,17 @@ export namespace backendManager {
             }
             (<any>window).systemDiagram.updateGraph();
         }
+        
+        public processURL(url: string){
+            
+        }
+        
+        public generateURL(){
+            return JSON.stringify({
+                elements: (<any>window).systemDiagram.elements,
+                bonds: (<any>window).systemDiagram.bonds
+            });
+        }
     }
 
     export function getBackendManager(): BackendManager {

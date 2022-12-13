@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager NavManager
-@page "/"
+@page "/{text?}"
 @using System.Text;
 
 <PageTitle>BoGLWeb</PageTitle>
@@ -21,6 +21,7 @@
                     <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
                     <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
                     <MenuItem Key="setting:5">Export as Image</MenuItem>
+                    <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
                 </SubMenu>
                 <SubMenu title="Edit" Class="topMenu">
                     <MenuItem Key="setting:1">Cut</MenuItem>
@@ -223,7 +224,7 @@
             <p>@errorMessage</p>
         </div>
     </Modal>
-    <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleURLOk" OnCancel="@handleURLOk">
+    <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
         <p>@url</p>
     </Modal>
 </body>
@@ -336,13 +337,23 @@
         }
     }
 
-    private readonly List<string> ruleNames = new List<string>();
+    private readonly List<string> ruleNames = new();
     private readonly double totalRules = 19.0;
     private string fileToLoad = "";
     private double loadPercent = 0;
+    
+    //TODO Give better name
+    [Parameter]
+    public string? Text { get; set; }
 
     protected override async Task OnInitializedAsync() {
         Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
+
+        if (Text != null && !Text.Equals("")) {
+            var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+            var systemDiagramString = await module.InvokeAsync<object>("processURL", Text);
+        }
+        
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -524,8 +535,15 @@
     bool urlModalVisible = false;
     string url = "";
 
-    private void handleURLOk() {
+    private void handleUrlOk() {
         urlModalVisible = false;
         base.StateHasChanged();
+    }
+
+    private async void generateUrl() {
+        urlModalVisible = true;
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        var generatedUrl = await module.InvokeAsync<object>("generateURL");
+        url = generatedUrl.ToString() ?? string.Empty;
     }
 }
