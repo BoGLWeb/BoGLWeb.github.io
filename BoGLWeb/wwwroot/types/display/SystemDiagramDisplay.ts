@@ -473,7 +473,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     zoomed() {
         if (!this.edgeOrigin) {
             this.state.justScaleTransGraph = true;
-            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+            if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
+                this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+            }
         }
     };
 }
