@@ -53,6 +53,7 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let parsedJson = JSON.parse(jsonString);
+            console.log(parsedJson.edges);
             let elements = []
             let i = 0;
             for (let element of parsedJson.elements) {

@@ -3,7 +3,6 @@
 @page "/"
 @using System.Text;
 @using System.Text.RegularExpressions
-@using Microsoft.AspNetCore.WebUtilities;
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -670,7 +669,7 @@
         List<string> generatedEdgeList = new();
         foreach (string edgeString in splitEdges) {
             string[] splitEdgeString = edgeString.Split(",");
-            splitEdgeString[0] = "\"source\":{\"type\":" + splitEdgeString[0].Substring(1);
+            splitEdgeString[0] = "\"source\":{\"type\":" + splitEdgeString[0].Replace("{", "");
             splitEdgeString[1] = "\"x\":" + splitEdgeString[1];
             splitEdgeString[2] = "\"y\":" + splitEdgeString[2];
             splitEdgeString[3] = "\"modifiers\":" + splitEdgeString[3];
@@ -696,7 +695,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"bonds\":" + builtEdgeString;
+        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString;
 
         return compressedUrl;
     }

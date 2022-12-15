@@ -3,6 +3,7 @@ import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
+import getBackendManager = backendManager.getBackendManager;
 
 export function populateMenu() {
     ElementNamespace.categories.map((c, i) => {
@@ -34,12 +35,15 @@ async function loadPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
     if(myParam !== null){
-        let sysDiagram = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
-        console.log(sysDiagram);
+        let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
+        console.log(sysDiagramString);
+        getBackendManager().loadSystemDiagram(sysDiagramString);
     }
     
-    (<any>window).tabNum = 1; let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
-    let sliderImg: any = document.createElement("img"); sliderImg.src = "images/sliderIcon.svg";
+    (<any>window).tabNum = 1; 
+    let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
+    let sliderImg: any = document.createElement("img"); 
+    sliderImg.src = "images/sliderIcon.svg";
     sliderImg.id = "sliderImg";
     sliderImg.draggable = false;
     sliderHolder.appendChild(sliderImg);
