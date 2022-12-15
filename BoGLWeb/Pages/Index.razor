@@ -365,7 +365,17 @@
 
     protected override async Task OnInitializedAsync() {
         Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
-
+        
+        // var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        // if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("q", out var inputUrl)) {
+        //     string uncompressedUrl = uncompressUrl(inputUrl);
+        //     Console.WriteLine(uncompressedUrl);
+        //
+        //     var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        //     await module.InvokeAsync<object>("loadSystemDiagram", uncompressedUrl);
+        //     base.StateHasChanged();
+        // }
+        
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -397,14 +407,9 @@
         base.StateHasChanged();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("q", out var inputUrl)) {
-            string uncompressedUrl = uncompressUrl(inputUrl);
+    protected override async Task OnParametersSetAsync() {
+        Console.WriteLine("I AM HERE");
         
-           var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-           await module.InvokeAsync<object>("loadSystemDiagram", uncompressedUrl);
-        }
     }
 
     public async Task generateButtonClicked() {
@@ -567,8 +572,6 @@
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
 
-        Console.WriteLine(jsonStr);
-
     //Process json into url
         Regex elementName = new Regex("\"elements\":");
         Regex typeName = new Regex("\"type\":");
@@ -617,7 +620,8 @@
         urlModalVisible = true;
     }
 
-    private string uncompressUrl(string compressedUrl) {
+    [JSInvokable]
+    public static string uncompressUrl(string compressedUrl) {
         Regex urlShort1 = new Regex("f");
         Regex urlShort2 = new Regex("d");
         Regex urlShort3 = new Regex("c");
@@ -662,24 +666,23 @@
         builtElementString = builtElementString.Remove(builtElementString.Length - 1);
         builtElementString = "{\"elements\":[" + builtElementString + ",";
 
-        Console.WriteLine(splitCompressedUrl[1]);
-        string[] splitEdges = Regex.Split(splitCompressedUrl[1], @"},{{");
+        string[] splitEdges = Regex.Split(splitCompressedUrl[1].Substring(2), @"},{{");
         List<string> generatedEdgeList = new();
         foreach (string edgeString in splitEdges) {
             string[] splitEdgeString = edgeString.Split(",");
-            splitEdgeString[0] = "\"source\":{\"type\":" + splitEdgeString[0];
+            splitEdgeString[0] = "\"source\":{\"type\":" + splitEdgeString[0].Substring(1);
             splitEdgeString[1] = "\"x\":" + splitEdgeString[1];
             splitEdgeString[2] = "\"y\":" + splitEdgeString[2];
             splitEdgeString[3] = "\"modifiers\":" + splitEdgeString[3];
             splitEdgeString[4] = "\"velocity\":" + splitEdgeString[4];
             splitEdgeString[5] = "\"id\":" + splitEdgeString[5];
-            splitEdgeString[6] = "},\"target\":{\"type\":" + splitEdgeString[6];
+            splitEdgeString[6] = "\"target\":{\"type\":" + splitEdgeString[6].Substring(1);
             splitEdgeString[7] = "\"x\":" + splitEdgeString[7];
             splitEdgeString[8] = "\"y\":" + splitEdgeString[8];
             splitEdgeString[9] = "\"modifiers\":" + splitEdgeString[9];
             splitEdgeString[10] = "\"velocity\":" + splitEdgeString[10];
             splitEdgeString[11] = "\"id\":" + splitEdgeString[11];
-            splitEdgeString[12] = "},\"velocity\":" + splitEdgeString[12];
+            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12];
             string generatedEdgeString = "{" + splitEdgeString[0] + "," + splitEdgeString[1] + "," + splitEdgeString[2] + "," + splitEdgeString[3] + "," + splitEdgeString[4] + "," + splitEdgeString[5] + "," + splitEdgeString[6] + "," + splitEdgeString[7] + "," + splitEdgeString[8] + "," + splitEdgeString[9] + "," + splitEdgeString[10] + "," + splitEdgeString[11] + "," + splitEdgeString[12] + "}";
             generatedEdgeList.Add(generatedEdgeString);
         }
@@ -693,7 +696,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = "{" + builtElementString + "bonds:" + builtEdgeString;
+        compressedUrl = builtElementString + "\"bonds\":" + builtEdgeString;
 
         return compressedUrl;
     }

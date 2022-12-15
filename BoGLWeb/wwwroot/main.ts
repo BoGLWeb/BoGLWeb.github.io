@@ -30,11 +30,16 @@ export function populateMenu() {
     });
 }
 
-function loadPage() {
-    (<any>window).tabNum = 1;
-    let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
-    let sliderImg: any = document.createElement("img");
-    sliderImg.src = "images/sliderIcon.svg";
+async function loadPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('q');
+    if(myParam !== null){
+        let sysDiagram = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
+        console.log(sysDiagram);
+    }
+    
+    (<any>window).tabNum = 1; let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
+    let sliderImg: any = document.createElement("img"); sliderImg.src = "images/sliderIcon.svg";
     sliderImg.id = "sliderImg";
     sliderImg.draggable = false;
     sliderHolder.appendChild(sliderImg);
