@@ -14,7 +14,13 @@ export class BaseGraphDisplay {
     readonly ENTER_KEY: number = 13;
     initXPos: number;
     initYPos: number;
+    svgX: number = 0;
+    svgY: number = 0;
     zoomWithSlider: boolean = false;
+    prevScale: number = 1;
+    dragAllowed: boolean = false;
+    dragX: number;
+    dragY: number;
     idct: number = 0;
     elements: GraphElement[];
     bonds: GraphBond[];
@@ -91,6 +97,9 @@ export class BaseGraphDisplay {
     changeScale(x: number, y: number, scale: number, slider: boolean) {
         this.initXPos = !slider ? x : this.initXPos;
         this.initYPos = !slider ? y : this.initYPos;
+        this.svgX = x;
+        this.svgY = y;
+        this.prevScale = scale;
         this.zoomWithSlider = slider;
         this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
         this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
@@ -101,16 +110,26 @@ export class BaseGraphDisplay {
     dragSvg() {
         let graph = this;
         return d3.behavior.zoom()
-            .on("zoom", function () {
-                graph.zoomed.call(graph);
-                return true;
-            })
-            .on("zoomstart", function () {
-                if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
-            })
-            .on("zoomend", function () {
-                d3.select("body").style("cursor", "auto");
-            });
+        .on("zoom", function () {
+            graph.zoomed.call(graph);
+            if (graph.dragAllowed) {
+                graph.dragX = d3.event.translate[0];
+                graph.dragY = d3.event.translate[1];
+            } else {
+                graph.dragX = graph.svgX;
+                graph.dragY = graph.svgY;
+            }
+        })
+        .on("zoomstart", function () {
+            graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
+            graph.dragX = graph.dragX ?? graph.svgX;
+            graph.dragY = graph.dragY ?? graph.svgY;
+            graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
+            if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
+        })
+        .on("zoomend", function () {
+            d3.select("body").style("cursor", "auto");
+        });
     }
 
     drawPaths() {
@@ -171,6 +190,8 @@ export class BaseGraphDisplay {
 
     zoomed() {
         this.state.justScaleTransGraph = true;
-        this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+        if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
+            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+        }
     }
 }
