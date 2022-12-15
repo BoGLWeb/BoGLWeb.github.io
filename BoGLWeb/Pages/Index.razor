@@ -153,7 +153,8 @@
                                     <div style="font-size: 12px">Velocity Direction</div>
                                     <div id="velocities">
                                         <div id="clearVelocityWrapper">
-                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">Clear
+                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">
+                                                Clear
                                                 <br/>Velocity
                                             </Button>
                                         </div>
@@ -369,7 +370,7 @@
 
     protected override async Task OnInitializedAsync() {
         Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
-        
+
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -629,17 +630,20 @@
         compressedUrl = urlShort7.Replace(compressedUrl, "},");
         compressedUrl = urlShort8.Replace(compressedUrl, ",");
         Console.WriteLine(compressedUrl);
-        
+
         string[] splitCompressedUrl = compressedUrl.Split(":");
 
         string[] splitElements = Regex.Split(splitCompressedUrl[0].Substring(3), @"},{");
         List<string> generatedElementList = new();
         foreach (string elementString in splitElements) {
+            Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
+            Match modifier = modifierRegex.Match(elementString);
+
             string[] splitElementString = elementString.Split(",");
             splitElementString[0] = "\"type\":" + splitElementString[0];
             splitElementString[1] = "\"x\":" + splitElementString[1];
             splitElementString[2] = "\"y\":" + splitElementString[2];
-            splitElementString[3] = "\"modifiers\":" + splitElementString[3].Replace("]", "") + "]";
+            splitElementString[3] = "\"modifiers\":" + modifier.Value;
             splitElementString[4] = "\"velocity\":" + splitElementString[4].Replace("]", "");
             splitElementString[5] = "\"id\":" + splitElementString[5];
             string generatedElementString = "{" + splitElementString[0] + "," + splitElementString[1] + "," + splitElementString[2] + "," + splitElementString[3] + "," + splitElementString[4] + "," + splitElementString[5] + "}";
@@ -659,10 +663,13 @@
         string[] splitEdges = Regex.Split(splitCompressedUrl[1].Substring(2), @"},{{");
         List<string> generatedEdgeList = new();
         foreach (string edgeString in splitEdges) {
-            string[] splitEdgeString = edgeString.Split(",");
+            Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
+            string edgeStringNoModifiers = modifierRegex.Replace(edgeString, "");
+            
+            string[] splitEdgeString = edgeStringNoModifiers.Split(",");
             splitEdgeString[5] = "\"source\":" + splitEdgeString[5].Replace("{", "").Replace("}", "");
             splitEdgeString[11] = "\"target\":" + splitEdgeString[11].Replace("{", "").Replace("}", "");
-            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12].Replace("{", "").Replace("}","");
+            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12].Replace("{", "").Replace("}", "");
             string generatedEdgeString = "{" + splitEdgeString[5] + "," + splitEdgeString[11] + "," + splitEdgeString[12] + "}";
             generatedEdgeList.Add(generatedEdgeString);
         }
