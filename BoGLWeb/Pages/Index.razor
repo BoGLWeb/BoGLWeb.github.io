@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager NavManager
+@inject IMessageService messageService
 @page "/"
 @using System.Text;
 @using System.Text.RegularExpressions
@@ -11,6 +12,7 @@
 <body>
 <div class="page">
 <main>
+<AntContainer/>
 <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
     <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
         <img src="images/logo.png" width="50"/>
@@ -151,7 +153,9 @@
                                     <div style="font-size: 12px">Velocity Direction</div>
                                     <div id="velocities">
                                         <div id="clearVelocityWrapper">
-                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">Clear<br/>Velocity</Button>
+                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">Clear
+                                                <br/>Velocity
+                                            </Button>
                                         </div>
                                         <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 1 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
                                             <div class="arrowButton topArrow">⮢</div>
@@ -245,6 +249,7 @@
 </Modal>
 <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
     <Input DefaultValue="@url" TValue="string" ReadOnly/>
+    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
 </Modal>
 </body>
 
@@ -365,16 +370,6 @@
     protected override async Task OnInitializedAsync() {
         Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
         
-        // var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        // if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("q", out var inputUrl)) {
-        //     string uncompressedUrl = uncompressUrl(inputUrl);
-        //     Console.WriteLine(uncompressedUrl);
-        //
-        //     var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        //     await module.InvokeAsync<object>("loadSystemDiagram", uncompressedUrl);
-        //     base.StateHasChanged();
-        // }
-        
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -404,11 +399,6 @@
 
         allRulesLoaded = true;
         base.StateHasChanged();
-    }
-
-    protected override async Task OnParametersSetAsync() {
-        Console.WriteLine("I AM HERE");
-        
     }
 
     public async Task generateButtonClicked() {
@@ -615,7 +605,7 @@
 
 
     //Add url to modal
-        url = jsonStr;
+        url = "https://boglweb20221206112544.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
     }
 
@@ -638,7 +628,8 @@
         compressedUrl = urlShort6.Replace(compressedUrl, "},{{");
         compressedUrl = urlShort7.Replace(compressedUrl, "},");
         compressedUrl = urlShort8.Replace(compressedUrl, ",");
-
+        Console.WriteLine(compressedUrl);
+        
         string[] splitCompressedUrl = compressedUrl.Split(":");
 
         string[] splitElements = Regex.Split(splitCompressedUrl[0].Substring(3), @"},{");
@@ -648,8 +639,8 @@
             splitElementString[0] = "\"type\":" + splitElementString[0];
             splitElementString[1] = "\"x\":" + splitElementString[1];
             splitElementString[2] = "\"y\":" + splitElementString[2];
-            splitElementString[3] = "\"modifiers\":" + splitElementString[3];
-            splitElementString[4] = "\"velocity\":" + splitElementString[4];
+            splitElementString[3] = "\"modifiers\":" + splitElementString[3].Replace("]", "") + "]";
+            splitElementString[4] = "\"velocity\":" + splitElementString[4].Replace("]", "");
             splitElementString[5] = "\"id\":" + splitElementString[5];
             string generatedElementString = "{" + splitElementString[0] + "," + splitElementString[1] + "," + splitElementString[2] + "," + splitElementString[3] + "," + splitElementString[4] + "," + splitElementString[5] + "}";
             generatedElementList.Add(generatedElementString);
@@ -669,20 +660,10 @@
         List<string> generatedEdgeList = new();
         foreach (string edgeString in splitEdges) {
             string[] splitEdgeString = edgeString.Split(",");
-            splitEdgeString[0] = "\"source\":{\"type\":" + splitEdgeString[0].Replace("{", "");
-            splitEdgeString[1] = "\"x\":" + splitEdgeString[1];
-            splitEdgeString[2] = "\"y\":" + splitEdgeString[2];
-            splitEdgeString[3] = "\"modifiers\":" + splitEdgeString[3];
-            splitEdgeString[4] = "\"velocity\":" + splitEdgeString[4];
-            splitEdgeString[5] = "\"id\":" + splitEdgeString[5];
-            splitEdgeString[6] = "\"target\":{\"type\":" + splitEdgeString[6].Substring(1);
-            splitEdgeString[7] = "\"x\":" + splitEdgeString[7];
-            splitEdgeString[8] = "\"y\":" + splitEdgeString[8];
-            splitEdgeString[9] = "\"modifiers\":" + splitEdgeString[9];
-            splitEdgeString[10] = "\"velocity\":" + splitEdgeString[10];
-            splitEdgeString[11] = "\"id\":" + splitEdgeString[11];
-            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12];
-            string generatedEdgeString = "{" + splitEdgeString[0] + "," + splitEdgeString[1] + "," + splitEdgeString[2] + "," + splitEdgeString[3] + "," + splitEdgeString[4] + "," + splitEdgeString[5] + "," + splitEdgeString[6] + "," + splitEdgeString[7] + "," + splitEdgeString[8] + "," + splitEdgeString[9] + "," + splitEdgeString[10] + "," + splitEdgeString[11] + "," + splitEdgeString[12] + "}";
+            splitEdgeString[5] = "\"source\":" + splitEdgeString[5].Replace("{", "").Replace("}", "");
+            splitEdgeString[11] = "\"target\":" + splitEdgeString[11].Replace("{", "").Replace("}", "");
+            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12].Replace("{", "").Replace("}","");
+            string generatedEdgeString = "{" + splitEdgeString[5] + "," + splitEdgeString[11] + "," + splitEdgeString[12] + "}";
             generatedEdgeList.Add(generatedEdgeString);
         }
 
@@ -695,9 +676,15 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString;
+        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
+    }
+
+    public async void copyUrl() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("textToClipboard", url);
+        await messageService.Success("URL copied to clipboard!");
     }
 
 }

@@ -53,7 +53,8 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let parsedJson = JSON.parse(jsonString);
-            console.log(parsedJson.edges);
+            console.log("Parsed JSON");
+            console.log(parsedJson);
             let elements = []
             let i = 0;
             for (let element of parsedJson.elements) {
@@ -219,6 +220,10 @@ export namespace backendManager {
             }, function (key, val) {
                 return val.toFixed ? Number(val.toFixed(3)) : val;
             });
+        }
+        
+        public textToClipboard(text: string) {
+            navigator.clipboard.writeText(text);
         }
     }
 

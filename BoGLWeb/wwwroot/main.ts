@@ -32,14 +32,6 @@ export function populateMenu() {
 }
 
 async function loadPage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const myParam = urlParams.get('q');
-    if(myParam !== null){
-        let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
-        console.log(sysDiagramString);
-        getBackendManager().loadSystemDiagram(sysDiagramString);
-    }
-    
     (<any>window).tabNum = 1; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 
@@ -51,7 +43,17 @@ async function loadPage() {
     (<any>window).backendManager = backendManager;
     (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     (<any>window).systemDiagramSVG.classed("graphSVG", true);
-    (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('q');
+    if(myParam !== null){
+        let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
+        console.log("System Diagram String");
+        console.log(sysDiagramString);
+        getBackendManager().loadSystemDiagram(sysDiagramString);
+    }else {
+        (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));
+    }
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";

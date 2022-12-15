@@ -116,6 +116,8 @@ export class BaseGraphDisplay {
     drawPaths() {
         let graph = this;
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
+            console.log("Draw Paths");
+            console.log(d);
             return String(d.source.id) + "+" + String(d.target.id);
         });
 
