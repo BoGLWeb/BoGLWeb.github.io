@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8F4kyVzhk7ASrMZqgCOX73N5GK1TJgWfEVg3aI2I65jNItaGMUIKsXq9PBnNDyHXXgW8ovcuy48lp9XD5eOyvA==",
+  "dgSpecHash": "QFPTF0a+FbU643WHzzBzx0PXz50lCcmzaVaGuw6xqXelSFsON3AOup1n2xeCnOsZ2PDqV8blYDw+gOYK+1z3TQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jakob Misbach\\BoGLWeb\\BoGLWeb\\BoGLWeb\\BoGLWeb.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,7 @@
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.http.features\\2.2.0\\microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.metadata\\6.0.8\\microsoft.aspnetcore.metadata.6.0.8.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.staticfiles\\2.2.0\\microsoft.aspnetcore.staticfiles.2.2.0.nupkg.sha512",
+    "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.aspnetcore.webutilities\\2.2.0\\microsoft.aspnetcore.webutilities.2.2.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.codecoverage\\17.3.2\\microsoft.codecoverage.17.3.2.nupkg.sha512",
     "C:\\Users\\Jakob Misbach\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.0\\microsoft.extensions.configuration.6.0.0.nupkg.sha512",

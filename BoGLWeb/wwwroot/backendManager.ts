@@ -53,6 +53,8 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let parsedJson = JSON.parse(jsonString);
+            console.log("Parsed JSON");
+            console.log(parsedJson);
             let elements = []
             let i = 0;
             for (let element of parsedJson.elements) {
@@ -209,6 +211,19 @@ export namespace backendManager {
                 edge.velocity = velocity;
             }
             (<any>window).systemDiagram.updateGraph();
+        }
+        
+        public generateURL(){
+            return JSON.stringify({
+                elements: (<any>window).systemDiagram.elements,
+                bonds: (<any>window).systemDiagram.bonds
+            }, function (key, val) {
+                return val.toFixed ? Number(val.toFixed(3)) : val;
+            });
+        }
+        
+        public textToClipboard(text: string) {
+            navigator.clipboard.writeText(text);
         }
     }
 
