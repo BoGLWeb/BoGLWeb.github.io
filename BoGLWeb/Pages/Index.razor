@@ -4,6 +4,8 @@
 @page "/"
 @using System.Text;
 @using System.Text.RegularExpressions
+@using BoGLWeb.Json
+@using Newtonsoft.Json
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -561,6 +563,8 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
+        Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
+        jsonStr = deSerializedJson.generateUrl();
 
     //Process json into url
         Regex elementName = new Regex("\"elements\":");
@@ -640,12 +644,12 @@
             Match modifier = modifierRegex.Match(elementString);
 
             string[] splitElementString = elementString.Split(",");
-            splitElementString[0] = "\"type\":" + splitElementString[0];
+            splitElementString[0] = "\"id\":" + splitElementString[0];
             splitElementString[1] = "\"x\":" + splitElementString[1];
             splitElementString[2] = "\"y\":" + splitElementString[2];
             splitElementString[3] = "\"modifiers\":" + modifier.Value;
             splitElementString[4] = "\"velocity\":" + splitElementString[4].Replace("]", "");
-            splitElementString[5] = "\"id\":" + splitElementString[5];
+            splitElementString[5] = "\"type\":" + splitElementString[5];
             string generatedElementString = "{" + splitElementString[0] + "," + splitElementString[1] + "," + splitElementString[2] + "," + splitElementString[3] + "," + splitElementString[4] + "," + splitElementString[5] + "}";
             generatedElementList.Add(generatedElementString);
         }
@@ -667,10 +671,10 @@
             string edgeStringNoModifiers = modifierRegex.Replace(edgeString, "");
             
             string[] splitEdgeString = edgeStringNoModifiers.Split(",");
-            splitEdgeString[5] = "\"source\":" + splitEdgeString[5].Replace("{", "").Replace("}", "");
-            splitEdgeString[11] = "\"target\":" + splitEdgeString[11].Replace("{", "").Replace("}", "");
+            splitEdgeString[0] = "\"source\":" + splitEdgeString[0].Replace("{", "").Replace("}", "");
+            splitEdgeString[6] = "\"target\":" + splitEdgeString[6].Replace("{", "").Replace("}", "");
             splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12].Replace("{", "").Replace("}", "");
-            string generatedEdgeString = "{" + splitEdgeString[5] + "," + splitEdgeString[11] + "," + splitEdgeString[12] + "}";
+            string generatedEdgeString = "{" + splitEdgeString[0] + "," + splitEdgeString[6] + "," + splitEdgeString[12] + "}";
             generatedEdgeList.Add(generatedEdgeString);
         }
 
