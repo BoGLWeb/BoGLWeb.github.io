@@ -851,12 +851,6 @@
     <None Include="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Graph.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-  </ItemGroup>
-
 	<ItemGroup>
 		<TrimmerRootAssembly Include="System.Xml.XmlSerializer" />
 	</ItemGroup>

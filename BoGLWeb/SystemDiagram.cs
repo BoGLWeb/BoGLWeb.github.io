@@ -1,18 +1,12 @@
 ﻿using Microsoft.Playwright;
-using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Immutable;
-using System.Linq.Expressions;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using GraphSynth.Representation;
 using BoGLWeb.BaseClasses;
-using static BoGLWeb.Graph;
 using System.Text.RegularExpressions;
-using System.Reflection.Emit;
 
 namespace BoGLWeb {
     public class SystemDiagram {
