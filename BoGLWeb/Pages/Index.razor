@@ -59,7 +59,7 @@
             </SubMenu>
         </SubMenu>
         <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
-        <MenuItem Key="setting:5" OnClick="@(() => { _visible = true; })">About BoGL</MenuItem>
+        <MenuItem Key="setting:5" OnClick="@(() => { visible = true; })">About BoGL</MenuItem>
     </SubMenu>
     <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
         @{
@@ -225,8 +225,12 @@
 </div>
 </main>
 </div>
-<Modal Title="About BoGL Web" Visible="@_visible" OnOk="@handleOk" OnCancel="@handleOk">
+<Modal Title="About BoGL Web" Visible="@visible" OnOk="@handleOk" OnCancel="@handleOk">
     <div class="modal-body">
+        <p>BoGL Web Developed by:</p>
+        <p>Margaret Earnest</p>
+        <p>Jakob Misbach</p>
+        <p>Anthony Vuolo</p>
         <p>Original application developed by:</p>
         <p>Daniel Grande</p>
         <p>Felice Mancini</p>
@@ -235,10 +239,6 @@
         <p>Terry Hearst</p>
         <p>Talal Jaber</p>
         <p>Corrin Courville</p>
-        <p>BoGL Web Developed by:</p>
-        <p>Margaret Earnest</p>
-        <p>Jakob Misbach</p>
-        <p>Anthony Vuolo</p>
         <p>Advisors:</p>
         <p>Prof. David Brown</p>
         <p>Prof. Pradeep Radhakrishan</p>
@@ -259,7 +259,7 @@
 @code {
     private bool generatingBondGraph;
 
-    private static Index? _app;
+    private static Index? app;
 
     public class Option {
         public string label { get; set; }
@@ -274,7 +274,7 @@
     static bool velocityDisabled = true;
 
     public Index() {
-        _app = this;
+        app = this;
     }
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
@@ -286,20 +286,20 @@
         if (disabled) {
             selectedVelocity = 0;
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
     public static void SetVelocity(int velocity) {
         Index.selectedVelocity = velocity;
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     public async void ChangeVelocity(int velocity) {
         Index.selectedVelocity = velocity;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setVelocity", velocity);
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -307,7 +307,7 @@
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -315,7 +315,7 @@
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = indeces.Contains(i);
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -323,7 +323,7 @@
         for (int i = 0; i < disabledValues.Length; i++) {
             disabledValues[i] = false;
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -331,33 +331,33 @@
         for (int i = 0; i < disabledValues.Length; i++) {
             disabledValues[i] = !indices.Contains(i);
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
     public static void SetScale(double scale) {
         zoomValue = scale * 100;
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
-    public async void SliderChange(double i) {
+    private async void SliderChange(double i) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         zoomValue = i;
         await module.InvokeVoidAsync("setZoom", i);
     }
 
-    public async void CheckChange(bool b, int i) {
+    private async void CheckChange(bool b, int i) {
         Index.checkValues[i] = b;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
 
-    public async void TabChange(string key) {
+    private async void TabChange(string key) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setTab", key);
     }
 
-    public async void ChangeCausalOption(Option selection) {
+    private async void ChangeCausalOption(Option selection) {
         if (generatingBondGraph) {
             Console.WriteLine("Switched to " + selection.value);
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -404,7 +404,7 @@
         base.StateHasChanged();
     }
 
-    public async Task generateButtonClicked() {
+    private async Task generateButtonClicked() {
         generatingBondGraph = true;
         base.StateHasChanged();
         await Task.Delay(1);
@@ -460,7 +460,7 @@
     /// Loads a file in the example directory
     /// </summary>
     /// <param name="filename">The name of the example file without .bogl</param>
-    public async void loadExample(string filename) {
+    private async void loadExample(string filename) {
         string xmlString = "";
         if (!fileToLoad.Equals("")) {
             Console.WriteLine(fileToLoad);
@@ -477,7 +477,7 @@
 
     private string errorMessage = "";
 
-    public async void openBoGLFile() {
+    private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("openFile");
         SystemDiagram sysDiagram;
@@ -501,12 +501,11 @@
         return fileStream;
     }
 
-    public async void save() {
+    private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
         Console.WriteLine(file.ToString());
 
-    //TODO Make this use the current system diagram
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
         var fileName = "SystemDiagram.bogl";
@@ -516,11 +515,10 @@
         await module.InvokeVoidAsync("saveFile", fileName, streamRef);
     }
 
-    public async void saveAs() {
+    private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-    //TODO Make this use the current system diagram
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
         var fileName = "SystemDiagram.bogl";
@@ -530,16 +528,16 @@
         await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
     }
 
-    public void reportBugs() {
+    private void reportBugs() {
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
 
-    public bool allRulesLoaded { get; set; } = false;
+    private bool allRulesLoaded { get; set; } = false;
 
-    bool _visible = false;
+    bool visible = false;
 
     private void handleOk() {
-        _visible = false;
+        visible = false;
         base.StateHasChanged();
     }
 
@@ -559,14 +557,18 @@
     }
 
     private async void generateUrl() {
-    //Get information from backend
+        //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
-        jsonStr = deSerializedJson.generateUrl();
+        if (deSerializedJson != null) {
+            jsonStr = deSerializedJson.generateUrl();
+        } else {
+            await messageService.Error("Invalid URL Generated");
+        }
 
-    //Process json into url
+        //Process json into url
         Regex elementName = new Regex("\"elements\":");
         Regex typeName = new Regex("\"type\":");
         Regex xName = new Regex("\"x\":");
@@ -589,7 +591,7 @@
         jsonStr = targetName.Replace(jsonStr, "");
         jsonStr = bondsName.Replace(jsonStr, "");
 
-    //Shorten URL
+        //Shorten URL
         Regex urlShort1 = new Regex("{\\[{");
         Regex urlShort2 = new Regex("\\[]");
         Regex urlShort3 = new Regex("},{");
@@ -609,7 +611,7 @@
         jsonStr = urlShort8.Replace(jsonStr, "h");
 
 
-    //Add url to modal
+        //Add url to modal
         url = "https://boglweb20221206112544.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
     }
@@ -692,7 +694,7 @@
         return compressedUrl;
     }
 
-    public async void copyUrl() {
+    private async void copyUrl() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
