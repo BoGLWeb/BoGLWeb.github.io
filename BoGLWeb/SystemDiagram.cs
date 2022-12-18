@@ -170,7 +170,6 @@ namespace BoGLWeb {
         //TODO Figure out if this should be a string
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
-            Console.WriteLine("CREATING SYSTEM DIAGRAM FROM XML");
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -215,7 +214,6 @@ namespace BoGLWeb {
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
-                    Console.WriteLine("TYPE OUTPUT: " + typeIDDict.GetValueOrDefault(name) + " " + name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
@@ -269,7 +267,6 @@ namespace BoGLWeb {
                 //Add element to element list
                 Element e = new(type, name, x, y);
                 foreach (string str in modifiers) {
-                    Console.WriteLine("I FOUND THIS GUY: " + str);
                     if (str.Contains("VELOCITY")) {
                         e.setVelocity(int.Parse(str.Replace("VELOCITY", "")));
                     } else {
@@ -327,13 +324,14 @@ namespace BoGLWeb {
 
                         //Modifiers
                         tok = arcsTokenQueue.Dequeue();
-                        //TODO Confirm that this is the only modifier
-                        Console.WriteLine(tok);
-                        if (tok.Equals("velocity")) {
-                            velocity = "VELOCITY" + Convert.ToInt32(arcsTokenQueue.Dequeue());
-                            Console.WriteLine(velocity);
-                        } else if (tok.Equals("}")) {
-                            foundCloseBrace = true;
+                        switch (tok) {
+                            //TODO Confirm that this is the only modifier
+                            case "velocity":
+                                velocity = "VELOCITY" + Convert.ToInt32(arcsTokenQueue.Dequeue());
+                                break;
+                            case "}":
+                                foundCloseBrace = true;
+                                break;
                         }
 
                         if (!velocity.Contains("VELOCITY")) {
@@ -382,22 +380,21 @@ namespace BoGLWeb {
         /// <returns>The system diagram from the json string</returns>
         public static SystemDiagram? generateSystemDiagramFromJSON(string json) {
             SystemDiagram? sysDiagram = JsonConvert.DeserializeObject<SystemDiagram>(json);
-            Console.WriteLine(JsonConvert.DeserializeObject(json));
             dynamic? parsedJSON = JsonConvert.DeserializeObject<dynamic>(json);
 
-            if (sysDiagram is not null) {
-                foreach (dynamic? bond in parsedJSON.bonds) {
-                    Console.WriteLine("Bond!!! " + bond.source.id + ", " + bond.target.id);
-                    sysDiagram.edges.Add(new Edge(sysDiagram.getElement(int.Parse(bond.source.id.ToString())), 
-                        sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
-                        int.Parse(bond.velocity.ToString())));
-                }
-                
-                return sysDiagram;
+            if (sysDiagram is null) {
+                return null;
             }
 
+            foreach (dynamic? bond in parsedJSON.bonds) {
+                sysDiagram.edges.Add(new Edge(sysDiagram.getElement(int.Parse(bond.source.id.ToString())), 
+                    sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
+                    int.Parse(bond.velocity.ToString())));
+            }
+                
+            return sysDiagram;
+
             //TODO Throw error
-            return null;
         }
 
         /// <summary>
@@ -511,9 +508,6 @@ namespace BoGLWeb {
 
             builder.AppendLine("</GraphSynth:designGraph>");
             builder.AppendLine("</Page>");
-
-            Console.WriteLine("-------- Builder String --------");
-            Console.WriteLine(builder.ToString());
 
             XDocument doc = XDocument.Parse(builder.ToString());
 

@@ -359,7 +359,6 @@
 
     private async void ChangeCausalOption(Option selection) {
         if (generatingBondGraph) {
-            Console.WriteLine("Switched to " + selection.value);
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
             await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
         }
@@ -412,12 +411,10 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        Console.WriteLine("-------- SYSTEM DIAGRAM --------");
-        Console.WriteLine(sysDiagram.generateBoGLString());
-        var graphs = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        var sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+        var (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
 
-        BondGraphEmbedder unsimplifiedEmbedder = new(graphs.Item1);
+        BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
 
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
@@ -426,7 +423,7 @@
         }
         var unsimplified = unsimplifiedEmbedder.getBondGraph();
 
-        BondGraphEmbedder simplifiedEmbedder = new(graphs.Item2);
+        BondGraphEmbedder simplifiedEmbedder = new(item2);
 
         while (!simplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
@@ -435,7 +432,6 @@
         }
 
         var simplified = simplifiedEmbedder.getBondGraph();
-        var causal = graphs.Item3;
 
         foreach (BondGraph g in causal) {
             BondGraphEmbedder causalEmbedder = new(g);
@@ -462,9 +458,6 @@
     /// <param name="filename">The name of the example file without .bogl</param>
     private async void loadExample(string filename) {
         string xmlString = "";
-        if (!fileToLoad.Equals("")) {
-            Console.WriteLine(fileToLoad);
-        }
 
         HttpClient client = new HttpClient();
         HttpResponseMessage exampleResponse = await client.GetAsync("https://boglweb.github.io/rules-and-examples/examples/" + filename + ".bogl");
@@ -504,7 +497,6 @@
     private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
-        Console.WriteLine(file.ToString());
 
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
@@ -635,7 +627,6 @@
         compressedUrl = urlShort6.Replace(compressedUrl, "},{{");
         compressedUrl = urlShort7.Replace(compressedUrl, "},");
         compressedUrl = urlShort8.Replace(compressedUrl, ",");
-        Console.WriteLine(compressedUrl);
 
         string[] splitCompressedUrl = compressedUrl.Split(":");
 

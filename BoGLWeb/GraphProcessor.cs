@@ -12,8 +12,6 @@ namespace BoGLWeb {
         /// <returns>First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs</returns>
         /// <exception cref="Exception">Thrown if the any generated BondGraphs are null</exception>
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
-            Console.WriteLine("System Graph");
-            Console.WriteLine(systemGraph.ToString());
             BondGraphFactory factory = new(systemGraph);
 
             switch (factory.simplifiedBG) {
