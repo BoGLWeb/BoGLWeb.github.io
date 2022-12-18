@@ -1,28 +1,26 @@
 ﻿using BoGLWeb.BaseClasses;
 using BoGLWeb.Prop;
+using GraphSynth.Representation;
 
 namespace BoGLWeb {
     public class BondGraphFactory {
 
         /// <summary>
-        /// Creates a set of bondgraphs from a designGraph
+        /// Creates a set of bond graphs from a designGraph
         /// </summary>
         /// <param name="systemGraph">The design graph to process</param>
         /// <returns>First element of tuple is unsimplifiedBG, second is simplifiedBG, last is list of causalBGs</returns>
         /// <exception cref="Exception">Thrown if the any generated BondGraphs are null</exception>
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
-            Console.WriteLine("System Graph");
-            Console.WriteLine(systemGraph.ToString());
             BondGraphFactory factory = new(systemGraph);
 
-            if (factory.simplifiedBG is null && factory.unsimplifiedBG is null) {
-                //TODO Need to figure out what this error means and figure out how to show it to the user
-                throw new Exception("simplifiedBG and unsimplifiedBG are null");
-            }
-
-            if (factory.simplifiedBG is null) {
-                //TODO Need to figure out what this error means and figure out how to show it to the user
-                throw new Exception("simplifiedBG is null");
+            switch (factory.simplifiedBG) {
+                case null when factory.unsimplifiedBG is null:
+                    //TODO Need to figure out what this error means and figure out how to show it to the user
+                    throw new Exception("simplifiedBG and unsimplifiedBG are null");
+                case null:
+                    //TODO Need to figure out what this error means and figure out how to show it to the user
+                    throw new Exception("simplifiedBG is null");
             }
 
             if (factory.unsimplifiedBG is null) {
@@ -33,10 +31,7 @@ namespace BoGLWeb {
             BondGraph unsimplified = BondGraph.generateBondGraphFromGraphSynth(factory.unsimplifiedBG);
             BondGraph simplified = BondGraph.generateBondGraphFromGraphSynth(factory.simplifiedBG);
 
-            List<BondGraph> causalBGs = new();
-            foreach (var graph in factory.finalresult) {
-                causalBGs.Add(BondGraph.generateBondGraphFromGraphSynth(graph));
-            }
+            List<BondGraph> causalBGs = factory.finalresult.Select(BondGraph.generateBondGraphFromGraphSynth).ToList();
 
             return (unsimplified, simplified, causalBGs);
         }
@@ -76,7 +71,7 @@ namespace BoGLWeb {
             this.simplifiedBG = null;
             this.causalBGs = new List<designGraph>();
 
-            generateBondGraph();
+            this.generateBondGraph();
         }
 
         //Mainly code from desktop BoGL
@@ -93,70 +88,70 @@ namespace BoGLWeb {
                 //TODO Find a better way to display this error message
                 Console.WriteLine("Velocity directions are an issue. If this continues, please delete velocity directions and try again. Thanks!");
             } else {
-                bondgraphBeforeSimplification();
-                bondgraphSimplified();
-                obtainCausality();
+                this.bondgraphBeforeSimplification();
+                this.bondgraphSimplified();
+                this.obtainCausality();
             }
         }
 
         private void obtainCausality() {
-            causalBGs.Clear();
-            nodeLabelSorted.Clear();
-            sortedIndices.Clear();
+            this.causalBGs.Clear();
+            this.nodeLabelSorted.Clear();
+            this.sortedIndices.Clear();
 
-            finalresult.Clear();
-            optiGraphs.Clear();
+            this.finalresult.Clear();
+            this.optiGraphs.Clear();
 
             //will just do one option for now, will figure out 
             #region initial causality
             Stack<designGraph> sysGraphs = new();
 
             sysGraphs.Push(systemGraph.copy());
-            var sys = sysGraphs.Pop();
-            options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset").recognize(sys, false, null);
-            while (options.Count > 0) {
-                options[0].apply(sys, null);
-                options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset").recognize(sys, false, null);
+            designGraph sys = sysGraphs.Pop();
+            this.options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset").recognize(sys, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(sys, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset").recognize(sys, false, null);
             }
 
             sysGraphs.Push(sys);
             while (sysGraphs.Count > 0) {
                 sys = sysGraphs.Pop();
-                options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_2").recognize(sys, false, null);
-                if (options.Count > 0) {
-                    foreach (var opt in options) {
-                        var gra = sys.copy();
+                this.options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_2").recognize(sys, false, null);
+                if (this.options.Count > 0) {
+                    foreach (option opt in this.options) {
+                        designGraph gra = sys.copy();
                         GraphSynth.Search.SearchProcess.transferLmappingToChild(gra, sys, opt.nodes, opt.arcs, opt.hyperarcs);
                         opt.apply(gra, null);
                         sysGraphs.Push(gra);
                     }
                 } else
-                    sys_Graphs.Add(sys);
+                    this.sys_Graphs.Add(sys);
             }
 
-            foreach (var item in sys_Graphs) {
+            foreach (designGraph item in this.sys_Graphs) {
                 sys = item.copy();
-                options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_3").recognize(sys, false, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_3").recognize(sys, false, null);
 
-                while (options.Count > 0) {
-                    options[0].apply(sys, null);
-                    options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_3").recognize(sys, false, null);
+                while (this.options.Count > 0) {
+                    this.options[0].apply(sys, null);
+                    this.options = RuleSetMap.getInstance().getRuleSet("NewCausalityMethodRuleset_3").recognize(sys, false, null);
                 }
                 sysGraphs.Push(sys);
 
             }
 
-            sys_Graphs.Clear();
+            this.sys_Graphs.Clear();
 
             #endregion 
 
 
             while (sysGraphs.Count > 0) {
                 sys = sysGraphs.Pop();
-                options = RuleSetMap.getInstance().getRuleSet("INVDMarkerRules").recognize(sys, false, null);
-                while (options.Count > 0) {
-                    options[0].apply(sys, null);
-                    options = RuleSetMap.getInstance().getRuleSet("INVDMarkerRules").recognize(sys, false, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("INVDMarkerRules").recognize(sys, false, null);
+                while (this.options.Count > 0) {
+                    this.options[0].apply(sys, null);
+                    this.options = RuleSetMap.getInstance().getRuleSet("INVDMarkerRules").recognize(sys, false, null);
                 }
 
                 Stack<designGraph> graphss = new();
@@ -164,12 +159,12 @@ namespace BoGLWeb {
                 graphss.Push(sys);
 
                 {
-                    var graphS = graphss.Pop();
-                    var options1 = RuleSetMap.getInstance().getRuleSet("CalibrationNewRuleset").recognize(graphS, false, null);
+                    designGraph graphS = graphss.Pop();
+                    List<option> options1 = RuleSetMap.getInstance().getRuleSet("CalibrationNewRuleset").recognize(graphS, false, null);
 
                     if (options1.Count > 0) {
-                        foreach (var opt in options1) {
-                            var graphSS = graphS.copy();
+                        foreach (option opt in options1) {
+                            designGraph graphSS = graphS.copy();
                             GraphSynth.Search.SearchProcess.transferLmappingToChild(graphSS, graphS, opt.nodes,
                                                                opt.arcs, opt.hyperarcs);
                             opt.apply(graphSS, null);
@@ -180,8 +175,8 @@ namespace BoGLWeb {
 
                 }
 
-                foreach (var opt in graph_SSS) {
-                    var options1 = RuleSetMap.getInstance().getRuleSet("CalibrationNewRuleset").recognize(opt, false, null);
+                foreach (designGraph opt in graph_SSS) {
+                    List<option> options1 = RuleSetMap.getInstance().getRuleSet("CalibrationNewRuleset").recognize(opt, false, null);
 
                     while (options1.Count > 0) {
                         options1[0].apply(opt, null);
@@ -194,8 +189,8 @@ namespace BoGLWeb {
                 graph_SSS.Clear();
 
                 while (graphss.Count > 0) {
-                    var graphS = graphss.Pop();
-                    var options1 = RuleSetMap.getInstance().getRuleSet("RFlagCleanRuleset").recognize(graphS, false, null);
+                    designGraph graphS = graphss.Pop();
+                    List<option> options1 = RuleSetMap.getInstance().getRuleSet("RFlagCleanRuleset").recognize(graphS, false, null);
 
                     while (options1.Count > 0) {
                         options1[0].apply(graphS, null);
@@ -203,15 +198,15 @@ namespace BoGLWeb {
                     }
                     graph_SSS.Add(graphS);
                 }
-                foreach (var opt in graph_SSS) {
+                foreach (designGraph opt in graph_SSS) {
                     graphss.Push(opt);
                 }
 
                 graph_SSS.Clear();
 
                 while (graphss.Count > 0) {
-                    var graphS = graphss.Pop();
-                    var options1 = RuleSetMap.getInstance().getRuleSet("ICFixTotalRuleset").recognize(graphS, false, null);
+                    designGraph graphS = graphss.Pop();
+                    List<option> options1 = RuleSetMap.getInstance().getRuleSet("ICFixTotalRuleset").recognize(graphS, false, null);
 
                     while (options1.Count > 0) {
                         options1[0].apply(graphS, null);
@@ -221,54 +216,52 @@ namespace BoGLWeb {
                     graph_SSS.Add(graphS);
                 }
 
-                foreach (var op in graph_SSS) {
-                    options = RuleSetMap.getInstance().getRuleSet("TransformerFlipRuleset").recognize(op, false, null);
+                foreach (designGraph op in graph_SSS) {
+                    this.options = RuleSetMap.getInstance().getRuleSet("TransformerFlipRuleset").recognize(op, false, null);
 
-                    if (options.Count > 0) {
-                        options[0].apply(op, null);
+                    if (this.options.Count > 0) {
+                        this.options[0].apply(op, null);
                         sysGraphs.Push(op);
                     } else {
+                        this.options = RuleSetMap.getInstance().getRuleSet("TransformerFlipRuleset2").recognize(op, false, null);
 
-
-                        options = RuleSetMap.getInstance().getRuleSet("TransformerFlipRuleset2").recognize(op, false, null);
-
-                        if (options.Count > 0) {
-
-                            options[0].apply(op, null);
+                        if (this.options.Count > 0) {
+                            this.options[0].apply(op, null);
                             sysGraphs.Push(op);
                         } else
-                            optiGraphs.Add(op);
+                            this.optiGraphs.Add(op);
                     }
 
 
                 }
             }
 
-            foreach (var opt in optiGraphs) {
-                options = RuleSetMap.getInstance().getRuleSet("Clean23Ruleset").recognize(opt, false, null);
+            foreach (designGraph opt in this.optiGraphs) {
+                this.options = RuleSetMap.getInstance().getRuleSet("Clean23Ruleset").recognize(opt, false, null);
 
-                while (options.Count > 0) {
-                    options[0].apply(opt, null);
-                    options = RuleSetMap.getInstance().getRuleSet("Clean23Ruleset").recognize(opt, false, null);
+                while (this.options.Count > 0) {
+                    this.options[0].apply(opt, null);
+                    this.options = RuleSetMap.getInstance().getRuleSet("Clean23Ruleset").recognize(opt, false, null);
                 }
 
-                finalresult.Add(opt);
+                this.finalresult.Add(opt);
             }
 
-            indiceswithoutINVD.Clear();
-            maxIntegralCausality.Clear();
-            for (int ii = 0; ii < finalresult.Count; ii++) {
-                bool index = checkINVD(finalresult[ii]);
+            this.indiceswithoutINVD.Clear();
+            this.maxIntegralCausality.Clear();
+            for (int ii = 0; ii < this.finalresult.Count; ii++) {
+                bool index = checkINVD(this.finalresult[ii]);
 
-                if (index == false) {
-                    indiceswithoutINVD.Add(ii);
-                    maxIntegralCausality.Add(checkICs(finalresult[ii]));
-
+                if (index) {
+                    continue;
                 }
+
+                this.indiceswithoutINVD.Add(ii);
+                this.maxIntegralCausality.Add(checkICs(this.finalresult[ii]));
             }
 
             //now from the list of finalgraph, eliminate duplicate solutions
-            if (indiceswithoutINVD.Count == 0) {
+            if (this.indiceswithoutINVD.Count == 0) {
                 Console.WriteLine("Sorry, we have encountered an error with respect to Causality assignment");
 
             }
@@ -276,28 +269,25 @@ namespace BoGLWeb {
             else {
                 int currentHashSetcount = 0;
                 int nn = 0;
-                foreach (var n in indiceswithoutINVD) {
+                foreach (int n in this.indiceswithoutINVD) {
                     List<string> nodeLabels_Cau = new();
-                    var cauGraph = finalresult[n];
+                    designGraph cauGraph = this.finalresult[n];
 
-                    foreach (var arcC in cauGraph.arcs) {
+                    foreach (arc arcC in cauGraph.arcs) {
                         if (arcC.localLabels.Contains("I2") && arcC.localLabels.Contains("SAME")) {
-                            for (int iii = 0; iii < arcC.To.localLabels.Count; iii++) {
-                                if (arcC.To.localLabels[iii].Contains("iadded")) {
-                                    nodeLabels_Cau.Add(arcC.To.localLabels[iii]);
-
-                                }
-
-                            }
+                            nodeLabels_Cau.AddRange(arcC.To.localLabels.Where(t => t.Contains("iadded")));
                         }
-                        if (arcC.localLabels.Contains("C3") && arcC.localLabels.Contains("OPP")) {
-                            for (int iii = 0; iii < arcC.From.localLabels.Count; iii++) {
-                                if (arcC.From.localLabels[iii].Contains("cadded")) {
-                                    nodeLabels_Cau.Add(arcC.From.localLabels[iii]);
 
-                                }
+                        if (!arcC.localLabels.Contains("C3") || !arcC.localLabels.Contains("OPP")) {
+                            continue;
+                        }
+
+                        for (int iii = 0; iii < arcC.From.localLabels.Count; iii++) {
+                            if (arcC.From.localLabels[iii].Contains("cadded")) {
+                                nodeLabels_Cau.Add(arcC.From.localLabels[iii]);
 
                             }
+
                         }
 
                     }
@@ -305,22 +295,19 @@ namespace BoGLWeb {
                     if (nodeLabels_Cau.Count > 0) {
                         nodeLabels_Cau.Sort();
 
-                        string combined = "";
-                        foreach (var x in nodeLabels_Cau)
-                            combined += x;
+                        string combined = nodeLabels_Cau.Aggregate("", (current, x) => current + x);
 
-                        nodeLabelSorted.Add(combined);
+                        this.nodeLabelSorted.Add(combined);
 
                         //need to add index numbers as well into a list
-
-                        if ((nn + 1) == nodeLabelSorted.Count) //for the first one, it will be same
+                        if ((nn + 1) == this.nodeLabelSorted.Count) //for the first one, it will be same
                         {
-                            sortedIndices.Add(n);
+                            this.sortedIndices.Add(n);
                             currentHashSetcount++;
                         }
 
-                        if (currentHashSetcount <= nodeLabelSorted.Count) {
-                            sortedIndices.Add(n);
+                        if (currentHashSetcount <= this.nodeLabelSorted.Count) {
+                            this.sortedIndices.Add(n);
                             currentHashSetcount++;
                         }
 
@@ -328,93 +315,84 @@ namespace BoGLWeb {
                     nn++;
                 }
 
-                List<int> maxIntegralCaus = new();
-
-                foreach (var n in sortedIndices) {
-                    //use the indiceswithoutINVD to obtain the index in that list
-
-                    var indexindex = indiceswithoutINVD.FindIndex(item => item == n);
-                    maxIntegralCaus.Add(maxIntegralCausality[indexindex]);
-
-                }
+                List<int> maxIntegralCaus = this.sortedIndices.Select(n => this.indiceswithoutINVD.FindIndex(item => item == n)).Select(indexindex => this.maxIntegralCausality[indexindex]).ToList();
 
                 //  foreach (var no in finalresult[index1].nodes)
 
                 //now add to the combo-box
 
-                causalBGs.Clear();
+                this.causalBGs.Clear();
             }
         }
 
         private void bondgraphBeforeSimplification() {
-            options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(systemGraph, true, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(this.systemGraph, true, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(systemGraph, true, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("BondGraphRuleset").recognize(this.systemGraph, true, null);
 
             }
 
             List<string> nodeLabels = new();
             List<int> list = new();
-            List<int> nodeNames = list;
             int ll = 0;
-            foreach (var no in systemGraph.nodes) {
-                nodeLabels.Add(String.Join(String.Empty, no.localLabels.ToArray()));
-                nodeNames.Add(ll++);
+            foreach (node no in this.systemGraph.nodes) {
+                nodeLabels.Add(string.Join(string.Empty, no.localLabels.ToArray()));
+                list.Add(ll++);
             }
             ll = 0;
-            foreach (var opt in systemGraph.nodes) {
-                opt.name = "name" + nodeNames[ll];
+            foreach (node opt in this.systemGraph.nodes) {
+                opt.name = "name" + list[ll];
                 ll++;
             }
 
             //try to update the positions of each node
 
-            unsimplifiedBG = systemGraph.copy(true);
+            this.unsimplifiedBG = this.systemGraph.copy(true);
         }
 
         private void bondgraphSimplified() {
-            options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(this.systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("DirRuleset").recognize(this.systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("newDirectionRuleSet_2").recognize(this.systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("DirRuleset3").recognize(this.systemGraph, false, null);
             }
 
-            options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("Simplification2").recognize(this.systemGraph, false, null);
             }
 
             //again do a deepcopy of the systemGraph 
 
             //  designGraph SimplifiedGraphWithDir = systemGraph.copy(true);
 
-            simplifiedBG = systemGraph.copy(true);
+            this.simplifiedBG = this.systemGraph.copy();
 
             //now let us apply directions - first let us do the sources and i-c-r 
 
@@ -427,30 +405,23 @@ namespace BoGLWeb {
 
             //first load the verify direction rules 
 
-            foreach (var item in RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").rules) {
+            foreach (grammarRule item in RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").rules) {
                 item.TransformNodePositions = false;
                 item.Rotate = false;
             }
 
             //second step is to verify if all nodes have velocity directions 
 
-            options = RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").recognize(systemGraph, false, null);
+            this.options = RuleSetMap.getInstance().getRuleSet("BeforeBG-VerifyDirRuleSet").recognize(this.systemGraph, false, null);
 
-            while (options.Count > 0) {
-                options[0].apply(systemGraph, null);
-                options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(systemGraph, false, null);
+            while (this.options.Count > 0) {
+                this.options[0].apply(this.systemGraph, null);
+                this.options = RuleSetMap.getInstance().getRuleSet("SimplificationRuleset").recognize(this.systemGraph, false, null);
             }
 
             //now check if all the nodes that have veladded label have good label as well
 
-            noGood = true;
-
-            foreach (var n in systemGraph.nodes) {
-                if (n.localLabels.Contains("veladded") && !n.localLabels.Contains("good")) {
-                    noGood = false;
-                    break;
-                }
-            }
+            noGood = this.systemGraph.nodes.All(n => !n.localLabels.Contains("veladded") || n.localLabels.Contains("good"));
         }
 
         private static int checkICs(designGraph designGraph) {
@@ -467,15 +438,13 @@ namespace BoGLWeb {
         }
 
         private static bool checkINVD(designGraph designGraph) {
-            foreach (node n in designGraph.nodes) {
-                foreach (string x in n.localLabels) {
-                    if (x.Contains("INVD"))
-                        return true;
-                    if (x.Contains("Flipped"))
-                        return true;
-                }
-
+            foreach (string x in designGraph.nodes.SelectMany(n => n.localLabels)) {
+                if (x.Contains("INVD"))
+                    return true;
+                if (x.Contains("Flipped"))
+                    return true;
             }
+
             return false;
         }
 

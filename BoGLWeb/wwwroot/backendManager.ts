@@ -10,11 +10,6 @@ import {SVGSelection} from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
-        
-        public test(text: string) {
-            console.log(text);
-        }
-
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
             let elements = JSON.parse(bg.elements).map((e, i) => {
@@ -53,8 +48,6 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let parsedJson = JSON.parse(jsonString);
-            console.log("Parsed JSON");
-            console.log(parsedJson);
             let elements = []
             let i = 0;
             for (let element of parsedJson.elements) {
@@ -193,13 +186,11 @@ export namespace backendManager {
                 graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
             }
 
-            console.log(graph, svgDim, windowDim);
             graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 
         public setTab(key: string) {
             (<any>window).tabNum = key;
-            console.log(key);
         }
         
         public setVelocity(velocity: number) {

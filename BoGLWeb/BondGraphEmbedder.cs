@@ -2,50 +2,34 @@
 
 namespace BoGLWeb {
     public class BondGraphEmbedder {
-        private static readonly double cRep = 10000.0;
-        private static readonly double cSpring = 15.0;
-        private static readonly double kL = 100.0;
-        private static readonly int maxIters = 1000;
-        private static readonly double epsilon = 1.0;
+        private const double cRep = 10000.0;
+        private const double cSpring = 15.0;
+        private const double kL = 100.0;
+        private const int maxIters = 1000;
+        private const double epsilon = 1.0;
 
         private double maxForceChange = double.MaxValue;
         private double iters = 1;
         private bool optimized;
-        private BondGraph bondGraph;
+        private readonly BondGraph bondGraph;
 
         public BondGraphEmbedder(BondGraph bondGraph) {
             this.optimized = false;
             this.bondGraph = bondGraph;
-            foreach (KeyValuePair<string, BondGraph.Element> elementPair in this.bondGraph.getElements()){
-                Console.WriteLine("Name: " + elementPair.Value.getName() + " - X: " + elementPair.Value.getX() + " - Y: " + elementPair.Value.getY());
-            }
         }
 
         public void embedBondGraph() {
-            Dictionary<BondGraph.Element, Vector> forceMap = new();
+            Dictionary<BondGraph.Element, Vector> forceMap = this.bondGraph.getElements().ToDictionary(element => element.Value, element => new Vector(0, 0));
 
-            foreach (KeyValuePair<string, BondGraph.Element> element in this.bondGraph.getElements()) {
-                forceMap.Add(element.Value, new Vector(0, 0));
-            }
-            
-            //Console.WriteLine("MaxForceChange: " + this.maxForceChange);
-
-            if (iters > maxIters || maxForceChange < epsilon) {
-                optimized = true;
+            if (this.iters > maxIters || this.maxForceChange < epsilon) {
+                this.optimized = true;
             } 
             
-            //Console.WriteLine("-------- Iter: " + this.iters + " --------");
-            
-            //TODO These names are really bad. Need to fix.
             foreach (KeyValuePair<string, BondGraph.Element> element in this.bondGraph.getElements()) {
                 BondGraph.Element e = element.Value;
-                List<Vector> repList = new();
-                List<Vector> springList = new();
                 HashSet<BondGraph.Element> adj = new();
                 HashSet<BondGraph.Element> notAdj = new();
                 
-                //Console.WriteLine("Name: " + element.Value.getName() + " - X: " + element.Value.getX() + " - Y: " + element.Value.getY());
-
                 //Find Edges adjacent to the element
                 //TODO Factor this out, it will improve speed
                 foreach (BondGraph.Bond bond in this.bondGraph.getBonds()) {
@@ -65,25 +49,13 @@ namespace BoGLWeb {
                     }
                 }
 
-                foreach (BondGraph.Element adjElement in adj) {
-                    //Compute attractive force
-                    springList.Add(attractiveForce(e.getX(), e.getY(), adjElement.getX(), adjElement.getY()));
-                }
-
-                foreach (BondGraph.Element notAdjEle in notAdj) {
-                    //Compute repulsive force
-                    repList.Add(repulsiveForce(e.getX(), e.getY(), notAdjEle.getX(), notAdjEle.getY()));
-                }
+                List<Vector> springList = adj.Select(adjElement => attractiveForce(e.getX(), e.getY(), adjElement.getX(), adjElement.getY())).ToList();
+                List<Vector> repList = notAdj.Select(notAdjEle => repulsiveForce(e.getX(), e.getY(), notAdjEle.getX(), notAdjEle.getY())).ToList();
 
                 Vector sumRep = new Vector(0, 0);
                 Vector sumSpring = new Vector(0, 0);
-                foreach (Vector v in repList) {
-                    sumRep = new Vector(sumRep.getXMag() + v.getXMag(), sumRep.getYMag() + v.getYMag());
-                }
-
-                foreach (Vector v in springList) {
-                    sumSpring = new Vector(sumSpring.getXMag() + v.getXMag(), sumSpring.getYMag() + v.getYMag());
-                }
+                sumRep = repList.Aggregate(sumRep, (current, v) => new Vector(current.getXMag() + v.getXMag(), current.getYMag() + v.getYMag()));
+                sumSpring = springList.Aggregate(sumSpring, (current, v) => new Vector(current.getXMag() + v.getXMag(), current.getYMag() + v.getYMag()));
 
                 forceMap[e] = new Vector(sumRep.getXMag() + sumSpring.getXMag(),
                     sumRep.getYMag() + sumSpring.getYMag());
@@ -96,15 +68,13 @@ namespace BoGLWeb {
                 n.setPosition(n.getX() + f.getXMag(), n.getY() + f.getYMag());
             }
 
-            iters++;
+            this.iters++;
             double max = 0;
-            foreach (KeyValuePair<BondGraph.Element, Vector> entry in forceMap) {
-                if (Math.Abs(magnitude(entry.Value)) > max) {
-                    max = magnitude(entry.Value);
-                }
+            foreach (KeyValuePair<BondGraph.Element, Vector> entry in forceMap.Where(entry => Math.Abs(magnitude(entry.Value)) > max)) {
+                max = magnitude(entry.Value);
             }
 
-            maxForceChange = max;
+            this.maxForceChange = max;
         }
 
         public bool isOptimized() {
@@ -131,7 +101,7 @@ namespace BoGLWeb {
             return Math.Sqrt(Math.Abs(x * x) + Math.Abs(y * y));
         }
 
-        public static Vector repulsiveForce(double x1, double y1, double x2, double y2) {
+        private static Vector repulsiveForce(double x1, double y1, double x2, double y2) {
             Vector unitVector = getUnitVector(x2, y2, x1, y1);
             double dist = distance(x2, y2, x1, y1);
             double scalar = cRep / (dist * dist);
@@ -149,7 +119,7 @@ namespace BoGLWeb {
         }
 
 
-        public class Vector {
+        private class Vector {
             private readonly double xMag, yMag;
 
             public Vector(double xMag, double yMag) {
@@ -158,15 +128,15 @@ namespace BoGLWeb {
             }
 
             public double getXMag() {
-                return xMag;
+                return this.xMag;
             }
 
             public double getYMag() {
-                return yMag;
+                return this.yMag;
             }
 
             public override string ToString() {
-                return "xMag: " + xMag + " yMag: " + yMag;
+                return "xMag: " + this.xMag + " yMag: " + this.yMag;
             }
         }
     }

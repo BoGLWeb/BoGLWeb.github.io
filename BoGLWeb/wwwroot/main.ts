@@ -48,8 +48,6 @@ async function loadPage() {
     const myParam = urlParams.get('q');
     if(myParam !== null){
         let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
-        console.log("System Diagram String");
-        console.log(sysDiagramString);
         getBackendManager().loadSystemDiagram(sysDiagramString);
     }else {
         (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));

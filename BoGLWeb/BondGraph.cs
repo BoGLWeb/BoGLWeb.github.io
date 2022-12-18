@@ -1,15 +1,6 @@
-﻿using AntDesign;
-using BoGLWeb.BaseClasses;
-using GraphSynth.Representation;
+﻿using BoGLWeb.BaseClasses;
 using Newtonsoft.Json;
-/*using Newtonsoft.Json;
-*/using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Globalization;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using System.Text;
-using static Microsoft.Playwright.NUnit.SkipAttribute;
 
 namespace BoGLWeb {
 
@@ -24,8 +15,8 @@ namespace BoGLWeb {
         /// Creates an instance of BondGraph
         /// </summary>
         public BondGraph() {
-            elements = new Dictionary<string, Element>();
-            bonds = new List<Bond>();
+            this.elements = new Dictionary<string, Element>();
+            this.bonds = new List<Bond>();
         }
 
         /// <summary>
@@ -34,7 +25,7 @@ namespace BoGLWeb {
         /// <param name="name">The name of the element</param>
         /// <param name="e">The instance of the element</param>
         public void addElement(string name, Element e) {
-            elements.Add(name, e);
+            this.elements.Add(name, e);
         }
 
         /// <summary>
@@ -42,7 +33,7 @@ namespace BoGLWeb {
         /// </summary>
         /// <param name="bond">The bond to add</param>
         public void addBond(Bond bond) {
-            bonds.Add(bond);
+            this.bonds.Add(bond);
         }
 
         /// <summary>
@@ -51,15 +42,15 @@ namespace BoGLWeb {
         /// <param name="name">The name of the element</param>
         /// <returns>The element with the input name</returns>
         public Element getElement(string name) {
-            return elements[name];
+            return this.elements[name];
         }
 
         public Dictionary<string, Element> getElements() {
-            return elements;
+            return this.elements;
         }
 
         public List<Bond> getBonds() {
-            return bonds;
+            return this.bonds;
         }
 
         public string convertToJson() {
@@ -84,7 +75,7 @@ namespace BoGLWeb {
             BondGraph bondGraph = new BondGraph();
 
             //Construct an Element for each node
-            foreach(var node in graph.nodes) {
+            foreach(node node in graph.nodes) {
                 StringBuilder sb = new();
                 foreach (string l in node.localLabels) {
                     sb.Append(l);
@@ -94,23 +85,22 @@ namespace BoGLWeb {
             }
 
             //Construct each arc
-            foreach (var arc in graph.arcs) {
-                var from = arc.From;
-                var to = arc.To;
-                var labels = arc.localLabels;
+            foreach (arc arc in graph.arcs) {
+                node from = arc.From;
+                node to = arc.To;
+                List<string> labels = arc.localLabels;
                 //TODO Check if this string is correct
                 bool flip = labels.Contains("OPP");
                 //TODO Make sure that this is an okay way to check if we should have a causal stroke
                 bool useCausalStroke = labels.Contains("OPP") || labels.Contains("SAME");
 
-                var sourceID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
-                var targetID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
-                if (flip) {
-                    bondGraph.addBond(new Bond(sourceID, targetID, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
-                } else {
-                    bondGraph.addBond(new Bond(targetID, sourceID, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
-                }
-
+                int sourceId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
+                int targetId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
+                bondGraph.addBond(flip
+                    ? new Bond(sourceId, targetId, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "",
+                        useCausalStroke, flip, 0, 0)
+                    : new Bond(targetId, sourceId, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "",
+                        useCausalStroke, flip, 0, 0));
             }
 
             return bondGraph;
@@ -121,7 +111,7 @@ namespace BoGLWeb {
             protected readonly string label;
             [JsonProperty]
             protected readonly double value;
-            protected readonly string name;
+            private readonly string name;
 
             //For graph visualization
             [JsonProperty]
@@ -161,11 +151,11 @@ namespace BoGLWeb {
             }
 
             public double getX() {
-                return x;
+                return this.x;
             }
 
             public double getY() {
-                return y;
+                return this.y;
             }
 
             public string getName() {
@@ -232,7 +222,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int sourceID, targetID;
             protected readonly Element source, sink;
-            protected readonly string label;
+            private readonly string label;
             protected readonly double flow, effort;
 
             [JsonProperty]
@@ -273,19 +263,19 @@ namespace BoGLWeb {
             }
 
             public bool isSource(Element e) {
-                return e.Equals(source);
+                return e.Equals(this.source);
             }
 
             public bool isSink(Element e) {
-                return e.Equals(sink);
+                return e.Equals(this.sink);
             }
 
             public Element getSource() {
-                return source;
+                return this.source;
             }
 
             public Element getSink() {
-                return sink;
+                return this.sink;
             }
 
             /// <summary>
