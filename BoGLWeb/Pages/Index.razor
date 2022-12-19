@@ -40,7 +40,7 @@
         <MenuItem Key="setting:1">
             <Checkbox>Confirm deleting many items</Checkbox>
         </MenuItem>
-        <MenuItem Key="setting:2">Tutorial</MenuItem>
+        <MenuItem Key="setting:2" OnClick="runTutorial">Tutorial</MenuItem>
         <SubMenu Title="Example Files">
             <SubMenu Title="Mechanical Translation">
                 <MenuItem Key="mt:1" OnClick='() => loadExample("basic-two-mass-system")'>Basic Two Mass System - 1</MenuItem>
@@ -549,7 +549,7 @@
     }
 
     private async void generateUrl() {
-        //Get information from backend
+    //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
@@ -560,7 +560,7 @@
             await messageService.Error("Invalid URL Generated");
         }
 
-        //Process json into url
+    //Process json into url
         Regex elementName = new Regex("\"elements\":");
         Regex typeName = new Regex("\"type\":");
         Regex xName = new Regex("\"x\":");
@@ -583,7 +583,7 @@
         jsonStr = targetName.Replace(jsonStr, "");
         jsonStr = bondsName.Replace(jsonStr, "");
 
-        //Shorten URL
+    //Shorten URL
         Regex urlShort1 = new Regex("{\\[{");
         Regex urlShort2 = new Regex("\\[]");
         Regex urlShort3 = new Regex("},{");
@@ -603,7 +603,7 @@
         jsonStr = urlShort8.Replace(jsonStr, "h");
 
 
-        //Add url to modal
+    //Add url to modal
         url = "https://boglweb20221206112544.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
     }
@@ -689,6 +689,11 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
+    }
+    
+    private async void runTutorial(){
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("introjsTutorial");
     }
 
 }

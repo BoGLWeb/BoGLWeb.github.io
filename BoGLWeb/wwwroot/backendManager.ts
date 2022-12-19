@@ -216,6 +216,10 @@ export namespace backendManager {
         public textToClipboard(text: string) {
             navigator.clipboard.writeText(text);
         }
+        
+        public introjsTutorial(){
+            
+        }
     }
 
     export function getBackendManager(): BackendManager {
