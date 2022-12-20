@@ -1,9 +1,9 @@
 ﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
-import { GraphState } from "./GraphState";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
+import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
 export class BaseGraphDisplay {
     // constants
@@ -12,25 +12,34 @@ export class BaseGraphDisplay {
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
+
+    // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
+    zoomWithSlider: boolean = false;
+    dragAllowed: boolean = false;
+    prevScale: number = 1;
     initXPos: number;
     initYPos: number;
     svgX: number = 0;
     svgY: number = 0;
-    zoomWithSlider: boolean = false;
-    prevScale: number = 1;
-    dragAllowed: boolean = false;
     dragX: number;
     dragY: number;
-    idct: number = 0;
+
     elements: GraphElement[];
     bonds: GraphBond[];
-    state: GraphState = new GraphState();
     svg: SVGSelection;
     svgG: SVGSelection;
     dragBond: SVGSelection;
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
+
+    selectedElement: SystemDiagramElement = null;
+    selectedBond: GraphBond = null;
+    mouseDownNode: GraphElement = null;
+    justDragged: boolean = false;
+    justScaleTransGraph: boolean = false;
+    lastKeyDown: number = -1;
+    highestElemId: number = 0;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -66,12 +75,12 @@ export class BaseGraphDisplay {
     // mousedown on element
     nodeMouseDown(el: GraphElement) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = el;
-        this.state.justDragged = false;
+        this.mouseDownNode = el;
+        this.justDragged = false;
     }
 
     dragmove(el: GraphElement) {
-        if (this.state.mouseDownNode) {
+        if (this.mouseDownNode) {
             el.x += (<DragEvent>d3.event).dx;
             el.y += (<DragEvent>d3.event).dy;
             this.updateGraph();
@@ -89,7 +98,7 @@ export class BaseGraphDisplay {
                 return { x: d.x, y: d.y };
             })
             .on("drag", function (args) {
-                graph.state.justDragged = true;
+                graph.justDragged = true;
                 graph.dragmove.call(graph, args);
             });
     }
@@ -141,7 +150,7 @@ export class BaseGraphDisplay {
         let paths = this.bondSelection;
         // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
-            return d === graph.state.selectedBond;
+            return d === graph.selectedBond;
         }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         // add new bondSelection
@@ -151,9 +160,6 @@ export class BaseGraphDisplay {
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
-            })
-            .on("mouseup", function () {
-                graph.state.mouseDownLink = null;
             });
 
         this.pathExtraRendering(paths);
@@ -187,7 +193,7 @@ export class BaseGraphDisplay {
     }
 
     zoomed() {
-        this.state.justScaleTransGraph = true;
+        this.justScaleTransGraph = true;
         if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
             this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
         }
