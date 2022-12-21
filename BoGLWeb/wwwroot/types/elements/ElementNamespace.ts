@@ -53,4 +53,9 @@ export namespace ElementNamespace {
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
         new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false)
     ];
+    
+    export const mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 18, 12, 13, 14]);
+    export const mrCompatibilityGroup = new Set([8, 9, 7, 12, 13, 15, 14, 10, 12, 11, 16, 18, 28]);
+    export const eCompatibilityGroup = new Set([21, 22, 25, 24, 23, 20, 27, 26, 28]);
+    export const oCompatibilityGroup = new Set([29, 28]);
 }
