@@ -58,4 +58,12 @@ export namespace ElementNamespace {
     export const mrCompatibilityGroup = new Set([8, 9, 7, 12, 13, 15, 14, 10, 12, 11, 16, 18, 28]);
     export const eCompatibilityGroup = new Set([21, 22, 25, 24, 23, 20, 27, 26, 28]);
     export const oCompatibilityGroup = new Set([29, 28]);
+    
+    export function isCompatible(element1: number, element2: number) {
+        let mtCompatible = mtCompatibilityGroup.has(element1) && mtCompatibilityGroup.has(element2);
+        let mrCompatible = mrCompatibilityGroup.has(element1) && mrCompatibilityGroup.has(element2);
+        let eCompatible = eCompatibilityGroup.has(element1) && eCompatibilityGroup.has(element2);
+        let oCompatible = oCompatibilityGroup.has(element1) && oCompatibilityGroup.has(element2);
+        return mtCompatible || mrCompatible || eCompatible || oCompatible;
+    }
 }
