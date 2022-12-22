@@ -5,9 +5,11 @@ import { ElementNamespace } from "../elements/ElementNamespace";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
+import {ElementType} from "../elements/ElementType";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
+    rejectCircle: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
         1: "⮢",
@@ -39,6 +41,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
             .attr("style", "cursor: pointer; visibility: hidden;");
+        this.rejectCircle = this.svgG.append("circle");
+        this.rejectCircle.attr("r", "5")
+            .attr("fill", "red")
+            .attr("style", "cursor: pointer; visibility: hidden;");
     }
 
     moveCircle(e: SystemDiagramElement) {
@@ -60,6 +66,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             coords = [-s * 1 / Math.tan(theta), s]
         }
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        this.rejectCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
     }
 
     setFollowingEdge(sourceNode: SystemDiagramElement) {
@@ -96,11 +103,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("mousemove", function (e) {
                 graph.moveCircle.call(graph, e);
             })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+            .on("mouseenter", function (e) {
+                if (ElementNamespace.isCompatible(graph.edgeOrigin.type, e.type)) {
+                    graph.edgeCircle.style("visibility", "visible");
+                } else {
+                    graph.rejectCircle.style("visibility", "visible");
+                }
             })
             .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "hidden");
+                graph.rejectCircle.style("visibility", "hidden");
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
