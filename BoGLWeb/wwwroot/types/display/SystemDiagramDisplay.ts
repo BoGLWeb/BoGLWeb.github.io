@@ -104,7 +104,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.moveCircle.call(graph, e);
             })
             .on("mouseenter", function (e) {
-                if (ElementNamespace.isCompatible(graph.edgeOrigin.type, e.type)) {
+                let numTargetBonds = graph.bonds.filter(b => function (b) {
+                    return b.target.type == e.type || b.source.type == e.type;
+                }).length;
+                let numSourceBonds = graph.bonds.filter(b => function (b) {
+                    return b.target.type == graph.edgeOrigin.type || b.source.type == graph.edgeOrigin.type;
+                }).length;
+                let maxTargetBonds = ElementNamespace.elementTypes[e.type].maxConnections;
+                let maxSourceBonds = ElementNamespace.elementTypes[graph.edgeOrigin.type].maxConnections;
+                if (ElementNamespace.isCompatible(graph.edgeOrigin.type, e.type) && (numTargetBonds + 1 <= maxTargetBonds) && (numSourceBonds + 1 <= maxSourceBonds)) {
                     graph.edgeCircle.style("visibility", "visible");
                 } else {
                     graph.rejectCircle.style("visibility", "visible");
