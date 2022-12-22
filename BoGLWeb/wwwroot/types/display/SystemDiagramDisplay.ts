@@ -8,6 +8,7 @@ import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
+    rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
         1: "⮢",
@@ -30,15 +31,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         d3.select(window).on("keydown", function () {
             graph.svgKeyDown.call(graph);
         })
-            .on("keyup", function () {
-                graph.svgKeyUp.call(graph);
-            });
+        .on("keyup", function () {
+            graph.svgKeyUp.call(graph);
+        });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
-            .attr("style", "cursor: pointer; visibility: hidden;");
+            .attr("style", "cursor: pointer; display: none;");
+        this.rejectX = this.svgG.append("path");
+        this.rejectX
+            .attr("d", d3.svg.symbol().type("cross").size(100))
+            .style("fill", "red")
+            .style("display", "none");
     }
 
     moveCircle(e: SystemDiagramElement) {
@@ -60,6 +66,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             coords = [-s * 1 / Math.tan(theta), s]
         }
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        this.rejectX.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
     }
 
     setFollowingEdge(sourceNode: SystemDiagramElement) {
@@ -68,8 +75,19 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // hide edge
             this.dragBond.classed("hidden", true);
         } else {
+            console.log("At one edge move");
             this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             this.dragBond.classed("hidden", false);
+        }
+    }
+
+    setEdgeMarkerVisible(e: SystemDiagramElement) {
+        if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
+            this.edgeCircle.style("display", "block");
+            this.rejectX.style("display", "none");
+        } else {
+            this.rejectX.style("display", "block");
+            this.edgeCircle.style("display", "none");
         }
     }
 
@@ -96,11 +114,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("mousemove", function (e) {
                 graph.moveCircle.call(graph, e);
             })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+            .on("mouseenter", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseleave", function () {
-                graph.edgeCircle.style("visibility", "hidden");
+                graph.edgeCircle.style("display", "none");
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
@@ -185,21 +203,21 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
-            graph.edgeCircle.style("visibility", "hidden");
+            graph.edgeCircle.style("display", "none");
         })
             .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
             })
-            .on("mouseleave", function () {
-                graph.edgeCircle.style("visibility", "visible");
+        .on("mouseleave", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
             });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+        .on("mouseenter", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
@@ -338,12 +356,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
-        if (this.edgeOrigin && this.edgeOrigin != el) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
+        if (this.edgeOrigin && el !== this.edgeOrigin) {
+            if (isCompatible) {
+                this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
+            }
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
-        } else {
+        } else if (!this.edgeOrigin) {
+            console.log("Hewwo");
             this.setFollowingEdge(el);
             (<Event>d3.event).stopPropagation()
         }
@@ -359,11 +380,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
 
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
+
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            if (isCompatible) {
+                this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            }
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
         } else {
             // we"re in the same node
@@ -443,9 +467,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             });
     }
 
-    dragmoveEdge(el: SystemDiagramElement) {
+    dragmoveEdge() {
+        console.log("At other edge move");
         if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }
     }
 
