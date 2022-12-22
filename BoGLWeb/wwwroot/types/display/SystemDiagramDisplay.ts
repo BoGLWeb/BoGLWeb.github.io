@@ -258,7 +258,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
-        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElement == null && this.selectedBond == null || (this.selectedElement && !ElementNamespace.elementTypes[this.selectedElement.type].velocityAllowed));
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElement === null && this.selectedBond === null || (this.selectedElement !== null && !ElementNamespace.elementTypes[this.selectedElement.type].velocityAllowed));
         if (this.selectedElement) {
             DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.selectedElement.velocity);
         } else if (this.selectedBond) {
