@@ -41,10 +41,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
             .attr("style", "cursor: pointer; visibility: hidden;");
-        this.rejectCircle = this.svgG.append("circle");
-        this.rejectCircle.attr("r", "5")
-            .attr("fill", "red")
-            .attr("style", "cursor: pointer; visibility: hidden;");
+        this.rejectCircle = this.svgG.append("path");
+        this.rejectCircle
+            .attr("d", d3.svg.symbol().type("cross").size(100))
+            .style("fill", "red")
+            .style("visibility", "hidden");
     }
 
     moveCircle(e: SystemDiagramElement) {
@@ -66,7 +67,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             coords = [-s * 1 / Math.tan(theta), s]
         }
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
-        this.rejectCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        this.rejectCircle.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
     }
 
     setFollowingEdge(sourceNode: SystemDiagramElement) {
@@ -356,12 +357,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
-        if (this.edgeOrigin && this.edgeOrigin != el) {
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
+        if (this.edgeOrigin && isCompatible) {
             this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
             this.setFollowingEdge(null);
             this.edgeOrigin = null;
             this.updateGraph();
-        } else {
+        } else if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
             (<Event>d3.event).stopPropagation()
         }
