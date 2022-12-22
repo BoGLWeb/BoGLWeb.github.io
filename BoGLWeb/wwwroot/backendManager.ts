@@ -223,7 +223,7 @@ export namespace backendManager {
                     title: 'Welcome',
                     intro: 'Welcome to BoGL Web'
                 },{
-                    element: document.querySelector('generateButton'),
+                    element: document.querySelector('#generateButton'),
                     intro: 'This is the generate Button'
                 }]
             }).start(); 
