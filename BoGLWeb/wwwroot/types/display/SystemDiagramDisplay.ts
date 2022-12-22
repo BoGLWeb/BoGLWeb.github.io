@@ -5,11 +5,10 @@ import { ElementNamespace } from "../elements/ElementNamespace";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
-import {ElementType} from "../elements/ElementType";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
-    rejectCircle: SVGSelection;
+    rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
         1: "⮢",
@@ -41,8 +40,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
             .attr("style", "cursor: pointer; visibility: hidden;");
-        this.rejectCircle = this.svgG.append("path");
-        this.rejectCircle
+        this.rejectX = this.svgG.append("path");
+        this.rejectX
             .attr("d", d3.svg.symbol().type("cross").size(100))
             .style("fill", "red")
             .style("visibility", "hidden");
@@ -67,7 +66,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             coords = [-s * 1 / Math.tan(theta), s]
         }
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
-        this.rejectCircle.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
+        this.rejectX.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
     }
 
     setFollowingEdge(sourceNode: SystemDiagramElement) {
@@ -82,13 +81,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     setEdgeMarkerVisible(e: SystemDiagramElement) {
-        if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
+        this.edgeCircle.style("visibility", "visible");
+/*        if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
+            console.log("Green");
             this.edgeCircle.style("visibility", "visible");
-            this.rejectCircle.style("visibility", "hidden");
+            this.rejectX.style("visibility", "hidden");
         } else {
-            this.rejectCircle.style("visibility", "visible");
+            console.log("Red");
+            this.rejectX.style("visibility", "visible");
             this.edgeCircle.style("visibility", "hidden");
-        }
+        }*/
     }
 
     renderElements(newElements: GraphElementSelection) {
@@ -119,7 +121,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             })
             .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "hidden");
-                graph.rejectCircle.style("visibility", "hidden");
+                graph.rejectX.style("visibility", "hidden");
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
@@ -205,28 +207,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
             graph.edgeCircle.style("visibility", "hidden");
+            graph.rejectX.style("visibility", "hidden");
         })
-            .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
-            })
-            .on("mouseleave", function (e) {
-                graph.setEdgeMarkerVisible.call(graph, e);
-            });
+        .on("mouseup", function (d) {
+            graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
+        })
+        .on("mouseleave", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
+        });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-            .on("mouseenter", function (e) {
-                graph.setEdgeMarkerVisible.call(graph, e);
-            })
-            .on("mouseup", function (d) {
-                graph.handleEdgeUp.call(graph, d);
-            })
-            .on("mousedown", function (d) {
-                graph.handleEdgeDown.call(graph, d);
-            })
-            .call(this.edgeDrag);
+        .on("mouseenter", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
+        })
+        .on("mouseup", function (d) {
+            graph.handleEdgeUp.call(graph, d);
+        })
+        .on("mousedown", function (d) {
+            graph.handleEdgeDown.call(graph, d);
+        })
+        .call(this.edgeDrag);
     }
 
     pathExtraRendering(paths: BGBondSelection) {
