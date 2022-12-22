@@ -62,6 +62,7 @@ export namespace ElementNamespace {
     export const oCompatibilityGroup = new Set([29, 28]);
 
     export function isCompatible(e1: SystemDiagramElement, e2: SystemDiagramElement, graph: SystemDiagramDisplay) {
+        if (e1 === null || e2 === null || e1.id === e2.id) return false;
         let mtCompatible = mtCompatibilityGroup.has(e1.type) && mtCompatibilityGroup.has(e2.type);
         let mrCompatible = mrCompatibilityGroup.has(e1.type) && mrCompatibilityGroup.has(e2.type);
         let eCompatible = eCompatibilityGroup.has(e1.type) && eCompatibilityGroup.has(e2.type);
