@@ -25,25 +25,25 @@ export namespace backendManager {
 
             bondGraph.changeScale(0, 0, 1, false);
             if (id == 0) {
-                (<any>window).unsimpBG = bondGraph;
+                window.unsimpBG = bondGraph;
             } else if (id == 1) {
-                (<any>window).simpBG = bondGraph;
+                window.simpBG = bondGraph;
             } else {
-                (<any>window).causalBG = bondGraph;
+                window.causalBG = bondGraph;
             }
             bondGraph.updateGraph();
         }
 
         public displayUnsimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(0, jsonString, (<any>window).unsimpBGSVG);
+            this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
         }
 
         public displaySimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(1, jsonString, (<any>window).simpBGSVG);
+            this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
         }
 
         public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
-            this.parseAndDisplayBondGraph(2, jsonStrings[index], (<any>window).causalBGSVG);
+            this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
         }
 
         public loadSystemDiagram(jsonString: string) {
@@ -63,10 +63,10 @@ export namespace backendManager {
                 edges.push(bond);
             }
 
-            var systemDiagram = new SystemDiagramDisplay((<any> window).systemDiagramSVG, new SystemDiagram(elements, edges));
+            var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
 
-            (<any>window).systemDiagram = systemDiagram;
+            window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
 
             let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
@@ -84,7 +84,7 @@ export namespace backendManager {
 
         public async openFile() {
             let fileHandle;
-            [fileHandle] = await (<any>window).showOpenFilePicker();
+            [fileHandle] = await window.showOpenFilePicker();
             const file = await fileHandle.getFile();
             const contents = await file.text();
             return contents;
@@ -106,8 +106,8 @@ export namespace backendManager {
                 ],
             };
             
-            const fileHandle = await (<any> window).showSaveFilePicker(pickerOptions);
-            (<any> window).filePath = fileHandle;
+            const fileHandle = await window.showSaveFilePicker(pickerOptions);
+            window.filePath = fileHandle;
             const writableFileStream = await fileHandle.createWritable();
             await writableFileStream.write(blob);
             await writableFileStream.close();
@@ -129,24 +129,24 @@ export namespace backendManager {
                 ],
             };
             
-            if ((<any> window).filePath == null) {
-                (<any> window).filePath = await (<any>window).showSaveFilePicker(pickerOptions);
+            if (window.filePath == null) {
+                window.filePath = await window.showSaveFilePicker(pickerOptions);
             }
             
-            const writableFileStream = await (<any> window).filePath.createWritable();
+            const writableFileStream = await window.filePath.createWritable();
             await writableFileStream.write(blob);
             await writableFileStream.close();
         }
 
         public getSystemDiagram() {
             return JSON.stringify({
-                elements: (<any>window).systemDiagram.elements,
-                bonds: (<any>window).systemDiagram.bonds
+                elements: window.systemDiagram.elements,
+                bonds: window.systemDiagram.bonds
             });
         }
 
         public setModifier(i: number, value: boolean) {
-            let element = (<any>window).systemDiagram.state.selectedElement;
+            let element = window.systemDiagram.selectedElement;
             if (element) {
                 if (value) { // adding modifier
                     element.modifiers.push(i);
@@ -158,21 +158,21 @@ export namespace backendManager {
 
         public getGraphByIndex(i: string) {
             if (i == "1") {
-                return (<any>window).systemDiagram;
+                return window.systemDiagram;
             } else if (i == "2") {
-                return (<any>window).unsimpBG;
+                return window.unsimpBG;
             } else if (i == "3") {
-                return (<any>window).simpBG;
+                return window.simpBG;
             } else {
-                return (<any>window).causalBG;
+                return window.causalBG;
             }
         }
 
         public setZoom(i: number) {
-            let graph = this.getGraphByIndex((<any>window).tabNum);
+            let graph = this.getGraphByIndex(window.tabNum);
 
             // converts SVG position to svg center of view window
-            let svgDim = graph.svgG.node().getBBox();
+            let svgDim = (graph.svgG.node() as SVGGraphicsElement).getBBox();
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
             let scale = i / 100;
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
@@ -190,24 +190,24 @@ export namespace backendManager {
         }
 
         public setTab(key: string) {
-            (<any>window).tabNum = key;
+            window.tabNum = key;
         }
         
         public setVelocity(velocity: number) {
-            let element = (<any>window).systemDiagram.state.selectedElement;
-            let edge = (<any>window).systemDiagram.state.selectedBond;
+            let element = window.systemDiagram.selectedElement;
+            let edge = window.systemDiagram.selectedBond;
             if (element) {
                 element.velocity = velocity;
             } else if (edge) {
                 edge.velocity = velocity;
             }
-            (<any>window).systemDiagram.updateGraph();
+            window.systemDiagram.updateGraph();
         }
         
         public generateURL(){
             return JSON.stringify({
-                elements: (<any>window).systemDiagram.elements,
-                bonds: (<any>window).systemDiagram.bonds
+                elements: window.systemDiagram.elements,
+                bonds: window.systemDiagram.bonds
             }, function (key, val) {
                 return val.toFixed ? Number(val.toFixed(3)) : val;
             });

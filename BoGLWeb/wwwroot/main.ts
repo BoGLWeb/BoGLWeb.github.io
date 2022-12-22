@@ -13,7 +13,7 @@ export function populateMenu() {
             group.classList.add("groupDiv");
             group.addEventListener("mousedown", function () {
                 document.body.style.cursor = "grabbing";
-                (<any>window).systemDiagram.draggingElement = e.id;
+                window.systemDiagram.draggingElement = e.id;
             });
 
             document.getElementById(c.folderName).appendChild(group);
@@ -32,7 +32,7 @@ export function populateMenu() {
 }
 
 async function loadPage() {
-    (<any>window).tabNum = 1; 
+    window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 
     sliderImg.src = "images/sliderIcon.svg";
@@ -40,9 +40,9 @@ async function loadPage() {
     sliderImg.draggable = false;
     sliderHolder.appendChild(sliderImg);
 
-    (<any>window).backendManager = backendManager;
-    (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
-    (<any>window).systemDiagramSVG.classed("graphSVG", true);
+    window.backendManager = backendManager;
+    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    window.systemDiagramSVG.classed("graphSVG", true);
 
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
@@ -50,22 +50,22 @@ async function loadPage() {
         let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
         getBackendManager().loadSystemDiagram(sysDiagramString);
     }else {
-        (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));
+        window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
     }
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
-        (<any>window).systemDiagram.draggingElement = null;
+        window.systemDiagram.draggingElement = null;
     });
 
     populateMenu();
 
-    (<any>window).unsimpBGSVG = d3.select("#unsimpBG").append("svg");
-    (<any>window).unsimpBGSVG.classed("graphSVG", true);
-    (<any>window).simpBGSVG = d3.select("#simpBG").append("svg");
-    (<any>window).simpBGSVG.classed("graphSVG", true);
-    (<any>window).causalBGSVG = d3.select("#causalBG").append("svg");
-    (<any>window).causalBGSVG.classed("graphSVG", true);
+    window.unsimpBGSVG = d3.select("#unsimpBG").append("svg");
+    window.unsimpBGSVG.classed("graphSVG", true);
+    window.simpBGSVG = d3.select("#simpBG").append("svg");
+    window.simpBGSVG.classed("graphSVG", true);
+    window.causalBGSVG = d3.select("#causalBG").append("svg");
+    window.causalBGSVG.classed("graphSVG", true);
 }
 
 function pollDOM() {
