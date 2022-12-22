@@ -556,7 +556,8 @@
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
         if (deSerializedJson != null) {
             jsonStr = deSerializedJson.generateUrl();
-        } else {
+        }
+        else {
             await messageService.Error("Invalid URL Generated");
         }
 
@@ -662,7 +663,7 @@
         foreach (string edgeString in splitEdges) {
             Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
             string edgeStringNoModifiers = modifierRegex.Replace(edgeString, "");
-            
+
             string[] splitEdgeString = edgeStringNoModifiers.Split(",");
             splitEdgeString[0] = "\"source\":" + splitEdgeString[0].Replace("{", "").Replace("}", "");
             splitEdgeString[6] = "\"target\":" + splitEdgeString[6].Replace("{", "").Replace("}", "");
@@ -690,10 +691,20 @@
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
     }
-    
-    private async void runTutorial(){
-        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeAsync<object>("introjsTutorial");
+
+    private async Task runTutorial() {
+    //var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+    //await module.InvokeAsync<object>("runTutorial");
+
+        await JS.InvokeAsync<object>("window.introJs.start",
+            new {
+                steps = new[] {
+                    new {
+                        element = "generateButton",
+                        intro = "This is the generate button"
+                    }
+                }
+            });
     }
 
 }

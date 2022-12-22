@@ -217,8 +217,8 @@ export namespace backendManager {
             navigator.clipboard.writeText(text);
         }
         
-        public introjsTutorial(){
-            
+        public runTutorial(){
+            (<any> window).introJs().start(); 
         }
     }
 

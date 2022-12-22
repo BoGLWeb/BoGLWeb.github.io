@@ -3,9 +3,5 @@
   <PropertyGroup>
     <NameOfLastUsedPublishProfile>C:\Users\Jakob Misbach\BoGLWeb\BoGLWeb\BoGLWeb\Properties\PublishProfiles\BoGLWeb20221206112544 - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="Graph.xaml">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
+  <ItemGroup />
 </Project>
