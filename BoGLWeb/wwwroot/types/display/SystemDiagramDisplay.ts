@@ -361,7 +361,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.edgeOrigin && isCompatible) {
             this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
         } else if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
@@ -383,7 +382,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
             this.bonds.push(new GraphBond(this.edgeOrigin, el));
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
         } else {
             // we"re in the same node
@@ -463,9 +461,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             });
     }
 
-    dragmoveEdge(el: SystemDiagramElement) {
+    dragmoveEdge() {
         if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }
     }
 
