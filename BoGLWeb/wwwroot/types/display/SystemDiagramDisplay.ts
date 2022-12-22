@@ -80,6 +80,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    setEdgeMarkerVisible(e: SystemDiagramElement) {
+        if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
+            this.edgeCircle.style("visibility", "visible");
+            this.rejectCircle.style("visibility", "hidden");
+        } else {
+            this.rejectCircle.style("visibility", "visible");
+            this.edgeCircle.style("visibility", "hidden");
+        }
+    }
+
     renderElements(newElements: GraphElementSelection) {
         let graph = this;
         newElements.classed("boglElem", true)
@@ -104,21 +114,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.moveCircle.call(graph, e);
             })
             .on("mouseenter", function (e) {
-                let numTargetBonds = graph.bonds.filter(b => function (b) {
-                    return b.target.type == e.type || b.source.type == e.type;
-                }).length;
-                let numSourceBonds = graph.bonds.filter(b => function (b) {
-                    return b.target.type == graph.edgeOrigin.type || b.source.type == graph.edgeOrigin.type;
-                }).length;
-                let maxTargetBonds = ElementNamespace.elementTypes[e.type].maxConnections;
-                let maxSourceBonds = ElementNamespace.elementTypes[graph.edgeOrigin.type].maxConnections;
-                if (ElementNamespace.isCompatible(graph.edgeOrigin.type, e.type) && (numTargetBonds + 1 <= maxTargetBonds) && (numSourceBonds + 1 <= maxSourceBonds)) {
-                    graph.edgeCircle.style("visibility", "visible");
-                    graph.rejectCircle.style("visibility", "hidden");
-                } else {
-                    graph.rejectCircle.style("visibility", "visible");
-                    graph.edgeCircle.style("visibility", "hidden");
-                }
+                graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseleave", function () {
                 graph.edgeCircle.style("visibility", "hidden");
@@ -212,16 +208,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
             })
-            .on("mouseleave", function () {
-                graph.edgeCircle.style("visibility", "visible");
+            .on("mouseleave", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
             });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+            .on("mouseenter", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
