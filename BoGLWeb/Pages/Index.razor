@@ -693,18 +693,18 @@
     }
 
     private async Task runTutorial() {
-    //var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-    //await module.InvokeAsync<object>("runTutorial");
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("runTutorial");
 
-        await JS.InvokeAsync<object>("window.introJs.start",
-            new {
-                steps = new[] {
-                    new {
-                        element = "generateButton",
-                        intro = "This is the generate button"
-                    }
-                }
-            });
+    // await JS.InvokeAsync<object>("window.introJs.start",
+    //     new {
+    //         steps = new[] {
+    //             new {
+    //                 element = "generateButton",
+    //                 intro = "This is the generate button"
+    //             }
+    //         }
+    //     });
     }
 
 }

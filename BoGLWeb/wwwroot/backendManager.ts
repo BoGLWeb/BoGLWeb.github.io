@@ -218,7 +218,15 @@ export namespace backendManager {
         }
         
         public runTutorial(){
-            (<any> window).introJs().start(); 
+            (<any> window).introJs().setOptions({
+                steps: [{
+                    title: 'Welcome',
+                    intro: 'Welcome to BoGL Web'
+                },{
+                    element: document.querySelector('generateButton'),
+                    intro: 'This is the generate Button'
+                }]
+            }).start(); 
         }
     }
 
