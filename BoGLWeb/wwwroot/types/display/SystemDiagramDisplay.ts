@@ -114,8 +114,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 let maxSourceBonds = ElementNamespace.elementTypes[graph.edgeOrigin.type].maxConnections;
                 if (ElementNamespace.isCompatible(graph.edgeOrigin.type, e.type) && (numTargetBonds + 1 <= maxTargetBonds) && (numSourceBonds + 1 <= maxSourceBonds)) {
                     graph.edgeCircle.style("visibility", "visible");
+                    graph.rejectCircle.style("visibility", "hidden");
                 } else {
                     graph.rejectCircle.style("visibility", "visible");
+                    graph.edgeCircle.style("visibility", "hidden");
                 }
             })
             .on("mouseleave", function () {
