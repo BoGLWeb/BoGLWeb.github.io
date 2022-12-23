@@ -53,7 +53,8 @@ export namespace ElementNamespace {
         new ElementType(26, "Current Input", 3, "current_input", [], false),
         new ElementType(27, "Voltage Input", 3, "voltage_input", [], false),
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
-        new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false)
+        new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
+        new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
     ];
     
     export const mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 18, 12, 13, 14]);
