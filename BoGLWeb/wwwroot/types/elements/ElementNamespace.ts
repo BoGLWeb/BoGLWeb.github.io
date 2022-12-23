@@ -38,7 +38,6 @@ export namespace ElementNamespace {
         new ElementType(11, "Velocity Input", 1, "velocity_input", [], true),
         new ElementType(12, "Lever", 2, "lever", [3, 1], true),
         new ElementType(13, "Pulley", 2, "pulley", [3, 1], true),
-        new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true),
         new ElementType(14, "Belt", 2, "belt", [5, 2, 4], true),
         new ElementType(15, "Shaft", 2, "shaft", [2, 4], true, 2),
         new ElementType(16, "Gear", 2, "gear", [3, 1, 6], true),
@@ -54,7 +53,8 @@ export namespace ElementNamespace {
         new ElementType(26, "Current Input", 3, "current_input", [], false),
         new ElementType(27, "Voltage Input", 3, "voltage_input", [], false),
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
-        new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false)
+        new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
+        new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
     ];
     
     export const mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 18, 12, 13, 14]);
