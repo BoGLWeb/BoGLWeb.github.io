@@ -5,6 +5,7 @@ import { ElementNamespace } from "../elements/ElementNamespace";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
+import {MultiElementType} from "../elements/MultiElementType";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
@@ -411,10 +412,40 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     svgMouseUp() {
         this.setFollowingEdge(null);
         if (this.draggingElement != null) {
-            document.body.style.cursor = "auto";
-            let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
-            this.updateGraph();
+            if(ElementNamespace.elementTypes[this.draggingElement].isMultiElement){
+                //Get mouse location
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                
+                //Store the multi-element type so it can be accessed easier later in the function
+                let multiElementType = <MultiElementType> ElementNamespace.elementTypes[this.draggingElement];
+                
+                //Create a list of the sub-elements
+                let subElementList: SystemDiagramElement[] = [];
+                
+                //Place sub-elements
+                for (let i = 0; i < multiElementType.subElements.length; i++){
+                    let subElementType = multiElementType.subElements[i];
+                    let subElementOffset = multiElementType.offsets[i];
+                    subElementList.push(new SystemDiagramElement(this.highestElemId++, subElementType, xycoords[0] + subElementOffset[0], xycoords[1] + subElementOffset[1], 0, []));
+                    this.elements.push(subElementList[i]);
+                }
+                
+                //Add edges between sub-elements
+                for (let i = 0; i < multiElementType.subElementEdges.length; i++){
+                    let element1 = subElementList[multiElementType.subElementEdges[i][0]];
+                    let element2 = subElementList[multiElementType.subElementEdges[i][1]];
+                    this.bonds.push(new GraphBond(element1, element2, 0)); 
+                }
+                
+                //Update the system diagram
+                this.updateGraph();
+            }else{
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
+                this.updateGraph();    
+            }
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked

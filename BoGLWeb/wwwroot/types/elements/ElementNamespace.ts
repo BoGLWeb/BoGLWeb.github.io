@@ -3,6 +3,7 @@ import { Category } from "./Category";
 import { ElementType } from "./ElementType";
 import { Modifier } from "./Modifier";
 import { SystemDiagramElement } from "./SystemDiagramElement";
+import {MultiElementType} from "./MultiElementType";
 
 export namespace ElementNamespace {
     export const categories: Category[] = [
@@ -41,9 +42,9 @@ export namespace ElementNamespace {
         new ElementType(14, "Belt", 2, "belt", [5, 2, 4], true),
         new ElementType(15, "Shaft", 2, "shaft", [2, 4], true, 2),
         new ElementType(16, "Gear", 2, "gear", [3, 1, 6], true),
-        new ElementType(17, "Gear Pair", 2, "gear_pair", [], false),
+        new MultiElementType(17, "Gear Pair", 2, "gear_pair", [], false, [16, 16], [[0, 1]], [[0,0], [100, 0]]),
         new ElementType(18, "Rack", 2, "rack", [3, 1, 6, 0], true),
-        new ElementType(19, "Rack Pinion", 2, "rack_pinion", [], false),
+        new MultiElementType(19, "Rack Pinion", 2, "rack_pinion", [], false, [16, 18], [[0,1]], [[0,0],[0,100]]),
         new ElementType(20, "Inductor", 3, "inductor", [], false, 2),
         new ElementType(21, "Capacitor", 3, "capacitor", [], false, 2),
         new ElementType(22, "Resistor", 3, "resistor", [], false, 2),
