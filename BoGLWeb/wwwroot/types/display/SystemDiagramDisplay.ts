@@ -411,10 +411,21 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     svgMouseUp() {
         this.setFollowingEdge(null);
         if (this.draggingElement != null) {
-            document.body.style.cursor = "auto";
-            let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
-            this.updateGraph();
+            if(ElementNamespace.elementTypes[this.draggingElement].isMultiElement){
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                let element1 = new SystemDiagramElement(this.highestElemId++, 16, xycoords[0], xycoords[1], 0, []);
+                let element2 = new SystemDiagramElement(this.highestElemId++, 16, xycoords[0] + 100, xycoords[1], 0, []);
+                this.elements.push(element1);
+                this.elements.push(element2);
+                this.bonds.push(new GraphBond(element1, element2, 0));
+                this.updateGraph();
+            }else{
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
+                this.updateGraph();    
+            }
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked
