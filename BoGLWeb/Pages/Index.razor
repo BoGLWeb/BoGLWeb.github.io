@@ -20,7 +20,7 @@
         <img src="images/logo.png" width="50"/>
         <div id="logoSave">*</div>
     </li>
-    <SubMenu title="File" Class="topMenu">
+    <SubMenu title="File" Class="topMenu" Id="fileDropDown">
         <MenuItem Key="setting:1">New</MenuItem>
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
@@ -28,7 +28,7 @@
         <MenuItem Key="setting:5">Export as Image</MenuItem>
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
-    <SubMenu title="Edit" Class="topMenu">
+    <SubMenu title="Edit" Class="topMenu" Id="editDropDown">
         <MenuItem Key="setting:1">Cut</MenuItem>
         <MenuItem Key="setting:2">Copy</MenuItem>
         <MenuItem Key="setting:3">Paste</MenuItem>
@@ -36,7 +36,7 @@
         <MenuItem Key="setting:5">Redo</MenuItem>
         <MenuItem Key="setting:6">Delete</MenuItem>
     </SubMenu>
-    <SubMenu title="Help" Class="topMenu">
+    <SubMenu title="Help" Class="topMenu" Id="helpDropDown">
         <MenuItem Key="setting:1">
             <Checkbox>Confirm deleting many items</Checkbox>
         </MenuItem>
@@ -61,7 +61,7 @@
         <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
         <MenuItem Key="setting:5" OnClick="@(() => { visible = true; })">About BoGL</MenuItem>
     </SubMenu>
-    <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
+    <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv" id="iconButtons">
         @{
             RenderFragment SaveSvg = @<img class="menuIcon" src="images/menuBar/save.png" title="Save"/>;
             RenderFragment CutSvg = @<img class="menuIcon" src="images/menuBar/cut.png" title="Cut"/>;
