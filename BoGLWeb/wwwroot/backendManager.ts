@@ -219,6 +219,7 @@ export namespace backendManager {
         
         public runTutorial(){
             (<any> window).introJs().setOptions({
+                showStepNumbers: false,
                 steps: [{
                     title: 'Welcome to BoGL Web',
                     intro: 'This application is used to construct system diagrams and generate bond graphs from those diagrams.'
@@ -243,29 +244,35 @@ export namespace backendManager {
                     intro: 'These tabs store different stages of the bond graph generation. You can look at the unsimplified bond graph, the simplified bond graph, or the causal bond graph.'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(2)'),
-                    intro: 'This is the file menu. It allows you to:\n' +
-                        'Create a new system diagram\n' +
-                        'Open a previously saved .bogl file from your computer\n' +
-                        'Save a .bogl file to your computer\n' +
-                        'Export an image of your system diagram or bond graph\n' +
-                        'Generate a URL that links to your system diagram\n'
+                    intro: 'This is the file menu. It allows you to:' +
+                        '<ul>' +
+                        '<li>Create a new system diagram</li>' +
+                        '<li>Open a previously saved .bogl file from your computer</li>' +
+                        '<li>Save a .bogl file to your computer</li>' +
+                        '<li>Export an image of your system diagram or bond graph</li>' +
+                        '<li>Generate a URL that links to your system diagram</li>' +
+                        '</ul>'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(3)'),
-                    intro: 'This is the edit menu. It allows you to:\n' +
-                        'Copy, cut, and paste elements of the system diagram\n' +
-                        'Undo and redo changes\n' +
-                        'Delete elements from the System Diagram\n'
+                    intro: 'This is the edit menu. It allows you to:' +
+                        '<ul>' +
+                        '<li>Copy, cut, and paste elements of the system diagram</li>' +
+                        '<li>Undo and redo changes</li>' +
+                        '<li>Delete elements from the System Diagram</li>' +
+                        '</ul>'
                 },{
                     element: document.querySelector('#iconButtons'),
                     intro: 'You can perform similar features to the edit menu here. By pressing the icons you can save a system diagram, cut, copy, paste, undo, redo, and delete an element or edge from the system diagram.'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(4)'),
-                    intro: 'This is the help menu. It allows you to:\n' +
-                        'Confirm deleting many items at once. Selecting this option will allow you to select multiple items and then delete them all at once.\n' +
-                        'Start this tutorial again\n' +
-                        'Load example system diagrams\n' +
-                        'Report bugs that you find\n' +
-                        'Learn about who created BoGL Web System\n'
+                    intro: 'This is the help menu. It allows you to:' +
+                        '<ul>' +
+                        '<li>Confirm deleting many items at once. Selecting this option will allow you to select multiple items and then delete them all at once.</li>' +
+                        '<li>Start this tutorial again</li>' +
+                        '<li>Load example system diagrams</li>' +
+                        '<li>Report bugs that you find</li>' +
+                        '<li>Learn about who created BoGL Web System</li>' +
+                        '</ul>'
                 }]
             }).start(); 
         }
