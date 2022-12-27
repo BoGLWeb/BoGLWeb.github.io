@@ -220,11 +220,52 @@ export namespace backendManager {
         public runTutorial(){
             (<any> window).introJs().setOptions({
                 steps: [{
-                    title: 'Welcome',
-                    intro: 'Welcome to BoGL Web'
+                    title: 'Welcome to BoGL Web',
+                    intro: 'This application is used to construct system diagrams and generate bond graphs from those diagrams.'
+                },{
+                    element: document.querySelector('.ant-tabs-content'),
+                    title: 'The Canvas',
+                    intro: 'This is the canvas, where you can construct, move, and rearrange your system diagrams. First, use your mouse to select and drag some elements into the canvas. Then hover your cursor over the border of the elements, where you will see a green circle. This circle indicates that you can create an edge (connection) between two elements. Clicking and dragging will show a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).'
+                },{
+                    element: document.querySelector('#graphMenu'),
+                    intro: 'This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.'
+                },{
+                    element: document.querySelector('#modifierMenu'),
+                    intro: 'In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by (describe how to multiselect).'
+                },{
+                    element: document.querySelector('#zoomMenu'),
+                    intro: 'This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.'
                 },{
                     element: document.querySelector('#generateButton'),
-                    intro: 'This is the generate Button'
+                    intro: 'The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.'
+                },{
+                    element: document.querySelector('.ant-tabs-nav-list'),
+                    intro: 'These tabs store different stages of the bond graph generation. You can look at the unsimplified bond graph, the simplified bond graph, or the causal bond graph.'
+                },{
+                    element: document.querySelector('.ant-menu-horizontal > :nth-child(2)'),
+                    intro: 'This is the file menu. It allows you to:\n' +
+                        'Create a new system diagram\n' +
+                        'Open a previously saved .bogl file from your computer\n' +
+                        'Save a .bogl file to your computer\n' +
+                        'Export an image of your system diagram or bond graph\n' +
+                        'Generate a URL that links to your system diagram\n'
+                },{
+                    element: document.querySelector('.ant-menu-horizontal > :nth-child(3)'),
+                    intro: 'This is the edit menu. It allows you to:\n' +
+                        'Copy, cut, and paste elements of the system diagram\n' +
+                        'Undo and redo changes\n' +
+                        'Delete elements from the System Diagram\n'
+                },{
+                    element: document.querySelector('#iconButtons'),
+                    intro: 'You can perform similar features to the edit menu here. By pressing the icons you can save a system diagram, cut, copy, paste, undo, redo, and delete an element or edge from the system diagram.'
+                },{
+                    element: document.querySelector('.ant-menu-horizontal > :nth-child(4)'),
+                    intro: 'This is the help menu. It allows you to:\n' +
+                        'Confirm deleting many items at once. Selecting this option will allow you to select multiple items and then delete them all at once.\n' +
+                        'Start this tutorial again\n' +
+                        'Load example system diagrams\n' +
+                        'Report bugs that you find\n' +
+                        'Learn about who created BoGL Web System\n'
                 }]
             }).start(); 
         }
