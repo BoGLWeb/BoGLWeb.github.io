@@ -531,6 +531,20 @@ hr:not([size]) {
     margin: 0;
 }
 
+#generateProgress{
+    position: absolute;
+    bottom: 20px;
+    left: 412px;
+    width: calc(100% - 500px);
+}
+
+#generateProgressText{
+    position: absolute;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
+}
+
 #causalSelect {
     position: absolute;
     right: 10px;

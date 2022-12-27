@@ -875,4 +875,8 @@
 	  </Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <TypeScriptCompile Include="wwwroot\types\elements\MultiElementType.ts" />
+	</ItemGroup>
+
 </Project>

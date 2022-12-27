@@ -5,9 +5,11 @@ import { ElementNamespace } from "../elements/ElementNamespace";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
+import {MultiElementType} from "../elements/MultiElementType";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
+    rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
         1: "⮢",
@@ -24,21 +26,26 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         super(svg, systemDiagram);
 
         let graph = this;
-        this.state.elemId = systemDiagram.nodes.length;
+        this.highestElemId = systemDiagram.nodes.length;
 
         // listen for key events
         d3.select(window).on("keydown", function () {
             graph.svgKeyDown.call(graph);
         })
-            .on("keyup", function () {
-                graph.svgKeyUp.call(graph);
-            });
+        .on("keyup", function () {
+            graph.svgKeyUp.call(graph);
+        });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
-            .attr("style", "cursor: pointer; visibility: hidden;");
+            .attr("style", "cursor: pointer; display: none;");
+        this.rejectX = this.svgG.append("path");
+        this.rejectX
+            .attr("d", d3.svg.symbol().type("cross").size(100))
+            .style("fill", "red")
+            .style("display", "none");
     }
 
     moveCircle(e: SystemDiagramElement) {
@@ -60,6 +67,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             coords = [-s * 1 / Math.tan(theta), s]
         }
         this.edgeCircle.attr("cx", e.x + coords[0]).attr("cy", e.y + coords[1]);
+        this.rejectX.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
     }
 
     setFollowingEdge(sourceNode: SystemDiagramElement) {
@@ -68,19 +76,25 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // hide edge
             this.dragBond.classed("hidden", true);
         } else {
+            console.log("At one edge move");
             this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             this.dragBond.classed("hidden", false);
+        }
+    }
+
+    setEdgeMarkerVisible(e: SystemDiagramElement) {
+        if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
+            this.edgeCircle.style("display", "block");
+            this.rejectX.style("display", "none");
+        } else {
+            this.rejectX.style("display", "block");
+            this.edgeCircle.style("display", "none");
         }
     }
 
     renderElements(newElements: GraphElementSelection) {
         let graph = this;
         newElements.classed("boglElem", true)
-            .on("mouseover", function () {
-                if (graph.state.shiftNodeDrag) {
-                    d3.select(this).classed(graph.bondClass, true);
-                }
-            })
             .on("mouseout", function () {
                 d3.select(this).classed(graph.bondClass, false);
             })
@@ -101,11 +115,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("mousemove", function (e) {
                 graph.moveCircle.call(graph, e);
             })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+            .on("mouseenter", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseleave", function () {
-                graph.edgeCircle.style("visibility", "hidden");
+                graph.edgeCircle.style("display", "none");
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
@@ -190,21 +204,21 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // determine whether mouse is near edge of element
         image.on("mouseenter", function () {
-            graph.edgeCircle.style("visibility", "hidden");
+            graph.edgeCircle.style("display", "none");
         })
             .on("mouseup", function (d) {
                 graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
             })
-            .on("mouseleave", function () {
-                graph.edgeCircle.style("visibility", "visible");
+        .on("mouseleave", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
             });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-            .on("mouseenter", function () {
-                graph.edgeCircle.style("visibility", "visible");
+        .on("mouseenter", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
             })
             .on("mouseup", function (d) {
                 graph.handleEdgeUp.call(graph, d);
@@ -253,9 +267,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateModifierMenu() {
-        if (this.state.selectedElement) {
-            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", this.state.selectedElement.modifiers);
-            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", ElementNamespace.elementTypes[this.state.selectedElement.type].allowedModifiers);
+        if (this.selectedElement) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", this.selectedElement.modifiers);
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", ElementNamespace.elementTypes[this.selectedElement.type].allowedModifiers);
         } else {
             DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
             DotNet.invokeMethodAsync("BoGLWeb", "ClearDisabled");
@@ -263,11 +277,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
-        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.state.selectedElement == null && this.state.selectedBond == null || (this.state.selectedElement && !ElementNamespace.elementTypes[this.state.selectedElement.type].velocityAllowed));
-        if (this.state.selectedElement) {
-            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedElement.velocity);
-        } else if (this.state.selectedBond) {
-            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.state.selectedBond.velocity);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElement === null && this.selectedBond === null || (this.selectedElement !== null && !ElementNamespace.elementTypes[this.selectedElement.type].velocityAllowed));
+        if (this.selectedElement) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.selectedElement.velocity);
+        } else if (this.selectedBond) {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", this.selectedBond.velocity);
         }
     }
 
@@ -286,47 +300,46 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     replaceSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
         d3Bond.classed(this.selectedClass, true);
-        if (this.state.selectedBond) {
+        if (this.selectedBond) {
             this.removeSelectFromEdge();
         }
-        this.state.selectedBond = bond;
+        this.selectedBond = bond;
         this.updateVelocityMenu();
     }
 
     replaceSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
         d3Elem.classed(this.selectedClass, true);
-        if (this.state.selectedElement) {
+        if (this.selectedElement) {
             this.removeSelectFromNode();
         }
-        this.state.selectedElement = el;
+        this.selectedElement = el;
         this.updateModifierMenu();
         this.updateVelocityMenu();
     }
 
     removeSelectFromEdge() {
         let graph = this;
-        graph.bondSelection.filter(function (cd) { return cd === graph.state.selectedBond; }).classed(graph.selectedClass, false);
-        this.state.selectedBond = null;
+        graph.bondSelection.filter(function (cd) { return cd === graph.selectedBond; }).classed(graph.selectedClass, false);
+        this.selectedBond = null;
         this.updateVelocityMenu();
     }
 
     removeSelectFromNode() {
         let graph = this;
-        this.elementSelection.filter(function (cd) { return cd.id === graph.state.selectedElement.id; }).classed(this.selectedClass, false);
-        this.state.selectedElement = null;
+        this.elementSelection.filter(function (cd) { return cd.id === graph.selectedElement.id; }).classed(this.selectedClass, false);
+        this.selectedElement = null;
         this.updateModifierMenu();
         this.updateVelocityMenu();
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownLink = bond;
 
-        if (this.state.selectedElement) {
+        if (this.selectedElement) {
             this.removeSelectFromNode();
         }
 
-        let prevEdge = this.state.selectedBond;
+        let prevEdge = this.selectedBond;
         if (!prevEdge || prevEdge !== bond) {
             this.replaceSelectEdge(d3Bond, bond);
         } else {
@@ -344,12 +357,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     handleEdgeUp(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
-        if (this.edgeOrigin && this.edgeOrigin != el) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
+        if (this.edgeOrigin && el !== this.edgeOrigin) {
+            if (isCompatible) {
+                this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
+            }
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
-        } else {
+        } else if (!this.edgeOrigin) {
+            console.log("Hewwo");
             this.setFollowingEdge(el);
             (<Event>d3.event).stopPropagation()
         }
@@ -358,28 +374,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     // mousedown on element
     nodeMouseDown(el: SystemDiagramElement) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = el;
-        this.state.justDragged = false;
+        this.mouseDownNode = el;
+        this.justDragged = false;
     }
 
     nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
-        let state = this.state;
-
         (<Event>d3.event).stopPropagation();
 
-        state.mouseDownNode = null;
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
+        this.mouseDownNode = null;
+
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-            this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            if (isCompatible) {
+                this.bonds.push(new GraphBond(this.edgeOrigin, el));
+            }
             this.setFollowingEdge(null);
-            this.edgeOrigin = null;
             this.updateGraph();
         } else {
             // we"re in the same node
-            if (!state.justDragged) {
-                if (state.selectedBond) {
+            if (!this.justDragged) {
+                if (this.selectedBond) {
                     this.removeSelectFromEdge();
                 }
-                let prevNode = state.selectedElement;
+                let prevNode = this.selectedElement;
 
                 if (!prevNode || prevNode.id !== el.id) {
                     this.replaceSelectNode(d3Elem, el);
@@ -388,45 +405,62 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 }
             }
         }
-        state.justDragged = false;
-    }
-
-    // mousedown on main svg
-    svgMouseDown() {
-        this.state.graphMouseDown = true;
+        this.justDragged = false;
     }
 
     // mouseup on main svg
     svgMouseUp() {
-        let state = this.state;
         this.setFollowingEdge(null);
         if (this.draggingElement != null) {
-            document.body.style.cursor = "auto";
-            let xycoords = d3.mouse(this.svgG.node());
-            this.elements.push(new SystemDiagramElement(this.state.elemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
-            this.updateGraph();
+            if(ElementNamespace.elementTypes[this.draggingElement].isMultiElement){
+                //Get mouse location
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                
+                //Store the multi-element type so it can be accessed easier later in the function
+                let multiElementType = <MultiElementType> ElementNamespace.elementTypes[this.draggingElement];
+                
+                //Create a list of the sub-elements
+                let subElementList: SystemDiagramElement[] = [];
+                
+                //Place sub-elements
+                for (let i = 0; i < multiElementType.subElements.length; i++){
+                    let subElementType = multiElementType.subElements[i];
+                    let subElementOffset = multiElementType.offsets[i];
+                    subElementList.push(new SystemDiagramElement(this.highestElemId++, subElementType, xycoords[0] + subElementOffset[0], xycoords[1] + subElementOffset[1], 0, []));
+                    this.elements.push(subElementList[i]);
+                }
+                
+                //Add edges between sub-elements
+                for (let i = 0; i < multiElementType.subElementEdges.length; i++){
+                    let element1 = subElementList[multiElementType.subElementEdges[i][0]];
+                    let element2 = subElementList[multiElementType.subElementEdges[i][1]];
+                    this.bonds.push(new GraphBond(element1, element2, 0)); 
+                }
+                
+                //Update the system diagram
+                this.updateGraph();
+            }else{
+                document.body.style.cursor = "auto";
+                let xycoords = d3.mouse(this.svgG.node());
+                this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
+                this.updateGraph();    
+            }
         }
-        if (state.justScaleTransGraph) {
+        if (this.justScaleTransGraph) {
             // dragged not clicked
-            state.justScaleTransGraph = false;
-        } else if (state.shiftNodeDrag) {
-            // dragged from node
-            state.shiftNodeDrag = false;
-            this.dragBond.classed("hidden", true);
+            this.justScaleTransGraph = false;
         }
-        state.graphMouseDown = false;
     }
 
     // keydown on main svg
     svgKeyDown() {
-        let state = this.state;
-
         // make sure repeated key presses don"t register for each keydown
-        if (state.lastKeyDown !== -1) return;
+        if (this.lastKeyDown !== -1) return;
 
-        state.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
-        let selectedNode = state.selectedElement,
-            selectedEdge = state.selectedBond;
+        this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
+        let selectedNode = this.selectedElement,
+            selectedEdge = this.selectedBond;
 
         let graph = this;
 
@@ -437,12 +471,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 if (selectedNode) {
                     this.elements.splice(this.elements.indexOf(selectedNode), 1);
                     graph.spliceLinksForNode(selectedNode);
-                    state.selectedElement = null;
+                    this.selectedElement = null;
                     this.updateModifierMenu();
                     this.updateGraph();
                 } else if (selectedEdge) {
                     this.bonds.splice(this.bonds.indexOf(selectedEdge), 1);
-                    state.selectedBond = null;
+                    this.selectedBond = null;
                     this.updateGraph();
                 }
                 break;
@@ -450,7 +484,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     svgKeyUp() {
-        this.state.lastKeyDown = -1;
+        this.lastKeyDown = -1;
     }
 
     get edgeDrag() {
@@ -464,15 +498,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             });
     }
 
-    dragmoveEdge(el: SystemDiagramElement) {
+    dragmoveEdge() {
+        console.log("At other edge move");
         if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + el.x + "," + el.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }
     }
 
     zoomed() {
         if (!this.edgeOrigin) {
-            this.state.justScaleTransGraph = true;
+            this.justScaleTransGraph = true;
             if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
                 this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
             }
