@@ -225,7 +225,6 @@ export namespace backendManager {
                     intro: 'This application is used to construct system diagrams and generate bond graphs from those diagrams.'
                 },{
                     element: document.querySelector('.ant-tabs-content'),
-                    title: 'The Canvas',
                     intro: 'This is the canvas, where you can construct, move, and rearrange your system diagrams. First, use your mouse to select and drag some elements into the canvas. Then hover your cursor over the border of the elements, where you will see a green circle. This circle indicates that you can create an edge (connection) between two elements. Clicking and dragging will show a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).'
                 },{
                     element: document.querySelector('#graphMenu'),
