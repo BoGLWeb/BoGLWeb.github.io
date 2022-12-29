@@ -220,58 +220,61 @@ export namespace backendManager {
         public runTutorial(){
             (<any> window).introJs().setOptions({
                 showStepNumbers: false,
+                hideNext: true,
                 steps: [{
-                    title: 'Welcome to BoGL Web',
-                    intro: 'This application is used to construct system diagrams and generate bond graphs from those diagrams.'
+                    intro: '<p><b>Welcome To BoGL Web</b></p><p>This application is used to construct system diagrams and generate bond graphs from those diagrams.</p>'
                 },{
                     element: document.querySelector('.ant-tabs-content'),
-                    intro: 'This is the canvas, where you can construct, move, and rearrange your system diagrams. First, use your mouse to select and drag some elements into the canvas. Then hover your cursor over the border of the elements, where you will see a green circle. This circle indicates that you can create an edge (connection) between two elements. Clicking and dragging will show a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).'
+                    intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams. First, use your mouse to select and drag some elements into the canvas. Then hover your cursor over the border of the elements, where you will see a green circle. This circle indicates that you can create an edge (connection) between two elements. Clicking and dragging will show a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).</p>'
                 },{
                     element: document.querySelector('#graphMenu'),
-                    intro: 'This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.'
+                    intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.</p>'
                 },{
                     element: document.querySelector('#modifierMenu'),
-                    intro: 'In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by (describe how to multiselect).'
+                    intro: '<p><b>The Modifier Menu</b></p><p>In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by (describe how to multiselect).</p>'
                 },{
                     element: document.querySelector('#zoomMenu'),
-                    intro: 'This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.'
+                    intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.</p>'
                 },{
                     element: document.querySelector('#generateButton'),
-                    intro: 'The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.'
+                    intro: '<p><b>The Generate Button</b></p><p>The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.</p>'
                 },{
                     element: document.querySelector('.ant-tabs-nav-list'),
-                    intro: 'These tabs store different stages of the bond graph generation. You can look at the unsimplified bond graph, the simplified bond graph, or the causal bond graph.'
+                    intro: '<p><b>The Tabs</b></p><p>These tabs store different stages of the bond graph generation. You can look at the unsimplified bond graph, the simplified bond graph, or the causal bond graph.</p>'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(2)'),
-                    intro: 'This is the file menu. It allows you to:' +
+                    intro: '<p><b>The File Menu</b></p>' +
+                        '<p>This is the file menu. It allows you to:' +
                         '<ul>' +
                         '<li>Create a new system diagram</li>' +
                         '<li>Open a previously saved .bogl file from your computer</li>' +
                         '<li>Save a .bogl file to your computer</li>' +
                         '<li>Export an image of your system diagram or bond graph</li>' +
                         '<li>Generate a URL that links to your system diagram</li>' +
-                        '</ul>'
+                        '</ul></p>'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(3)'),
-                    intro: 'This is the edit menu. It allows you to:' +
+                    intro: '<p><b>The Edit Menu</b></p>' +
+                        '<p>This is the edit menu. It allows you to:' +
                         '<ul>' +
                         '<li>Copy, cut, and paste elements of the system diagram</li>' +
                         '<li>Undo and redo changes</li>' +
                         '<li>Delete elements from the System Diagram</li>' +
-                        '</ul>'
+                        '</ul></p>'
                 },{
                     element: document.querySelector('#iconButtons'),
-                    intro: 'You can perform similar features to the edit menu here. By pressing the icons you can save a system diagram, cut, copy, paste, undo, redo, and delete an element or edge from the system diagram.'
+                    intro: '<p><b>The Icons</b></p><p>You can perform similar features to the edit menu here. By pressing the icons you can save a system diagram, cut, copy, paste, undo, redo, and delete an element or edge from the system diagram.</p>'
                 },{
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(4)'),
-                    intro: 'This is the help menu. It allows you to:' +
+                    intro: '<p><b>The Help Menu</b></p>' +
+                        '<p>This is the help menu. It allows you to:' +
                         '<ul>' +
                         '<li>Confirm deleting many items at once. Selecting this option will allow you to select multiple items and then delete them all at once.</li>' +
                         '<li>Start this tutorial again</li>' +
                         '<li>Load example system diagrams</li>' +
                         '<li>Report bugs that you find</li>' +
                         '<li>Learn about who created BoGL Web System</li>' +
-                        '</ul>'
+                        '</ul></p>'
                 }]
             }).start(); 
         }
