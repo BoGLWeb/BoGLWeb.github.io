@@ -217,8 +217,8 @@ export namespace backendManager {
             navigator.clipboard.writeText(text);
         }
         
-        public runTutorial(){
-            (<any> window).introJs().setOptions({
+        public runTutorial() {
+            window.introJs().setOptions({
                 showStepNumbers: false,
                 hideNext: true,
                 steps: [{
@@ -231,7 +231,7 @@ export namespace backendManager {
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.</p>'
                 },{
                     element: document.querySelector('#modifierMenu'),
-                    intro: '<p><b>The Modifier Menu</b></p><p>In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by (describe how to multiselect).</p>'
+                    intro: '<p><b>The Modifier Menu</b></p><p>In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down Ctrl and clicking elements you want to select or by dragging the canvas with the left mouse button to create a selection region.</p>'
                 },{
                     element: document.querySelector('#zoomMenu'),
                     intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.</p>'
