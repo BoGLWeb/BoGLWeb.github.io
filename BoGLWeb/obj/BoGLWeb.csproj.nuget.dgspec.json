@@ -96,6 +96,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[6.3.1, )"
+            },
+            "introjs": {
+              "target": "Package",
+              "version": "[2.5.0, )"
             }
           },
           "imports": [

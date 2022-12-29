@@ -40,7 +40,7 @@
         <MenuItem Key="setting:1">
             <Checkbox>Confirm deleting many items</Checkbox>
         </MenuItem>
-        <MenuItem Key="setting:2">Tutorial</MenuItem>
+        <MenuItem Key="setting:2" OnClick="runTutorial">Tutorial</MenuItem>
         <SubMenu Title="Example Files">
             <SubMenu Title="Mechanical Translation">
                 <MenuItem Key="mt:1" OnClick='() => loadExample("basic-two-mass-system")'>Basic Two Mass System - 1</MenuItem>
@@ -61,7 +61,7 @@
         <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
         <MenuItem Key="setting:5" OnClick="@(() => { visible = true; })">About BoGL</MenuItem>
     </SubMenu>
-    <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
+    <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv" id="iconButtons">
         @{
             RenderFragment SaveSvg = @<img class="menuIcon" src="images/menuBar/save.png" title="Save"/>;
             RenderFragment CutSvg = @<img class="menuIcon" src="images/menuBar/cut.png" title="Cut"/>;
@@ -561,18 +561,19 @@
     }
 
     private async void generateUrl() {
-        //Get information from backend
+    //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
         if (deSerializedJson != null) {
             jsonStr = deSerializedJson.generateUrl();
-        } else {
+        }
+        else {
             await messageService.Error("Invalid URL Generated");
         }
 
-        //Process json into url
+    //Process json into url
         Regex elementName = new Regex("\"elements\":");
         Regex typeName = new Regex("\"type\":");
         Regex xName = new Regex("\"x\":");
@@ -595,7 +596,7 @@
         jsonStr = targetName.Replace(jsonStr, "");
         jsonStr = bondsName.Replace(jsonStr, "");
 
-        //Shorten URL
+    //Shorten URL
         Regex urlShort1 = new Regex("{\\[{");
         Regex urlShort2 = new Regex("\\[]");
         Regex urlShort3 = new Regex("},{");
@@ -615,7 +616,7 @@
         jsonStr = urlShort8.Replace(jsonStr, "h");
 
 
-        //Add url to modal
+    //Add url to modal
         url = "https://boglweb20221206112544.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
     }
@@ -674,7 +675,7 @@
         foreach (string edgeString in splitEdges) {
             Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
             string edgeStringNoModifiers = modifierRegex.Replace(edgeString, "");
-            
+
             string[] splitEdgeString = edgeStringNoModifiers.Split(",");
             splitEdgeString[0] = "\"source\":" + splitEdgeString[0].Replace("{", "").Replace("}", "");
             splitEdgeString[6] = "\"target\":" + splitEdgeString[6].Replace("{", "").Replace("}", "");
@@ -701,6 +702,21 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
+    }
+
+    private async Task runTutorial() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("runTutorial");
+
+    // await JS.InvokeAsync<object>("window.introJs.start",
+    //     new {
+    //         steps = new[] {
+    //             new {
+    //                 element = "generateButton",
+    //                 intro = "This is the generate button"
+    //             }
+    //         }
+    //     });
     }
 
 }

@@ -22,6 +22,9 @@
           "buildMultiTargeting/AntDesign.props": {}
         }
       },
+      "introjs/2.5.0": {
+        "type": "package"
+      },
       "Microsoft.AspNetCore.Authorization/6.0.8": {
         "type": "package",
         "dependencies": {
@@ -1228,6 +1231,9 @@
         "buildMultiTargeting": {
           "buildMultiTargeting/AntDesign.props": {}
         }
+      },
+      "introjs/2.5.0": {
+        "type": "package"
       },
       "Microsoft.AspNetCore.Authorization/6.0.8": {
         "type": "package",
@@ -2789,6 +2795,29 @@
         "staticwebassets/less/upload/style/index.less",
         "staticwebassets/less/upload/style/patch.less",
         "staticwebassets/less/upload/style/rtl.less"
+      ]
+    },
+    "introjs/2.5.0": {
+      "sha512": "/0bD1Pw8lrVsXhfFUqXtdSAuGNV3TJ3cjYiZE6WGAlBy5DlV1stGO6lZBR0ua+HsriDohqcOKWJkoaglyrLCJQ==",
+      "type": "package",
+      "path": "introjs/2.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Content/introjs/introjs-rtl.css",
+        "content/Content/introjs/introjs-rtl.min.css",
+        "content/Content/introjs/introjs.css",
+        "content/Content/introjs/introjs.min.css",
+        "content/Content/introjs/themes/introjs-dark.css",
+        "content/Content/introjs/themes/introjs-flattener.css",
+        "content/Content/introjs/themes/introjs-modern.css",
+        "content/Content/introjs/themes/introjs-nassim.css",
+        "content/Content/introjs/themes/introjs-nazanin.css",
+        "content/Content/introjs/themes/introjs-royal.css",
+        "content/Scripts/introjs/intro.js",
+        "content/Scripts/introjs/intro.min.js",
+        "introjs.2.5.0.nupkg.sha512",
+        "introjs.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Authorization/6.0.8": {
@@ -5173,7 +5202,8 @@
       "NUnit3TestAdapter >= 4.2.1",
       "Newtonsoft.Json >= 13.0.1",
       "Newtonsoft.Json.Schema >= 3.0.14",
-      "NuGet.CommandLine >= 6.3.1"
+      "NuGet.CommandLine >= 6.3.1",
+      "introjs >= 2.5.0"
     ]
   },
   "packageFolders": {
@@ -5271,6 +5301,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[6.3.1, )"
+          },
+          "introjs": {
+            "target": "Package",
+            "version": "[2.5.0, )"
           }
         },
         "imports": [
