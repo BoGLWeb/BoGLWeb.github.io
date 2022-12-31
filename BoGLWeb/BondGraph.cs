@@ -45,14 +45,26 @@ namespace BoGLWeb {
             return this.elements[name];
         }
 
+        /// <summary>
+        /// Returns a dictionary with the names of elements as Keys and Elements as values
+        /// </summary>
+        /// <returns>A Dictionary</returns>
         public Dictionary<string, Element> getElements() {
             return this.elements;
         }
 
+        /// <summary>
+        /// Returns a list of the bonds in the bond graph
+        /// </summary>
+        /// <returns>A List</returns>
         public List<Bond> getBonds() {
             return this.bonds;
         }
 
+        /// <summary>
+        /// Converts a Bond Graph to a Json string
+        /// </summary>
+        /// <returns>A string representation of a bond graph</returns>
         public string convertToJson() {
             return JsonConvert.SerializeObject(new {
                 elements = JsonConvert.SerializeObject(this.elements.Values.ToList()),
@@ -123,6 +135,10 @@ namespace BoGLWeb {
             private static int universalID = 0;
             private int? ID;
 
+            /// <summary>
+            /// Returns a string representing the element. The string includes label, value, name, x, and y coordinates of the element
+            /// </summary>
+            /// <returns> A string</returns>
             public string getString() {
                 return this.label + " " + this.value + " " + this.name + " " + this.x + " " + this.y;
             }
@@ -145,19 +161,36 @@ namespace BoGLWeb {
                 this.y = rnd.Next(2000);
             }
 
+            /// <summary>
+            /// Sets the x and y coordinates of the element
+            /// </summary>
+            /// <param name="x">The x coordinate</param>
+            /// <param name="y">The y coordinate</param>
             public void setPosition(double x, double y) {
                 this.x = x;
                 this.y = y;
             }
 
+            /// <summary>
+            /// Gets the x coordinate of the element
+            /// </summary>
+            /// <returns>The x coordinate</returns>
             public double getX() {
                 return this.x;
             }
 
+            /// <summary>
+            /// Gets the y coordinate of the element
+            /// </summary>
+            /// <returns>The y coordinate</returns>
             public double getY() {
                 return this.y;
             }
 
+            /// <summary>
+            /// Gets the name of the element
+            /// </summary>
+            /// <returns>The name of the element</returns>
             public string getName() {
                 return this.name;
             }
@@ -208,11 +241,20 @@ namespace BoGLWeb {
                 return (this.ID is int ID) ? ID : 0;
             }
 
+            /// <summary>
+            /// Checks if two elements are equal
+            /// </summary>
+            /// <param name="obj">An element</param>
+            /// <returns>True if the elements are equal, false otherwise</returns>
             public override bool Equals(object? obj) {
                 return obj is Element element &&
                        this.name.Equals(element.name);
             }
 
+            /// <summary>
+            /// Creates a hash code for the element using the element's name
+            /// </summary>
+            /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.name);
             }
@@ -262,18 +304,36 @@ namespace BoGLWeb {
                 AssignID(0, true);
             }
 
+            /// <summary>
+            /// Checks if an element is the source
+            /// </summary>
+            /// <param name="e">An element</param>
+            /// <returns>True if the element is the source, false otherwise</returns>
             public bool isSource(Element e) {
                 return e.Equals(this.source);
             }
 
+            /// <summary>
+            /// Checks if an element is the sink
+            /// </summary>
+            /// <param name="e">An element</param>
+            /// <returns>True if the element is the source, false otherwise</returns>
             public bool isSink(Element e) {
                 return e.Equals(this.sink);
             }
 
+            /// <summary>
+            /// Returns the source
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getSource() {
                 return this.source;
             }
 
+            /// <summary>
+            /// Returns the sink
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getSink() {
                 return this.sink;
             }
@@ -323,6 +383,11 @@ namespace BoGLWeb {
                 return (this.ID is int ID) ? ID : 0;
             }
 
+            /// <summary>
+            /// Checks if two bonds are equal
+            /// </summary>
+            /// <param name="obj">A bond</param>
+            /// <returns>True if two bonds are equal, false otherwise</returns>
             public override bool Equals(object? obj) {
                 return obj is Bond bond &&
                        this.sourceID.Equals(bond.sourceID) &&
@@ -331,6 +396,10 @@ namespace BoGLWeb {
                        this.causalStrokeDirection.Equals(bond.causalStrokeDirection);
             }
 
+            /// <summary>
+            /// Creates a hash code of the bond using the source id, target id, causal stroke, and causal stroke direction
+            /// </summary>
+            /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.sourceID, this.targetID, this.causalStroke, this.causalStrokeDirection);
             }
