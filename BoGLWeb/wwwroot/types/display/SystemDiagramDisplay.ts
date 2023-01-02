@@ -24,6 +24,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         7: "⮦",
         8: "⮤"
     };
+    justClickedEdge: boolean = false;
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -79,7 +80,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // hide edge
             this.dragBond.classed("hidden", true);
         } else {
-            console.log("At one edge move");
             this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
             this.dragBond.classed("hidden", false);
         }
@@ -364,8 +364,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
-        console.log("Path mouse down");
-        (<Event>d3.event).stopPropagation();
+        d3.event.stopPropagation();
+        this.justClickedEdge = true;
 
         let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
         let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
@@ -382,15 +382,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     handleEdgeDown(el: SystemDiagramElement) {
-        (<Event>d3.event).stopPropagation();
+        d3.event.stopPropagation();
         if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
-            (<Event>d3.event).stopPropagation()
+            d3.event.stopPropagation();
         }
     }
 
     handleEdgeUp(el: SystemDiagramElement) {
-        (<Event>d3.event).stopPropagation();
+        d3.event.stopPropagation();
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         if (this.edgeOrigin && el !== this.edgeOrigin) {
             if (isCompatible) {
@@ -400,19 +400,19 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.updateGraph();
         } else if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
-            (<Event>d3.event).stopPropagation()
+            d3.event.stopPropagation();
         }
     }
 
     // mousedown on element
     nodeMouseDown(el: SystemDiagramElement) {
-        (<Event>d3.event).stopPropagation();
+        d3.event.stopPropagation();
         this.mouseDownNode = el;
         this.justDragged = false;
     }
 
     nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
-        (<Event>d3.event).stopPropagation();
+        d3.event.stopPropagation();
 
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
@@ -444,9 +444,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // mouseup on main svg
     svgMouseUp() {
-        console.log("SVG mouse up");
         this.setFollowingEdge(null);
-        if (this.draggingElement != null) {
+        if (this.justClickedEdge) {
+            this.justClickedEdge = false;
+        } else if (this.draggingElement != null) {
             if (ElementNamespace.elementTypes[this.draggingElement].isMultiElement) {
                 //Get mouse location
                 document.body.style.cursor = "auto";
@@ -506,7 +507,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
-                (<Event>d3.event).preventDefault();
+                d3.event.preventDefault();
                 if (selectedElement) {
                     this.elements.splice(this.elements.indexOf(selectedElement), 1);
                     graph.spliceLinksForNode(selectedElement);
@@ -538,7 +539,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     dragmoveEdge() {
-        console.log("At other edge move");
         if (this.edgeOrigin) {
             this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }
@@ -546,7 +546,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     zoomed() {
         if (!this.edgeOrigin) {
-            console.log("Setting it true");
             this.justScaleTransGraph = true;
             if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
                 this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
