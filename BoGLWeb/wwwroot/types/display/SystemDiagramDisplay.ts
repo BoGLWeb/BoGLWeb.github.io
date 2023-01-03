@@ -235,10 +235,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathExtraRendering(paths: BGBondSelection) {
         let graph = this;
 
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
         // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
-            return d === selectedBond;
+            return graph.selectedGroup.find(p => p == d) != null;
         }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         paths.classed("hoverablePath", true);
@@ -276,12 +275,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         });
     }
 
-    selectionHasElement() {
+    selectionHasAnyElement() {
         return this.selectedGroup.find(e => e instanceof SystemDiagramElement);
     }
 
+    selectionHasBond(bond: GraphBond) {
+        return this.selectedGroup.find(e => e == bond);
+    }
+
+    selectionHasNode(node: SystemDiagramElement) {
+        return this.selectedGroup.find(e => e == node);
+    }
+
     updateModifierMenu() {
-        if (this.selectedGroup.length > 0 && this.selectionHasElement()) {
+        if (this.selectedGroup.length > 0 && this.selectionHasAnyElement()) {
             // TODO: change to support group modifier editing
             let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
             DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", selectedElement.modifiers);
@@ -318,39 +325,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.updateVelocityMenu();
     }
 
-    replaceSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
+    addSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
         d3Bond.classed(this.selectedClass, true);
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-        if (selectedBond) {
-            this.removeSelectFromEdge();
-        }
-        this.selectedGroup = [bond];
+        this.selectedGroup.push(bond);
         this.updateVelocityMenu();
     }
 
-    replaceSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
+    addSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
         d3Elem.classed(this.selectedClass, true);
-        let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-        if (selectedElement) {
-            this.removeSelectFromNode();
-        }
-        this.selectedGroup = [el];
+        this.selectedGroup.push(el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
     }
 
-    removeSelectFromEdge() {
+    removeSelectFromEdge(edge: GraphBond) {
         let graph = this;
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-        graph.bondSelection.filter(function (cd) { return cd === selectedBond; }).classed(graph.selectedClass, false);
-        this.selectedGroup = [];
+        graph.bondSelection.filter(cd => cd === edge).classed(graph.selectedClass, false);
+        this.selectedGroup = this.selectedGroup.filter(e => e != edge);
         this.updateVelocityMenu();
     }
 
-    removeSelectFromNode() {
-        let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-        this.elementSelection.filter(function (cd) { return cd === selectedElement; }).classed(this.selectedClass, false);
-        this.selectedGroup = [];
+    removeSelectFromNode(el: SystemDiagramElement) {
+        this.elementSelection.filter(cd => cd === el).classed(this.selectedClass, false);
+        this.selectedGroup = this.selectedGroup.filter(e => e != el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
     }
@@ -367,18 +364,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         d3.event.stopPropagation();
         this.justClickedEdge = true;
 
-        let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-
-        if (selectedElement) {
-            this.removeSelectFromNode();
-        }
-
-        if (!selectedBond || selectedBond !== bond) {
-            this.replaceSelectEdge(d3Bond, bond);
+        if (d3.event.ctrlKey || d3.event.metaKey) {
+            if (this.selectionHasBond(bond)) {
+                this.removeSelectFromEdge(bond);
+            } else {
+                this.addSelectEdge(d3Bond, bond);
+            }
         } else {
-            this.removeSelectFromEdge();
+            if (!this.selectionHasBond(bond)) {
+                this.clearSelection();
+                this.addSelectEdge(d3Bond, bond);
+            }
         }
+
+        this.updateGraph();
     }
 
     handleEdgeDown(el: SystemDiagramElement) {
@@ -414,6 +413,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
+        console.log("Has control?", d3.event.ctrlKey);
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
 
@@ -426,16 +426,17 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         } else {
             // we"re in the same node
             if (!this.justDragged) {
-                let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-                if (selectedBond) {
-                    this.removeSelectFromEdge();
-                }
-                let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-
-                if (!selectedElement || selectedElement.id !== el.id) {
-                    this.replaceSelectNode(d3Elem, el);
+                if (d3.event.ctrlKey || d3.event.metaKey) {
+                    if (this.selectionHasNode(el)) {
+                        this.removeSelectFromNode(el);
+                    } else {
+                        this.addSelectNode(d3Elem, el);
+                    }
                 } else {
-                    this.removeSelectFromNode();
+                    if (!this.selectionHasNode(el)) {
+                        this.clearSelection();
+                        this.addSelectNode(d3Elem, el);
+                    }
                 }
             }
         }
