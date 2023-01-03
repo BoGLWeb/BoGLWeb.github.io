@@ -497,29 +497,26 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     svgKeyDown() {
         // make sure repeated key presses don"t register for each keydown
         if (this.lastKeyDown !== -1) return;
-
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
-
-        let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-
         let graph = this;
 
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
                 d3.event.preventDefault();
-                if (selectedElement) {
-                    this.elements.splice(this.elements.indexOf(selectedElement), 1);
-                    graph.spliceLinksForNode(selectedElement);
-                    this.selectedGroup = [];
-                    this.updateModifierMenu();
-                    this.updateGraph();
-                } else if (selectedBond) {
-                    this.bonds.splice(this.bonds.indexOf(selectedBond), 1);
-                    this.selectedGroup = [];
-                    this.updateGraph();
+                for (let e of this.selectedGroup.filter(e => e instanceof GraphBond) as GraphBond[]) {
+                    this.bonds.splice(this.bonds.indexOf(e), 1);
+                    this.bonds = this.bonds.filter(bond => bond != e);
                 }
+                for (let e of this.selectedGroup.filter(e => e instanceof SystemDiagramElement) as SystemDiagramElement[]) {
+                    this.elements.splice(this.elements.indexOf(e), 1);
+                    graph.spliceLinksForNode(e);
+                    this.elements = this.elements.filter(el => el != e);
+                }
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+                this.selectedGroup = [];
+                this.updateGraph();
                 break;
         }
     }
