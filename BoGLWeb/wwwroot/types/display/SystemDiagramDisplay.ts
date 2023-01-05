@@ -300,16 +300,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
-        // TODO: Refactor both of these to work with groups
-        let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-        let selectedBond = (this.selectedGroup.find(e => e instanceof GraphBond) as GraphBond);
-        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedGroup.length > 0 || (selectedElement !== null
-            && !ElementNamespace.elementTypes[selectedElement?.type]?.velocityAllowed));
-        if (selectedElement) {
-            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", selectedElement.velocity);
-        } else if (selectedBond) {
-            DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", selectedBond.velocity);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedGroup.length == 0);
+        let velocities = [];
+        for (const el of this.selectedGroup) {
+            if (velocities.find(e => e == el.velocity) == null) {
+                velocities.push(el.velocity);
+            }
         }
+        console.log(velocities);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", velocities);
     }
 
     // remove bonds associated with a node
@@ -448,6 +447,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.justClickedEdge) {
             this.justClickedEdge = false;
         } else if (this.draggingElement != null) {
+            this.selectedGroup = [];
             if (ElementNamespace.elementTypes[this.draggingElement].isMultiElement) {
                 //Get mouse location
                 document.body.style.cursor = "auto";
@@ -463,25 +463,30 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 for (let i = 0; i < multiElementType.subElements.length; i++) {
                     let subElementType = multiElementType.subElements[i];
                     let subElementOffset = multiElementType.offsets[i];
-                    subElementList.push(new SystemDiagramElement(this.highestElemId++, subElementType, xycoords[0] + subElementOffset[0], xycoords[1] + subElementOffset[1], 0, []));
+                    let element = new SystemDiagramElement(this.highestElemId++, subElementType, xycoords[0] + subElementOffset[0], xycoords[1] + subElementOffset[1], 0, []);
+                    subElementList.push(element);
                     this.elements.push(subElementList[i]);
+                    this.selectedGroup.push(element);
+
                 }
 
                 //Add edges between sub-elements
                 for (let i = 0; i < multiElementType.subElementEdges.length; i++) {
                     let element1 = subElementList[multiElementType.subElementEdges[i][0]];
                     let element2 = subElementList[multiElementType.subElementEdges[i][1]];
-                    this.bonds.push(new GraphBond(element1, element2, 0));
+                    let bond = new GraphBond(element1, element2, 0);
+                    this.bonds.push(bond);
+                    this.selectedGroup.push(bond);
                 }
-
-                //Update the system diagram
-                this.updateGraph();
             } else {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
-                this.elements.push(new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []));
-                this.updateGraph();
+                let element = new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []);
+                this.elements.push(element);
+                this.selectedGroup.push(element);
             }
+            //Update the system diagram
+            this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             this.clearSelection();
             this.updateGraph();

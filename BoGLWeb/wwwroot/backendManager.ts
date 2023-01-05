@@ -3,6 +3,7 @@ import { GraphBond } from "./types/bonds/GraphBond";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
+import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
 import { BondGraph } from "./types/graphs/BondGraph";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
@@ -194,12 +195,10 @@ export namespace backendManager {
         }
 
         public setVelocity(velocity: number) {
-            let element = (window.systemDiagram.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-            let edge = window.systemDiagram.selectedBond;
-            if (element) {
-                element.velocity = velocity;
-            } else if (edge) {
-                edge.velocity = velocity;
+            for (const e of window.systemDiagram.selectedGroup) {
+                if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
+                    e.velocity = velocity;
+                }
             }
             window.systemDiagram.updateGraph();
         }
