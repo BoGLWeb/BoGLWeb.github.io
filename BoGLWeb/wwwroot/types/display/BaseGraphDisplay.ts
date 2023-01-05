@@ -3,7 +3,6 @@ import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
-import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
 export class BaseGraphDisplay {
     // constants

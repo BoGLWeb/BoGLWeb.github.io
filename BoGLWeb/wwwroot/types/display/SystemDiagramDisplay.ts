@@ -1,4 +1,4 @@
-﻿import { ZoomEvent } from "../../type_libraries/d3";
+﻿import { ZoomEvent, DragEvent } from "../../type_libraries/d3";
 import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { GraphBond } from "../bonds/GraphBond";
 import { ElementNamespace } from "../elements/ElementNamespace";
@@ -413,7 +413,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
-        console.log("Has control?", d3.event.ctrlKey);
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
 
@@ -542,10 +541,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    dragmove(el: SystemDiagramElement) {
+        if (this.mouseDownNode) {
+            for (const el of this.selectedGroup.filter(e => e instanceof SystemDiagramElement) as SystemDiagramElement[]) {
+                el.x += (<DragEvent>d3.event).dx;
+                el.y += (<DragEvent>d3.event).dy;
+            }
+            this.updateGraph();
+        }
+    }
+
     zoomed() {
         if (!this.edgeOrigin) {
             this.justScaleTransGraph = true;
-            if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
+            if (this.prevScale !== d3.event.scale || d3.event.sourceEvent.buttons == 2) {
                 this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
             }
         }
