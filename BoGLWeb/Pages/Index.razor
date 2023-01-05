@@ -142,13 +142,13 @@
                         <ChildContent>
                             <Panel Header="Modifers" Key="1">
                                 <div id="modifierCheckboxWrapper">
-                                    <Checkbox Checked="@checkValues[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                    <Checkbox Checked="@checkValues[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                    <Checkbox Checked="@checkValues[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                    <Checkbox Checked="@checkValues[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                    <Checkbox Checked="@checkValues[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                    <Checkbox Checked="@checkValues[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                    <Checkbox Checked="@checkValues[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                    <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                    <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                    <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                    <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                    <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                    <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                    <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
                                 </div>
                                 <hr/>
                                 <div>
@@ -282,6 +282,7 @@
     }
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { false, false, false, false, false, false, false };
 
     [JSInvokable]
@@ -310,14 +311,16 @@
     public static void ClearCheckboxes() {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
+            Index.checkIndeterminate[i] = false;
         }
         app?.StateHasChanged();
     }
 
     [JSInvokable]
-    public static void SetCheckboxes(int[] indeces) {
+    public static void SetCheckboxes(int[] checkboxValues) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
-            Index.checkValues[i] = indeces.Contains(i);
+            Index.checkValues[i] = checkboxValues[i] != 0;
+            Index.checkIndeterminate[i] = checkboxValues[i] == 1;
         }
         app?.StateHasChanged();
     }
@@ -351,7 +354,7 @@
     }
 
     private async void CheckChange(bool b, int i) {
-        Index.checkValues[i] = b;
+        Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }

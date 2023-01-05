@@ -6,6 +6,7 @@ import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 import { MultiElementType } from "../elements/MultiElementType";
+import { GraphElement } from "../elements/GraphElement";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
@@ -105,6 +106,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.nodeMouseDown.call(graph, d);
             })
             .call(this.drag);
+
+        let selectedElements = graph.selectedGroup.filter(e => e instanceof SystemDiagramElement) as GraphElement[];
+        newElements.classed(this.selectedClass, function (d) {
+            return selectedElements.includes(d);
+        });
 
         let group = newElements.append("g");
         group.attr("style", "fill:inherit;")
@@ -289,13 +295,26 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     updateModifierMenu() {
         if (this.selectedGroup.length > 0 && this.selectionHasAnyElement()) {
-            // TODO: change to support group modifier editing
-            let selectedElement = (this.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", selectedElement.modifiers);
-            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", ElementNamespace.elementTypes[selectedElement.type].allowedModifiers);
+            let selectedElements = this.selectedGroup.filter(el => el instanceof SystemDiagramElement) as SystemDiagramElement[];
+            let allAllowedModifiers = [];
+            let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
+            for (const e of selectedElements) {
+                allAllowedModifiers = allAllowedModifiers.concat(ElementNamespace.elementTypes[e.type].allowedModifiers);
+                e.modifiers.forEach(m => selectedModifiers[m]++);
+            }
+            selectedModifiers = selectedModifiers.map(m => {
+                if (m == selectedElements.length) {
+                    return 2;
+                } else if (m > 0) {
+                    return 1;
+                }
+                return 0;
+            });
+            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", selectedModifiers);
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", [...new Set(allAllowedModifiers)]);
         } else {
             DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
-            DotNet.invokeMethodAsync("BoGLWeb", "ClearDisabled");
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", []);
         }
     }
 
@@ -307,7 +326,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 velocities.push(el.velocity);
             }
         }
-        console.log(velocities);
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", velocities);
     }
 
@@ -325,13 +343,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     addSelectEdge(d3Bond: SVGSelection, bond: GraphBond) {
-        d3Bond.classed(this.selectedClass, true);
         this.selectedGroup.push(bond);
         this.updateVelocityMenu();
+        this.updateGraph();
     }
 
     addSelectNode(d3Elem: SVGSelection, el: SystemDiagramElement) {
-        d3Elem.classed(this.selectedClass, true);
         this.selectedGroup.push(el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
@@ -345,18 +362,17 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     removeSelectFromNode(el: SystemDiagramElement) {
-        this.elementSelection.filter(cd => cd === el).classed(this.selectedClass, false);
         this.selectedGroup = this.selectedGroup.filter(e => e != el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
+        this.updateGraph();
     }
 
     clearSelection() {
-        this.elementSelection.classed(this.selectedClass, false);
-        this.bondSelection.classed(this.selectedClass, false);
         this.selectedGroup = [];
         this.updateModifierMenu();
         this.updateVelocityMenu();
+        this.updateGraph();
     }
 
     pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) {
@@ -392,7 +408,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         if (this.edgeOrigin && el !== this.edgeOrigin) {
             if (isCompatible) {
-                this.bonds.push(new GraphBond(this.edgeOrigin, el, 0));
+                let bond = new GraphBond(this.edgeOrigin, el, 0);
+                this.bonds.push(bond);
+                this.selectedGroup = [bond];
             }
             this.setFollowingEdge(null);
             this.updateGraph();
@@ -417,7 +435,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
             if (isCompatible) {
-                this.bonds.push(new GraphBond(this.edgeOrigin, el));
+                let bond = new GraphBond(this.edgeOrigin, el);
+                this.bonds.push(bond);
+                this.selectedGroup = [bond];
             }
             this.setFollowingEdge(null);
             this.updateGraph();
@@ -436,6 +456,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         this.addSelectNode(d3Elem, el);
                     }
                 }
+                this.updateGraph();
             }
         }
         this.justDragged = false;
@@ -467,7 +488,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     subElementList.push(element);
                     this.elements.push(subElementList[i]);
                     this.selectedGroup.push(element);
-
                 }
 
                 //Add edges between sub-elements
@@ -548,10 +568,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     dragmove(el: SystemDiagramElement) {
         if (this.mouseDownNode) {
+            if (!this.selectedGroup.includes(el)) {
+                this.selectedGroup = [el];
+            }
+
             for (const el of this.selectedGroup.filter(e => e instanceof SystemDiagramElement) as SystemDiagramElement[]) {
                 el.x += (<DragEvent>d3.event).dx;
                 el.y += (<DragEvent>d3.event).dy;
             }
+
             this.updateGraph();
         }
     }

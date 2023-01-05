@@ -147,14 +147,21 @@ export namespace backendManager {
         }
 
         public setModifier(i: number, value: boolean) {
-            let element = (window.systemDiagram.selectedGroup.find(e => e instanceof SystemDiagramElement) as SystemDiagramElement);
-            if (element) {
-                if (value) { // adding modifier
-                    element.modifiers.push(i);
-                } else { // removing modifier
-                    element.modifiers.splice(element.modifiers.indexOf(i), 1);
+            let selectedElements = window.systemDiagram.selectedGroup.filter(el => el instanceof SystemDiagramElement) as SystemDiagramElement[];
+            if (value) { // adding modifier
+                for (const el of selectedElements) {
+                    if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
+                        el.modifiers.push(i);
+                    }
+                }
+            } else { // removing modifiers
+                for (const el of selectedElements) {
+                    if (el.modifiers.includes(i)) {
+                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
+                    }
                 }
             }
+            window.systemDiagram.updateModifierMenu();
         }
 
         public getGraphByIndex(i: string) {
