@@ -12,8 +12,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
-    selectedElement: SystemDiagramElement = null;
-    selectedBond: GraphBond = null;
     selectedGroup: (SystemDiagramElement | GraphBond)[] = [];
     velocityMap = {
         1: "⮢",
