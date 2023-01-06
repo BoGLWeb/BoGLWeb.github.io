@@ -37,6 +37,8 @@ export class BaseGraphDisplay {
     justScaleTransGraph: boolean = false;
     lastKeyDown: number = -1;
     highestElemId: number = 0;
+    dragStartX: number;
+    dragStartY: number;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -122,18 +124,46 @@ export class BaseGraphDisplay {
                     graph.dragX = d3.event.translate[0];
                     graph.dragY = d3.event.translate[1];
                 } else {
+                    let mouse = d3.mouse(graph.svgG.node());
                     graph.dragX = graph.svgX;
                     graph.dragY = graph.svgY;
+                    let width = mouse[0] - graph.dragStartX;
+                    let height = mouse[1] - graph.dragStartY;
+                    let selectionRect = d3.select("#selectionRect");
+                    if (width >= 0) {
+                        selectionRect.attr("x", graph.dragStartX).attr("width", width);
+                    } else {
+                        selectionRect.attr("x", mouse[0]).attr("width", Math.abs(width));
+                    }
+
+                    if (height >= 0) {
+                        selectionRect.attr("y", graph.dragStartY).attr("height", height);
+                    } else {
+                        selectionRect.attr("y", mouse[1]).attr("height", Math.abs(height));
+                    }
                 }
             })
             .on("zoomstart", function () {
                 graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
                 graph.dragX = graph.dragX ?? graph.svgX;
                 graph.dragY = graph.dragY ?? graph.svgY;
+                let coordinates = d3.mouse(graph.svgG.node());
+                graph.dragStartX = coordinates[0];
+                graph.dragStartY = coordinates[1];
+                graph.svgG.append("rect")
+                    .attr("id", "selectionRect")
+                    .attr("x", graph.dragStartX)
+                    .attr("y", graph.dragStartY)
+                    .attr("width", 0)
+                    .attr("height", 0)
+                    .style("stroke", "black")
+                    .style("fill", "blue")
+                    .style("opacity", "0.3");
                 graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
+                document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
             });
     }

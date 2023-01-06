@@ -517,7 +517,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // keydown on main svg
     svgKeyDown() {
-        // make sure repeated key presses don"t register for each keydown
+        // make sure repeated key presses don't register for each keydown
         if (this.lastKeyDown !== -1) return;
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
         let graph = this;
