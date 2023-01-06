@@ -436,8 +436,21 @@
         var file = await module.InvokeAsync<object>("getSystemDiagram");
         generateProgress = 5.0;
 
-        var sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        var (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        SystemDiagram? sysDiagram;
+        BondGraph bondGraph;
+        BondGraph item2;
+        List<BondGraph> causal;
+        
+        try {
+            sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+            (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        } catch (ArgumentException e) {
+            errorVisible = true;
+            errorMessage = e.Message;
+            base.StateHasChanged();
+            return;
+        }
+
         generateProgress = 25.0;
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
@@ -596,8 +609,7 @@
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
         if (deSerializedJson != null) {
             jsonStr = deSerializedJson.generateUrl();
-        }
-        else {
+        } else {
             await messageService.Error("Invalid URL Generated");
         }
 
