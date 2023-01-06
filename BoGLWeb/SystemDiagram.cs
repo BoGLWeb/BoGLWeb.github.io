@@ -168,10 +168,11 @@ namespace BoGLWeb {
         /// </summary>
         /// <param name="xml">An xml string</param>
         /// <returns>A system diagram from the xml string</returns>
-        /// <exception cref="ArgumentException">Thrown in input xml was invalud</exception>
+        /// <exception cref="ArgumentException">Thrown if input xml was invalid</exception>
         //Parsing
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
+            string errorMessage = "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must be save have been generated in BoGL Web or BoGL Desktop to be valid.";
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -219,18 +220,16 @@ namespace BoGLWeb {
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Name was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("x")) {
                     x = Convert.ToDouble(tokenQueue.Dequeue());
                 } else {
                     // The grammar is not being followed for the .bogl file
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("X was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("X was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("y")) {
@@ -239,7 +238,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Y was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("modifiers")) {
@@ -263,7 +262,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Modifier was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 //Add element to element list
@@ -308,9 +307,8 @@ namespace BoGLWeb {
                             e1 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
-                            //TODO Figure out how we should handle this error
                             Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
-                            throw new ArgumentException("Element1 was missing. Got: <" + tok + "> instead");
+                            throw new ArgumentException(errorMessage);
                         }
 
                         //Check element2
@@ -319,9 +317,8 @@ namespace BoGLWeb {
                             e2 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
-                            //TODO Figure out how we should handle this error
                             Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
-                            throw new ArgumentException("Element2 was missing. Got: <" + tok + "> instead");
+                            throw new ArgumentException(errorMessage);
                         }
 
                         //Modifiers
@@ -345,9 +342,8 @@ namespace BoGLWeb {
                     }
                 } else {
                     // The grammar is not being followed
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("Missing open brace");
-                    throw new ArgumentException("Missing open brace");
+                    throw new ArgumentException(errorMessage);
                 }
             }
 
