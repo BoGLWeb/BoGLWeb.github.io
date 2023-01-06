@@ -177,7 +177,13 @@ export class BaseGraphDisplay {
                     }
                 }
                 if (d3.event.sourceEvent.ctrlKey || d3.event.sourceEvent.metaKey) {
-                    graph.selectedGroup = graph.selectedGroup.concat(newSelection);
+                    for (const e of newSelection) {
+                        if (graph.selectedGroup.find(d => d == e) != null) {
+                            graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
+                        } else {
+                            graph.selectedGroup.push(e);
+                        }
+                    }
                 } else {
                     graph.selectedGroup = newSelection;
                 }
