@@ -176,7 +176,11 @@ export class BaseGraphDisplay {
                         newSelection.push(bond.__data__);
                     }
                 }
-                graph.selectedGroup = newSelection;
+                if (d3.event.sourceEvent.ctrlKey || d3.event.sourceEvent.metaKey) {
+                    graph.selectedGroup = graph.selectedGroup.concat(newSelection);
+                } else {
+                    graph.selectedGroup = newSelection;
+                }
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
                 graph.updateGraph();
