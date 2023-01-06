@@ -114,6 +114,13 @@ export class BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
     }
 
+    checkOverlap(rect1, rect2) {
+/*        var rect1 = el1.getBoundingClientRect();
+        var rect2 = el2.getBoundingClientRect();*/
+
+        return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
+    }
+
     // listen for dragging
     dragSvg() {
         let graph = this;
@@ -129,18 +136,11 @@ export class BaseGraphDisplay {
                     graph.dragY = graph.svgY;
                     let width = mouse[0] - graph.dragStartX;
                     let height = mouse[1] - graph.dragStartY;
-                    let selectionRect = d3.select("#selectionRect");
-                    if (width >= 0) {
-                        selectionRect.attr("x", graph.dragStartX).attr("width", width);
-                    } else {
-                        selectionRect.attr("x", mouse[0]).attr("width", Math.abs(width));
-                    }
 
-                    if (height >= 0) {
-                        selectionRect.attr("y", graph.dragStartY).attr("height", height);
-                    } else {
-                        selectionRect.attr("y", mouse[1]).attr("height", Math.abs(height));
-                    }
+                    d3.select("#selectionRect").attr("width", Math.abs(width))
+                        .attr("height", Math.abs(height))
+                        .attr("x", width >= 0 ? graph.dragStartX : mouse[0])
+                        .attr("y", height >= 0 ? graph.dragStartY : mouse[1]);
                 }
             })
             .on("zoomstart", function () {
@@ -163,6 +163,7 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
+
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
             });
