@@ -31,12 +31,15 @@ export class BaseGraphDisplay {
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
+    selectedGroup: (GraphElement | GraphBond)[] = [];
 
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
     justScaleTransGraph: boolean = false;
     lastKeyDown: number = -1;
     highestElemId: number = 0;
+    dragStartX: number;
+    dragStartY: number;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -112,6 +115,13 @@ export class BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
     }
 
+    checkOverlap(rect1, rect2) {
+/*        var rect1 = el1.getBoundingClientRect();
+        var rect2 = el2.getBoundingClientRect();*/
+
+        return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
+    }
+
     // listen for dragging
     dragSvg() {
         let graph = this;
@@ -122,19 +132,64 @@ export class BaseGraphDisplay {
                     graph.dragX = d3.event.translate[0];
                     graph.dragY = d3.event.translate[1];
                 } else {
+                    let mouse = d3.mouse(graph.svgG.node());
                     graph.dragX = graph.svgX;
                     graph.dragY = graph.svgY;
+                    let width = mouse[0] - graph.dragStartX;
+                    let height = mouse[1] - graph.dragStartY;
+
+                    d3.select("#selectionRect").attr("width", Math.abs(width))
+                        .attr("height", Math.abs(height))
+                        .attr("x", width >= 0 ? graph.dragStartX : mouse[0])
+                        .attr("y", height >= 0 ? graph.dragStartY : mouse[1]);
                 }
             })
             .on("zoomstart", function () {
                 graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
                 graph.dragX = graph.dragX ?? graph.svgX;
                 graph.dragY = graph.dragY ?? graph.svgY;
+                let coordinates = d3.mouse(graph.svgG.node());
+                graph.dragStartX = coordinates[0];
+                graph.dragStartY = coordinates[1];
+                graph.svgG.append("rect")
+                    .attr("id", "selectionRect")
+                    .attr("x", graph.dragStartX)
+                    .attr("y", graph.dragStartY)
+                    .attr("width", 0)
+                    .attr("height", 0)
+                    .style("stroke", "black")
+                    .style("fill", "blue")
+                    .style("opacity", "0.3");
                 graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
+                let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
+                let newSelection = [];
+                for (const el of graph.elementSelection.selectAll(".outline")) {
+                    if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                        newSelection.push(el[0].__data__);
+                    }
+                }
+                for (const bond of graph.bondSelection[0]) {
+                    if (graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                        newSelection.push(bond.__data__);
+                    }
+                }
+                if (d3.event.sourceEvent.ctrlKey || d3.event.sourceEvent.metaKey) {
+                    for (const e of newSelection) {
+                        if (graph.selectedGroup.find(d => d == e) != null) {
+                            graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
+                        } else {
+                            graph.selectedGroup.push(e);
+                        }
+                    }
+                } else {
+                    graph.selectedGroup = newSelection;
+                }
+                document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
+                graph.updateGraph();
             });
     }
 

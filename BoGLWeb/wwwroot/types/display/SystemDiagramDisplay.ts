@@ -12,7 +12,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
-    selectedGroup: (SystemDiagramElement | GraphBond)[] = [];
     velocityMap = {
         1: "⮢",
         2: "⮣",
@@ -24,6 +23,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         8: "⮤"
     };
     justClickedEdge: boolean = false;
+    selectedGroup: (SystemDiagramElement | GraphBond)[] = [];
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -517,7 +517,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // keydown on main svg
     svgKeyDown() {
-        // make sure repeated key presses don"t register for each keydown
+        // make sure repeated key presses don't register for each keydown
         if (this.lastKeyDown !== -1) return;
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
         let graph = this;
