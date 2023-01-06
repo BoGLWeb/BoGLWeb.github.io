@@ -3,7 +3,6 @@ import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
-import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
 export class BaseGraphDisplay {
     // constants
@@ -33,8 +32,6 @@ export class BaseGraphDisplay {
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
 
-    selectedElement: SystemDiagramElement = null;
-    selectedBond: GraphBond = null;
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
     justScaleTransGraph: boolean = false;
@@ -119,26 +116,26 @@ export class BaseGraphDisplay {
     dragSvg() {
         let graph = this;
         return d3.behavior.zoom()
-        .on("zoom", function () {
-            graph.zoomed.call(graph);
-            if (graph.dragAllowed) {
-                graph.dragX = d3.event.translate[0];
-                graph.dragY = d3.event.translate[1];
-            } else {
-                graph.dragX = graph.svgX;
-                graph.dragY = graph.svgY;
-            }
-        })
-        .on("zoomstart", function () {
-            graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
-            graph.dragX = graph.dragX ?? graph.svgX;
-            graph.dragY = graph.dragY ?? graph.svgY;
-            graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
-            if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
-        })
-        .on("zoomend", function () {
-            d3.select("body").style("cursor", "auto");
-        });
+            .on("zoom", function () {
+                graph.zoomed.call(graph);
+                if (graph.dragAllowed) {
+                    graph.dragX = d3.event.translate[0];
+                    graph.dragY = d3.event.translate[1];
+                } else {
+                    graph.dragX = graph.svgX;
+                    graph.dragY = graph.svgY;
+                }
+            })
+            .on("zoomstart", function () {
+                graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
+                graph.dragX = graph.dragX ?? graph.svgX;
+                graph.dragY = graph.dragY ?? graph.svgY;
+                graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
+                if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
+            })
+            .on("zoomend", function () {
+                d3.select("body").style("cursor", "auto");
+            });
     }
 
     drawPaths() {
@@ -148,10 +145,6 @@ export class BaseGraphDisplay {
         });
 
         let paths = this.bondSelection;
-        // update existing bondSelection
-        paths.classed(this.selectedClass, function (d) {
-            return d === graph.selectedBond;
-        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         // add new bondSelection
         paths.enter()

@@ -142,13 +142,13 @@
                         <ChildContent>
                             <Panel Header="Modifers" Key="1">
                                 <div id="modifierCheckboxWrapper">
-                                    <Checkbox Checked="@checkValues[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                    <Checkbox Checked="@checkValues[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                    <Checkbox Checked="@checkValues[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                    <Checkbox Checked="@checkValues[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                    <Checkbox Checked="@checkValues[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                    <Checkbox Checked="@checkValues[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                    <Checkbox Checked="@checkValues[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                    <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                    <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                    <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                    <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                    <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                    <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                    <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
                                 </div>
                                 <hr/>
                                 <div>
@@ -160,28 +160,28 @@
                                                 <br/>Velocity
                                             </Button>
                                         </div>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 1 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
                                             <div class="arrowButton topArrow">⮢</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 2 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
                                             <div class="arrowButton topArrow">⮣</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 3 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
                                             <div class="arrowButton sideTopArrow">⮥</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 4 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
                                             <div class="arrowButton">⮧</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 5 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
                                             <div class="arrowButton bottomArrow">⮡</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 6 ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
                                             <div class="arrowButton bottomArrow">⮠</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 7 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
                                             <div class="arrowButton">⮦</div>
                                         </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity == 8 ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
                                             <div class="arrowButton sideTopArrow">⮤</div>
                                         </Button>
                                     </div>
@@ -274,7 +274,7 @@
     int selectedCausalOption;
     List<string> causalOptions = new();
     static double zoomValue = 100;
-    static int selectedVelocity = 0;
+    static List<int> selectedVelocity = new List<int> {};
     static bool velocityDisabled = true;
 
     public Index() {
@@ -282,6 +282,7 @@
     }
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
 
     //Set is the velocity option is disabled in the modifier menu
@@ -289,21 +290,21 @@
     public static void SetVelocityDisabled(bool disabled) {
         Index.velocityDisabled = disabled;
         if (disabled) {
-            selectedVelocity = 0;
+            selectedVelocity = new List<int> {};
         }
         app?.StateHasChanged();
     }
 
     //Set the velocity
     [JSInvokable]
-    public static void SetVelocity(int velocity) {
-        Index.selectedVelocity = velocity;
+    public static void SetVelocity(List<int> velocities) {
+        Index.selectedVelocity = velocities;
         app?.StateHasChanged();
     }
 
     //Change the velocity on the backend
     public async void ChangeVelocity(int velocity) {
-        Index.selectedVelocity = velocity;
+        Index.selectedVelocity = new List<int> { velocity };
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setVelocity", velocity);
         app?.StateHasChanged();
@@ -314,15 +315,17 @@
     public static void ClearCheckboxes() {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
+            Index.checkIndeterminate[i] = false;
         }
         app?.StateHasChanged();
     }
 
     //Set which check boxes are pressed
     [JSInvokable]
-    public static void SetCheckboxes(int[] indeces) {
+    public static void SetCheckboxes(int[] checkboxValues) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
-            Index.checkValues[i] = indeces.Contains(i);
+            Index.checkValues[i] = checkboxValues[i] != 0;
+            Index.checkIndeterminate[i] = checkboxValues[i] == 1;
         }
         app?.StateHasChanged();
     }
@@ -361,7 +364,7 @@
 
     //Check if a modifier has changed
     private async void CheckChange(bool b, int i) {
-        Index.checkValues[i] = b;
+        Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
