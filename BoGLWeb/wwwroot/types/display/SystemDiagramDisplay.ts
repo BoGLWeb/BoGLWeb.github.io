@@ -535,9 +535,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     graph.spliceLinksForNode(e);
                     this.elements = this.elements.filter(el => el != e);
                 }
+                this.selectedGroup = [];
                 this.updateModifierMenu();
                 this.updateVelocityMenu();
-                this.selectedGroup = [];
                 this.updateGraph();
                 break;
         }

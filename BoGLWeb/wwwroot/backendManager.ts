@@ -51,11 +51,9 @@ export namespace backendManager {
             let parsedJson = JSON.parse(jsonString);
             let elements = []
             let i = 0;
-            for (let element of parsedJson.elements) {
-                let e = element as unknown as SystemDiagramElement;
-                e.id = i;
+            for (let el of parsedJson.elements) {
+                let e = new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers);
                 elements.push(e);
-                i++;
             }
             let edges = [];
             for (let edge of parsedJson.edges) {
