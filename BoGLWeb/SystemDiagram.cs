@@ -53,9 +53,8 @@ namespace BoGLWeb {
             typeBuilder.Add("System_MR_Torque_Input", 10);
             typeBuilder.Add("System_MR_Velocity_Input", 11);
             typeBuilder.Add("System_MR_Lever", 12);
-            // front-end doesn't seem to make distinction between grounded and non-grounded pulley
             typeBuilder.Add("System_MR_Pulley", 13);
-            typeBuilder.Add("System_MR_Pulley_Grounded", 13);
+            typeBuilder.Add("System_MR_Pulley_Grounded", 30);
             typeBuilder.Add("System_MR_Belt", 14);
             typeBuilder.Add("System_MR_Shaft", 15);
             typeBuilder.Add("System_MR_Gear", 16);
@@ -89,9 +88,8 @@ namespace BoGLWeb {
             typeBuilderReverse.Add(10, "System_MR_Torque_Input");
             typeBuilderReverse.Add(11, "System_MR_Velocity_Input");
             typeBuilderReverse.Add(12, "System_MR_Lever");
-            // front-end doesn't seem to make distinction between grounded and non-grounded pulley
             typeBuilderReverse.Add(13, "System_MR_Pulley");
-            //typeBuilderReverse.Add(13, "System_MR_Pulley_Grounded");
+            typeBuilderReverse.Add(30, "System_MR_Pulley_Grounded");
             typeBuilderReverse.Add(14, "System_MR_Belt");
             typeBuilderReverse.Add(15, "System_MR_Shaft");
             typeBuilderReverse.Add(16, "System_MR_Gear");
@@ -165,11 +163,16 @@ namespace BoGLWeb {
             return this.edges;
         }
 
+        /// <summary>
+        /// Parses an xml string into a system diagram
+        /// </summary>
+        /// <param name="xml">An xml string</param>
+        /// <returns>A system diagram from the xml string</returns>
+        /// <exception cref="ArgumentException">Thrown if input xml was invalid</exception>
         //Parsing
-        //From XML
-        //TODO Figure out if this should be a string
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
+            string errorMessage = "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -217,18 +220,16 @@ namespace BoGLWeb {
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Name was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("x")) {
                     x = Convert.ToDouble(tokenQueue.Dequeue());
                 } else {
                     // The grammar is not being followed for the .bogl file
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("X was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("X was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("y")) {
@@ -237,7 +238,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed for the .bogl file
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Y was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Y was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 if (tokenQueue.Dequeue().Equals("modifiers")) {
@@ -261,7 +262,7 @@ namespace BoGLWeb {
                     // The grammar is not being followed
                     //TODO Figure out how we should handle this error
                     Console.WriteLine("Modifier was missing. Got: <" + tok + "> instead");
-                    throw new ArgumentException("Modifier was missing. Got: <" + tok + "> instead");
+                    throw new ArgumentException(errorMessage);
                 }
 
                 //Add element to element list
@@ -306,9 +307,8 @@ namespace BoGLWeb {
                             e1 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
-                            //TODO Figure out how we should handle this error
                             Console.WriteLine("Element1 was missing. Got: <" + tok + "> instead");
-                            throw new ArgumentException("Element1 was missing. Got: <" + tok + "> instead");
+                            throw new ArgumentException(errorMessage);
                         }
 
                         //Check element2
@@ -317,9 +317,8 @@ namespace BoGLWeb {
                             e2 = Convert.ToInt32(arcsTokenQueue.Dequeue());
                         } else {
                             // The grammar is not being followed
-                            //TODO Figure out how we should handle this error
                             Console.WriteLine("Element2 was missing. Got: <" + tok + "> instead");
-                            throw new ArgumentException("Element2 was missing. Got: <" + tok + "> instead");
+                            throw new ArgumentException(errorMessage);
                         }
 
                         //Modifiers
@@ -343,9 +342,8 @@ namespace BoGLWeb {
                     }
                 } else {
                     // The grammar is not being followed
-                    //TODO Figure out how we should handle this error
                     Console.WriteLine("Missing open brace");
-                    throw new ArgumentException("Missing open brace");
+                    throw new ArgumentException(errorMessage);
                 }
             }
 
@@ -371,7 +369,6 @@ namespace BoGLWeb {
         }
 
         //From JSON
-
         //Convert to GraphSynth
         /// <summary>
         /// Creates a system diagram from a JSON string
@@ -393,8 +390,6 @@ namespace BoGLWeb {
             }
                 
             return sysDiagram;
-
-            //TODO Throw error
         }
 
         /// <summary>
@@ -555,7 +550,10 @@ namespace BoGLWeb {
             }
         }
 
-        //Create .bogl string
+        /// <summary>
+        /// Creates a string that represents the system diagram. This will be used for saving .bogl files.
+        /// </summary>
+        /// <returns>A string</returns>
         public string generateBoGLString() {
             StringBuilder sb = new();
 
@@ -658,7 +656,6 @@ namespace BoGLWeb {
                 AssignID(0, true);
             }
 
-            //TODO Error checking
             /// <summary>
             /// Adds a modifier to the element
             /// </summary>
@@ -676,10 +673,18 @@ namespace BoGLWeb {
                 this.velocity = vel;
             }
 
+            /// <summary>
+            /// Returns the modifiers on an element
+            /// </summary>
+            /// <returns>A list</returns>
             public List<int> getModifiers() {
                 return this.modifiers;
             }
 
+            /// <summary>
+            /// Returns the velocity modifier on an element
+            /// </summary>
+            /// <returns>An integer</returns>
             public int getVelocity() {
                 return this.velocity;
             }
@@ -692,14 +697,26 @@ namespace BoGLWeb {
                 return this.name;
             }
 
+            /// <summary>
+            /// Returns the type of the element
+            /// </summary>
+            /// <returns>An integer</returns>
             public int getType() {
                 return this.type;
             }
 
+            /// <summary>
+            /// Returns the x position of the element
+            /// </summary>
+            /// <returns>A double</returns>
             public double getX() {
                 return this.x;
             }
 
+            /// <summary>
+            /// Returns the y position of the element
+            /// </summary>
+            /// <returns>A double</returns>
             public double getY() {
                 return this.y;
             }
@@ -841,15 +858,27 @@ namespace BoGLWeb {
             public Element getE2() {
                 return this.e2;
             }
-
+            
+            /// <summary>
+            /// Returns the id of the source
+            /// </summary>
+            /// <returns>An integer</returns>
             public int getSource() {
                 return this.source;
             }
 
+            /// <summary>
+            /// Returns the id of the target (sink)
+            /// </summary>
+            /// <returns>An integer</returns>
             public int getTarget() {
                 return this.target;
             }
 
+            /// <summary>
+            /// Returns the velocity modifier of the edge
+            /// </summary>
+            /// <returns>An integer</returns>
             public int getVelocity() {
                 return this.velocity;
             }

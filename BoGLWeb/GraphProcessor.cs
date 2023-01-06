@@ -14,6 +14,7 @@ namespace BoGLWeb {
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
             BondGraphFactory factory = new(systemGraph);
 
+            //Check that we create all three bond graphs
             switch (factory.simplifiedBG) {
                 case null when factory.unsimplifiedBG is null:
                     //TODO Need to figure out what this error means and figure out how to show it to the user
@@ -28,6 +29,7 @@ namespace BoGLWeb {
                 throw new Exception("unsimplifiedBG is null");
             }
 
+            //Convert graph synth bond graphs to our bond graph class
             BondGraph unsimplified = BondGraph.generateBondGraphFromGraphSynth(factory.unsimplifiedBG);
             BondGraph simplified = BondGraph.generateBondGraphFromGraphSynth(factory.simplifiedBG);
 
@@ -56,6 +58,7 @@ namespace BoGLWeb {
         private designGraph? simplifiedBG;
         private readonly List<designGraph> causalBGs;
 
+        //Create a bond graph factory
         private BondGraphFactory(designGraph systemGraph) {
             this.systemGraph = systemGraph;
             this.optiGraphs = new List<designGraph>();
@@ -74,7 +77,7 @@ namespace BoGLWeb {
             this.generateBondGraph();
         }
 
-        //Mainly code from desktop BoGL
+        //Mainly code from desktop BoGL below
         //TODO cleanup variable names and old comments
         private void generateBondGraph() {
             //now remove all the labels that we added
@@ -87,6 +90,7 @@ namespace BoGLWeb {
             if (!noGood) {
                 //TODO Find a better way to display this error message
                 Console.WriteLine("Velocity directions are an issue. If this continues, please delete velocity directions and try again. Thanks!");
+                throw new ArgumentException("Velocity directions are an issue. If this continues, please delete velocity directions and try again. Thanks!");
             } else {
                 this.bondgraphBeforeSimplification();
                 this.bondgraphSimplified();
@@ -263,7 +267,7 @@ namespace BoGLWeb {
             //now from the list of finalgraph, eliminate duplicate solutions
             if (this.indiceswithoutINVD.Count == 0) {
                 Console.WriteLine("Sorry, we have encountered an error with respect to Causality assignment");
-
+                throw new ArgumentException("Sorry, we have encountered an error with respect to Causality assignment");
             }
             //need to add exception here if the program is unable to added 
             else {

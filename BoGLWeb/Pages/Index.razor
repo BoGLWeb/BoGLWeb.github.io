@@ -283,8 +283,9 @@
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
-    private static bool[] disabledValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
 
+    //Set is the velocity option is disabled in the modifier menu
     [JSInvokable]
     public static void SetVelocityDisabled(bool disabled) {
         Index.velocityDisabled = disabled;
@@ -294,12 +295,14 @@
         app?.StateHasChanged();
     }
 
+    //Set the velocity
     [JSInvokable]
     public static void SetVelocity(List<int> velocities) {
         Index.selectedVelocity = velocities;
         app?.StateHasChanged();
     }
 
+    //Change the velocity on the backend
     public async void ChangeVelocity(int velocity) {
         Index.selectedVelocity = new List<int> { velocity };
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -307,6 +310,7 @@
         app?.StateHasChanged();
     }
 
+    //Clear the check boxes in the modifier menu
     [JSInvokable]
     public static void ClearCheckboxes() {
         for (int i = 0; i < Index.checkValues.Length; i++) {
@@ -316,6 +320,7 @@
         app?.StateHasChanged();
     }
 
+    //Set which check boxes are pressed
     [JSInvokable]
     public static void SetCheckboxes(int[] checkboxValues) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
@@ -325,14 +330,16 @@
         app?.StateHasChanged();
     }
 
+    //Clear the check boxes which are disabled
     [JSInvokable]
     public static void ClearDisabled() {
         for (int i = 0; i < disabledValues.Length; i++) {
-            disabledValues[i] = false;
+            disabledValues[i] = true;
         }
         app?.StateHasChanged();
     }
 
+    //Sets which check boxes are disabled
     [JSInvokable]
     public static void SetDisabled(int[] indices) {
         for (int i = 0; i < disabledValues.Length; i++) {
@@ -341,29 +348,34 @@
         app?.StateHasChanged();
     }
 
+    //Set the current zoom
     [JSInvokable]
     public static void SetScale(double scale) {
         zoomValue = scale * 100;
         app?.StateHasChanged();
     }
 
+    //Change the zoom
     private async void SliderChange(double i) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         zoomValue = i;
         await module.InvokeVoidAsync("setZoom", i);
     }
 
+    //Check if a modifier has changed
     private async void CheckChange(bool b, int i) {
         Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
 
+    //Change tabs
     private async void TabChange(string key) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setTab", key);
     }
 
+    //TODO What does this do?
     private async void ChangeCausalOption(Option selection) {
         if (generatingBondGraph) {
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -376,9 +388,11 @@
     private string fileToLoad = "";
     private double loadPercent = 0;
 
+    //Called when the page is loaded
     protected override async Task OnInitializedAsync() {
         Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
 
+        //Loads rulesets
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -412,22 +426,38 @@
 
     private double generateProgress = 0.0;
 
+    //Generates the series of bond graphs and displays them to the screen
     private async Task generateButtonClicked() {
         generateProgress = 0.0;
         generatingBondGraph = true;
         base.StateHasChanged();
         await Task.Delay(1);
 
+        //Generates the bond graphs
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
         generateProgress = 5.0;
 
-        var sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        var (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        SystemDiagram? sysDiagram;
+        BondGraph bondGraph;
+        BondGraph item2;
+        List<BondGraph> causal;
+        
+        try {
+            sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+            (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        } catch (ArgumentException e) {
+            errorVisible = true;
+            errorMessage = e.Message;
+            base.StateHasChanged();
+            return;
+        }
+
         generateProgress = 25.0;
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
 
+        //Lays out the bond graphs
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
@@ -458,6 +488,7 @@
         }
         generateProgress = 100.0;
 
+        //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
@@ -485,6 +516,7 @@
 
     private string errorMessage = "";
 
+    //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("openFile");
@@ -502,6 +534,7 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
+    //Turns a string into a Stream
     private Stream getFileStream(string fileData) {
         var testData = fileData;
         var fileStream = new MemoryStream(Encoding.ASCII.GetBytes(testData));
@@ -509,6 +542,7 @@
         return fileStream;
     }
 
+    //Saves the system diagram to the user's file system
     private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
@@ -522,6 +556,7 @@
         await module.InvokeVoidAsync("saveFile", fileName, streamRef);
     }
 
+    //Saves the system diagram as a .bogl file to the user's file system
     private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
@@ -535,6 +570,7 @@
         await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
     }
 
+    //Handles the but report button
     private void reportBugs() {
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
@@ -543,6 +579,7 @@
 
     bool visible = false;
 
+    //Handles the ok button on the about modal
     private void handleOk() {
         visible = false;
         base.StateHasChanged();
@@ -550,6 +587,7 @@
 
     bool errorVisible = false;
 
+    //Handles the ok button on the error modal
     private void handleErrorOk() {
         errorVisible = false;
         base.StateHasChanged();
@@ -558,11 +596,13 @@
     bool urlModalVisible = false;
     string url = "";
 
+    //Handles the ok button on the url modal
     private void handleUrlOk() {
         urlModalVisible = false;
         base.StateHasChanged();
     }
 
+    //Converts the system diagram to a url
     private async void generateUrl() {
     //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
@@ -571,8 +611,7 @@
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
         if (deSerializedJson != null) {
             jsonStr = deSerializedJson.generateUrl();
-        }
-        else {
+        } else {
             await messageService.Error("Invalid URL Generated");
         }
 
@@ -620,10 +659,11 @@
 
 
     //Add url to modal
-        url = "https://boglweb20221206112544.azurewebsites.net/?q=" + jsonStr;
+        url = "https://boglweb.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
     }
 
+    //Removes the compression from the url and turns it back into a json string
     [JSInvokable]
     public static string uncompressUrl(string compressedUrl) {
         Regex urlShort1 = new Regex("f");
@@ -701,25 +741,17 @@
         return compressedUrl;
     }
 
+    //Copies the url representation of the system diagram to the system's clipboard 
     private async void copyUrl() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
     }
 
+    //Runs the introjs tutorial
     private async Task runTutorial() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("runTutorial");
-
-    // await JS.InvokeAsync<object>("window.introJs.start",
-    //     new {
-    //         steps = new[] {
-    //             new {
-    //                 element = "generateButton",
-    //                 intro = "This is the generate button"
-    //             }
-    //         }
-    //     });
     }
 
 }

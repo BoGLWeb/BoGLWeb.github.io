@@ -43,8 +43,7 @@ namespace BoGLWeb {
             //Setup HTTP client that we will use to load the file
             HttpClient client = new HttpClient();
 
-            //Load the file as plain text
-            //TODO Figure out if this URL is okay, or is there something else that it should be
+            //Load the file as plain text from GitHub
             HttpResponseMessage ruleSetResponse =
                 await client.GetAsync("https://boglweb.github.io/rules-and-examples/Rules/" + name + ".rsxml");
             XmlSerializer ruleDeserializer = new(typeof(ruleSet));
@@ -56,18 +55,21 @@ namespace BoGLWeb {
             //Load rules for the ruleset
             List<string> ruleFileNames = this.ruleSetMap[name].ruleFileNames;
 
-            List<grammarRule> rules = new List<grammarRule>();
+            //Load all rules in a ruleset
+            List<grammarRule> rules = new();
             this.numLoaded = 0;
             while (this.numLoaded < ruleFileNames.Count) {
                 string rulePath = "/Rules/" + ruleFileNames[this.numLoaded];
 
+                //Get the rule files from GitHub 
                 HttpResponseMessage ruleResponse =
                     await client.GetAsync("https://boglweb.github.io/rules-and-examples/" + rulePath);
                 string ruleText = await ruleResponse.Content.ReadAsStringAsync();
 
                 XElement xeRule = XElement.Parse(ruleText);
                 XElement? temp = xeRule.Element("{ignorableUri}" + "grammarRule");
-                grammarRule openRule = new grammarRule();
+                grammarRule openRule = new();
+                //Deserialize the rule XML using GraphSynth
                 if (temp != null) {
                     openRule = this.DeSerializeRuleFromXML(this.RemoveXAMLns(RemoveIgnorablePrefix(temp.ToString())));
                 }
@@ -129,6 +131,7 @@ namespace BoGLWeb {
             return newGrammarRule;
         }
 
+        //Start functions for cleaning up rule/ruleset xml
         private string RemoveXAMLns(string str) {
             return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", "");
         }
@@ -151,5 +154,6 @@ namespace BoGLWeb {
                 a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
             }
         }
+        //End functions for cleaning up rule/ruleset xml
     }
 }
