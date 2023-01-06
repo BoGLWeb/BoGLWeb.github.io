@@ -282,7 +282,7 @@
     }
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
-    private static bool[] disabledValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
 
     //Set is the velocity option is disabled in the modifier menu
     [JSInvokable]
@@ -331,8 +331,7 @@
     [JSInvokable]
     public static void ClearDisabled() {
         for (int i = 0; i < disabledValues.Length; i++) {
-            //TODO Change to true so check boxes are disabled when no elements are selected
-            disabledValues[i] = false;
+            disabledValues[i] = true;
         }
         app?.StateHasChanged();
     }
