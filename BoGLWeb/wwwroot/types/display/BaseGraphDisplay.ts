@@ -31,6 +31,7 @@ export class BaseGraphDisplay {
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
+    selectedGroup: (GraphElement | GraphBond)[] = [];
 
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
@@ -163,9 +164,22 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-
+                let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
+                let newSelection = [];
+                for (const el of graph.elementSelection.selectAll(".outline")) {
+                    if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                        newSelection.push(el[0].__data__);
+                    }
+                }
+                for (const bond of graph.bondSelection[0]) {
+                    if (graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                        newSelection.push(bond.__data__);
+                    }
+                }
+                graph.selectedGroup = newSelection;
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
+                graph.updateGraph();
             });
     }
 

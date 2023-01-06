@@ -12,7 +12,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
-    selectedGroup: (SystemDiagramElement | GraphBond)[] = [];
     velocityMap = {
         1: "⮢",
         2: "⮣",
@@ -24,6 +23,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         8: "⮤"
     };
     justClickedEdge: boolean = false;
+    selectedGroup: (SystemDiagramElement | GraphBond)[] = [];
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
