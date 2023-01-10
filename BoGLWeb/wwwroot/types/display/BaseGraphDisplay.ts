@@ -233,6 +233,11 @@ export class BaseGraphDisplay {
         newElements.enter().append("g");
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
+        let selectedElements = this.selectedGroup.filter(e => e instanceof GraphElement) as GraphElement[];
+        newElements.classed(this.selectedClass, function (d) {
+            return selectedElements.includes(d);
+        });
+
         this.renderElements(newElements);
 
         // remove old elements

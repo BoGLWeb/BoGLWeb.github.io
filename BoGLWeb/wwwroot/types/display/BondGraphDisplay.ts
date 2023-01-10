@@ -112,11 +112,6 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             })
             .call(this.drag);
 
-        let selectedElements = graph.selectedGroup.filter(e => e instanceof BondGraphElement) as GraphElement[];
-        newElements.classed(this.selectedClass, function (d) {
-            return selectedElements.includes(d);
-        });
-
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
             .text((d) => (<BondGraphElement>d).label)

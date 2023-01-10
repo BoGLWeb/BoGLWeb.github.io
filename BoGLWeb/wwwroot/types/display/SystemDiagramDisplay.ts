@@ -105,11 +105,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             })
             .call(this.drag);
 
-        let selectedElements = graph.selectedGroup.filter(e => e instanceof SystemDiagramElement) as GraphElement[];
-        newElements.classed(this.selectedClass, function (d) {
-            return selectedElements.includes(d);
-        });
-
         let group = newElements.append("g");
         group.attr("style", "fill:inherit;")
             .attr("index", function (d, i) { return d.id.toString(); });
@@ -349,7 +344,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     removeSelectFromEdge(edge: GraphBond) {
         let graph = this;
-        graph.bondSelection.filter(cd => cd === edge).classed(graph.selectedClass, false);
         this.selectedGroup = this.selectedGroup.filter(e => e != edge);
         this.updateVelocityMenu();
     }
