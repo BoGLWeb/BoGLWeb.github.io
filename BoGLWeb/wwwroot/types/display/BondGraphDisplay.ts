@@ -125,9 +125,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
-        let selectedPaths = this.selectedGroup.filter(e => e instanceof BondGraphBond) as GraphBond[];
-        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (selectedPaths.includes(d) ? "_selected" : "") + ')')
-            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (selectedPaths.includes(d) ? "_selected" : "") + ')' : ""))
+        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')')
+            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')' : ""))
             .style('stroke-width', 2);
     }
 }

@@ -142,15 +142,14 @@ export namespace backendManager {
         }
 
         public setModifier(i: number, value: boolean) {
-            let selectedElements = window.systemDiagram.selectedGroup.filter(el => el instanceof SystemDiagramElement) as SystemDiagramElement[];
             if (value) { // adding modifier
-                for (const el of selectedElements) {
+                for (const el of window.systemDiagram.selectedElements) {
                     if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
                         el.modifiers.push(i);
                     }
                 }
             } else { // removing modifiers
-                for (const el of selectedElements) {
+                for (const el of window.systemDiagram.selectedElements) {
                     if (el.modifiers.includes(i)) {
                         el.modifiers.splice(el.modifiers.indexOf(i), 1);
                     }
@@ -197,7 +196,7 @@ export namespace backendManager {
         }
 
         public setVelocity(velocity: number) {
-            for (const e of window.systemDiagram.selectedGroup) {
+            for (const e of window.systemDiagram.getSelection()) {
                 if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
                     e.velocity = velocity;
                 }

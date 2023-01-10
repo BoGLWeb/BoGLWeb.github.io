@@ -32,7 +32,8 @@ export class BaseGraphDisplay {
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
-    selectedGroup: (GraphElement | GraphBond)[] = [];
+    selectedElements: GraphElement[] = [];
+    selectedBonds: GraphBond[] = [];
 
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
@@ -69,9 +70,38 @@ export class BaseGraphDisplay {
     svgKeyUp() { }
     svgMouseDown() { }
     svgMouseUp() { }
-    pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) { }
+    pathMouseDown(bond: GraphBond) { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
+
+    addToSelection(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            this.selectedElements.push(e);
+        } else {
+            this.selectedBonds.push(e);
+        }
+    }
+
+    selectionContains(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            return this.selectedElements.includes(e);
+        } else {
+            return this.selectedBonds.includes(e);
+        }
+    }
+
+    removeFromSelection(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            this.selectedElements = this.selectedElements.filter(d => d != e);
+        } else {
+            this.selectedBonds = this.selectedBonds.filter(d => d != e);
+        }
+    }
+
+    setSelection(elList: GraphElement[], bondList: GraphBond[]) {
+        this.selectedElements = elList;
+        this.selectedBonds = bondList;
+    }
 
     // mousedown on element
     nodeMouseDown(el: GraphElement) {
@@ -177,18 +207,24 @@ export class BaseGraphDisplay {
                     }
                     if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
                         for (const e of newSelection) {
-                            if (graph.selectedGroup.find(d => d == e) != null) {
-                                graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
+                            if (graph.selectionContains(e)) {
+                                graph.removeFromSelection(e);
                             } else {
-                                graph.selectedGroup.push(e);
+                                graph.addToSelection(e);
                             }
                         }
                     } else {
-                        graph.selectedGroup = newSelection;
+                        for (const e of newSelection) {
+                            graph.addToSelection(e);
+                        }
                     }
                 }
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
+                if (graph instanceof SystemDiagramDisplay) {
+                    graph.updateModifierMenu();
+                    graph.updateVelocityMenu();
+                }
                 graph.updateGraph();
             });
     }
@@ -207,12 +243,12 @@ export class BaseGraphDisplay {
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
-                graph.pathMouseDown.call(graph, d3.select(this), d);
+                graph.pathMouseDown.call(graph, d);
             });
 
         // update existing bondSelection
         paths.classed(this.selectedClass, function (d) {
-            return graph.selectedGroup.find(p => p == d) != null;
+            return graph.selectedBonds.includes(d);
         }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         this.pathExtraRendering(paths);
@@ -233,9 +269,9 @@ export class BaseGraphDisplay {
         newElements.enter().append("g");
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
-        let selectedElements = this.selectedGroup.filter(e => e instanceof GraphElement) as GraphElement[];
+        let graph = this;
         newElements.classed(this.selectedClass, function (d) {
-            return selectedElements.includes(d);
+            return graph.selectedElements.includes(d);
         });
 
         this.renderElements(newElements);
@@ -246,11 +282,11 @@ export class BaseGraphDisplay {
 
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
-            if (!this.selectedGroup.includes(el)) {
-                this.selectedGroup = [el];
+            if (!this.selectedElements.includes(el)) {
+                this.setSelection([el], []);
             }
 
-            for (const el of this.selectedGroup.filter(e => e instanceof GraphElement) as GraphElement[]) {
+            for (const el of this.selectedElements) {
                 el.x += (<DragEvent>d3.event).dx;
                 el.y += (<DragEvent>d3.event).dy;
             }
