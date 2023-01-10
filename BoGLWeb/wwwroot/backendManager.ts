@@ -14,13 +14,10 @@ export namespace backendManager {
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
             let elements = JSON.parse(bg.elements).map((e, i) => {
-                e.id = i;
-                return e;
+                return new BondGraphElement(i, e.label, e.x, e.y);
             }) as BondGraphElement[];
             let bonds = JSON.parse(bg.bonds).map(b => {
-                b.source = elements[b.sourceID];
-                b.target = elements[b.targetID];
-                return b;
+                return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, b.velocity);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 

@@ -239,11 +239,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathExtraRendering(paths: BGBondSelection) {
         let graph = this;
 
-        // update existing bondSelection
-        paths.classed(this.selectedClass, function (d) {
-            return graph.selectedGroup.find(p => p == d) != null;
-        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
-
         paths.classed("hoverablePath", true);
         if (paths.node()) {
             d3.select(paths.node().parentNode).selectAll("text").html(null);

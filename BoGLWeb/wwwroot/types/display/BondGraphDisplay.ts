@@ -24,22 +24,36 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         // define arrow markers for graph links
         this.defs = svg.append("svg:defs");
 
-        this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10)
+        this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10, false)
             .append("path")
             .attr("d", "M1,10L1,-10");
 
-        this.makeBaseMarker("arrow_" + id, 10, 0, 10, 10)
+        this.makeBaseMarker("causal_stroke_" + id + "_selected", 1, 5, 10, 10, true)
+            .append("path")
+            .attr("d", "M1,10L1,-10");
+
+        this.makeBaseMarker("arrow_" + id, 10, 0, 10, 10, false)
             .append("path")
             .attr("d", "M10,0L2,5");
 
-        let arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id, 10, 10, 20, 20);
+        this.makeBaseMarker("arrow_" + id + "_selected", 10, 0, 10, 10, true)
+            .append("path")
+            .attr("d", "M10,0L2,5");
+
+        let arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id, 10, 10, 20, 20, false);
+        arrowAndFlat.append("path")
+            .attr("d", "M10,10L2,15");
+        arrowAndFlat.append("path")
+            .attr("d", "M10,5L10,15");
+
+        arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id + "_selected", 10, 10, 20, 20, true);
         arrowAndFlat.append("path")
             .attr("d", "M10,10L2,15");
         arrowAndFlat.append("path")
             .attr("d", "M10,5L10,15");
     }
 
-    makeBaseMarker(id: string, refX, refY, w, h) {
+    makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
         let marker = this.defs.append("svg:marker");
         marker.attr("id", id)
             .attr("refX", refX)
@@ -47,7 +61,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("markerWidth", w)
             .attr("markerHeight", h)
             .attr("orient", "auto-start-reverse")
-            .style("stroke", "#333");
+            .style("stroke", isSelected ? "rgb(6, 82, 255)" : "#333");
         return marker;
     }
 
@@ -98,6 +112,11 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             })
             .call(this.drag);
 
+        let selectedElements = graph.selectedGroup.filter(e => e instanceof BondGraphElement) as GraphElement[];
+        newElements.classed(this.selectedClass, function (d) {
+            return selectedElements.includes(d);
+        });
+
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
             .text((d) => (<BondGraphElement>d).label)
@@ -111,8 +130,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
-        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + ')')
-            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + ')' : ""))
+        let selectedPaths = this.selectedGroup.filter(e => e instanceof BondGraphBond) as GraphBond[];
+        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (selectedPaths.includes(d) ? "_selected" : "") + ')')
+            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (selectedPaths.includes(d) ? "_selected" : "") + ')' : ""))
             .style('stroke-width', 2);
     }
 }

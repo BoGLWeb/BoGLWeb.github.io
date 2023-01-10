@@ -3,6 +3,7 @@ import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
+import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 
 export class BaseGraphDisplay {
     // constants
@@ -166,17 +167,25 @@ export class BaseGraphDisplay {
             .on("zoomend", function () {
                 let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
                 let newSelection = [];
-                for (const el of graph.elementSelection.selectAll(".outline")) {
-                    if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
-                        newSelection.push(el[0].__data__);
+                if (this instanceof SystemDiagramDisplay) {
+                    for (const el of graph.elementSelection.selectAll(".outline")) {
+                        if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                            newSelection.push(el[0].__data__);
+                        }
+                    }
+                } else {
+                    for (const el of graph.elementSelection[0]) {
+                        if (graph.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
+                            newSelection.push(el.__data__);
+                        }
                     }
                 }
                 for (const bond of graph.bondSelection[0]) {
-                    if (graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                    if (bond && graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
                         newSelection.push(bond.__data__);
                     }
                 }
-                if (d3.event.sourceEvent.ctrlKey || d3.event.sourceEvent.metaKey) {
+                if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
                     for (const e of newSelection) {
                         if (graph.selectedGroup.find(d => d == e) != null) {
                             graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
@@ -209,6 +218,11 @@ export class BaseGraphDisplay {
             .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d3.select(this), d);
             });
+
+        // update existing bondSelection
+        paths.classed(this.selectedClass, function (d) {
+            return graph.selectedGroup.find(p => p == d) != null;
+        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         this.pathExtraRendering(paths);
 
