@@ -1,4 +1,4 @@
-﻿import { ZoomEvent, DragEvent } from "../../type_libraries/d3";
+﻿import { ZoomEvent } from "../../type_libraries/d3";
 import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { GraphBond } from "../bonds/GraphBond";
 import { ElementNamespace } from "../elements/ElementNamespace";
@@ -556,21 +556,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     dragmoveEdge() {
         if (this.edgeOrigin) {
             this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-        }
-    }
-
-    dragmove(el: SystemDiagramElement) {
-        if (this.mouseDownNode) {
-            if (!this.selectedGroup.includes(el)) {
-                this.selectedGroup = [el];
-            }
-
-            for (const el of this.selectedGroup.filter(e => e instanceof SystemDiagramElement) as SystemDiagramElement[]) {
-                el.x += (<DragEvent>d3.event).dx;
-                el.y += (<DragEvent>d3.event).dy;
-            }
-
-            this.updateGraph();
         }
     }
 

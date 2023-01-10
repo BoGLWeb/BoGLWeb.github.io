@@ -80,14 +80,6 @@ export class BaseGraphDisplay {
         this.justDragged = false;
     }
 
-    dragmove(el: GraphElement) {
-        if (this.mouseDownNode) {
-            el.x += (<DragEvent>d3.event).dx;
-            el.y += (<DragEvent>d3.event).dy;
-            this.updateGraph();
-        }
-    }
-
     drawPath(d: GraphBond) {
         return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
     }
@@ -117,9 +109,6 @@ export class BaseGraphDisplay {
     }
 
     checkOverlap(rect1, rect2) {
-/*        var rect1 = el1.getBoundingClientRect();
-        var rect2 = el2.getBoundingClientRect();*/
-
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
     }
 
@@ -166,35 +155,37 @@ export class BaseGraphDisplay {
             })
             .on("zoomend", function () {
                 let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
-                let newSelection = [];
-                if (this instanceof SystemDiagramDisplay) {
-                    for (const el of graph.elementSelection.selectAll(".outline")) {
-                        if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
-                            newSelection.push(el[0].__data__);
+                if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
+                    let newSelection = [];
+                    if (this instanceof SystemDiagramDisplay) {
+                        for (const el of graph.elementSelection.selectAll(".outline")) {
+                            if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                                newSelection.push(el[0].__data__);
+                            }
+                        }
+                    } else {
+                        for (const el of graph.elementSelection[0]) {
+                            if (graph.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
+                                newSelection.push(el.__data__);
+                            }
                         }
                     }
-                } else {
-                    for (const el of graph.elementSelection[0]) {
-                        if (graph.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
-                            newSelection.push(el.__data__);
+                    for (const bond of graph.bondSelection[0]) {
+                        if (bond && graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                            newSelection.push(bond.__data__);
                         }
                     }
-                }
-                for (const bond of graph.bondSelection[0]) {
-                    if (bond && graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
-                        newSelection.push(bond.__data__);
-                    }
-                }
-                if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
-                    for (const e of newSelection) {
-                        if (graph.selectedGroup.find(d => d == e) != null) {
-                            graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
-                        } else {
-                            graph.selectedGroup.push(e);
+                    if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
+                        for (const e of newSelection) {
+                            if (graph.selectedGroup.find(d => d == e) != null) {
+                                graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
+                            } else {
+                                graph.selectedGroup.push(e);
+                            }
                         }
+                    } else {
+                        graph.selectedGroup = newSelection;
                     }
-                } else {
-                    graph.selectedGroup = newSelection;
                 }
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
@@ -246,6 +237,21 @@ export class BaseGraphDisplay {
 
         // remove old elements
         this.elementSelection.exit().remove();
+    }
+
+    dragmove(el: GraphElement) {
+        if (this.mouseDownNode) {
+            if (!this.selectedGroup.includes(el)) {
+                this.selectedGroup = [el];
+            }
+
+            for (const el of this.selectedGroup.filter(e => e instanceof GraphElement) as GraphElement[]) {
+                el.x += (<DragEvent>d3.event).dx;
+                el.y += (<DragEvent>d3.event).dy;
+            }
+
+            this.updateGraph();
+        }
     }
 
     // call to propagate changes to graph
