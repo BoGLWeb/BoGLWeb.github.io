@@ -3,6 +3,7 @@ import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
+import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 
 export class BaseGraphDisplay {
     // constants
@@ -31,7 +32,8 @@ export class BaseGraphDisplay {
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
-    selectedGroup: (GraphElement | GraphBond)[] = [];
+    selectedElements: GraphElement[] = [];
+    selectedBonds: GraphBond[] = [];
 
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
@@ -61,30 +63,111 @@ export class BaseGraphDisplay {
         this.elementSelection = svgG.append("g").selectAll("g");
 
         svg.call(this.dragSvg()).on("dblclick.zoom", null);
+
+        // listen for key events
+        let graph = this;
+        d3.select(window).on("keydown", function () {
+            graph.svgKeyDown.call(graph);
+        })
+            .on("keyup", function () {
+                graph.svgKeyUp.call(graph);
+            });
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
     }
 
     // functions needed in system diagram are called from this class but not defined by default
     svgKeyDown() { }
     svgKeyUp() { }
     svgMouseDown() { }
-    svgMouseUp() { }
-    pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
+
+    svgMouseUp() {
+        if (!this.justScaleTransGraph) {
+            this.setSelection([], []);
+        } else {
+            this.justScaleTransGraph = false;
+        }
+    }
+
+    // test this on return
+    pathMouseDown(bond: GraphBond) {
+        d3.event.stopPropagation();
+
+        if (d3.event.ctrlKey || d3.event.metaKey) {
+            if (this.selectionContains(bond)) {
+                this.removeFromSelection(bond);
+            } else {
+                this.addToSelection(bond);
+            }
+        } else {
+            if (!this.selectionContains(bond)) {
+                this.setSelection([], []);
+                this.addToSelection(bond);
+            }
+        }
+
+        this.updateGraph();
+    }
+
+    nodeMouseUp(el: GraphElement) {
+        d3.event.stopPropagation();
+
+        this.mouseDownNode = null;
+        if (!this.justDragged) {
+            if (d3.event.ctrlKey || d3.event.metaKey) {
+                if (this.selectionContains(el)) {
+                    this.removeFromSelection(el);
+                } else {
+                    this.addToSelection(el);
+                }
+            } else {
+                if (!this.selectionContains(el)) {
+                    this.setSelection([], []);
+                    this.addToSelection(el);
+                }
+            }
+            this.updateGraph();
+        }
+
+        this.justDragged = false;
+    }
+
+    addToSelection(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            this.selectedElements.push(e);
+        } else {
+            this.selectedBonds.push(e);
+        }
+    }
+
+    selectionContains(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            return this.selectedElements.includes(e);
+        } else {
+            return this.selectedBonds.includes(e);
+        }
+    }
+
+    removeFromSelection(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            this.selectedElements = this.selectedElements.filter(d => d != e);
+        } else {
+            this.selectedBonds = this.selectedBonds.filter(d => d != e);
+        }
+    }
+
+    setSelection(elList: GraphElement[], bondList: GraphBond[]) {
+        this.selectedElements = elList;
+        this.selectedBonds = bondList;
+    }
 
     // mousedown on element
     nodeMouseDown(el: GraphElement) {
         (<Event>d3.event).stopPropagation();
         this.mouseDownNode = el;
         this.justDragged = false;
-    }
-
-    dragmove(el: GraphElement) {
-        if (this.mouseDownNode) {
-            el.x += (<DragEvent>d3.event).dx;
-            el.y += (<DragEvent>d3.event).dy;
-            this.updateGraph();
-        }
     }
 
     drawPath(d: GraphBond) {
@@ -116,9 +199,6 @@ export class BaseGraphDisplay {
     }
 
     checkOverlap(rect1, rect2) {
-/*        var rect1 = el1.getBoundingClientRect();
-        var rect2 = el2.getBoundingClientRect();*/
-
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
     }
 
@@ -165,30 +245,47 @@ export class BaseGraphDisplay {
             })
             .on("zoomend", function () {
                 let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
-                let newSelection = [];
-                for (const el of graph.elementSelection.selectAll(".outline")) {
-                    if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
-                        newSelection.push(el[0].__data__);
-                    }
-                }
-                for (const bond of graph.bondSelection[0]) {
-                    if (graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
-                        newSelection.push(bond.__data__);
-                    }
-                }
-                if (d3.event.sourceEvent.ctrlKey || d3.event.sourceEvent.metaKey) {
-                    for (const e of newSelection) {
-                        if (graph.selectedGroup.find(d => d == e) != null) {
-                            graph.selectedGroup = graph.selectedGroup.filter(d => d != e);
-                        } else {
-                            graph.selectedGroup.push(e);
+                if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
+                    let newSelection = [];
+                    if (this instanceof SystemDiagramDisplay) {
+                        for (const el of graph.elementSelection.selectAll(".outline")) {
+                            if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                                newSelection.push(el[0].__data__);
+                            }
+                        }
+                    } else {
+                        for (const el of graph.elementSelection[0]) {
+                            if (graph.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
+                                newSelection.push(el.__data__);
+                            }
                         }
                     }
-                } else {
-                    graph.selectedGroup = newSelection;
+                    for (const bond of graph.bondSelection[0]) {
+                        if (bond && graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                            newSelection.push(bond.__data__);
+                        }
+                    }
+                    if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
+                        for (const e of newSelection) {
+                            if (graph.selectionContains(e)) {
+                                graph.removeFromSelection(e);
+                            } else {
+                                graph.addToSelection(e);
+                            }
+                        }
+                    } else {
+                        graph.setSelection([], []);
+                        for (const e of newSelection) {
+                            graph.addToSelection(e);
+                        }
+                    }
                 }
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
+                if (graph instanceof SystemDiagramDisplay) {
+                    graph.updateModifierMenu();
+                    graph.updateVelocityMenu();
+                }
                 graph.updateGraph();
             });
     }
@@ -207,8 +304,13 @@ export class BaseGraphDisplay {
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
-                graph.pathMouseDown.call(graph, d3.select(this), d);
+                graph.pathMouseDown.call(graph, d);
             });
+
+        // update existing bondSelection
+        paths.classed(this.selectedClass, function (d) {
+            return graph.selectedBonds.includes(d);
+        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         this.pathExtraRendering(paths);
 
@@ -228,10 +330,30 @@ export class BaseGraphDisplay {
         newElements.enter().append("g");
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
+        let graph = this;
+        newElements.classed(this.selectedClass, function (d) {
+            return graph.selectedElements.includes(d);
+        });
+
         this.renderElements(newElements);
 
         // remove old elements
         this.elementSelection.exit().remove();
+    }
+
+    dragmove(el: GraphElement) {
+        if (this.mouseDownNode) {
+            if (!this.selectedElements.includes(el)) {
+                this.setSelection([el], []);
+            }
+
+            for (const el of this.selectedElements) {
+                el.x += (<DragEvent>d3.event).dx;
+                el.y += (<DragEvent>d3.event).dy;
+            }
+
+            this.updateGraph();
+        }
     }
 
     // call to propagate changes to graph

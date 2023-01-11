@@ -111,9 +111,13 @@ path.link {
     stroke-width: 4px;
 }
 
-    path.link.selected, path.link.selected:hover {
-        stroke: rgb(6, 82, 255);
-    }
+path.link.selected, path.link.selected:hover {
+    stroke: rgb(6, 82, 255);
+}
+
+g.selected > text {
+    fill: rgb(6, 82, 255);
+}
 
 .hoverablePath:hover {
     stroke: rgb(94, 196, 204);
