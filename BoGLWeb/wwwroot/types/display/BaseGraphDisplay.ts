@@ -69,17 +69,19 @@ export class BaseGraphDisplay {
         d3.select(window).on("keydown", function () {
             graph.svgKeyDown.call(graph);
         })
-            .on("keyup", function () {
-                graph.svgKeyUp.call(graph);
-            });
+        .on("keyup", function () {
+            graph.svgKeyUp.call(graph);
+        });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+        svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
     }
 
     // functions needed in system diagram are called from this class but not defined by default
     svgKeyDown() { }
     svgKeyUp() { }
     svgMouseDown() { }
+    svgMouseMove() { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
 
