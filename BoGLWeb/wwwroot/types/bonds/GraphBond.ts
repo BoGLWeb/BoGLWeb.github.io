@@ -10,4 +10,8 @@ export class GraphBond {
         this.target = target;
         this.velocity = velocity;
     }
+
+    copy(source: GraphElement, target: GraphElement) {
+        return new GraphBond(source, target, this.velocity);
+    }
 }

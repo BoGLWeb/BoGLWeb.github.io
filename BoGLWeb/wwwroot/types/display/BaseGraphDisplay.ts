@@ -13,6 +13,9 @@ export class BaseGraphDisplay {
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
     readonly A_KEY: number = 65;
+    readonly C_KEY: number = 67;
+    readonly X_KEY: number = 88;
+    readonly V_KEY: number = 86;
     readonly CTRL_KEY: number = 17;
 
     // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
@@ -91,9 +94,12 @@ export class BaseGraphDisplay {
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
     }
 
+    checkCtrlCombo(a: number) {
+        return (d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a);
+    }
+
     svgKeyUp() {
-        console.log(this.lastKeyDown, d3.event.keyCode);
-        if ((d3.event.keyCode == this.A_KEY && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == this.A_KEY)) {
+        if (this.checkCtrlCombo(this.A_KEY)) {
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
         }
