@@ -213,7 +213,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             graph.edgeCircle.style("display", "none");
         })
             .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d3.select(this.parentNode.parentNode.parentNode), d);
+                graph.nodeMouseUp.call(graph, d);
             })
             .on("mouseleave", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
@@ -357,13 +357,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justClickedEdge = true;
 
         if (d3.event.ctrlKey || d3.event.metaKey) {
-            if (this.selectedBonds.length > 0) {
+            if (this.selectionContains(bond)) {
                 this.removeSelectFromEdge(bond);
             } else {
                 this.addSelectEdge(bond);
             }
         } else {
-            if (this.selectedBonds.length == 0) {
+            if (!this.selectionContains(bond)) {
                 this.clearSelection();
                 this.addSelectEdge(bond);
             }
@@ -404,7 +404,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justDragged = false;
     }
 
-    nodeMouseUp(d3Elem: SVGSelection, el: SystemDiagramElement) {
+    nodeMouseUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
@@ -422,13 +422,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // we"re in the same node
             if (!this.justDragged) {
                 if (d3.event.ctrlKey || d3.event.metaKey) {
-                    if (this.selectedElements.includes(el)) {
+                    if (this.selectionContains(el)) {
                         this.removeSelectFromNode(el);
                     } else {
                         this.addSelectNode(el);
                     }
                 } else {
-                    if (!this.selectedElements.includes(el)) {
+                    if (!this.selectionContains(el)) {
                         this.clearSelection();
                         this.addSelectNode(el);
                     }

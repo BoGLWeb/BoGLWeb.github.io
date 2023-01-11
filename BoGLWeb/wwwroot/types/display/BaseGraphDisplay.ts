@@ -70,9 +70,28 @@ export class BaseGraphDisplay {
     svgKeyUp() { }
     svgMouseDown() { }
     svgMouseUp() { }
-    pathMouseDown(bond: GraphBond) { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
+
+    // test this on return
+    pathMouseDown(bond: GraphBond) {
+        d3.event.stopPropagation();
+
+        if (d3.event.ctrlKey || d3.event.metaKey) {
+            if (this.selectionContains(bond)) {
+                this.removeFromSelection(bond);
+            } else {
+                this.addToSelection(bond);
+            }
+        } else {
+            if (!this.selectionContains(bond)) {
+                this.setSelection([], []);
+                this.addToSelection(bond);
+            }
+        }
+
+        this.updateGraph();
+    }
 
     addToSelection(e: GraphElement | GraphBond) {
         if (e instanceof GraphElement) {
@@ -214,6 +233,7 @@ export class BaseGraphDisplay {
                             }
                         }
                     } else {
+                        graph.setSelection([], []);
                         for (const e of newSelection) {
                             graph.addToSelection(e);
                         }
