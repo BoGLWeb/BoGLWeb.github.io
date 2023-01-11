@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App BoGLWeb
 on:
   push:
     branches:
-    - BOGL-148-check-how-often-update-graph-is-called-and-reduce-if-possible
+    - main
 env:
   AZURE_WEBAPP_NAME: BoGLWeb
   AZURE_WEBAPP_PACKAGE_PATH: .\published
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.BoGLWeb_0F60 }}
+        publish-profile: ${{ secrets.BoGLWeb_3426 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
