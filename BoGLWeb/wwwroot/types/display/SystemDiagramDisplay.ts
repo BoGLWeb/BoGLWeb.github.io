@@ -486,7 +486,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     // keydown on main svg
     svgKeyDown() {
         // make sure repeated key presses don't register for each keydown
-        if (this.lastKeyDown !== -1) return;
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
         let graph = this;
 
@@ -517,7 +516,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     svgKeyUp() {
-        this.lastKeyDown = -1;
+        if ((d3.event.keyCode == this.A_KEY && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == this.A_KEY)) {
+            this.setSelection(this.elements, this.bonds);
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+            this.updateGraph();
+        }
     }
 
     get edgeDrag() {

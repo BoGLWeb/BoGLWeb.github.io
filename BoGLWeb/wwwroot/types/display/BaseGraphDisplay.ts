@@ -12,6 +12,8 @@ export class BaseGraphDisplay {
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
+    readonly A_KEY: number = 65;
+    readonly CTRL_KEY: number = 17;
 
     // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
     zoomWithSlider: boolean = false;
@@ -66,20 +68,11 @@ export class BaseGraphDisplay {
 
         // listen for key events
         let graph = this;
-        d3.select(window).on("keydown", function () {
-            graph.svgKeyDown.call(graph);
-        })
-        .on("keyup", function () {
-            graph.svgKeyUp.call(graph);
-        });
         svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
     }
 
-    // functions needed in system diagram are called from this class but not defined by default
-    svgKeyDown() { }
-    svgKeyUp() { }
     svgMouseDown() { }
     svgMouseMove() { }
     pathExtraRendering(path: BGBondSelection) { }
@@ -90,6 +83,19 @@ export class BaseGraphDisplay {
             this.setSelection([], []);
         } else {
             this.justScaleTransGraph = false;
+        }
+    }
+
+    // functions needed in system diagram are called from this class but not defined by default
+    svgKeyDown() {
+        this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
+    }
+
+    svgKeyUp() {
+        console.log(this.lastKeyDown, d3.event.keyCode);
+        if ((d3.event.keyCode == this.A_KEY && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == this.A_KEY)) {
+            this.setSelection(this.elements, this.bonds);
+            this.updateGraph();
         }
     }
 
