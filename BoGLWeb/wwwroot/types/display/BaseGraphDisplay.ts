@@ -63,15 +63,33 @@ export class BaseGraphDisplay {
         this.elementSelection = svgG.append("g").selectAll("g");
 
         svg.call(this.dragSvg()).on("dblclick.zoom", null);
+
+        // listen for key events
+        let graph = this;
+        d3.select(window).on("keydown", function () {
+            graph.svgKeyDown.call(graph);
+        })
+            .on("keyup", function () {
+                graph.svgKeyUp.call(graph);
+            });
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
     }
 
     // functions needed in system diagram are called from this class but not defined by default
     svgKeyDown() { }
     svgKeyUp() { }
     svgMouseDown() { }
-    svgMouseUp() { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
+
+    svgMouseUp() {
+        if (!this.justScaleTransGraph) {
+            this.setSelection([], []);
+        } else {
+            this.justScaleTransGraph = false;
+        }
+    }
 
     // test this on return
     pathMouseDown(bond: GraphBond) {
