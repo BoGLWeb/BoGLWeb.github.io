@@ -3,16 +3,19 @@ import { BondGraphBond } from "../bonds/BondGraphBond";
 import { GraphBond } from "../bonds/GraphBond";
 import { BondGraphElement } from "../elements/BondGraphElement";
 import { GraphElement } from "../elements/GraphElement";
+import { BondGraph } from "../graphs/BondGraph";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 
 export class BondGraphDisplay extends BaseGraphDisplay {
     dragging: boolean = false;
     testSVG: SVGSelection;
     defs: SVGSelection;
+    id: number;
 
-    constructor(svg: SVGSelection, nodes: BondGraphElement[], edges: GraphBond[]) {
-        super(svg, nodes, edges);
+    constructor(id: number, svg: SVGSelection, bondGraph: BondGraph) {
+        super(svg, bondGraph);
 
+        this.id = id;
         this.testSVG = d3.select("#app").append("svg");
         this.testSVG.style("position", "absolute")
             .style("left", "-10000000px")
@@ -21,22 +24,36 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         // define arrow markers for graph links
         this.defs = svg.append("svg:defs");
 
-        this.makeBaseMarker("flat", 1, 5, 10, 10)
+        this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10, false)
             .append("path")
             .attr("d", "M1,10L1,-10");
 
-        this.makeBaseMarker("arrow", 10, 0, 10, 10)
+        this.makeBaseMarker("causal_stroke_" + id + "_selected", 1, 5, 10, 10, true)
+            .append("path")
+            .attr("d", "M1,10L1,-10");
+
+        this.makeBaseMarker("arrow_" + id, 10, 0, 10, 10, false)
             .append("path")
             .attr("d", "M10,0L2,5");
 
-        let arrowAndFlat = this.makeBaseMarker("flat_and_arrow", 10, 10, 20, 20);
+        this.makeBaseMarker("arrow_" + id + "_selected", 10, 0, 10, 10, true)
+            .append("path")
+            .attr("d", "M10,0L2,5");
+
+        let arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id, 10, 10, 20, 20, false);
+        arrowAndFlat.append("path")
+            .attr("d", "M10,10L2,15");
+        arrowAndFlat.append("path")
+            .attr("d", "M10,5L10,15");
+
+        arrowAndFlat = this.makeBaseMarker("causal_stroke_and_arrow_" + id + "_selected", 10, 10, 20, 20, true);
         arrowAndFlat.append("path")
             .attr("d", "M10,10L2,15");
         arrowAndFlat.append("path")
             .attr("d", "M10,5L10,15");
     }
 
-    makeBaseMarker(id: string, refX, refY, w, h) {
+    makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
         let marker = this.defs.append("svg:marker");
         marker.attr("id", id)
             .attr("refX", refX)
@@ -44,7 +61,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("markerWidth", w)
             .attr("markerHeight", h)
             .attr("orient", "auto-start-reverse")
-            .style("stroke", "#333");
+            .style("stroke", isSelected ? "rgb(6, 82, 255)" : "#333");
         return marker;
     }
 
@@ -93,6 +110,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
+            .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d);
+            })
             .call(this.drag);
 
         let text = newElements.append("text");
@@ -108,8 +128,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     }
 
     pathExtraRendering(paths: BGBondSelection) {
-        paths.style('marker-end', (d) => 'url(#' + (d as BondGraphBond).targetMarker + ')')
-            .style('marker-start', (d) => 'url(#' + (d as BondGraphBond).sourceMarker + ')')
+        paths.style('marker-end', (d: BondGraphBond) => 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')')
+            .style('marker-start', (d: BondGraphBond) => (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')' : ""))
             .style('stroke-width', 2);
     }
 }

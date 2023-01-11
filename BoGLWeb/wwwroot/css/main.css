@@ -111,9 +111,13 @@ path.link {
     stroke-width: 4px;
 }
 
-    path.link.selected, path.link.selected:hover {
-        stroke: rgb(6, 82, 255);
-    }
+path.link.selected, path.link.selected:hover {
+    stroke: rgb(6, 82, 255);
+}
+
+g.selected > text {
+    fill: rgb(6, 82, 255);
+}
 
 .hoverablePath:hover {
     stroke: rgb(94, 196, 204);
@@ -334,4 +338,351 @@ circle {
 text {
     fill: black;
     dominant-baseline: middle;
+}
+
+#app {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+}
+
+#loadingImageWrapper {
+    display: block;
+}
+
+#loadingImage {
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-duration: 3s;
+}
+
+#loadingText {
+    font-size: 40px;
+    display: block;
+}
+
+#loadingWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0.65);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.65);
+    }
+}
+
+/* Fix for bug in Ant Design: https://github.com/ant-design/ant-design/issues/30758 */
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header > .ant-collapse-expand-icon {
+    left: auto;
+    right: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+#modifierMenu {
+    width: 120px;
+    height: fit-content;
+    position: absolute;
+    right: 15px;
+}
+
+#modifierMenu > .ant-collapse {
+    height: 100%;
+    padding-bottom: 0;
+    overflow: clip !important;
+}
+
+#modifierCheckboxWrapper > .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+    margin-left: 5px;
+}
+
+.ant-collapse-content-box:has(#modifierCheckboxWrapper) {
+    padding: 0 10px 5px 10px !important;
+}
+
+.ant-collapse-icon-position-right > div > .ant-collapse-header {
+    padding-bottom: 0 !important;
+    padding-top: 2px !important;
+}
+
+hr:not([size]) {
+    margin: 2px 0;
+    color: white;
+    opacity: 1;
+    height: 1.5px !important;
+}
+
+.arrowButton {
+    font-size: 30px;
+    line-height: 20px;
+    color: darkgray;
+}
+
+.ant-btn-lg:has(.arrowButton) {
+    padding: 0px !important;
+    position: absolute;
+    top: 0;
+}
+
+#clearVelocityWrapper {
+    margin: 30px auto;
+    width: 60px;
+    height: 60px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='2' stroke-dasharray='1%2c 5' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bogl_button {
+    height: auto;
+    background-color: #ABDCFF;
+    border: 1.5px solid #ABDCFF;
+    padding: 4px 5px;
+    border-radius: 5px;
+    color: black !important;
+    font-size: 12px;
+    line-height: 15px;
+}
+
+.bogl_button:hover:not(:disabled) {
+    background-color: #BEE6FD !important;
+}
+
+.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled) {
+    background-color: #ABDCFF !important;
+}
+
+.longArrow {
+    width: 30px !important;
+    height: 25px !important;
+}
+
+.tallArrow {
+    height: 30px !important;
+    width: 25px !important;
+}
+
+.tallArrow > span > .arrowButton {
+    line-height: 30px;
+}
+
+.topArrow {
+    margin-top: -5px;
+}
+
+.bottomArrow {
+    margin-left: -12px;
+    margin-top: 5px;
+}
+
+.sideTopArrow {
+    margin-top: -3px;
+}
+
+#modifierCheckboxWrapper > label {
+    font-size: 12px;
+}
+
+#velocities {
+    position: relative;
+}
+
+#modifierMenu .ant-collapse-header, #zoomMenu .ant-collapse-header {
+    font-size: 12px;
+}
+
+#generateButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+#ruleLoadProgress {
+    position: absolute;
+    bottom: 20px;
+    left: 370px;
+    width: calc(100% - 470px);
+}
+
+#ruleLoadProgressText {
+    position: absolute;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
+}
+
+#generateProgress{
+    position: absolute;
+    bottom: 20px;
+    left: 412px;
+    width: calc(100% - 500px);
+}
+
+#generateProgressText{
+    position: absolute;
+    bottom: 20px;
+    left: 255px;
+    margin: 0;
+}
+
+#causalSelect {
+    position: absolute;
+    right: 10px;
+    top: 77px;
+}
+
+#zoomMenu {
+    position: absolute;
+    width: 70px;
+    right: 15px;
+    bottom: 50px;
+}
+
+#zoomMenu > div {
+    height: auto;
+}
+
+#zoomMenu .ant-collapse-content-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#zoomMenu .ant-slider {
+    margin-bottom: 10px;
+}
+
+#zoomMenu .bogl_button {
+    padding: 4px 10px;
+}
+
+.ant-slider-mark {
+    display: none;
+}
+
+.ant-slider {
+    height: 180px;
+}
+
+.ant-slider-rail, .ant-slider:hover .ant-slider-rail {
+    background-color: #e3eaed !important;
+    border: solid 1px #d6d6d6;
+}
+
+.sliderLabel {
+    font-size: 15px;
+    font-weight: bold;
+    color: #a9a9a9;
+}
+
+.ant-slider-track, .ant-slider .ant-slider-track:hover {
+    background-color: transparent !important;
+}
+
+#plusLabel {
+    position: absolute;
+    left: 20px;
+    top: 7px;
+}
+
+#minusLabel {
+    position: absolute;
+    left: 20px;
+    top: 179px;
+}
+
+.ant-slider-handle {
+    width: 0;
+    height: 0;
+    background-color: transparent;
+}
+
+.ant-slider-vertical .ant-slider-handle {
+    margin: 0;
+}
+
+.ant-slider-handle:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.ant-slider-handle:hover {
+    outline: none;
+}
+
+#sliderImg {
+    position: absolute;
+    top: -5.5px;
+    left: -7px;
+    height: 11px;
+}
+
+.ant-slider-rail {
+    border-radius: 0 !important;
+}
+
+#zoomMenu .ant-collapse-item {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#zoomMenu .ant-collapse {
+    padding-bottom: 2px;
+}
+
+#zoomMenu .ant-collapse-content {
+    padding-top: 5px;
+}
+
+.selectedVelocity > span > div {
+    color: black !important;
+}
+
+.velocityArrow {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.topVelocity {
+    text-anchor: start;
+    dominant-baseline: middle;
+}
+
+.rightVelocity {
+    text-anchor: start;
+    alignment-baseline: central;
+}
+
+.bottomVelocity {
+    text-anchor: end;
+    dominant-baseline: central;
+}
+
+.leftVelocity {
+    text-anchor: end;
+    alignment-baseline: middle;
 }

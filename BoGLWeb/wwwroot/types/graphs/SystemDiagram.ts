@@ -1,12 +1,13 @@
 ﻿import { GraphBond } from "../bonds/GraphBond";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { BaseGraph } from "./BaseGraph";
 
-export class SystemDiagram {
-    elements: SystemDiagramElement[];
+export class SystemDiagram extends BaseGraph {
+    nodes: SystemDiagramElement[];
     edges: GraphBond[];
 
-    constructor(elements: SystemDiagramElement[], edges: GraphBond[]) {
-        this.elements = elements;
-        this.edges = edges;
+    constructor(nodes: SystemDiagramElement[], edges: GraphBond[]) {
+        super(nodes, edges);
+        this.nodes = nodes;
     }
 }

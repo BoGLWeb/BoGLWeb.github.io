@@ -1,15 +1,11 @@
 "use strict";
-import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
-import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
-import { BondGraphBond } from "./types/bonds/BondGraphBond";
-import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
-import { GraphBond } from "./types/bonds/GraphBond";
-import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
+import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
+import getBackendManager = backendManager.getBackendManager;
 
-function populateMenu(graph: BaseGraphDisplay) {
+export function populateMenu() {
     ElementNamespace.categories.map((c, i) => {
         ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
             const group = document.createElement('div');
@@ -17,7 +13,7 @@ function populateMenu(graph: BaseGraphDisplay) {
             group.classList.add("groupDiv");
             group.addEventListener("mousedown", function () {
                 document.body.style.cursor = "grabbing";
-                graph.draggingElement = e.id;
+                window.systemDiagram.draggingElement = e.id;
             });
 
             document.getElementById(c.folderName).appendChild(group);
@@ -35,45 +31,50 @@ function populateMenu(graph: BaseGraphDisplay) {
     });
 }
 
-function loadPage() {
-    var systemDiagramSVG = d3.select("#systemDiagram").append("svg");
-    systemDiagramSVG.classed("graphSVG", true);
+async function loadPage() {
+    window.tabNum = "1"; 
+    let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
+    let sliderImg: any = document.createElement("img"); 
+    sliderImg.src = "images/sliderIcon.svg";
+    sliderImg.id = "sliderImg";
+    sliderImg.draggable = false;
+    sliderHolder.appendChild(sliderImg);
 
-    var systemDiagram = new SystemDiagramDisplay(systemDiagramSVG, [], []);
-    systemDiagram.draggingElement = null;
+    window.backendManager = backendManager;
+    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    window.systemDiagramSVG.classed("graphSVG", true);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('q');
+    if(myParam !== null){
+        let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
+        getBackendManager().loadSystemDiagram(sysDiagramString);
+    }else {
+        window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+    }
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
-        systemDiagram.draggingElement = null;
+        window.systemDiagram.draggingElement = null;
     });
 
-    populateMenu(systemDiagram);
-    systemDiagram.updateGraph();
+    populateMenu();
 
-    var bondGraphSVG = d3.select("#bondGraph").append("svg");
-    bondGraphSVG.classed("graphSVG", true);
+    window.unsimpBGSVG = d3.select("#unsimpBG").append("svg");
+    window.unsimpBGSVG.classed("graphSVG", true);
+    window.simpBGSVG = d3.select("#simpBG").append("svg");
+    window.simpBGSVG.classed("graphSVG", true);
+    window.causalBGSVG = d3.select("#causalBG").append("svg");
+    window.causalBGSVG.classed("graphSVG", true);
 
-    let systemDiagramString = '{"elements":[{"type":16,"x":-198.55480367585608,"y":-80.42269005847913,"modifiers":[6,3],"velocity":2},{"type":16,"x":52.111862990811005,"y":-80.42269005847902,"modifiers":[3],"velocity":0},{"type":24,"x":-160.33258145363413,"y":-40.42269005847925,"modifiers":[],"velocity":3},{"type":24,"x":92.11186299081078,"y":-40.42269005847925,"modifiers":[],"velocity":0},{"type":5,"x":-45.49924812030031,"y":68.02175438596555,"modifiers":[],"velocity":0},{"type":22,"x":-84.33133825239054,"y":335.11693698114834,"modifiers":[],"velocity":0},{"type":22,"x":130.33532841427643,"y":149.78360364781452,"modifiers":[],"velocity":0},{"type":22,"x":-296.33133825239065,"y":156.45027031448126,"modifiers":[],"velocity":0}],"edges":[{"source":7,"target":5,"velocity":1},{"source":6,"target":5,"velocity":0}]}';
-    let parsedJson = JSON.parse(systemDiagramString);
-    let elements = []
-    for (let element of parsedJson.elements) {
-        elements.push(element as unknown as SystemDiagramElement);
-    }
-    let edges = []
-    for (let edge of parsedJson.edges) {
-        edges.push(new GraphBond(elements[edge.source], elements[edge.target]));
-    }
-    console.log(new SystemDiagram(elements, edges));
-
-    // example bond graph
-    let n1 = new BondGraphElement(0, "1", 50, 50);
-    let n2 = new BondGraphElement(1, "R:b", 50, -50);
-    let n3 = new BondGraphElement(2, "I:m", 150, 50);
-    let n4 = new BondGraphElement(3, "C:1/k", 50, 150);
-    let n5 = new BondGraphElement(4, "Se:F(t)", -50, 50);
-    var bondGraph = new BondGraphDisplay(bondGraphSVG, [n1, n2, n3, n4, n5], [new BondGraphBond(n1, n2, "flat", "arrow"), new BondGraphBond(n1, n3, "", "flat_and_arrow"),
-    new BondGraphBond(n1, n4, "flat", "arrow"), new BondGraphBond(n1, n5, "flat_and_arrow", "")]);
-    bondGraph.updateGraph();
+    d3.select(window).on("keydown", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyDown.call(graph);
+    })
+    .on("keyup", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyUp.call(graph);
+    });
 }
 
 function pollDOM() {

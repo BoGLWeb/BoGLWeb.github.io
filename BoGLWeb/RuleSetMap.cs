@@ -4,149 +4,156 @@ using System.Xml.Linq;
 using BoGLWeb.BaseClasses;
 
 namespace BoGLWeb {
-    public sealed class RuleSetMap{
+    public sealed class RuleSetMap {
+        //Singleton Setup
+        private static RuleSetMap? instance;
+        private static readonly object padlock = new();
 
-        //Singleton
-        private static RuleSetMap instance = null;
-        private static readonly object padlock = new object();
-
-        //Other Stuff
-        private Dictionary<string, ruleSet> ruleSetMap;
+        //Class variables
+        private readonly Dictionary<string, ruleSet> ruleSetMap;
         private int numLoaded;
 
-        RuleSetMap() {
-            ruleSetMap = new Dictionary<string, ruleSet>();
-            numLoaded = 0;
+        private RuleSetMap() {
+            this.ruleSetMap = new Dictionary<string, ruleSet>();
+            this.numLoaded = 0;
         }
 
+        /// <summary>
+        /// Returns the singleton instance of the RuleSetMap
+        /// </summary>
+        /// <returns>An instance of RuleSetMap</returns>
         public static RuleSetMap getInstance() {
             lock (padlock) {
-                if (instance == null) {
-                    instance = new RuleSetMap();
-                }
-                return instance;
-            }            
+                return instance ??= new RuleSetMap();
+            }
         }
 
+        /// <summary>
+        /// Loads the ruleset with a given name
+        /// </summary>
+        /// <param name="name">The name of the ruleset</param>
+        /// <returns>The completed Task</returns>
         public async Task loadRuleSet(string name) {
-            if (ruleSetMap.ContainsKey(name)) {
+            //Ensure that we only load each rule once
+            if (this.ruleSetMap.ContainsKey(name)) {
                 Console.WriteLine("Rule " + name + " already loaded.");
                 return;
             }
 
+            //Setup HTTP client that we will use to load the file
             HttpClient client = new HttpClient();
 
-            //TODO Figure out if this URL is okay, or is there something else that it should be
-            HttpResponseMessage ruleSetResponse = await client.GetAsync("http://localhost:5006/Rules/" + name + ".rsxml");
-            var ruleDeserializer = new XmlSerializer(typeof(ruleSet));
-            var ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
-            ruleSetMap.Add(name, (ruleSet)ruleDeserializer.Deserialize(ruleSetFileContent));
-            var numRules = ruleSetMap[name].ruleFileNames.Count;
-            string ruleDir = ruleSetMap[name].rulesDir;
-            List<string> ruleFileNames = ruleSetMap[name].ruleFileNames;
+            //Load the file as plain text from GitHub
+            HttpResponseMessage ruleSetResponse =
+                await client.GetAsync("https://boglweb.github.io/rules-and-examples/Rules/" + name + ".rsxml");
+            XmlSerializer ruleDeserializer = new(typeof(ruleSet));
+            Stream ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
 
-            var progStart = 5;
-            var progStep = (double)(100 - progStart) / ruleFileNames.Count;
-            var rules = new List<grammarRule>();
-            numLoaded = 0;
-            while (numLoaded < ruleFileNames.Count)
-            {
-                var rulePath = "/Rules/" + ruleFileNames[numLoaded];
+            //Deserialize the ruleset
+            this.ruleSetMap.Add(name, (ruleSet) ruleDeserializer.Deserialize(ruleSetFileContent));
 
-                HttpResponseMessage ruleResponse = await client.GetAsync("http://localhost:5006/" + rulePath);
+            //Load rules for the ruleset
+            List<string> ruleFileNames = this.ruleSetMap[name].ruleFileNames;
+
+            //Load all rules in a ruleset
+            List<grammarRule> rules = new();
+            this.numLoaded = 0;
+            while (this.numLoaded < ruleFileNames.Count) {
+                string rulePath = "/Rules/" + ruleFileNames[this.numLoaded];
+
+                //Get the rule files from GitHub 
+                HttpResponseMessage ruleResponse =
+                    await client.GetAsync("https://boglweb.github.io/rules-and-examples/" + rulePath);
                 string ruleText = await ruleResponse.Content.ReadAsStringAsync();
 
-                var xeRule = XElement.Parse(ruleText);
-                var temp = xeRule.Element("{ignorableUri}" + "grammarRule");
-                var openRule = new grammarRule();
-                if (temp != null)
-                {
-                    openRule = DeSerializeRuleFromXML(RemoveXAMLns(RemoveIgnorablePrefix(temp.ToString())));
+                XElement xeRule = XElement.Parse(ruleText);
+                XElement? temp = xeRule.Element("{ignorableUri}" + "grammarRule");
+                grammarRule openRule = new();
+                //Deserialize the rule XML using GraphSynth
+                if (temp != null) {
+                    openRule = this.DeSerializeRuleFromXML(this.RemoveXAMLns(RemoveIgnorablePrefix(temp.ToString())));
                 }
 
-                removeNullWhiteSpaceEmptyLabels(openRule.L);
-                removeNullWhiteSpaceEmptyLabels(openRule.R);
+                this.removeNullWhiteSpaceEmptyLabels(openRule.L);
+                this.removeNullWhiteSpaceEmptyLabels(openRule.R);
 
                 object ruleObj = new object[] { openRule, rulePath };
-                if (ruleObj is grammarRule)
-                {
-                    rules.Add((grammarRule)ruleObj);
-                }
-                else if (ruleObj is object[])
-                {
-                    foreach (object o in (object[])ruleObj)
-                    {
-                        if (o is grammarRule)
-                        {
-                            rules.Add((grammarRule)o);
-                        }
+                switch (ruleObj) {
+                    case grammarRule obj:
+                        rules.Add(obj);
+                        break;
+                    case object[] obj: {
+                        rules.AddRange(obj.OfType<grammarRule>());
+                        break;
                     }
                 }
-                numLoaded++;
+
+                this.numLoaded++;
             }
 
-            ruleSetMap[name].rules = rules;
+            this.ruleSetMap[name].rules = rules;
         }
 
+        /// <summary>
+        /// Returns the number of loaded rules
+        /// </summary>
+        /// <returns>number of loaded rules as an int</returns>
         public int getNumRules() {
-            return ruleSetMap.Count;
+            return this.ruleSetMap.Count;
         }
 
+        /// <summary>
+        /// Returns a ruleset
+        /// </summary>
+        /// <param name="name">The name of the ruleset</param>
+        /// <returns>A ruleset</returns>
         public ruleSet getRuleSet(string name) {
-            return ruleSetMap[name];
+            return this.ruleSetMap[name];
         }
 
-        private grammarRule DeSerializeRuleFromXML(string xmlString)
-        {
-        var stringReader = new StringReader(xmlString);
-        var ruleDeserializer = new XmlSerializer(typeof(grammarRule));
-        var newGrammarRule = (grammarRule)ruleDeserializer.Deserialize(stringReader);
-        if (newGrammarRule.L == null)
-        {
-            newGrammarRule.L = new designGraph();
-        }
-        else
-        {
-            newGrammarRule.L.internallyConnectGraph();
+        //Helper methods from BoGL Desktop
+        private grammarRule DeSerializeRuleFromXML(string xmlString) {
+            StringReader stringReader = new StringReader(xmlString);
+            XmlSerializer ruleDeserializer = new XmlSerializer(typeof(grammarRule));
+            grammarRule? newGrammarRule = (grammarRule) ruleDeserializer.Deserialize(stringReader);
+            if (newGrammarRule.L == null) {
+                newGrammarRule.L = new designGraph();
+            } else {
+                newGrammarRule.L.internallyConnectGraph();
+            }
+
+            if (newGrammarRule.R == null) {
+                newGrammarRule.R = new designGraph();
+            } else {
+                newGrammarRule.R.internallyConnectGraph();
+            }
+
+            return newGrammarRule;
         }
 
-        if (newGrammarRule.R == null)
-        {
-            newGrammarRule.R = new designGraph();
-        }
-        else
-        {
-            newGrammarRule.R.internallyConnectGraph();
-        }
-
-        return newGrammarRule;
-        }
-
-        private string RemoveXAMLns(string str)
-        {
+        //Start functions for cleaning up rule/ruleset xml
+        private string RemoveXAMLns(string str) {
             return str.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", "");
         }
 
-        private string RemoveIgnorablePrefix(string str)
-        {
+        private static string RemoveIgnorablePrefix(string str) {
             return str.Replace("GraphSynth:", "").Replace("xmlns=\"ignorableUri\"", "");
         }
 
-        private void removeNullWhiteSpaceEmptyLabels(designGraph g)
-        {
-        g.globalLabels.RemoveAll(string.IsNullOrWhiteSpace);
-        foreach (var a in g.arcs)
-        {
-            a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
+        private void removeNullWhiteSpaceEmptyLabels(designGraph g) {
+            g.globalLabels.RemoveAll(string.IsNullOrWhiteSpace);
+            foreach (arc a in g.arcs) {
+                a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
+            }
+
+            foreach (node a in g.nodes) {
+                a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
+            }
+
+            foreach (hyperarc a in g.hyperarcs) {
+                a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
+            }
         }
-        foreach (var a in g.nodes)
-        {
-            a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
-        }
-        foreach (var a in g.hyperarcs)
-        {
-            a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
-        }
-        }
+        //End functions for cleaning up rule/ruleset xml
     }
 }
