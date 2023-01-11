@@ -519,7 +519,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // make sure repeated key presses don't register for each keydown
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
-        let graph = this;
 
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
@@ -543,6 +542,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.elements = this.elements.concat(this.copiedElements);
             this.bonds = this.bonds.concat(this.copiedBonds);
             this.setSelection(this.copiedElements, this.copiedBonds);
+            this.copySelection();
             this.updateModifierMenu();
             this.updateVelocityMenu();
             this.updateGraph();
