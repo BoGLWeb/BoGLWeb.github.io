@@ -6,7 +6,6 @@ import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 import { MultiElementType } from "../elements/MultiElementType";
-import { GraphElement } from "../elements/GraphElement";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
@@ -45,6 +44,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     moveCircle(e: SystemDiagramElement) {
+        d3.event.stopPropagation();
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
         let x = coordinates[0];
         let y = coordinates[1];
@@ -201,27 +201,27 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         image.on("mouseenter", function () {
             graph.edgeCircle.style("display", "none");
         })
-            .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d);
-            })
-            .on("mouseleave", function (e) {
-                graph.setEdgeMarkerVisible.call(graph, e);
-            });
+        .on("mouseup", function (d) {
+            graph.nodeMouseUp.call(graph, d);
+        })
+        .on("mouseleave", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
+        });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-            .on("mouseenter", function (e) {
-                graph.setEdgeMarkerVisible.call(graph, e);
-            })
-            .on("mouseup", function (d) {
-                graph.handleEdgeUp.call(graph, d);
-            })
-            .on("mousedown", function (d) {
-                graph.handleEdgeDown.call(graph, d);
-            })
-            .call(this.edgeDrag);
+        .on("mouseenter", function (e) {
+            graph.setEdgeMarkerVisible.call(graph, e);
+        })
+        .on("mouseup", function (d) {
+            graph.handleEdgeUp.call(graph, d);
+        })
+        .on("mousedown", function (d) {
+            graph.handleEdgeDown.call(graph, d);
+        })
+        .call(this.edgeDrag);
     }
 
     pathExtraRendering(paths: BGBondSelection) {
@@ -509,6 +509,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.updateGraph();
                 break;
         }
+    }
+
+    svgMouseMove() {
+        this.edgeCircle.style("display", "none");
+        this.rejectX.style("display", "none");
     }
 
     svgKeyUp() {
