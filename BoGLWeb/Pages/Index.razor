@@ -32,8 +32,8 @@
         <MenuItem Key="setting:1">Cut</MenuItem>
         <MenuItem Key="setting:2">Copy</MenuItem>
         <MenuItem Key="setting:3">Paste</MenuItem>
-        <MenuItem Key="setting:4">Undo</MenuItem>
-        <MenuItem Key="setting:5">Redo</MenuItem>
+        <MenuItem Key="setting:4" OnClick="undo">Undo</MenuItem>
+        <MenuItem Key="setting:5 OnClick="redo">Redo</MenuItem>
         <MenuItem Key="setting:6">Delete</MenuItem>
     </SubMenu>
     <SubMenu title="Help" Class="topMenu">
@@ -83,10 +83,10 @@
         <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
-        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="undo">
             <Icon Component="UndoSvg"/>
         </Button>
-        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="redo">
             <Icon Component="RedoSvg"/>
         </Button>
         <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
@@ -284,6 +284,14 @@
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
+
+    public static void undo() {
+
+    }
+
+    public static void redo() {
+
+    }
 
     //Set is the velocity option is disabled in the modifier menu
     [JSInvokable]

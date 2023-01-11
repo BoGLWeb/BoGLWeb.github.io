@@ -5,7 +5,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BoGLWeb.BaseClasses;
-using static BoGLWeb.Graph;
 using BoGLWeb.EditorHelper;
 using System.Text.RegularExpressions;
 
