@@ -11,4 +11,8 @@ export class SystemDiagramElement extends GraphElement {
         this.velocity = velocity;
         this.type = type;
     }
+
+    copy(id, offset = 0) {
+        return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, this.modifiers);
+    }
 }

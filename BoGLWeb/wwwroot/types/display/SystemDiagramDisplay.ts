@@ -23,6 +23,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     };
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
+    copiedElements: SystemDiagramElement[] = [];
+    copiedBonds: GraphBond[] = [];
+    ctrlPressed: boolean = false;
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -483,8 +486,37 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    checkCtrlCombo(a: number) {
+        return (d3.event.keyCode == a && this.ctrlPressed) || (this.ctrlPressed && this.lastKeyDown == a);
+    }
+
+    copySelection() {
+        this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
+        this.copiedBonds = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
+            .map(b => b.copy(this.copiedElements[this.selectedElements.findIndex(a => a.id == b.source.id)], this.copiedElements[this.selectedElements.findIndex(a => a.id == b.target.id)]));
+    }
+
+    deleteSelection() {
+        for (let e of this.selectedBonds) {
+            this.bonds = this.bonds.filter(bond => bond != e);
+        }
+        for (let e of this.selectedElements) {
+            this.spliceLinksForNode(e);
+            this.elements = this.elements.filter(el => el != e);
+        }
+        this.setSelection([], []);
+        this.updateModifierMenu();
+        this.updateVelocityMenu();
+        this.updateGraph();
+    }
+
     // keydown on main svg
     svgKeyDown() {
+        if (this.lastKeyDown == (<KeyboardEvent>d3.event).keyCode) return;
+        if (!this.ctrlPressed) {
+            this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
+        }
+
         // make sure repeated key presses don't register for each keydown
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
         let graph = this;
@@ -493,20 +525,27 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
                 d3.event.preventDefault();
-                for (let e of this.selectedBonds) {
-                    this.bonds.splice(this.bonds.indexOf(e), 1);
-                    this.bonds = this.bonds.filter(bond => bond != e);
-                }
-                for (let e of this.selectedElements) {
-                    this.elements.splice(this.elements.indexOf(e), 1);
-                    graph.spliceLinksForNode(e);
-                    this.elements = this.elements.filter(el => el != e);
-                }
-                this.setSelection([], []);
-                this.updateModifierMenu();
-                this.updateVelocityMenu();
-                this.updateGraph();
+                this.deleteSelection();
                 break;
+        }
+
+        if (this.checkCtrlCombo(this.A_KEY)) {
+            this.setSelection(this.elements, this.bonds);
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+            this.updateGraph();
+        } else if (this.checkCtrlCombo(this.C_KEY)) {
+            this.copySelection();
+        } else if (this.checkCtrlCombo(this.X_KEY)) {
+            this.copySelection();
+            this.deleteSelection();
+        } else if (this.checkCtrlCombo(this.V_KEY)) {
+            this.elements = this.elements.concat(this.copiedElements);
+            this.bonds = this.bonds.concat(this.copiedBonds);
+            this.setSelection(this.copiedElements, this.copiedBonds);
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+            this.updateGraph();
         }
     }
 
@@ -516,12 +555,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     svgKeyUp() {
-        if ((d3.event.keyCode == this.A_KEY && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == this.A_KEY)) {
-            this.setSelection(this.elements, this.bonds);
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateGraph();
+        if (d3.event.keyCode == this.CTRL_KEY) {
+            this.ctrlPressed = false;
         }
+        this.lastKeyDown = -1;
     }
 
     get edgeDrag() {
