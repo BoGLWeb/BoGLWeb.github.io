@@ -66,6 +66,15 @@ async function loadPage() {
     window.simpBGSVG.classed("graphSVG", true);
     window.causalBGSVG = d3.select("#causalBG").append("svg");
     window.causalBGSVG.classed("graphSVG", true);
+
+    d3.select(window).on("keydown", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyDown.call(graph);
+    })
+    .on("keyup", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyUp.call(graph);
+    });
 }
 
 function pollDOM() {
