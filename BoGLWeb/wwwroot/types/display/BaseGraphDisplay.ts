@@ -93,6 +93,29 @@ export class BaseGraphDisplay {
         this.updateGraph();
     }
 
+    nodeMouseUp(el: GraphElement) {
+        d3.event.stopPropagation();
+
+        this.mouseDownNode = null;
+        if (!this.justDragged) {
+            if (d3.event.ctrlKey || d3.event.metaKey) {
+                if (this.selectionContains(el)) {
+                    this.removeFromSelection(el);
+                } else {
+                    this.addToSelection(el);
+                }
+            } else {
+                if (!this.selectionContains(el)) {
+                    this.setSelection([], []);
+                    this.addToSelection(el);
+                }
+            }
+            this.updateGraph();
+        }
+
+        this.justDragged = false;
+    }
+
     addToSelection(e: GraphElement | GraphBond) {
         if (e instanceof GraphElement) {
             this.selectedElements.push(e);

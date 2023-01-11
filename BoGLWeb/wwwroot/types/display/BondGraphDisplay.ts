@@ -110,6 +110,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .on("mousedown", function (d) {
                 graph.nodeMouseDown.call(graph, d);
             })
+            .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d);
+            })
             .call(this.drag);
 
         let text = newElements.append("text");
