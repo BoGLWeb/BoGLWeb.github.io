@@ -316,7 +316,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     addSelectEdge(bond: GraphBond) {
         this.addToSelection(bond);
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     addSelectNode(el: SystemDiagramElement) {
@@ -334,14 +333,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.removeFromSelection(el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     clearSelection() {
         this.setSelection([], []);
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     pathMouseDown(bond: GraphBond) {
@@ -478,7 +475,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             this.clearSelection();
-            this.updateGraph();
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked
@@ -494,6 +490,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
         this.copiedBonds = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
             .map(b => b.copy(this.copiedElements[this.selectedElements.findIndex(a => a.id == b.source.id)], this.copiedElements[this.selectedElements.findIndex(a => a.id == b.target.id)]));
+        DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
     }
 
     deleteSelection() {
@@ -505,6 +502,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.elements = this.elements.filter(el => el != e);
         }
         this.setSelection([], []);
+        this.updateModifierMenu();
+        this.updateVelocityMenu();
+        this.updateGraph();
+    }
+
+    pasteSelection() {
+        this.elements = this.elements.concat(this.copiedElements);
+        this.bonds = this.bonds.concat(this.copiedBonds);
+        this.setSelection(this.copiedElements, this.copiedBonds);
+        this.copySelection();
         this.updateModifierMenu();
         this.updateVelocityMenu();
         this.updateGraph();
@@ -539,13 +546,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.copySelection();
             this.deleteSelection();
         } else if (this.checkCtrlCombo(this.V_KEY)) {
-            this.elements = this.elements.concat(this.copiedElements);
-            this.bonds = this.bonds.concat(this.copiedBonds);
-            this.setSelection(this.copiedElements, this.copiedBonds);
-            this.copySelection();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateGraph();
+            this.pasteSelection();
         }
     }
 
