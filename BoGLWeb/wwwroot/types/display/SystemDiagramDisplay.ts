@@ -316,7 +316,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     addSelectEdge(bond: GraphBond) {
         this.addToSelection(bond);
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     addSelectNode(el: SystemDiagramElement) {
@@ -334,14 +333,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.removeFromSelection(el);
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     clearSelection() {
         this.setSelection([], []);
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     pathMouseDown(bond: GraphBond) {
@@ -478,7 +475,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             this.clearSelection();
-            this.updateGraph();
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked

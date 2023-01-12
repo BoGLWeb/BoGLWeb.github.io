@@ -339,10 +339,16 @@ export class BaseGraphDisplay {
         paths.exit().remove();
     }
 
-    fullRenderElements() {
+    fullRenderElements(dragmove: boolean = false) {
+        if (dragmove) {
+            this.elementSelection.filter(e => this.selectedElements.includes(e)).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+            return;
+        }
+
         // update existing elements
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
 
         this.elementSelection.selectAll("*").remove();
 
@@ -373,14 +379,15 @@ export class BaseGraphDisplay {
                 el.y += (<DragEvent>d3.event).dy;
             }
 
-            this.updateGraph();
+            // Just update element selection positions without editing anything else since dragmove gets called so much
+            this.updateGraph(true);
         }
     }
 
     // call to propagate changes to graph
-    updateGraph() {
+    updateGraph(dragmove: boolean = false) {
         this.drawPaths();
-        this.fullRenderElements();
+        this.fullRenderElements(dragmove);
     }
 
     zoomed() {
