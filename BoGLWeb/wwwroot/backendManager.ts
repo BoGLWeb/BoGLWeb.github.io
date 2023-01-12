@@ -134,6 +134,27 @@ export namespace backendManager {
             await writableFileStream.close();
         }
 
+        public cut() {
+            this.getSystemDiagramDisplay().copySelection();
+            this.getSystemDiagramDisplay().deleteSelection();
+        }
+
+        public copy() {
+            this.getSystemDiagramDisplay().copySelection();
+        }
+
+        public paste() {
+            this.getSystemDiagramDisplay().pasteSelection();
+        }
+
+        public delete() {
+            this.getSystemDiagramDisplay().deleteSelection();
+        }
+
+        public getSystemDiagramDisplay() {
+            return this.getGraphByIndex("1") as SystemDiagramDisplay;
+        }
+
         public getSystemDiagram() {
             return JSON.stringify({
                 elements: window.systemDiagram.elements,
