@@ -148,12 +148,17 @@ export class BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    updateTopMenu() {
+        DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
+    }
+
     addToSelection(e: GraphElement | GraphBond) {
         if (e instanceof GraphElement) {
             this.selectedElements.push(e);
         } else {
             this.selectedBonds.push(e);
         }
+        this.updateTopMenu();
     }
 
     selectionContains(e: GraphElement | GraphBond) {
@@ -170,11 +175,13 @@ export class BaseGraphDisplay {
         } else {
             this.selectedBonds = this.selectedBonds.filter(d => d != e);
         }
+        this.updateTopMenu();
     }
 
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList;
         this.selectedBonds = bondList;
+        this.updateTopMenu();
     }
 
     // mousedown on element
