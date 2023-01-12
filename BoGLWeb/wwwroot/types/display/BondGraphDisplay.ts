@@ -66,8 +66,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     }
 
     // draw paths second to get the sizes of labels
-    updateGraph() {
-        this.fullRenderElements();
+    updateGraph(dragmove: boolean = false) {
+        this.fullRenderElements(dragmove);
         this.drawPaths();
     }
 
