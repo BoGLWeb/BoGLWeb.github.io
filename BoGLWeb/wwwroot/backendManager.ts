@@ -166,6 +166,8 @@ export namespace backendManager {
         }
 
         public setModifier(i: number, value: boolean) {
+            let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
+
             if (value) { // adding modifier
                 for (const el of window.systemDiagram.selectedElements) {
                     if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
@@ -179,6 +181,7 @@ export namespace backendManager {
                     }
                 }
             }
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
         }
 

@@ -29,12 +29,12 @@
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu">
-        <MenuItem Key="setting:1" OnClick="cut">Cut</MenuItem>
-        <MenuItem Key="setting:2" OnClick="copy">Copy</MenuItem>
-        <MenuItem Key="setting:3" OnClick="paste">Paste</MenuItem>
-        <MenuItem Key="setting:4" OnClick="undo">Undo</MenuItem>
-        <MenuItem Key="setting:5" OnClick="redo">Redo</MenuItem>
-        <MenuItem Key="setting:6" OnClick="delete">Delete</MenuItem>
+        <MenuItem Key="setting:1" OnClick="Cut">Cut</MenuItem>
+        <MenuItem Key="setting:2" OnClick="Copy">Copy</MenuItem>
+        <MenuItem Key="setting:3" OnClick="Paste">Paste</MenuItem>
+        <MenuItem Key="setting:4" OnClick="Undo">Undo</MenuItem>
+        <MenuItem Key="setting:5" OnClick="Redo">Redo</MenuItem>
+        <MenuItem Key="setting:6" OnClick="Delete">Delete</MenuItem>
     </SubMenu>
     <SubMenu title="Help" Class="topMenu">
         <MenuItem Key="setting:1">
@@ -74,22 +74,22 @@
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CutSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CopySvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
-        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="undo">
+        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
             <Icon Component="UndoSvg"/>
         </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="redo">
+        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
             <Icon Component="RedoSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
         </Button>
     </li>
@@ -335,7 +335,8 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelectionModifier() {
+    public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
+        Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
         app?.StateHasChanged();
     }
 
