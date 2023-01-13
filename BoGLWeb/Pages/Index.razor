@@ -323,7 +323,8 @@
     }
 
     [JSInvokable]
-    public static void URDeleteSelection() {
+    public static void URDeleteSelection(string[] deletedObjects) {
+        Console.WriteLine("Recording elements and edges deleted: [" + String.Join(", ", deletedObjects) + "]");
         app?.StateHasChanged();
     }
 
@@ -338,8 +339,8 @@
     }
 
     [JSInvokable]
-    public static void URMoveSelection(int[] elements, float xOffset, float yOffset) {
-        Console.WriteLine("Recording selection movement: [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+    public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
+        Console.WriteLine("Recording selection movement:" + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         app?.StateHasChanged();
     }
 

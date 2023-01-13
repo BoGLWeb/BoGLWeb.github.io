@@ -396,7 +396,7 @@ export class BaseGraphDisplay {
             this.updateGraph(true);
         } else {
             if (this.startedSelectionDrag) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);
+                DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", parseInt(window.tabNum), this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);
                 this.dragXOffset = 0;
                 this.dragYOffset = 0;
                 this.startedSelectionDrag = false;
