@@ -317,8 +317,34 @@
     }
 
     [JSInvokable]
+    public static void URAddSelection(string[] newObjects) {
+        Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "]");
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDeleteSelection() {
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelection() {
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionModifier() {
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
     public static void URMoveSelection(int[] elements, float xOffset, float yOffset) {
         Console.WriteLine("Recording selection movement: [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionVelocity() {
         app?.StateHasChanged();
     }
 
