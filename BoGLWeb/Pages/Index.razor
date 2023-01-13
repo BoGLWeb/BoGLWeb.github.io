@@ -342,12 +342,13 @@
 
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
-        Console.WriteLine("Recording selection movement:" + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         app?.StateHasChanged();
     }
 
     [JSInvokable]
-    public static void URChangeSelectionVelocity() {
+    public static void URChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals) {
+        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elementsAndEdges) + "], " + velID + ", [" + String.Join(", ", prevVelVals) + "]");
         app?.StateHasChanged();
     }
 

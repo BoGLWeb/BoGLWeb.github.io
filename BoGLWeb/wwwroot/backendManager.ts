@@ -223,12 +223,14 @@ export namespace backendManager {
         }
 
         public setVelocity(velocity: number) {
+            let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
             for (const e of window.systemDiagram.getSelection()) {
                 if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
                     e.velocity = velocity;
                 }
             }
             window.systemDiagram.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
         }
 
         public generateURL() {
