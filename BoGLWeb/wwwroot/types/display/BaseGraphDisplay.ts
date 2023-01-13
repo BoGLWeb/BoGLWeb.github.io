@@ -47,6 +47,10 @@ export class BaseGraphDisplay {
     highestElemId: number = 0;
     dragStartX: number;
     dragStartY: number;
+    elementsBeforeDrag: GraphElement[] = null;
+    dragXOffset: number = 0;
+    dragYOffset: number = 0;
+    startedSelectionDrag: boolean = false;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -372,15 +376,31 @@ export class BaseGraphDisplay {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
                 this.setSelection([el], []);
+                if (this instanceof SystemDiagramDisplay) {
+                    this.updateModifierMenu();
+                    this.updateVelocityMenu();
+                }
+                this.updateGraph();
             }
 
+            this.startedSelectionDrag = true;
+
             for (const el of this.selectedElements) {
+                this.dragXOffset += (<DragEvent>d3.event).dx;
+                this.dragYOffset += (<DragEvent>d3.event).dy;
                 el.x += (<DragEvent>d3.event).dx;
                 el.y += (<DragEvent>d3.event).dy;
             }
 
             // Just update element selection positions without editing anything else since dragmove gets called so much
             this.updateGraph(true);
+        } else {
+            if (this.startedSelectionDrag) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);
+                this.dragXOffset = 0;
+                this.dragYOffset = 0;
+                this.startedSelectionDrag = false;
+            }
         }
     }
 

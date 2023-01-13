@@ -317,6 +317,12 @@
     }
 
     [JSInvokable]
+    public static void URMoveSelection(int[] elements, float xOffset, float yOffset) {
+        Console.WriteLine("Recording selection movement: [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
     public static void SetIsSelecting(bool value) {
         Index.isSelecting = value;
         app?.StateHasChanged();
