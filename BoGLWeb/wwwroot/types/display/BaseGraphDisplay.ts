@@ -4,6 +4,7 @@ import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
+import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
 
 export class BaseGraphDisplay {
     // constants
@@ -121,8 +122,7 @@ export class BaseGraphDisplay {
             }
         } else {
             if (!this.selectionContains(bond)) {
-                this.setSelection([], []);
-                this.addToSelection(bond);
+                this.setSelection([], [bond]);
             }
         }
 
@@ -142,8 +142,7 @@ export class BaseGraphDisplay {
                 }
             } else {
                 if (!this.selectionContains(el)) {
-                    this.setSelection([], []);
-                    this.addToSelection(el);
+                    this.setSelection([el], []);
                 }
             }
             this.updateGraph();
@@ -156,13 +155,16 @@ export class BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
     }
 
-    addToSelection(e: GraphElement | GraphBond) {
+    addToSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
         if (e instanceof GraphElement) {
             this.selectedElements.push(e);
         } else {
             this.selectedBonds.push(e);
         }
         this.updateTopMenu();
+        if (undoRedo) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([e]), []);
+        }
     }
 
     selectionContains(e: GraphElement | GraphBond) {
@@ -173,13 +175,16 @@ export class BaseGraphDisplay {
         }
     }
 
-    removeFromSelection(e: GraphElement | GraphBond) {
+    removeFromSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
         if (e instanceof GraphElement) {
             this.selectedElements = this.selectedElements.filter(d => d != e);
         } else {
             this.selectedBonds = this.selectedBonds.filter(d => d != e);
         }
         this.updateTopMenu();
+        if (undoRedo) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], this.listToIDObjects([e]));
+        }
     }
 
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
@@ -225,6 +230,10 @@ export class BaseGraphDisplay {
 
     checkOverlap(rect1, rect2) {
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
+    }
+
+    listToIDObjects(elementsAndEdges: (GraphElement | GraphBond)[]) {
+        return elementsAndEdges.map(e => JSON.stringify((e instanceof GraphElement) ? { id: e.id } : { sourceId: e.source.id, targetId: e.target.id }));
     }
 
     // listen for dragging
@@ -291,18 +300,23 @@ export class BaseGraphDisplay {
                         }
                     }
                     if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
+                        let removeList = [];
+                        let addList = [];
+
                         for (const e of newSelection) {
                             if (graph.selectionContains(e)) {
-                                graph.removeFromSelection(e);
+                                graph.removeFromSelection(e, false);
+                                removeList.push(e);
                             } else {
-                                graph.addToSelection(e);
+                                graph.addToSelection(e, false);
+                                addList.push(e);
                             }
                         }
+
+                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(addList), graph.listToIDObjects(removeList));
                     } else {
-                        graph.setSelection([], []);
-                        for (const e of newSelection) {
-                            graph.addToSelection(e);
-                        }
+                        graph.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
+                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(newSelection), []);
                     }
                 }
                 document.getElementById("selectionRect").remove();

@@ -59,7 +59,8 @@ export namespace backendManager {
                 edges.push(bond);
             }
 
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", parsedJson.elements.concat(parsedJson.edges).map(e => JSON.stringify(e)));
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", parsedJson.elements.concat(parsedJson.edges).map(e => JSON.stringify(e)),
+                window.systemDiagram.listToIDObjects(window.systemDiagram.selectedElements), window.systemDiagram.listToIDObjects(window.systemDiagram.selectedBonds));
 
             var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;

@@ -288,37 +288,37 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
 
-    public static void undo() {
+    public static void Undo() {
 
     }
 
-    public static void redo() {
+    public static void Redo() {
 
     }
 
-    public async void cut() {
+    public async void Cut() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("cut");
     }
 
-    public async void copy() {
+    public async void Copy() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("copy");
     }
 
-    public async void paste() {
+    public async void Paste() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("paste");
     }
 
-    public async void delete() {
+    public async void Delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("delete");
     }
 
     [JSInvokable]
-    public static void URAddSelection(string[] newObjects) {
-        Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "]");
+    public static void URAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges) {
+        Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
         app?.StateHasChanged();
     }
 
@@ -329,7 +329,8 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelection() {
+    public static void URChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection) {
+        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addToSelection) + "], [" + String.Join(", ", removeFromSelection) + "]");
         app?.StateHasChanged();
     }
 
