@@ -86,8 +86,13 @@ export class BaseGraphDisplay {
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
 
+    getSelection() {
+        return ([] as (GraphElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
+    }
+
     svgMouseUp() {
         if (!this.justScaleTransGraph) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], this.listToIDObjects(this.getSelection()));
             this.setSelection([], []);
         } else {
             this.justScaleTransGraph = false;
@@ -105,6 +110,8 @@ export class BaseGraphDisplay {
 
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(
+                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
         }
@@ -122,6 +129,7 @@ export class BaseGraphDisplay {
             }
         } else {
             if (!this.selectionContains(bond)) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([bond]), this.getSelection());
                 this.setSelection([], [bond]);
             }
         }
@@ -142,6 +150,7 @@ export class BaseGraphDisplay {
                 }
             } else {
                 if (!this.selectionContains(el)) {
+                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.getSelection());
                     this.setSelection([el], []);
                 }
             }
@@ -389,6 +398,7 @@ export class BaseGraphDisplay {
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.getSelection());
                 this.setSelection([el], []);
                 if (this instanceof SystemDiagramDisplay) {
                     this.updateModifierMenu();

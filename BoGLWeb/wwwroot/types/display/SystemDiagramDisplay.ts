@@ -6,6 +6,7 @@ import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 import { MultiElementType } from "../elements/MultiElementType";
+import { GraphElement } from "../elements/GraphElement";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
@@ -353,8 +354,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
         } else {
             if (!this.selectionContains(bond)) {
-                this.clearSelection();
-                this.addSelectEdge(bond);
+                this.setSelection([], [bond]);
             }
         }
 
@@ -391,6 +391,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    setSelection(elList: GraphElement[], bondList: GraphBond[]) {
+        this.selectedElements = elList as SystemDiagramElement[];
+        this.selectedBonds = bondList;
+        this.updateModifierMenu();
+        this.updateVelocityMenu();
+        this.updateTopMenu();
+    }
+
     addBond(source, target) {
         let bond = new GraphBond(source, target);
         this.bonds.push(bond);
@@ -421,8 +429,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     }
                 } else {
                     if (!this.selectionContains(el)) {
-                        this.clearSelection();
-                        this.addSelectNode(el);
+                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.listToIDObjects(this.getSelection()));
+                        this.setSelection([el], []);
                     }
                 }
                 this.updateGraph();
@@ -476,8 +484,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 let xycoords = d3.mouse(this.svgG.node());
                 let element = new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []);
                 this.elements.push(element);
-                this.addToSelection(element, false);
                 DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(element)], this.listToIDObjects(this.selectedElements), this.listToIDObjects(this.selectedBonds));
+                this.setSelection([element], []);
             }
             //Update the system diagram
             this.updateGraph();
@@ -519,6 +527,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pasteSelection() {
         this.elements = this.elements.concat(this.copiedElements);
         this.bonds = this.bonds.concat(this.copiedBonds);
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [[].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e))], this.listToIDObjects(this.selectedElements), this.listToIDObjects(this.selectedBonds));
         this.setSelection(this.copiedElements, this.copiedBonds);
         this.copySelection();
         this.updateModifierMenu();
@@ -528,6 +537,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // keydown on main svg
     svgKeyDown() {
+        let graph = this;
+
         if (this.lastKeyDown == (<KeyboardEvent>d3.event).keyCode) return;
         if (!this.ctrlPressed) {
             this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
@@ -545,6 +556,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
 
         if (this.checkCtrlCombo(this.A_KEY)) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(
+                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), []);
             this.setSelection(this.elements, this.bonds);
             this.updateModifierMenu();
             this.updateVelocityMenu();
