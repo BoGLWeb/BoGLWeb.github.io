@@ -353,6 +353,66 @@
     }
 
     [JSInvokable]
+    public static void URDoAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDoDeleteSelection(string[] deletedObjects, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDoChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDoMoveSelection(int tabID, int[] elements, float xOffset, float yOffset, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDoChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals, bool isUndo) {
+        if (isUndo) {
+            // undo add selection
+        } else {
+            // redo add selection
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
     public static void SetIsSelecting(bool value) {
         Index.isSelecting = value;
         app?.StateHasChanged();
