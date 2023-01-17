@@ -59,7 +59,7 @@ export namespace backendManager {
                 edges.push(bond);
             }
 
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", parsedJson.elements.concat(parsedJson.edges).map(e => JSON.stringify(e)),
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", elements.map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 window.systemDiagram.listToIDObjects(window.systemDiagram.selectedElements), window.systemDiagram.listToIDObjects(window.systemDiagram.selectedBonds));
 
             var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
@@ -314,6 +314,31 @@ export namespace backendManager {
                         '</ul></p>'
                 }]
             }).start();
+        }
+
+        public urDoAddSelection(newObjects: string[], prevSelectedElements: string[], prevSelectedEdges: string[], isUndo: boolean) {
+            if (isUndo) {
+
+            } else {
+                let elements: SystemDiagramElement[] = [];
+                let bonds: GraphBond[] = [];
+                for (const object of newObjects) {
+                    let json = JSON.parse(object);
+                    if (json.hasOwnProperty("id")) {
+                        elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
+                    } else {
+                        bonds.push(new GraphBond(json.source, json.target, json.velocity));
+                    }
+                }
+                console.log(elements, bonds);
+                let sysDiag = window.systemDiagram;
+                sysDiag.elements = sysDiag.elements.concat(elements);
+                sysDiag.bonds = sysDiag.bonds.concat(bonds);
+                sysDiag.setSelection(elements, bonds);
+                sysDiag.updateModifierMenu();
+                sysDiag.updateVelocityMenu();
+                sysDiag.updateGraph();
+            }
         }
         
         instance: any;
