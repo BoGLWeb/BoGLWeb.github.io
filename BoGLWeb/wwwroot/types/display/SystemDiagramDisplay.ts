@@ -531,7 +531,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
                 d3.event.preventDefault();
-                this.deleteSelection();
+                DotNet.invokeMethodAsync("BoGLWeb", "delete");
                 break;
         }
 
@@ -544,7 +544,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {
             this.copySelection();
-            this.deleteSelection();
+            DotNet.invokeMethodAsync("BoGLWeb", "delete");
         } else if (this.checkCtrlCombo(this.V_KEY)) {
             this.pasteSelection();
         }

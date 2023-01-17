@@ -150,6 +150,10 @@ export namespace backendManager {
         public delete() {
             this.getSystemDiagramDisplay().deleteSelection();
         }
+        
+        public areMultipleElementsSelected(){
+            return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
+        }
 
         public getSystemDiagramDisplay() {
             return this.getGraphByIndex("1") as SystemDiagramDisplay;
@@ -302,6 +306,12 @@ export namespace backendManager {
                         '</ul></p>'
                 }]
             }).start();
+        }
+        
+        instance: any;
+        
+        public initInstance(instance: any){
+            this.instance = instance;
         }
     }
 
