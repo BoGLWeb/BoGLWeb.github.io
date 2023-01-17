@@ -700,6 +700,7 @@
     //Add url to modal
         url = "https://boglweb.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
+        base.StateHasChanged();
     }
 
     //Removes the compression from the url and turns it back into a json string
