@@ -360,6 +360,27 @@ export namespace backendManager {
             sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
         }
+
+        public urDoDeleteSelection(deletedObjects: string[], isUndo: boolean) {
+            let sysDiag = window.systemDiagram;
+            let parseResults = this.parseElementAndEdgeStrings(deletedObjects);
+            let elements: SystemDiagramElement[] = parseResults[0] as SystemDiagramElement[];
+            let bonds: GraphBond[] = parseResults[1] as GraphBond[];
+            if (isUndo) {
+                sysDiag.elements = sysDiag.elements.concat(elements);
+                sysDiag.bonds = sysDiag.bonds.concat(bonds);
+                sysDiag.setSelection(elements, bonds);
+            } else {
+                let elIDs = elements.map(e => e.id);
+                let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
+                sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
+                sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b.source.id, b.target.id));
+                sysDiag.setSelection([], []);
+            }
+            sysDiag.updateModifierMenu();
+            sysDiag.updateVelocityMenu();
+            sysDiag.updateGraph();
+        }
         
         instance: any;
         

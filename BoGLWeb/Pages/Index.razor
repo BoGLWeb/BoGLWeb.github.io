@@ -293,16 +293,14 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
-    static string[] newObjects;
-    static string[] prevSelectedElements;
-    static string[] prevSelectedEdges;
+    static string[] deletedObjects;
 
     public void Undo() {
-        URDoAddSelection(Index.newObjects, Index.prevSelectedElements, Index.prevSelectedEdges, true);
+        URDoDeleteSelection(Index.deletedObjects, true);
     }
 
     public void Redo() {
-        URDoAddSelection(Index.newObjects, Index.prevSelectedElements, Index.prevSelectedEdges, false);
+        URDoDeleteSelection(Index.deletedObjects, false);
     }
 
     public async void Cut() {
@@ -330,16 +328,13 @@
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges) {
         Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
-        Index.newObjects = newObjects;
-        Index.prevSelectedElements = prevSelectedElements;
-        Index.prevSelectedEdges = prevSelectedEdges;
-
         app?.StateHasChanged();
     }
 
     [JSInvokable]
     public static void URDeleteSelection(string[] deletedObjects) {
         Console.WriteLine("Recording elements and edges deleted: [" + String.Join(", ", deletedObjects) + "]");
+        Index.deletedObjects = deletedObjects;
         app?.StateHasChanged();
     }
 
@@ -373,53 +368,35 @@
         app?.StateHasChanged();
     }
 
-    [JSInvokable]
-    public static void URDoDeleteSelection(string[] deletedObjects, bool isUndo) {
-        if (isUndo) {
-            // undo add selection
-        } else {
-            // redo add selection
-        }
+    public async void URDoDeleteSelection(string[] deletedObjects, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoDeleteSelection", deletedObjects, isUndo);
         app?.StateHasChanged();
     }
 
-    [JSInvokable]
-    public static void URDoChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection, bool isUndo) {
-        if (isUndo) {
-            // undo add selection
-        } else {
-            // redo add selection
-        }
+    public async void URDoChangeSelection(string[] addToSelection, string[] removeFromSelection, bool isUndo) {
+        // tabID should be used earlier in the process such that this function is not called if we're in a different tab
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", addToSelection, removeFromSelection, isUndo);
         app?.StateHasChanged();
     }
 
-    [JSInvokable]
-    public static void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
-        if (isUndo) {
-            // undo add selection
-        } else {
-            // redo add selection
-        }
+    public async void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", elIDs, modID, modVal, prevModVals, isUndo);
         app?.StateHasChanged();
     }
 
-    [JSInvokable]
-    public static void URDoMoveSelection(int tabID, int[] elements, float xOffset, float yOffset, bool isUndo) {
-        if (isUndo) {
-            // undo add selection
-        } else {
-            // redo add selection
-        }
+    public async void URDoMoveSelection(int tabID, int[] elements, float xOffset, float yOffset, bool isUndo) {
+        // tabID should be used earlier in the process such that this function is not called if we're in a different tab
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", elements, xOffset, yOffset, isUndo);
         app?.StateHasChanged();
     }
 
-    [JSInvokable]
-    public static void URDoChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals, bool isUndo) {
-        if (isUndo) {
-            // undo add selection
-        } else {
-            // redo add selection
-        }
+    public async void URDoChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", elementsAndEdges, velID, prevVelVals, isUndo);
         app?.StateHasChanged();
     }
 
