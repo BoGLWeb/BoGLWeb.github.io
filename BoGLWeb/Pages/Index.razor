@@ -307,13 +307,13 @@
         await module.InvokeVoidAsync("paste");
     }
 
-    bool deleteManyChecked = false;
+    bool deleteManyChecked = true;
 
     [JSInvokable]
     public async void delete() {
         Console.WriteLine("Called");
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        if (deleteManyChecked) {
+        if (!deleteManyChecked) {
             await module.InvokeVoidAsync("delete");
         } else {
             bool multiElementsSelected = await module.InvokeAsync<bool>("areMultipleElementsSelected");
