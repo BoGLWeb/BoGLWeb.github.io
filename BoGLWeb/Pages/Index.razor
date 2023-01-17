@@ -249,7 +249,7 @@
         <p>Prof. Brigitte Servatius</p>
     </div>
 </Modal>
-<Modal Title="Error Loading .bogl File" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
+<Modal Title="@errorTitle" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
     <div class="modal-body">
         <p>@errorMessage</p>
     </div>
@@ -484,6 +484,7 @@
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
         } catch (ArgumentException e) {
             errorVisible = true;
+            errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
@@ -551,6 +552,7 @@
     }
 
     private string errorMessage = "";
+    private string errorTitle = "";
 
     //Opens a .bogl file
     private async void openBoGLFile() {
@@ -562,6 +564,7 @@
         }
         catch (ArgumentException e) {
             errorVisible = true;
+            errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
