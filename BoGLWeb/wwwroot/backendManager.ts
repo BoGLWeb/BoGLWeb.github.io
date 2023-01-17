@@ -147,8 +147,12 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().pasteSelection();
         }
 
-        public delete() {
-            this.getSystemDiagramDisplay().deleteSelection();
+        public delete(needsConfirmation = true) {
+            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+        }
+        
+        public areMultipleElementsSelected(){
+            return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
         }
 
         public getSystemDiagramDisplay() {
@@ -302,6 +306,12 @@ export namespace backendManager {
                         '</ul></p>'
                 }]
             }).start();
+        }
+        
+        instance: any;
+        
+        public initInstance(instance: any){
+            this.instance = instance;
         }
     }
 

@@ -95,7 +95,7 @@ export class BaseGraphDisplay {
     }
 
     checkCtrlCombo(a: number) {
-        return (d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a);
+        return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
     }
 
     svgKeyUp() {
