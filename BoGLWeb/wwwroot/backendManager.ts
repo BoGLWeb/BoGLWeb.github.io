@@ -150,8 +150,12 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().pasteSelection();
         }
 
-        public delete() {
-            this.getSystemDiagramDisplay().deleteSelection();
+        public delete(needsConfirmation = true) {
+            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+        }
+        
+        public areMultipleElementsSelected(){
+            return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
         }
 
         public getSystemDiagramDisplay() {
@@ -254,13 +258,17 @@ export namespace backendManager {
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>This application is used to construct system diagrams and generate bond graphs from those diagrams.</p>'
                 }, {
                     element: document.querySelector('.ant-tabs-content'),
-                    intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams. First, use your mouse to select and drag some elements into the canvas. Then hover your cursor over the border of the elements, where you will see a green circle. This circle indicates that you can create an edge (connection) between two elements. Clicking and dragging will show a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).</p>'
+                    intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams.</p>'
                 }, {
                     element: document.querySelector('#graphMenu'),
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.</p>'
                 }, {
+                    element: document.querySelector('.ant-tabs-content'),
+                    intro: '<p><b>Constructing a System Diagram</b></p><p>You can use your cursor to select and drag elements into the canvas. To create an edge, hover your cursor over the border of the elements, where you will see a green circle. If you click and draw you will see a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).</p>'
+                },
+                {
                     element: document.querySelector('#modifierMenu'),
-                    intro: '<p><b>The Modifier Menu</b></p><p>In this menu can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down Ctrl and clicking elements you want to select or by dragging the canvas with the left mouse button to create a selection region.</p>'
+                    intro: '<p><b>The Modifier Menu</b></p><p>In this menu you can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down Ctrl and clicking elements you want to select or by dragging the canvas with the left mouse button to create a selection region.</p>'
                 }, {
                     element: document.querySelector('#zoomMenu'),
                     intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.</p>'
@@ -306,6 +314,12 @@ export namespace backendManager {
                         '</ul></p>'
                 }]
             }).start();
+        }
+        
+        instance: any;
+        
+        public initInstance(instance: any){
+            this.instance = instance;
         }
     }
 

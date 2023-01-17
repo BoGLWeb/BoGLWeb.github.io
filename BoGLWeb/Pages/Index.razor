@@ -6,6 +6,7 @@
 @using System.Text.RegularExpressions
 @using BoGLWeb.Json
 @using Newtonsoft.Json
+@using System.Runtime.CompilerServices
 
 <PageTitle>BoGLWeb</PageTitle>
 
@@ -21,11 +22,11 @@
         <div id="logoSave">*</div>
     </li>
     <SubMenu title="File" Class="topMenu">
-        <MenuItem Key="setting:1">New</MenuItem>
+        <!-- <MenuItem Key="setting:1">New</MenuItem> -->
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
         <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-        <MenuItem Key="setting:5">Export as Image</MenuItem>
+        <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu">
@@ -38,7 +39,7 @@
     </SubMenu>
     <SubMenu title="Help" Class="topMenu">
         <MenuItem Key="setting:1">
-            <Checkbox>Confirm deleting many items</Checkbox>
+            <Checkbox @bind-Checked="deleteManyChecked">Confirm deleting many items</Checkbox>
         </MenuItem>
         <MenuItem Key="setting:2" OnClick="runTutorial">Tutorial</MenuItem>
         <SubMenu Title="Example Files">
@@ -249,7 +250,7 @@
         <p>Prof. Brigitte Servatius</p>
     </div>
 </Modal>
-<Modal Title="Error Loading .bogl File" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
+<Modal Title="@errorTitle" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
     <div class="modal-body">
         <p>@errorMessage</p>
     </div>
@@ -257,6 +258,9 @@
 <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
     <Input DefaultValue="@url" TValue="string" ReadOnly/>
     <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+</Modal>
+<Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
+    <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
 </body>
 
@@ -274,11 +278,12 @@
     int selectedCausalOption;
     List<string> causalOptions = new();
     static double zoomValue = 100;
-    static List<int> selectedVelocity = new List<int> {};
+    static List<int> selectedVelocity = new List<int> { };
     static bool velocityDisabled = true;
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
+    static IJSObjectReference staticModule;
 
     public Index() {
         app = this;
@@ -286,7 +291,7 @@
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
-    private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true};
+    private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
     public static void Undo() {
 
@@ -310,6 +315,8 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("paste");
     }
+
+    static bool deleteManyChecked = true;
 
     public async void Delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -410,6 +417,21 @@
             // redo add selection
         }
         app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static async Task<bool> showDeleteConfirmationModal(bool multiElementsSelected) {
+        if (!deleteManyChecked) {
+            return true;
+        } else {
+            if (multiElementsSelected) {
+                confirmDeleteModalVisible = true;
+                app?.StateHasChanged();
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     [JSInvokable]
@@ -588,6 +610,7 @@
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
         } catch (ArgumentException e) {
             errorVisible = true;
+            errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
@@ -655,6 +678,7 @@
     }
 
     private string errorMessage = "";
+    private string errorTitle = "";
 
     //Opens a .bogl file
     private async void openBoGLFile() {
@@ -666,6 +690,7 @@
         }
         catch (ArgumentException e) {
             errorVisible = true;
+            errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
@@ -801,6 +826,7 @@
     //Add url to modal
         url = "https://boglweb.azurewebsites.net/?q=" + jsonStr;
         urlModalVisible = true;
+        base.StateHasChanged();
     }
 
     //Removes the compression from the url and turns it back into a json string
@@ -894,4 +920,17 @@
         await module.InvokeAsync<object>("runTutorial");
     }
 
+    private static bool confirmDeleteModalVisible = false;
+
+    private async void handleDeleteOk() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("delete", false);
+        confirmDeleteModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private void handleDeleteCancel() {
+        confirmDeleteModalVisible = false;
+        base.StateHasChanged();
+    }
 }

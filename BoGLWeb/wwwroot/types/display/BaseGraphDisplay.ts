@@ -5,6 +5,7 @@ import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
+import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
 export class BaseGraphDisplay {
     // constants
@@ -105,12 +106,12 @@ export class BaseGraphDisplay {
     }
 
     checkCtrlCombo(a: number) {
-        return (d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a);
+        return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
     }
 
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects(
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
