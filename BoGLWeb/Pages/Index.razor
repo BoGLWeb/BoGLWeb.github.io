@@ -319,6 +319,7 @@
             bool multiElementsSelected = await module.InvokeAsync<bool>("areMultipleElementsSelected");
             if (multiElementsSelected) {
                 confirmDeleteModalVisible = true;
+                base.StateHasChanged();
             } else {
                 await module.InvokeVoidAsync("delete");
             }
@@ -813,9 +814,11 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("delete");
         confirmDeleteModalVisible = false;
+        base.StateHasChanged();
     }
 
     private void handleDeleteCancel() {
         confirmDeleteModalVisible = false;
+        base.StateHasChanged();
     }
 }
