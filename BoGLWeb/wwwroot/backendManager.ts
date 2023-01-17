@@ -1,5 +1,6 @@
 ﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
+import { GraphBondID } from "./types/bonds/GraphBondID";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
@@ -316,29 +317,48 @@ export namespace backendManager {
             }).start();
         }
 
-        public urDoAddSelection(newObjects: string[], prevSelectedElements: string[], prevSelectedEdges: string[], isUndo: boolean) {
-            if (isUndo) {
-
-            } else {
-                let elements: SystemDiagramElement[] = [];
-                let bonds: GraphBond[] = [];
-                for (const object of newObjects) {
-                    let json = JSON.parse(object);
-                    if (json.hasOwnProperty("id")) {
-                        elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
-                    } else {
-                        bonds.push(new GraphBond(json.source, json.target, json.velocity));
-                    }
+        public parseElementAndEdgeStrings(objects: string[]) {
+            let elements: SystemDiagramElement[] = [];
+            let bonds: GraphBond[] = [];
+            for (const object of objects) {
+                let json = JSON.parse(object);
+                if (json.hasOwnProperty("id")) {
+                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
+                } else {
+                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
                 }
-                console.log(elements, bonds);
-                let sysDiag = window.systemDiagram;
+            }
+            return [elements, bonds];
+        }
+
+        checkBondIDs(elemIDs: GraphBondID[], sourceID: number, targetID: number) {
+            return elemIDs.some(e => e.checkEquality(sourceID, targetID));
+        }
+
+        public urDoAddSelection(newObjects: string[], prevSelectedElements: string[], prevSelectedEdges: string[], isUndo: boolean) {
+            let sysDiag = window.systemDiagram;
+            let parseResults = this.parseElementAndEdgeStrings(newObjects);
+            let elements: SystemDiagramElement[] = parseResults[0] as SystemDiagramElement[];
+            let bonds: GraphBond[] = parseResults[1] as GraphBond[];
+            if (isUndo) {
+                let elIDs = elements.map(e => e.id);
+                let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
+                sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
+                sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b.source.id, b.target.id));
+                let prevSelElIDs = prevSelectedElements.map(e => JSON.parse(e).id);
+                let prevSelEdgeIDs = prevSelectedEdges.map(b => {
+                    let json = JSON.parse(b);
+                    return new GraphBondID(json.source.id, json.target.id);
+                });
+                sysDiag.setSelection(sysDiag.elements.filter(e => prevSelElIDs.includes(e.id)), sysDiag.bonds.filter(b => this.checkBondIDs(prevSelEdgeIDs, b.source.id, b.target.id )));
+            } else {
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 sysDiag.bonds = sysDiag.bonds.concat(bonds);
                 sysDiag.setSelection(elements, bonds);
-                sysDiag.updateModifierMenu();
-                sysDiag.updateVelocityMenu();
-                sysDiag.updateGraph();
             }
+            sysDiag.updateModifierMenu();
+            sysDiag.updateVelocityMenu();
+            sysDiag.updateGraph();
         }
         
         instance: any;

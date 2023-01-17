@@ -298,7 +298,7 @@
     static string[] prevSelectedEdges;
 
     public void Undo() {
-
+        URDoAddSelection(Index.newObjects, Index.prevSelectedElements, Index.prevSelectedEdges, true);
     }
 
     public void Redo() {
