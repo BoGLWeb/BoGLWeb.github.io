@@ -147,8 +147,8 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().pasteSelection();
         }
 
-        public delete() {
-            this.getSystemDiagramDisplay().deleteSelection();
+        public delete(needsConfirmation = true) {
+            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
         
         public areMultipleElementsSelected(){

@@ -283,6 +283,7 @@
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
+    static IJSObjectReference staticModule;
 
     public Index() {
         app = this;
@@ -307,21 +308,24 @@
         await module.InvokeVoidAsync("paste");
     }
 
-    bool deleteManyChecked = true;
+    static bool deleteManyChecked = true;
+
+    public async void delete() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("delete");
+    }
 
     [JSInvokable]
-    public async void delete() {
-        Console.WriteLine("Called");
-        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+    public static async Task<bool> showDeleteConfirmationModal(bool multiElementsSelected) {
         if (!deleteManyChecked) {
-            await module.InvokeVoidAsync("delete");
+            return true;
         } else {
-            bool multiElementsSelected = await module.InvokeAsync<bool>("areMultipleElementsSelected");
             if (multiElementsSelected) {
                 confirmDeleteModalVisible = true;
-                base.StateHasChanged();
+                app?.StateHasChanged();
+                return false;
             } else {
-                await module.InvokeVoidAsync("delete");
+                return true;
             }
         }
     }
@@ -808,11 +812,11 @@
         await module.InvokeAsync<object>("runTutorial");
     }
 
-    private bool confirmDeleteModalVisible = false;
+    private static bool confirmDeleteModalVisible = false;
 
     private async void handleDeleteOk() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("delete");
+        await module.InvokeVoidAsync("delete", false);
         confirmDeleteModalVisible = false;
         base.StateHasChanged();
     }

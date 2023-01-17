@@ -204,27 +204,27 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         image.on("mouseenter", function () {
             graph.edgeCircle.style("display", "none");
         })
-        .on("mouseup", function (d) {
-            graph.nodeMouseUp.call(graph, d);
-        })
-        .on("mouseleave", function (e) {
-            graph.setEdgeMarkerVisible.call(graph, e);
-        });
+            .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d);
+            })
+            .on("mouseleave", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
+            });
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
             graph.moveCircle.call(graph, e);
         })
-        .on("mouseenter", function (e) {
-            graph.setEdgeMarkerVisible.call(graph, e);
-        })
-        .on("mouseup", function (d) {
-            graph.handleEdgeUp.call(graph, d);
-        })
-        .on("mousedown", function (d) {
-            graph.handleEdgeDown.call(graph, d);
-        })
-        .call(this.edgeDrag);
+            .on("mouseenter", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
+            })
+            .on("mouseup", function (d) {
+                graph.handleEdgeUp.call(graph, d);
+            })
+            .on("mousedown", function (d) {
+                graph.handleEdgeDown.call(graph, d);
+            })
+            .call(this.edgeDrag);
     }
 
     pathExtraRendering(paths: BGBondSelection) {
@@ -493,18 +493,25 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
     }
 
-    deleteSelection() {
-        for (let e of this.selectedBonds) {
-            this.bonds = this.bonds.filter(bond => bond != e);
+    async deleteSelection(needsConfirmation = true) {
+        let result;
+        if (needsConfirmation) {
+            result = await DotNet.invokeMethodAsync("BoGLWeb", "showDeleteConfirmationModal", this.getSelection().length > 1);
         }
-        for (let e of this.selectedElements) {
-            this.spliceLinksForNode(e);
-            this.elements = this.elements.filter(el => el != e);
+
+        if (!needsConfirmation || result) {
+            for (let e of this.selectedBonds) {
+                this.bonds = this.bonds.filter(bond => bond != e);
+            }
+            for (let e of this.selectedElements) {
+                this.spliceLinksForNode(e);
+                this.elements = this.elements.filter(el => el != e);
+            }
+            this.setSelection([], []);
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+            this.updateGraph();
         }
-        this.setSelection([], []);
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     pasteSelection() {
@@ -518,7 +525,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     // keydown on main svg
-    svgKeyDown() {
+    async svgKeyDown() {
         if (this.lastKeyDown == (<KeyboardEvent>d3.event).keyCode) return;
         if (!this.ctrlPressed) {
             this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
@@ -531,7 +538,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
                 d3.event.preventDefault();
-                DotNet.invokeMethodAsync("BoGLWeb", "delete");
+                this.deleteSelection();
                 break;
         }
 
@@ -544,7 +551,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {
             this.copySelection();
-            DotNet.invokeMethodAsync("BoGLWeb", "delete");
+            this.deleteSelection();
         } else if (this.checkCtrlCombo(this.V_KEY)) {
             this.pasteSelection();
         }
