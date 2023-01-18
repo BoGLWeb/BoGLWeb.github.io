@@ -293,14 +293,19 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
+    static int[] elements;
+    static float xOffset;
+    static float yOffset;
     static string[] addToSelection;
     static string[] removeFromSelection;
 
     public void Undo() {
+        //URDoMoveSelection(elements, xOffset, yOffset, true);
         URDoChangeSelection(Index.addToSelection, Index.removeFromSelection, true);
     }
 
     public void Redo() {
+        //URDoMoveSelection(elements, xOffset, yOffset, false);
         URDoChangeSelection(Index.addToSelection, Index.removeFromSelection, false);
     }
 
@@ -355,6 +360,9 @@
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
         Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        Index.elements = elements;
+        Index.xOffset = xOffset;
+        Index.yOffset = yOffset;
         app?.StateHasChanged();
     }
 
@@ -389,7 +397,7 @@
         app?.StateHasChanged();
     }
 
-    public async void URDoMoveSelection(int tabID, int[] elements, float xOffset, float yOffset, bool isUndo) {
+    public async void URDoMoveSelection(int[] elements, float xOffset, float yOffset, bool isUndo) {
         // tabID should be used earlier in the process such that this function is not called if we're in a different tab
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelection", elements, xOffset, yOffset, isUndo);

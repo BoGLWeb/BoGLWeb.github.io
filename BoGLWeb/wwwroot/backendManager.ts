@@ -392,20 +392,23 @@ export namespace backendManager {
         }
 
         public urDoChangeSelection(addToSelection: string[], removeFromSelection: string[], isUndo: boolean) {
-            let sysDiag = window.systemDiagram;
+            let diagram = this.getGraphByIndex(window.tabNum);
             let [addToSelectionEl, addToSelectionEdges] = this.parseElementAndEdgeIDStrings(addToSelection);
             let [removeFromSelectionEl, removeFromSelectionEdges] = this.parseElementAndEdgeIDStrings(removeFromSelection);
             let elAddSet = isUndo ? removeFromSelectionEl : addToSelectionEl;
             let elRemoveSet = isUndo ? addToSelectionEl : removeFromSelectionEl;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
             let edgeRemoveSet = isUndo ? addToSelectionEdges : removeFromSelectionEdges;
-            sysDiag.selectedElements = sysDiag.selectedElements.concat(sysDiag.elements.filter(e => elAddSet.includes(e.id)));
-            sysDiag.selectedBonds = sysDiag.selectedBonds.concat(sysDiag.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
-            sysDiag.selectedElements = sysDiag.selectedElements.filter(e => !elRemoveSet.includes(e.id));
-            sysDiag.selectedBonds = sysDiag.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
-            sysDiag.updateModifierMenu();
-            sysDiag.updateVelocityMenu();
-            sysDiag.updateGraph();
+            // @ts-ignore // may want to fix this later, but shouldn't be an issue as long as tab index is correctly recorded 
+            diagram.selectedElements = diagram.selectedElements.concat(diagram.elements.filter(e => elAddSet.includes(e.id)));
+            diagram.selectedBonds = diagram.selectedBonds.concat(diagram.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
+            diagram.selectedElements = diagram.selectedElements.filter(e => !elRemoveSet.includes(e.id));
+            diagram.selectedBonds = diagram.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
+            if (diagram instanceof SystemDiagramDisplay) {
+                diagram.updateModifierMenu();
+                diagram.updateVelocityMenu();
+            }
+            diagram.updateGraph();
         }
         
         instance: any;
