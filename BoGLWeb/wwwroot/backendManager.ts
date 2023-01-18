@@ -431,6 +431,30 @@ export namespace backendManager {
             sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
         }
+
+        public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
+            let sysDiag = window.systemDiagram;
+
+            elIDs.forEach(function (id, i) {
+                let el = sysDiag.elements.find(e => e.id == id);
+                if (isUndo) {
+                    if (prevModVals[i] && !el.modifiers.includes(modID)) {
+                        el.modifiers.push(modID);
+                    } else if (!prevModVals[i] && el.modifiers.includes(modID)) {
+                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
+                    }
+                } else {
+                    if (modVal && ElementNamespace.elementTypes[el.type].allowedModifiers.includes(modID) && !el.modifiers.includes(modID)) {
+                        el.modifiers.push(modID);
+                    } else if (el.modifiers.includes(modID)) {
+                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
+                    }
+                }
+            });
+
+            sysDiag.updateModifierMenu();
+            sysDiag.updateGraph();
+        }
         
         instance: any;
         

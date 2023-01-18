@@ -293,16 +293,17 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
-    static string[] elementsAndEdges;
-    static int velID;
-    static int[] prevVelVals;
+    static int[] elIDs;
+    static int modID;
+    static bool modVal;
+    static bool[] prevModVals;
 
     public void Undo() {
-        URDoChangeSelectionVelocity(elementsAndEdges, velID, prevVelVals, true);
+        URDoChangeSelectionModifier(elIDs, modID, modVal, prevModVals, true);
     }
 
     public void Redo() {
-        URDoChangeSelectionVelocity(elementsAndEdges, velID, prevVelVals, false);
+        URDoChangeSelectionModifier(elIDs, modID, modVal, prevModVals, false);
     }
 
     public async void Cut() {
@@ -348,6 +349,10 @@
     [JSInvokable]
     public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
         Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
+        Index.elIDs = elIDs;
+        Index.modID = modID;
+        Index.modVal = modVal;
+        Index.prevModVals = prevModVals;
         app?.StateHasChanged();
     }
 
@@ -360,9 +365,6 @@
     [JSInvokable]
     public static void URChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals) {
         Console.WriteLine("Recording velocity change: [" + String.Join(", ", elementsAndEdges) + "], " + velID + ", [" + String.Join(", ", prevVelVals) + "]");
-        Index.elementsAndEdges = elementsAndEdges;
-        Index.velID = velID;
-        Index.prevVelVals = prevVelVals;
         app?.StateHasChanged();
     }
 
