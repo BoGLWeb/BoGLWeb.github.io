@@ -293,16 +293,16 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
-    static int[] elements;
-    static float xOffset;
-    static float yOffset;
+    static string[] elementsAndEdges;
+    static int velID;
+    static int[] prevVelVals;
 
     public void Undo() {
-        URDoMoveSelection(elements, xOffset, yOffset, true);
+        URDoChangeSelectionVelocity(elementsAndEdges, velID, prevVelVals, true);
     }
 
     public void Redo() {
-        URDoMoveSelection(elements, xOffset, yOffset, false);
+        URDoChangeSelectionVelocity(elementsAndEdges, velID, prevVelVals, false);
     }
 
     public async void Cut() {
@@ -354,15 +354,15 @@
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
         Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
-        Index.elements = elements;
-        Index.xOffset = xOffset;
-        Index.yOffset = yOffset;
         app?.StateHasChanged();
     }
 
     [JSInvokable]
     public static void URChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals) {
         Console.WriteLine("Recording velocity change: [" + String.Join(", ", elementsAndEdges) + "], " + velID + ", [" + String.Join(", ", prevVelVals) + "]");
+        Index.elementsAndEdges = elementsAndEdges;
+        Index.velID = velID;
+        Index.prevVelVals = prevVelVals;
         app?.StateHasChanged();
     }
 

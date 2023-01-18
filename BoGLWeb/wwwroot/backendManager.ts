@@ -331,29 +331,32 @@ export namespace backendManager {
             return [elements, bonds];
         }
 
-        public parseElementAndEdgeIDStrings(objects: string[]): [number[], GraphBondID[]] {
+        public parseElementAndEdgeIDStrings(objects: string[]): [number[], GraphBondID[], number[]] {
             let elements: number[] = [];
+            let elementIndeces: number[] = [];
             let edges: GraphBondID[] = [];
+            let i = 0;
             for (const object of objects) {
                 let json = JSON.parse(object);
                 if (json.hasOwnProperty("id")) {
                     elements.push(json.id);
+                    elementIndeces.push(i);
                 } else {
-                    edges.push(new GraphBondID(json.sourceId, json.targetId));
+                    edges.push(new GraphBondID(json.sourceId, json.targetId, i));
                 }
+                i++;
             }
-            return [elements, edges];
+            return [elements, edges, elementIndeces];
         }
 
-        checkBondIDs(elemIDs: GraphBondID[], b: GraphBond) {
+        checkBondIDs(elemIDs: GraphBondID[], b: GraphBond): GraphBondID {
             let sourceID = b.source.id;
             let targetID = b.target.id;
-            return elemIDs.some(e => e.checkEquality(sourceID, targetID));
+            return elemIDs.find(e => e.checkEquality(sourceID, targetID));
         }
 
         public urDoAddSelection(newObjects: string[], prevSelectedElements: string[], prevSelectedEdges: string[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
-            let parseResults = this.parseElementAndEdgeStrings(newObjects);
             let [elements, bonds] = this.parseElementAndEdgeStrings(newObjects);
             if (isUndo) {
                 let elIDs = elements.map(e => e.id);
@@ -417,11 +420,16 @@ export namespace backendManager {
                 e.x = e.x + (isUndo ? -1 : 1) * xOffset;
                 e.y = e.y + (isUndo ? -1 : 1) * yOffset;
             });
-            if (diagram instanceof SystemDiagramDisplay) {
-                diagram.updateModifierMenu();
-                diagram.updateVelocityMenu();
-            }
             diagram.updateGraph();
+        }
+
+        public urDoChangeSelectionVelocity(elementsAndEdges: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
+            let sysDiag = window.systemDiagram;
+            let [elementIDs, bondIDs, numberIDs] = this.parseElementAndEdgeIDStrings(elementsAndEdges);
+            sysDiag.elements.filter(e => elementIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[numberIDs[elementIDs.findIndex(i => i == e.id)]] : velID);
+            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[this.checkBondIDs(bondIDs, b).id] : velID);
+            sysDiag.updateVelocityMenu();
+            sysDiag.updateGraph();
         }
         
         instance: any;
