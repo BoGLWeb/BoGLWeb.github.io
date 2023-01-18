@@ -400,21 +400,21 @@ export class BaseGraphDisplay {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.getSelection());
-                this.setSelection([el], []);
-                if (this instanceof SystemDiagramDisplay) {
-                    this.updateModifierMenu();
-                    this.updateVelocityMenu();
-                }
+                // not updating menus until end of drag because it causes significant lag
+                this.selectedElements = [el];
+                this.selectedBonds = [];
                 this.updateGraph();
             }
 
             this.startedSelectionDrag = true;
 
+            let dx = (<DragEvent>d3.event).dx;
+            let dy = (<DragEvent>d3.event).dy;
+            this.dragXOffset += dx;
+            this.dragYOffset += dy;
             for (const el of this.selectedElements) {
-                this.dragXOffset += (<DragEvent>d3.event).dx;
-                this.dragYOffset += (<DragEvent>d3.event).dy;
-                el.x += (<DragEvent>d3.event).dx;
-                el.y += (<DragEvent>d3.event).dy;
+                el.x += dx;
+                el.y += dy;
             }
 
             // Just update element selection positions without editing anything else since dragmove gets called so much
@@ -425,6 +425,11 @@ export class BaseGraphDisplay {
                 this.dragXOffset = 0;
                 this.dragYOffset = 0;
                 this.startedSelectionDrag = false;
+                if (this instanceof SystemDiagramDisplay) {
+                    this.updateModifierMenu();
+                    this.updateVelocityMenu();
+                    this.updateTopMenu();
+                }
             }
         }
     }

@@ -410,6 +410,19 @@ export namespace backendManager {
             }
             diagram.updateGraph();
         }
+
+        public urDoMoveSelection(elements: number[], xOffset: number, yOffset: number, isUndo: boolean) {
+            let diagram = this.getGraphByIndex(window.tabNum);
+            diagram.elements.filter(e => elements.includes(e.id)).forEach(e => {
+                e.x = e.x + (isUndo ? -1 : 1) * xOffset;
+                e.y = e.y + (isUndo ? -1 : 1) * yOffset;
+            });
+            if (diagram instanceof SystemDiagramDisplay) {
+                diagram.updateModifierMenu();
+                diagram.updateVelocityMenu();
+            }
+            diagram.updateGraph();
+        }
         
         instance: any;
         

@@ -296,17 +296,13 @@
     static int[] elements;
     static float xOffset;
     static float yOffset;
-    static string[] addToSelection;
-    static string[] removeFromSelection;
 
     public void Undo() {
-        //URDoMoveSelection(elements, xOffset, yOffset, true);
-        URDoChangeSelection(Index.addToSelection, Index.removeFromSelection, true);
+        URDoMoveSelection(elements, xOffset, yOffset, true);
     }
 
     public void Redo() {
-        //URDoMoveSelection(elements, xOffset, yOffset, false);
-        URDoChangeSelection(Index.addToSelection, Index.removeFromSelection, false);
+        URDoMoveSelection(elements, xOffset, yOffset, false);
     }
 
     public async void Cut() {
@@ -346,8 +342,6 @@
     [JSInvokable]
     public static void URChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection) {
         Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addToSelection) + "], [" + String.Join(", ", removeFromSelection) + "]");
-        Index.addToSelection = addToSelection;
-        Index.removeFromSelection = removeFromSelection;
         app?.StateHasChanged();
     }
 
@@ -393,20 +387,20 @@
 
     public async void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("urDoChangeSelection", elIDs, modID, modVal, prevModVals, isUndo);
+        await module.InvokeVoidAsync("urDoChangeSelectionModifier", elIDs, modID, modVal, prevModVals, isUndo);
         app?.StateHasChanged();
     }
 
     public async void URDoMoveSelection(int[] elements, float xOffset, float yOffset, bool isUndo) {
         // tabID should be used earlier in the process such that this function is not called if we're in a different tab
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("urDoChangeSelection", elements, xOffset, yOffset, isUndo);
+        await module.InvokeVoidAsync("urDoMoveSelection", elements, xOffset, yOffset, isUndo);
         app?.StateHasChanged();
     }
 
     public async void URDoChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("urDoChangeSelection", elementsAndEdges, velID, prevVelVals, isUndo);
+        await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elementsAndEdges, velID, prevVelVals, isUndo);
         app?.StateHasChanged();
     }
 
