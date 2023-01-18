@@ -27,6 +27,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     copiedElements: SystemDiagramElement[] = [];
     copiedBonds: GraphBond[] = [];
     ctrlPressed: boolean = false;
+    elements: SystemDiagramElement[];
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -336,12 +337,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.updateVelocityMenu();
     }
 
-    clearSelection() {
-        this.setSelection([], []);
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-    }
-
     pathMouseDown(bond: GraphBond) {
         d3.event.stopPropagation();
         this.justClickedEdge = true;
@@ -490,7 +485,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             //Update the system diagram
             this.updateGraph();
         } else if (!this.justScaleTransGraph) {
-            this.clearSelection();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], this.listToIDObjects(this.getSelection()));
+            this.setSelection([], []);
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked
