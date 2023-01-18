@@ -21,6 +21,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         7: "⮦",
         8: "⮤"
     };
+
+    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [10, 40], [-5, 40], [-30, 10], [-30, 0]];
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
@@ -168,35 +170,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         }
                     })
                     .attr("x", (d: SystemDiagramElement) => {
-                        let xOffset = 0;
-                        if (d.velocity != 0) {
-                            if (d.velocity == 1 || d.velocity == 2) {
-                                xOffset = -5;
-                            } else if (d.velocity == 3 || d.velocity == 4) {
-                                xOffset = 30;
-                            } else if (d.velocity == 5 || d.velocity == 6) {
-                                xOffset = -5;
-                            } else {
-                                xOffset = -30;
-                            }
-                        }
-                        return xOffset;
+                        return d.velocity != 0 ? graph.velocityOffsets[d.velocity - 1][0] : 0;
+                    })
+                    .attr("y", (d: SystemDiagramElement) => {
+                        return d.velocity != 0 ? graph.velocityOffsets[d.velocity - 1][1] : 0;
                     });
-                text.attr("y", (d: SystemDiagramElement) => {
-                    let yOffset = 0;
-                    if (d.velocity != 0) {
-                        if (d.velocity == 1 || d.velocity == 2) {
-                            yOffset = -37;
-                        } else if (d.velocity == 3 || d.velocity == 4) {
-                            yOffset = 7;
-                        } else if (d.velocity == 5 || d.velocity == 6) {
-                            yOffset = 38;
-                        } else {
-                            yOffset = 0;
-                        }
-                    }
-                    return yOffset;
-                });
             }
         });
 
