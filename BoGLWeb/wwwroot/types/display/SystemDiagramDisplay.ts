@@ -218,19 +218,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 let xOffset = 0;
                 let yOffset = 0;
                 let mult = Math.abs(Math.cos((Math.atan2(e.source.y - e.target.y, e.target.x - e.source.x) + Math.PI) % (2 * Math.PI)));
-                if (e.velocity == 1 || e.velocity == 2) {
+                let v = e.velocity;
+                if (v == 2 || v == 3) {
                     velocityClass = "topVelocity";
                     yOffset = -7 * mult;
                     xOffset = -3;
-                } else if (e.velocity == 3 || e.velocity == 4) {
+                } else if (v == 4 || v == 5) {
                     velocityClass = "rightVelocity";
                     yOffset = 7 * mult;
                     xOffset = 0;
-                } else if (e.velocity == 5 || e.velocity == 6) {
+                } else if (v == 6 || v == 7) {
                     velocityClass = "bottomVelocity";
                     yOffset = 7 * mult;
-                    xOffset = -5;
-                } else {
+                    xOffset = v == 7 ? 0 : -5;
+                } else if (v == 1 || v == 8) {
                     velocityClass = "leftVelocity";
                     yOffset = -7 * mult;
                     xOffset = 0;

@@ -624,6 +624,11 @@ hr:not([size]) {
     text-anchor: start
 }
 
+.oneVelocity {
+    dominant-baseline: middle;
+    text-anchor: end
+}
+
 .rightVelocity {
     alignment-baseline: central;
     text-anchor: start
