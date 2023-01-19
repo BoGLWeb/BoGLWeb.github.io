@@ -17,6 +17,11 @@ export class BaseGraphDisplay {
     readonly X_KEY: number = 88;
     readonly V_KEY: number = 86;
     readonly CTRL_KEY: number = 17;
+    readonly ARROW_LEFT: number = 37;
+    readonly ARROW_UP: number = 38;
+    readonly ARROW_RIGHT: number = 39;
+    readonly ARROW_DOWN: number = 40;
+    readonly PAN_SPEED: number = 2.0;
 
     // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
     zoomWithSlider: boolean = false;
@@ -92,6 +97,21 @@ export class BaseGraphDisplay {
     // functions needed in system diagram are called from this class but not defined by default
     svgKeyDown() {
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
+
+        switch ((<KeyboardEvent>d3.event).keyCode) {
+            case this.ARROW_LEFT:
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale, false);
+                break;
+            case this.ARROW_UP:
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale, false);
+                break;
+            case this.ARROW_RIGHT:
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale, false);
+                break;
+            case this.ARROW_DOWN:
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale, false);
+                break;
+        }
     }
 
     checkCtrlCombo(a: number) {

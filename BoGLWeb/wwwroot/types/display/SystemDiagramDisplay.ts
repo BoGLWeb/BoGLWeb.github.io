@@ -505,6 +505,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // keydown on main svg
     async svgKeyDown() {
+        super.svgKeyDown();
         if (this.lastKeyDown == (<KeyboardEvent>d3.event).keyCode) return;
         if (!this.ctrlPressed) {
             this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
