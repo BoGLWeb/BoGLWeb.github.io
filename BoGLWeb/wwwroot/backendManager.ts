@@ -1,5 +1,6 @@
 ﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
+import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
@@ -30,6 +31,7 @@ export namespace backendManager {
                 window.causalBG = bondGraph;
             }
             bondGraph.updateGraph();
+            this.zoomCenterGraph(JSON.stringify(id + 2));
         }
 
         public displayUnsimplifiedBondGraph(jsonString: string) {
@@ -61,11 +63,16 @@ export namespace backendManager {
 
             var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
-
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+        }
 
-            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
+        public zoomCenterGraph(index: string) {
+            let graph = this.getGraphByIndex(index);
+            let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+            let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
             let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
             let scale = 1;
             if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
@@ -75,7 +82,8 @@ export namespace backendManager {
             }
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            systemDiagram.changeScale(xTrans, yTrans, scale, false);
+            graph.changeScale(xTrans, yTrans, scale, false);
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
         public async openFile() {
