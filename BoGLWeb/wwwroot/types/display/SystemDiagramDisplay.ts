@@ -505,7 +505,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // keydown on main svg
     async svgKeyDown() {
-        super.svgKeyDown();
         if (this.lastKeyDown == (<KeyboardEvent>d3.event).keyCode) return;
         if (!this.ctrlPressed) {
             this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
@@ -519,6 +518,18 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             case this.DELETE_KEY:
                 d3.event.preventDefault();
                 this.deleteSelection();
+                break;
+            case this.ARROW_LEFT:
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale, false);
+                break;
+            case this.ARROW_UP:
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale, false);
+                break;
+            case this.ARROW_RIGHT:
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale, false);
+                break;
+            case this.ARROW_DOWN:
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale, false);
                 break;
         }
 
