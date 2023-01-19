@@ -1,6 +1,5 @@
 ﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
-import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
@@ -14,9 +13,17 @@ export namespace backendManager {
     export class BackendManager {
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
+            let minX = Infinity;
+            let minY = Infinity;
             let elements = JSON.parse(bg.elements).map((e, i) => {
+                if (e.x < minX) minX = e.x;
+                if (e.x < minY) minY = e.y;
                 return new BondGraphElement(i, e.label, e.x, e.y);
             }) as BondGraphElement[];
+            elements.forEach(e => {
+                e.x -= minX;
+                e.y -= minY;
+            });
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, b.velocity);
             }) as BondGraphBond[];
@@ -51,8 +58,7 @@ export namespace backendManager {
             let elements = []
             let i = 0;
             for (let el of parsedJson.elements) {
-                let e = new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers);
-                elements.push(e);
+                elements.push(new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers));
             }
             let edges = [];
             for (let edge of parsedJson.edges) {
@@ -80,6 +86,7 @@ export namespace backendManager {
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
+            scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
             graph.changeScale(xTrans, yTrans, scale, false);
