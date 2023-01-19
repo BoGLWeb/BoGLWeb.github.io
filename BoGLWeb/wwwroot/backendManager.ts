@@ -13,9 +13,17 @@ export namespace backendManager {
     export class BackendManager {
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
+            let minX = Infinity;
+            let minY = Infinity;
             let elements = JSON.parse(bg.elements).map((e, i) => {
+                if (e.x < minX) minX = e.x;
+                if (e.x < minY) minY = e.y;
                 return new BondGraphElement(i, e.label, e.x, e.y);
             }) as BondGraphElement[];
+            elements.forEach(e => {
+                e.x -= minX;
+                e.y -= minY;
+            });
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, b.velocity);
             }) as BondGraphBond[];
@@ -30,6 +38,7 @@ export namespace backendManager {
                 window.causalBG = bondGraph;
             }
             bondGraph.updateGraph();
+            this.zoomCenterGraph(JSON.stringify(id + 2));
         }
 
         public displayUnsimplifiedBondGraph(jsonString: string) {
@@ -49,8 +58,7 @@ export namespace backendManager {
             let elements = []
             let i = 0;
             for (let el of parsedJson.elements) {
-                let e = new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers);
-                elements.push(e);
+                elements.push(new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers));
             }
             let edges = [];
             for (let edge of parsedJson.edges) {
@@ -61,11 +69,16 @@ export namespace backendManager {
 
             var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
-
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+        }
 
-            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
+        public zoomCenterGraph(index: string) {
+            let graph = this.getGraphByIndex(index);
+            let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+            let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
             let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
             let scale = 1;
             if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
@@ -73,9 +86,11 @@ export namespace backendManager {
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
+            scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            systemDiagram.changeScale(xTrans, yTrans, scale, false);
+            graph.changeScale(xTrans, yTrans, scale, false);
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
         public async openFile() {
