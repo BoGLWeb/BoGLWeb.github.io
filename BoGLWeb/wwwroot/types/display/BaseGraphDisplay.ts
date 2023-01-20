@@ -234,7 +234,7 @@ export class BaseGraphDisplay {
             this.initYPos = y;
         }
         this.prevScale = scale;
-        console.log(x, y);
+        console.log(scale, x, y);
         this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
         this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
