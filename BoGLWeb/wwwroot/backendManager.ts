@@ -212,19 +212,10 @@ export namespace backendManager {
 
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
-
-            // converts SVG position to svg center of view window
-            let svgDim = (graph.svgG.node() as SVGGraphicsElement).getBBox();
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
 
-/*            console.log(100 / i);*/
-            if (i < 100) {
-                    graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
+            graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
                 windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * (100 / i) * (graph.prevScale - i / 100), i / 100, true);
-            } else {
-                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
-                    windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * (100 / i) * (graph.prevScale - i / 100), i / 100, true);
-            }
         }
 
         public setTab(key: string) {
