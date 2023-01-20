@@ -216,19 +216,15 @@ export namespace backendManager {
             // converts SVG position to svg center of view window
             let svgDim = (graph.svgG.node() as SVGGraphicsElement).getBBox();
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-            let scale = i / 100;
-            let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
-            let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
 
-            let scaleDiff = 1 - (i / 100);
-
-            if (!graph.zoomWithSlider) {
-                graph.zoomWithSlider = true;
-                graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
-                graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
+/*            console.log(100 / i);*/
+            if (i < 100) {
+                    graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
+                windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * (100 / i) * (graph.prevScale - i / 100), i / 100, true);
+            } else {
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
+                    windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * (100 / i) * (graph.prevScale - i / 100), i / 100, true);
             }
-
-            graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 
         public setTab(key: string) {

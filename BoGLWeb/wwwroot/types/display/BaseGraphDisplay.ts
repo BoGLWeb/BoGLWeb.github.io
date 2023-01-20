@@ -24,11 +24,10 @@ export class BaseGraphDisplay {
     readonly PAN_SPEED: number = 2.0;
 
     // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
-    zoomWithSlider: boolean = false;
     dragAllowed: boolean = false;
     prevScale: number = 1;
-    initXPos: number;
-    initYPos: number;
+    initXPos: number = null;
+    initYPos: number = null;
     svgX: number = 0;
     svgY: number = 0;
     dragX: number;
@@ -228,12 +227,14 @@ export class BaseGraphDisplay {
     }
 
     changeScale(x: number, y: number, scale: number, slider: boolean) {
-        this.initXPos = !slider ? x : this.initXPos;
-        this.initYPos = !slider ? y : this.initYPos;
         this.svgX = x;
         this.svgY = y;
+        if (this.initXPos == null) {
+            this.initXPos = x;
+            this.initYPos = y;
+        }
         this.prevScale = scale;
-        this.zoomWithSlider = slider;
+        console.log(x, y);
         this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
         this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
