@@ -654,3 +654,11 @@ hr:not([size]) {
     margin: 0;
     position: absolute
 }
+
+.ant-tabs-tabpane {
+    visibility: visible;
+}
+
+.ant-tabs-tabpane[aria-hidden="true"] {
+    visibility: hidden !important;
+}
