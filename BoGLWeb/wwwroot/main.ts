@@ -51,6 +51,9 @@ async function loadPage() {
         getBackendManager().loadSystemDiagram(sysDiagramString);
     }else {
         window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+        window.systemDiagram.updateGraph();
+        backendManager.getBackendManager().zoomCenterGraph("1");
+        window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1, false);
     }
 
     document.addEventListener("mouseup", function () {
