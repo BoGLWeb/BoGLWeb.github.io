@@ -214,11 +214,16 @@ export namespace backendManager {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
 
-            let x = windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * ((graph.prevScale * 100 - i) / i);
-            let y = windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * ((graph.prevScale * 100 - i) / i);
+            let xMult = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yMult = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let x = windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xMult;
+            let y = windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yMult;
 
-            console.log(((graph.prevScale * 100 - i) / i), i, graph.prevScale);
-            graph.changeScale(x, y, i / 100, true);
+            console.log(i / 100, (graph.svgX - graph.initXPos) * (graph.prevScale * 100 < i ? -1 : 1) / i,
+                (graph.svgX - graph.initXPos) * (graph.prevScale * 100 < i ? -1 : 1) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100));
+            if (graph.prevScale * 100 - i != 0) {
+                graph.changeScale(x, y, i / 100, true);
+            }
         }
 
         public setTab(key: string) {
