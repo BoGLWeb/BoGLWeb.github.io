@@ -214,8 +214,11 @@ export namespace backendManager {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
 
-            graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * (100 / i) * (graph.prevScale - i / 100),
-                windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * (100 / i) * (graph.prevScale - i / 100), i / 100, true);
+            let x = windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - (graph.svgX - graph.initXPos) * ((graph.prevScale * 100 - i) / i);
+            let y = windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - (graph.svgY - graph.initYPos) * ((graph.prevScale * 100 - i) / i);
+
+            console.log(((graph.prevScale * 100 - i) / i), i, graph.prevScale);
+            graph.changeScale(x, y, i / 100, true);
         }
 
         public setTab(key: string) {
