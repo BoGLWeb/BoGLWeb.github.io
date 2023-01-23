@@ -55,22 +55,19 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let parsedJson = JSON.parse(jsonString);
-            
-            let elements = new Map<number, SystemDiagramElement>();
+            let elements = []
             let i = 0;
             for (let el of parsedJson.elements) {
-                let e = new SystemDiagramElement(el.id, el.type, el.x, el.y, el.velocity, el.modifiers);
-                elements.set(el.id, e);
+                elements.push(new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers));
             }
-            
             let edges = [];
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
+                let bond = new GraphBond(elements[edge.source], elements[edge.target]);
                 bond.velocity = edge.velocity ?? 0;
                 edges.push(bond);
             }
 
-            var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
+            var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
             systemDiagram.draggingElement = null;
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
