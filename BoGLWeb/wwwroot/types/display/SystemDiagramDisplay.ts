@@ -520,16 +520,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.deleteSelection();
                 break;
             case this.ARROW_LEFT:
-                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale, false);
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale);
                 break;
             case this.ARROW_UP:
-                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale, false);
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale);
                 break;
             case this.ARROW_RIGHT:
-                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale, false);
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale);
                 break;
             case this.ARROW_DOWN:
-                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale, false);
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale);
                 break;
         }
 
@@ -581,7 +581,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (!this.edgeOrigin) {
             this.justScaleTransGraph = true;
             if (this.prevScale !== d3.event.scale || d3.event.sourceEvent.buttons == 2) {
-                this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+                this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale);
             }
         }
     };
