@@ -99,16 +99,16 @@ export class BaseGraphDisplay {
 
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.ARROW_LEFT:
-                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale, false);
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale);
                 break;
             case this.ARROW_UP:
-                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale, false);
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale);
                 break;
             case this.ARROW_RIGHT:
-                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale, false);
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale);
                 break;
             case this.ARROW_DOWN:
-                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale, false);
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale);
                 break;
         }
     }
@@ -226,7 +226,7 @@ export class BaseGraphDisplay {
             });
     }
 
-    changeScale(x: number, y: number, scale: number, slider: boolean) {
+    changeScale(x: number, y: number, scale: number) {
         this.svgX = x;
         this.svgY = y;
         if (this.initXPos == null) {
@@ -413,7 +413,7 @@ export class BaseGraphDisplay {
     zoomed() {
         this.justScaleTransGraph = true;
         if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
-            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale);
         }
     }
 }

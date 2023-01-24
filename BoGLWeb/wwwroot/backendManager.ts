@@ -29,7 +29,6 @@ export namespace backendManager {
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
-            bondGraph.changeScale(0, 0, 1, false);
             if (id == 0) {
                 window.unsimpBG = bondGraph;
             } else if (id == 1) {
@@ -89,7 +88,7 @@ export namespace backendManager {
             scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            graph.changeScale(xTrans, yTrans, scale, false);
+            graph.changeScale(xTrans, yTrans, scale);
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
@@ -166,7 +165,7 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
         
-        public areMultipleElementsSelected(){
+        public areMultipleElementsSelected() {
             return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
         }
 
@@ -214,20 +213,17 @@ export namespace backendManager {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
 
-            let xMult = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-            let yMult = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-            let x = windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xMult;
-            let y = windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yMult;
+            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
 
-            console.log(i / 100, (graph.svgX - graph.initXPos) * (graph.prevScale * 100 < i ? -1 : 1) / i,
-                (graph.svgX - graph.initXPos) * (graph.prevScale * 100 < i ? -1 : 1) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100));
             if (graph.prevScale * 100 - i != 0) {
-                graph.changeScale(x, y, i / 100, true);
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
             }
         }
 
         public setTab(key: string) {
             window.tabNum = key;
+            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
         public setVelocity(velocity: number) {
