@@ -354,7 +354,7 @@
     }
 
     [JSInvokable]
-    public static void URAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges) {
+    public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges) {
         Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
         app?.StateHasChanged();
     }
@@ -366,8 +366,10 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection) {
-        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addToSelection) + "], [" + String.Join(", ", removeFromSelection) + "]");
+    public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
+        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            + String.Join(", ", removeEdgeFromSelection) + "]");
         app?.StateHasChanged();
     }
 
@@ -384,8 +386,9 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals) {
-        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elementsAndEdges) + "], " + velID + ", [" + String.Join(", ", prevVelVals) + "]");
+    public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
+        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+            + ", [" + String.Join(", ", prevVelVals) + "]");
         app?.StateHasChanged();
     }
 
