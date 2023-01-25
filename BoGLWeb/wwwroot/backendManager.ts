@@ -267,7 +267,10 @@ export namespace backendManager {
                 showStepNumbers: false,
                 hideNext: true,
                 steps: [{
-                    intro: '<p><b>Welcome To BoGL Web</b></p><p>This application is used to construct system diagrams and generate bond graphs from those diagrams.</p>'
+                    intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
+                        'This application is used to construct system diagrams and generate bond graphs from those diagrams.' +
+                        '<iframe src="https://giphy.com/embed/JUqVArRY1Bz18MAxEW" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/007-JUqVArRY1Bz18MAxEW">via GIPHY</a></p>' +
+                        '</p>'
                 }, {
                     element: document.querySelector('.ant-tabs-content'),
                     intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams.</p>'
