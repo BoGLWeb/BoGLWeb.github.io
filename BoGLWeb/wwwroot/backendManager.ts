@@ -11,25 +11,32 @@ import { SVGSelection } from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
+
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
+
             let minX = Infinity;
             let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
             let elements = JSON.parse(bg.elements).map((e, i) => {
                 if (e.x < minX) minX = e.x;
-                if (e.x < minY) minY = e.y;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
                 return new BondGraphElement(i, e.label, e.x, e.y);
             }) as BondGraphElement[];
+
             elements.forEach(e => {
-                e.x -= minX;
-                e.y -= minY;
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
             });
+
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, b.velocity);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
-            bondGraph.changeScale(0, 0, 1, false);
             if (id == 0) {
                 window.unsimpBG = bondGraph;
             } else if (id == 1) {
@@ -54,18 +61,34 @@ export namespace backendManager {
         }
 
         public loadSystemDiagram(jsonString: string) {
+            let edges = [];
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            
             let parsedJson = JSON.parse(jsonString);
+
             let elements = new Map<number, SystemDiagramElement>();
             let i = 0;
             for (let el of parsedJson.elements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+                
                 if(el.id != null){
                     elements.set(el.id, new SystemDiagramElement(el.id, el.type, el.x, el.y, el.velocity, el.modifiers));
                 }else{
                     elements.set(i++, new SystemDiagramElement(i, el.type, el.x, el.y, el.velocity, el.modifiers));
                 }
             }
-            
-            let edges = [];
+
+            elements.forEach(e => {
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
+            });
+
             for (let edge of parsedJson.edges) {
                 let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
                 bond.velocity = edge.velocity ?? 0;
@@ -94,7 +117,8 @@ export namespace backendManager {
             scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            graph.changeScale(xTrans, yTrans, scale, false);
+            console.log(svgDim, xTrans, yTrans);
+            graph.changeScale(xTrans, yTrans, scale);
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
@@ -171,7 +195,7 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
         
-        public areMultipleElementsSelected(){
+        public areMultipleElementsSelected() {
             return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
         }
 
@@ -217,27 +241,20 @@ export namespace backendManager {
 
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
-
-            // converts SVG position to svg center of view window
-            let svgDim = (graph.svgG.node() as SVGGraphicsElement).getBBox();
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-            let scale = i / 100;
-            let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
-            let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
 
-            let scaleDiff = 1 - (i / 100);
+            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
 
-            if (!graph.zoomWithSlider) {
-                graph.zoomWithSlider = true;
-                graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
-                graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
+            console.log(xOffset, windowDim.width / 2 - (windowDim.width / 2 - graph.svgX), (windowDim.width / 2 - graph.svgX), graph.svgX);
+            if (graph.prevScale * 100 - i != 0) {
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
             }
-
-            graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 
         public setTab(key: string) {
             window.tabNum = key;
+            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
         public setVelocity(velocity: number) {
