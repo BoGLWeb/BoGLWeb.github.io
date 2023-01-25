@@ -1,12 +1,12 @@
 ﻿export class GraphBondID {
     source: number;
     target: number;
-    id: number;
+    velID: number;
 
-    constructor(source: number, target: number, id = 0) {
+    constructor(source: number, target: number, velID = 0) {
         this.source = source;
         this.target = target;
-        this.id = id;
+        this.velID = velID;
     }
 
     checkEquality(source: number, target: number) {

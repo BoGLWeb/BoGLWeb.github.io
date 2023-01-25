@@ -124,7 +124,7 @@ namespace BoGLWeb {
         private Dictionary<string, double> header;
 
         // Editor list for Canvas changes
-        private EditionList<CanvasChange> changes;
+        public EditionList<CanvasChange> changes;
 
         /// <summary>
         /// Creates a system diagram instance

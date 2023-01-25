@@ -296,7 +296,7 @@ export class BaseGraphDisplay {
                 graph.dragStartX = coordinates[0];
                 graph.dragStartY = coordinates[1];
                 graph.svgG.append("rect")
-                    .attr("id", "selectionRect")
+                    .attr("velID", "selectionRect")
                     .attr("x", graph.dragStartX)
                     .attr("y", graph.dragStartY)
                     .attr("width", 0)
