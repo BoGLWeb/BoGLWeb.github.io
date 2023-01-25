@@ -71,16 +71,16 @@ export namespace backendManager {
 
             let elements = new Map<number, SystemDiagramElement>();
             let i = 0;
-            for (let el of parsedJson.elements) {
+            for (let e of parsedJson.elements) {
                 if (e.x < minX) minX = e.x;
                 if (e.y < minY) minY = e.y;
                 if (e.x > maxX) maxX = e.x;
                 if (e.y > maxY) maxY = e.y;
                 
-                if(el.id != null){
-                    elements.set(el.id, new SystemDiagramElement(el.id, el.type, el.x, el.y, el.velocity, el.modifiers));
+                if(e.id != null){
+                    elements.set(e.id, new SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
                 }else{
-                    elements.set(i++, new SystemDiagramElement(i, el.type, el.x, el.y, el.velocity, el.modifiers));
+                    elements.set(i++, new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
                 }
             }
 
