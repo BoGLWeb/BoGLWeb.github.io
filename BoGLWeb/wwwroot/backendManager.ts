@@ -359,7 +359,7 @@ export namespace backendManager {
             let bonds: GraphBond[] = [];
             for (const object of objects) {
                 let json = JSON.parse(object);
-                if (json.hasOwnProperty("id")) {
+                if (json.hasOwnProperty("velID")) {
                     elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
                 } else {
                     bonds.push(new GraphBond(json.source, json.target, json.velocity));
@@ -368,22 +368,16 @@ export namespace backendManager {
             return [elements, bonds];
         }
 
-        public parseElementAndEdgeIDStrings(objects: string[]): [number[], GraphBondID[], number[]] {
-            let elements: number[] = [];
+        public parseEdgeIDStrings(edgeIDs: string[]): [GraphBondID[], number[]] {
             let elementIndeces: number[] = [];
             let edges: GraphBondID[] = [];
             let i = 0;
-            for (const object of objects) {
-                let json = JSON.parse(object);
-                if (json.hasOwnProperty("id")) {
-                    elements.push(json.id);
-                    elementIndeces.push(i);
-                } else {
-                    edges.push(new GraphBondID(json.sourceId, json.targetId, i));
-                }
+            for (const edgeString of edgeIDs) {
+                let json = JSON.parse(edgeString);
+                edges.push(new GraphBondID(json.sourceId, json.targetId, i));
                 i++;
             }
-            return [elements, edges, elementIndeces];
+            return [edges, elementIndeces];
         }
 
         checkBondIDs(elemIDs: GraphBondID[], b: GraphBond): GraphBondID {
@@ -392,7 +386,7 @@ export namespace backendManager {
             return elemIDs.find(e => e.checkEquality(sourceID, targetID));
         }
 
-        public urDoAddSelection(newObjects: string[], prevSelectedElements: string[], prevSelectedEdges: string[], isUndo: boolean) {
+        public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(newObjects);
             if (isUndo) {
@@ -400,7 +394,7 @@ export namespace backendManager {
                 let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
-                let [prevSelElIDs, prevSelEdgeIDs] = this.parseElementAndEdgeIDStrings(prevSelectedElements.concat(prevSelectedEdges));
+                let [prevSelEdgeIDs] = this.parseEdgeIDStrings(prevSelectedEdges);
                 sysDiag.setSelection(sysDiag.elements.filter(e => prevSelElIDs.includes(e.id)), sysDiag.bonds.filter(b => this.checkBondIDs(prevSelEdgeIDs, b)));
             } else {
                 sysDiag.elements = sysDiag.elements.concat(elements);
@@ -431,12 +425,12 @@ export namespace backendManager {
             sysDiag.updateGraph();
         }
 
-        public urDoChangeSelection(addToSelection: string[], removeFromSelection: string[], isUndo: boolean) {
+        public urDoChangeSelection(elIDsToAdd: number[], edgesToAdd: string[], elIDsToRemove: number[], edgesToRemove: string[], isUndo: boolean) {
             let diagram = this.getGraphByIndex(window.tabNum);
-            let [addToSelectionEl, addToSelectionEdges] = this.parseElementAndEdgeIDStrings(addToSelection);
-            let [removeFromSelectionEl, removeFromSelectionEdges] = this.parseElementAndEdgeIDStrings(removeFromSelection);
-            let elAddSet = isUndo ? removeFromSelectionEl : addToSelectionEl;
-            let elRemoveSet = isUndo ? addToSelectionEl : removeFromSelectionEl;
+            let [addToSelectionEdges] = this.parseEdgeIDStrings(edgesToAdd);
+            let [removeFromSelectionEdges] = this.parseEdgeIDStrings(edgesToRemove);
+            let elAddSet = isUndo ? elIDsToRemove : elIDsToAdd;
+            let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
             let edgeRemoveSet = isUndo ? addToSelectionEdges : removeFromSelectionEdges;
             // @ts-ignore // may want to fix this later, but shouldn't be an issue as long as tab index is correctly recorded 
@@ -460,11 +454,11 @@ export namespace backendManager {
             diagram.updateGraph();
         }
 
-        public urDoChangeSelectionVelocity(elementsAndEdges: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
+        public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
-            let [elementIDs, bondIDs, numberIDs] = this.parseElementAndEdgeIDStrings(elementsAndEdges);
-            sysDiag.elements.filter(e => elementIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[numberIDs[elementIDs.findIndex(i => i == e.id)]] : velID);
-            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[this.checkBondIDs(bondIDs, b).id] : velID);
+            let [bondIDs, numberIDs] = this.parseEdgeIDStrings(edgeIDs);
+            sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[numberIDs[elIDs.findIndex(i => i == e.id)]] : velID);
+            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[this.checkBondIDs(bondIDs, b).velID] : velID);
             sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
         }

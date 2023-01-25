@@ -11,6 +11,12 @@ namespace BoGLWeb {
         /// </summary>
         public class CanvasChange {
             // Stores the elementIDs of the respective selected elements.
+
+            public new CanvasChange GetType() {
+                return this.GetType();
+            }
+
+            // Stores the IDs of the respective selected elements.
             public readonly int[] IDs;
 
             /// <summary>
@@ -322,13 +328,23 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Gets the applicable translation applied to this <c>MoveSelection</c>.
+                /// Gets the xOffset for this <c>MoveSelection</c>.
                 /// </summary>
                 /// <returns>
-                /// An array containing <c>this.xOffset</c> and <c>this.yOffset</c>.
+                /// <c>this.xOffset</c>
                 /// </returns>
-                public double[] GetTranslation() {
-                    return new double[] {this.xOffset, this.yOffset};
+                public double GetXOffset() {
+                    return this.xOffset;
+                }
+
+                /// <summary>
+                /// Gets the yOffset for this <c>MoveSelection</c>.
+                /// </summary>
+                /// <returns>
+                /// <c>this.yOffset</c>
+                /// </returns>
+                public double GetYOffset() {
+                    return this.yOffset;
                 }
             }
 
