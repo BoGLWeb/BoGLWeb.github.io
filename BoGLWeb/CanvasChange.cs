@@ -58,8 +58,8 @@ namespace BoGLWeb {
             /// system diagram.
             /// </summary>
             public class AddSelection : CanvasChange {
-                // Stores the previous group of selected elements
-                private readonly int[] prevSelectedElements;
+                // Stores the JSON form of the added elements
+                private readonly string[] newObjects;
                 // Stores the previous group of selected edges
                 private readonly string[] prevSelectedEdges;
 
@@ -70,14 +70,14 @@ namespace BoGLWeb {
                 /// <param name="IDs">
                 /// The set of elementIDs in the selection.
                 /// </param>
-                /// <param name="prevSelectedElements">The JSON string carrying info about
+                /// <param name="newObjects">The JSON string carrying info about
                 /// the added elements.
                 /// </param>
                 /// <param name="prevSelectedEdges">The JSON string carrying info about
                 /// the added elements.
                 /// </param>
-                public AddSelection(int[] IDs, int[] prevSelectedElements, string[] prevSelectedEdges) : base(IDs) {
-                    this.prevSelectedElements = prevSelectedElements;
+                public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges) : base(IDs) {
+                    this.newObjects = newObjects;
                     this.prevSelectedEdges = prevSelectedEdges;
                 }
 
@@ -94,11 +94,11 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Gets the previous element selection from this <c>AddSelection</c>.
+                /// Gets the JSON array of elements from this <c>AddSelection</c>.
                 /// </summary>
-                /// <returns>this.prevSelectedElements</returns>
-                public int[] GetPrevSelectedElements() {
-                    return this.prevSelectedElements;
+                /// <returns>this.newObjects</returns>
+                public string[] GetNewObjects() {
+                    return this.newObjects;
                 }
 
                 /// <summary>
