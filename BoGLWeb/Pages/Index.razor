@@ -298,7 +298,7 @@
         switch(cc.GetType()) {
             case CanvasChange.AddSelection:
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
-                // this.URDoAddSelection(addS. isUndo);
+                this.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), isUndo);
                 break;
             case CanvasChange.DeleteSelection:
                 CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
