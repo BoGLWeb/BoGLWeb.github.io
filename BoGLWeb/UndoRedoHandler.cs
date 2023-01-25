@@ -1,9 +1,13 @@
 ﻿namespace BoGLWeb {
     namespace EditorHelper {
         public class UndoRedoHandler {
+            // Stores the system diagram edit stack.
             private readonly EditionList<CanvasChange> systemStack;
+            // Stores the unsimplified bond graph edit stack.
             private readonly EditionList<CanvasChange> unsimpStack;
+            // Stores the simplified bond graph edit stack.
             private readonly EditionList<CanvasChange> simpleStack;
+            // Stores the causal bond graph edit stack.
             private readonly EditionList<CanvasChange> causalStack;
 
             /// <summary>
