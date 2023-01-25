@@ -622,7 +622,9 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
+        Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+        Console.WriteLine("BoGL String");
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
         var fileName = "SystemDiagram.bogl";
 

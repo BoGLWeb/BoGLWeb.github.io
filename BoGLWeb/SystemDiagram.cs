@@ -5,6 +5,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BoGLWeb.BaseClasses;
+using BoGLWeb.Utils;
 using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
@@ -16,7 +17,6 @@ namespace BoGLWeb {
 
         //Sets up our modifier dictionary
         static SystemDiagram() {
-
             ImmutableDictionary<string, int>.Builder idBuilder = ImmutableDictionary.CreateBuilder<string, int>();
             idBuilder.Add("MASS", 0);
             idBuilder.Add("INERTIA", 1);
@@ -27,8 +27,9 @@ namespace BoGLWeb {
             idBuilder.Add("TOOTH_WEAR", 6);
 
             modifierIDDict = idBuilder.ToImmutable();
-            
-            ImmutableDictionary<int, string>.Builder idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+
+            ImmutableDictionary<int, string>.Builder
+                idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
             idBuilderReverse.Add(0, "MASS");
             idBuilderReverse.Add(1, "INERTIA");
             idBuilderReverse.Add(2, "STIFFNESS");
@@ -73,8 +74,9 @@ namespace BoGLWeb {
             typeBuilder.Add("System_O_VC_Transducer", 29);
 
             typeIDDict = typeBuilder.ToImmutable();
-            
-            ImmutableDictionary<int, string>.Builder typeBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+
+            ImmutableDictionary<int, string>.Builder typeBuilderReverse =
+                ImmutableDictionary.CreateBuilder<int, string>();
             typeBuilderReverse.Add(0, "System_MT_Mass");
             typeBuilderReverse.Add(1, "System_MT_Spring");
             typeBuilderReverse.Add(2, "System_MT_Damper");
@@ -110,10 +112,10 @@ namespace BoGLWeb {
             typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
 
-        [JsonProperty]
-        protected List<Element> elements;
-        [JsonProperty]
-        protected List<Edge> edges;
+        [JsonProperty] protected List<Element> elements;
+
+        [JsonProperty] protected List<Edge> edges;
+
         // Leaving this out of JSON for now because we're not expecting to use it currently
         private Dictionary<string, double> header;
 
@@ -134,8 +136,62 @@ namespace BoGLWeb {
             this.edges = edges;
         }
 
+        public static SystemDiagram squishIds(SystemDiagram systemDiagram) {
+            //Need to squish element ids, modify edge ids to match
+            List<int> elementIds = systemDiagram.getElements().Select(element => element.GetID()).ToList();
+            
+            Console.WriteLine("ELEMENT IDS");
+            foreach (int num in elementIds) {
+                Console.WriteLine(num);
+            }
+            
+            elementIds = Sorting.countingSort(elementIds);
+            //Maps the old element id to the new element id for all elements which have been squished.
+            Dictionary<int, int> squishMap = new();
+            Dictionary<int, Element> updatedElements = new();
+            //Find all ids which need to be squished
+            Console.WriteLine(systemDiagram.getElements());
+            for (int i = 0; i < elementIds.Count; i++) {
+                if (elementIds[i] != i) {
+                    //We found id which needs to be squished
+                    squishMap.Add(elementIds[i], i);
+                    Element oldElement = systemDiagram.getElement(i);
+                    updatedElements.Add(i, new Element(oldElement.getType(), oldElement.getName(), oldElement.getX(), oldElement.getY(), i));
+                } else {
+                    squishMap.Add(i, i);
+                    updatedElements.Add(i, systemDiagram.getElement(i));
+                }
+            }
+
+            foreach (KeyValuePair<int, int> kvPair in squishMap) {
+                Console.WriteLine("Key: " + kvPair.Key + " Value: " + kvPair.Value);
+            }
+
+            List<Edge> updatedEdges = new();
+            //Update edges
+            foreach (Edge edge in systemDiagram.getEdges()) {
+                int e1 = edge.getTarget();
+                int e2 = edge.getSource();
+                Console.WriteLine("E1: " + e1);
+                Console.WriteLine("E2: " + e2);
+                Element newE1 = updatedElements[squishMap[e1]];
+                Element newE2 = updatedElements[squishMap[e2]];
+                updatedEdges.Add(new Edge(newE1, newE2, newE1.GetID(), newE2.GetID(), edge.getVelocity()));
+            }
+
+            return new SystemDiagram(systemDiagram.getHeader(), updatedElements.Values.ToList(), updatedEdges);
+        }
+
+        public Dictionary<string, double> getHeader() {
+            return this.header;
+        }
+
         private Element getElement(int pos) {
             return this.elements[pos];
+        }
+
+        private Element? getElementById(int id) {
+            return this.elements.FirstOrDefault(element => element.GetID() == id);
         }
 
         /// <summary>
@@ -172,7 +228,8 @@ namespace BoGLWeb {
         //Parsing
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
-            string errorMessage = "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
+            string errorMessage =
+                "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -217,7 +274,8 @@ namespace BoGLWeb {
                 if (tok.Equals("name")) {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
-                    name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "").Replace("System_O_", "") + elementId;
+                    name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "")
+                        .Replace("System_O_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");
@@ -336,7 +394,8 @@ namespace BoGLWeb {
                         if (!velocity.Contains("VELOCITY")) {
                             arcs.Add(new Edge(elements[e1], elements[e2], e1, e2));
                         } else {
-                            arcs.Add(new Edge(elements[e1], elements[e2], e1, e2, Convert.ToInt32(velocity.Replace("VELOCITY", ""))));
+                            arcs.Add(new Edge(elements[e1], elements[e2], e1, e2,
+                                Convert.ToInt32(velocity.Replace("VELOCITY", ""))));
                             foundCloseBrace = arcsTokenQueue.Dequeue().Equals("}");
                         }
                     }
@@ -358,6 +417,7 @@ namespace BoGLWeb {
                     return i;
                 }
             }
+
             return -1;
         }
 
@@ -365,7 +425,8 @@ namespace BoGLWeb {
         private static List<string> tokenize(string xml) {
             string[] lines = xml.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-            return (from line in lines from token in line.Trim().Split(" ") where token.Length > 0 select token).ToList();
+            return (from line in lines from token in line.Trim().Split(" ") where token.Length > 0 select token)
+                .ToList();
         }
 
         //From JSON
@@ -384,11 +445,12 @@ namespace BoGLWeb {
             }
 
             foreach (dynamic? bond in parsedJSON.bonds) {
-                sysDiagram.edges.Add(new Edge(sysDiagram.getElement(int.Parse(bond.source.id.ToString())), 
-                    sysDiagram.getElement(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()), int.Parse(bond.target.id.ToString()), 
+                sysDiagram.edges.Add(new Edge(sysDiagram.getElementById(int.Parse(bond.source.id.ToString())),
+                    sysDiagram.getElementById(int.Parse(bond.target.id.ToString())), int.Parse(bond.source.id.ToString()),
+                    int.Parse(bond.target.id.ToString()),
                     int.Parse(bond.velocity.ToString())));
             }
-                
+
             return sysDiagram;
         }
 
@@ -411,46 +473,81 @@ namespace BoGLWeb {
             const string ruleFileName = "system_graph";
 
             //XML Header
+
             #region GraphSynth Protocols
-            builder.Append("<Page Background=\"#FF000000\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"").Append(
-          " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"").Append(
-        " mc:Ignorable=\"GraphSynth\" xmlns:GraphSynth=\"ignorableUri\" Tag=\"Graph\" ><Border BorderThickness=\"1,1,1,1\"").Append(
-          " BorderBrush=\"#FFA9A9A9\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"><Viewbox ").Append(
-        " StretchDirection=\"Both\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"><Canvas Background=\"#FFFFFFFF\"").Append(
-         "  Width=\"732.314136125654\" Height=\"570.471204188482\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"").Append(
-         "  RenderTransform=\"1,0,0,-1,0,570.471204188482\"><Ellipse Fill=\"#FF000000\" Tag=\"input\" Width=\"5\" Height=\"5\"").Append(
-         "  HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" /><TextBlock Text=\"input (input, pivot, revolute, ground)\"").Append(
-         "  FontSize=\"12\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" RenderTransform=\"1,0,0,-1,-14.7816666666667,67.175\" />").Append(
-              " <Ellipse Fill=\"#FF000000\" Tag=\"ground\" Width=\"5\" Height=\"5\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" />").Append(
-                   " <TextBlock Text=\"ground (ground, link)\" FontSize=\"12\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"").Append(
-         " RenderTransform=\"1,0,0,-1,239.111666666667,67.175\" /><Path Stretch=\"None\" Fill=\"#FF000000\" Stroke=\"#FF000000\"").Append(
-          " StrokeThickness=\"1\" StrokeStartLineCap=\"Flat\" StrokeEndLineCap=\"Flat\" StrokeDashCap=\"Flat\" StrokeLineJoin=\"Miter\"").Append(
-          " StrokeMiterLimit=\"10\" StrokeDashOffset=\"0\" Tag=\"a0,0,0.5,12:StraightArcController,\" LayoutTransform=\"Identity\"").Append(
-          " Margin=\"0,0,0,0\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\" RenderTransform=\"Identity\"").Append(
-          " RenderTransformOrigin=\"0,0\" Opacity=\"1\" Visibility=\"Visible\" SnapsToDevicePixels=\"False\"> ").Append(
-          " <Path.Data><PathGeometry><PathGeometry.Figures><PathFigure StartPoint=\"77,74.5\" IsFilled=\"False\" IsClosed=\"False\"> ").Append(
-          " <PathFigure.Segments><LineSegment Point=\"288,74.5\" /></PathFigure.Segments></PathFigure> ").Append(
-          " <PathFigure StartPoint=\"288,74.5\" IsFilled=\"True\" IsClosed=\"True\"><PathFigure.Segments><PolyLineSegment ").Append(
-              " Points=\"278,70 281,74.5 278,79\" /></PathFigure.Segments></PathFigure></PathGeometry.Figures></PathGeometry> ").Append(
-                  " </Path.Data></Path></Canvas></Viewbox></Border> ").Append(
-        " <GraphSynth:CanvasProperty BackgroundColor=\"#FFFFFFFF\" AxesColor=\"#FF000000\" AxesOpacity=\"1\" AxesThick=\"0.5\" ").Append(
-          " GridColor=\"#FF000000\" GridOpacity=\"1\" GridSpacing=\"24\" GridThick=\"0.25\" SnapToGrid=\"True\"").Append(
-          " ScaleFactor=\"1\" ShapeOpacity=\"1\" ZoomToFit=\"False\" ShowNodeName=\"True\" ShowNodeLabel=\"True\"").Append(
-          " ShowArcName=\"False\" ShowArcLabel=\"True\" ShowHyperArcName=\"False\" ShowHyperArcLabel=\"True\"").Append(
-          " NodeFontSize=\"12\" ArcFontSize=\"12\" HyperArcFontSize=\"12\" NodeTextDistance=\"0\" NodeTextPosition=\"0\"").Append(
-          " ArcTextDistance=\"0\" ArcTextPosition=\"0.5\" HyperArcTextDistance=\"0\" HyperArcTextPosition=\"0.5\" GlobalTextSize=\"12\"").Append(
-          " CanvasHeight=\"570.47120418848169\" CanvasWidth=\"732.314136125654,732.314136125654,732.314136125654,732.314136125654\"").Append(
-          " WindowLeft=\"694.11518324607323\" WindowTop=\"290.5130890052356\" extraAttributes=\"{x:Null}\" Background=\"#FF93CDDD\"").Append(
-          " xmlns=\"clr-namespace:GraphSynth.UI;assembly=GraphSynth\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"").Append(
-          " xmlns:sx=\"clr-namespace:System.Xml;assembly=System.Xml\" xmlns:av=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"").Append(
-           " xmlns:gsui=\"clr-namespace:GraphSynth.UI;assembly=GraphSynth.CustomControls\" xmlns:s=\"clr-namespace:System;assembly=mscorlib\"> ").Append(
-          " <CanvasProperty.extraData><x:Array Type=\"sx:XmlElement\"><x:Null /></x:Array></CanvasProperty.extraData> ").Append(
-               "</GraphSynth:CanvasProperty>").Append("\n");
+
+            builder.Append(
+                    "<Page Background=\"#FF000000\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"")
+                .Append(
+                    " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"").Append(
+                    " mc:Ignorable=\"GraphSynth\" xmlns:GraphSynth=\"ignorableUri\" Tag=\"Graph\" ><Border BorderThickness=\"1,1,1,1\"")
+                .Append(
+                    " BorderBrush=\"#FFA9A9A9\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"><Viewbox ")
+                .Append(
+                    " StretchDirection=\"Both\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"><Canvas Background=\"#FFFFFFFF\"")
+                .Append(
+                    "  Width=\"732.314136125654\" Height=\"570.471204188482\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\"")
+                .Append(
+                    "  RenderTransform=\"1,0,0,-1,0,570.471204188482\"><Ellipse Fill=\"#FF000000\" Tag=\"input\" Width=\"5\" Height=\"5\"")
+                .Append(
+                    "  HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" /><TextBlock Text=\"input (input, pivot, revolute, ground)\"")
+                .Append(
+                    "  FontSize=\"12\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" RenderTransform=\"1,0,0,-1,-14.7816666666667,67.175\" />")
+                .Append(
+                    " <Ellipse Fill=\"#FF000000\" Tag=\"ground\" Width=\"5\" Height=\"5\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" />")
+                .Append(
+                    " <TextBlock Text=\"ground (ground, link)\" FontSize=\"12\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\"")
+                .Append(
+                    " RenderTransform=\"1,0,0,-1,239.111666666667,67.175\" /><Path Stretch=\"None\" Fill=\"#FF000000\" Stroke=\"#FF000000\"")
+                .Append(
+                    " StrokeThickness=\"1\" StrokeStartLineCap=\"Flat\" StrokeEndLineCap=\"Flat\" StrokeDashCap=\"Flat\" StrokeLineJoin=\"Miter\"")
+                .Append(
+                    " StrokeMiterLimit=\"10\" StrokeDashOffset=\"0\" Tag=\"a0,0,0.5,12:StraightArcController,\" LayoutTransform=\"Identity\"")
+                .Append(
+                    " Margin=\"0,0,0,0\" HorizontalAlignment=\"Stretch\" VerticalAlignment=\"Stretch\" RenderTransform=\"Identity\"")
+                .Append(
+                    " RenderTransformOrigin=\"0,0\" Opacity=\"1\" Visibility=\"Visible\" SnapsToDevicePixels=\"False\"> ")
+                .Append(
+                    " <Path.Data><PathGeometry><PathGeometry.Figures><PathFigure StartPoint=\"77,74.5\" IsFilled=\"False\" IsClosed=\"False\"> ")
+                .Append(
+                    " <PathFigure.Segments><LineSegment Point=\"288,74.5\" /></PathFigure.Segments></PathFigure> ")
+                .Append(
+                    " <PathFigure StartPoint=\"288,74.5\" IsFilled=\"True\" IsClosed=\"True\"><PathFigure.Segments><PolyLineSegment ")
+                .Append(
+                    " Points=\"278,70 281,74.5 278,79\" /></PathFigure.Segments></PathFigure></PathGeometry.Figures></PathGeometry> ")
+                .Append(
+                    " </Path.Data></Path></Canvas></Viewbox></Border> ").Append(
+                    " <GraphSynth:CanvasProperty BackgroundColor=\"#FFFFFFFF\" AxesColor=\"#FF000000\" AxesOpacity=\"1\" AxesThick=\"0.5\" ")
+                .Append(
+                    " GridColor=\"#FF000000\" GridOpacity=\"1\" GridSpacing=\"24\" GridThick=\"0.25\" SnapToGrid=\"True\"")
+                .Append(
+                    " ScaleFactor=\"1\" ShapeOpacity=\"1\" ZoomToFit=\"False\" ShowNodeName=\"True\" ShowNodeLabel=\"True\"")
+                .Append(
+                    " ShowArcName=\"False\" ShowArcLabel=\"True\" ShowHyperArcName=\"False\" ShowHyperArcLabel=\"True\"")
+                .Append(
+                    " NodeFontSize=\"12\" ArcFontSize=\"12\" HyperArcFontSize=\"12\" NodeTextDistance=\"0\" NodeTextPosition=\"0\"")
+                .Append(
+                    " ArcTextDistance=\"0\" ArcTextPosition=\"0.5\" HyperArcTextDistance=\"0\" HyperArcTextPosition=\"0.5\" GlobalTextSize=\"12\"")
+                .Append(
+                    " CanvasHeight=\"570.47120418848169\" CanvasWidth=\"732.314136125654,732.314136125654,732.314136125654,732.314136125654\"")
+                .Append(
+                    " WindowLeft=\"694.11518324607323\" WindowTop=\"290.5130890052356\" extraAttributes=\"{x:Null}\" Background=\"#FF93CDDD\"")
+                .Append(
+                    " xmlns=\"clr-namespace:GraphSynth.UI;assembly=GraphSynth\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"")
+                .Append(
+                    " xmlns:sx=\"clr-namespace:System.Xml;assembly=System.Xml\" xmlns:av=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"")
+                .Append(
+                    " xmlns:gsui=\"clr-namespace:GraphSynth.UI;assembly=GraphSynth.CustomControls\" xmlns:s=\"clr-namespace:System;assembly=mscorlib\"> ")
+                .Append(
+                    " <CanvasProperty.extraData><x:Array Type=\"sx:XmlElement\"><x:Null /></x:Array></CanvasProperty.extraData> ")
+                .Append(
+                    "</GraphSynth:CanvasProperty>").Append("\n");
 
             builder.Append("<GraphSynth:designGraph xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ").Append(
-           "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">").Append("\n");
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">").Append("\n");
 
             #endregion
+
             builder.AppendLine("<name>" + ruleFileName + "</name>");
 
             builder.AppendLine("<globalLabels />");
@@ -472,10 +569,12 @@ namespace BoGLWeb {
 
                     builder.AppendLine("</arc>");
                 }
+
                 builder.AppendLine("</arcs>");
             } else {
                 builder.AppendLine("<arcs />");
             }
+
             builder.AppendLine("<nodes>");
             //Add elements
             foreach (Element element in this.elements) {
@@ -487,6 +586,7 @@ namespace BoGLWeb {
                 foreach (string n in element.getLabelList()) {
                     builder.AppendLine("<string>" + n + "</string>");
                 }
+
                 builder.AppendLine("</localLabels>");
                 builder.AppendLine("<localVariables />");
 
@@ -542,9 +642,11 @@ namespace BoGLWeb {
             foreach (arc a in g.arcs) {
                 a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
             }
+
             foreach (node a in g.nodes) {
                 a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
             }
+
             foreach (hyperarc a in g.hyperarcs) {
                 a.localLabels.RemoveAll(string.IsNullOrWhiteSpace);
             }
@@ -555,13 +657,17 @@ namespace BoGLWeb {
         /// </summary>
         /// <returns>A string</returns>
         public string generateBoGLString() {
+            Console.WriteLine("Generating BoGL String");
+            SystemDiagram squishedSystemDiagram = squishIds(this);
+            
             StringBuilder sb = new();
 
             sb.Append("[Header]\n");
-            if (header == null) {
-                this.header = new Dictionary<string, double> { { "panX", 0.0 }, { "panY", 0.0 }, { "zoom", 0.0 } };
+            if (squishedSystemDiagram.header == null) {
+                squishedSystemDiagram.header = new Dictionary<string, double> { { "panX", 0.0 }, { "panY", 0.0 }, { "zoom", 0.0 } };
             }
-            foreach (KeyValuePair<string, double> entry in this.header) {
+
+            foreach (KeyValuePair<string, double> entry in squishedSystemDiagram.header) {
                 sb.Append(entry.Key);
                 sb.Append(" ");
                 sb.Append(entry.Value);
@@ -569,7 +675,7 @@ namespace BoGLWeb {
             }
 
             sb.Append("[Elements]\n");
-            foreach (Element e in this.elements) {
+            foreach (Element e in squishedSystemDiagram.elements) {
                 sb.Append("{\n");
                 sb.Append("name");
                 sb.Append(" ");
@@ -588,8 +694,8 @@ namespace BoGLWeb {
                     sb.Append(modifierIDDictReverse[mod]);
                     sb.Append('\n');
                 }
-                
-                if (e.getVelocity() != 0){
+
+                if (e.getVelocity() != 0) {
                     sb.Append("VELOCITY");
                     sb.Append(" ");
                     sb.Append(e.getVelocity());
@@ -602,7 +708,7 @@ namespace BoGLWeb {
 
             sb.Append("[Arcs]");
             sb.Append('\n');
-            foreach (Edge edge in this.edges) {
+            foreach (Edge edge in squishedSystemDiagram.edges) {
                 sb.Append('{');
                 sb.Append('\n');
                 sb.Append("element1 ");
@@ -615,11 +721,12 @@ namespace BoGLWeb {
                     sb.Append("velocity ");
                     sb.Append(edge.getVelocity());
                 }
+
                 sb.Append('\n');
                 sb.Append('}');
                 sb.Append('\n');
             }
-            
+
 
             return sb.ToString();
         }
@@ -638,7 +745,7 @@ namespace BoGLWeb {
             protected int velocity;
 
             private static int universalID = 0;
-            private int? ID;
+            private int? id;
 
             /// <summary>
             /// Creates an element of the system diagram
@@ -652,8 +759,18 @@ namespace BoGLWeb {
                 this.name = name;
                 this.x = x;
                 this.y = y;
-                modifiers = new();
-                AssignID(0, true);
+                this.modifiers = new List<int>();
+                this.AssignID(0, true);
+            }
+
+            [JsonConstructor]
+            public Element(int type, string name, double x, double y, int id) {
+                this.type = type;
+                this.name = name;
+                this.x = x;
+                this.y = y;
+                this.modifiers = new List<int>();
+                this.id = id;
             }
 
             /// <summary>
@@ -749,10 +866,10 @@ namespace BoGLWeb {
             /// else <c>false</c>.
             /// </param>
             private void AssignID(int? ID, bool isDistinct) {
-                if (this.ID == null | isDistinct) {
-                    this.ID = universalID++;
+                if (this.id == null | isDistinct) {
+                    this.id = universalID++;
                 } else {
-                    this.ID = ID;
+                    this.id = ID;
                 }
             }
 
@@ -766,11 +883,9 @@ namespace BoGLWeb {
             /// The copy.
             /// </returns>
             public Element Copy(bool isDistinct) {
-                Element copy = new(this.type, this.name, this.x, this.y) {
-                    modifiers = new List<int>()
-                };
+                Element copy = new(this.type, this.name, this.x, this.y) { modifiers = new List<int>() };
                 this.modifiers.AddRange(this.modifiers);
-                copy.AssignID(this.ID, isDistinct);
+                copy.AssignID(this.id, isDistinct);
                 return copy;
             }
 
@@ -781,7 +896,7 @@ namespace BoGLWeb {
             /// <c>this.ID</c>
             /// </returns>
             public int GetID() {
-                return (this.ID is int ID) ? ID : 0;
+                return (this.id is int ID) ? ID : 0;
             }
 
             /// <summary>
@@ -814,6 +929,7 @@ namespace BoGLWeb {
             /// Tracks the undo/redo and general IDs for this <c>Edge</c>.
             /// </summary>
             private static int universalID = 0;
+
             private int? ID;
 
             /// <summary>
@@ -858,7 +974,7 @@ namespace BoGLWeb {
             public Element getE2() {
                 return this.e2;
             }
-            
+
             /// <summary>
             /// Returns the id of the source
             /// </summary>
@@ -931,7 +1047,10 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A string</returns>
             public string toString() {
-                return this.velocity == 0 ? "Arc " + this.e1.getName() + " to " + this.e2.getName() + "\r\n" : "Arc " + this.e1.getName() + " to " + this.e2.getName() + " has velocity " + this.velocity + "\r\n";
+                return this.velocity == 0
+                    ? "Arc " + this.e1.getName() + " to " + this.e2.getName() + "\r\n"
+                    : "Arc " + this.e1.getName() + " to " + this.e2.getName() + " has velocity " + this.velocity +
+                      "\r\n";
             }
         }
     }
