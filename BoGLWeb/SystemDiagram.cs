@@ -977,10 +977,10 @@ namespace BoGLWeb {
             /// tied to any other object in the canvas, else <code>false</code>.
             /// </param>
             private void assignID(int? ID, bool isDistinct) {
-                if (this.ID == null || isDistinct) {
-                    this.ID = universalID++;
+                if (this.id == null || isDistinct) {
+                    this.id = universalID++;
                 } else {
-                    this.ID = ID;
+                    this.id = ID;
                 }
             }
 
@@ -1002,7 +1002,7 @@ namespace BoGLWeb {
                 foreach (int modifier in this.modifiers) {
                     copy.addModifier(modifier + "");
                 }
-                copy.assignID(this.ID, isDistinct);
+                copy.assignID(this.id, isDistinct);
                 return copy;
             }
 
@@ -1013,7 +1013,7 @@ namespace BoGLWeb {
             /// <code>this.ID</code>
             /// </returns>
             public override int GetHashCode() {
-                return this.ID is int ID ? ID : 0;
+                return this.id is int ID ? ID : 0;
             }
 
             /// <summary>
