@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.EditorHelper;
+using Newtonsoft.Json;
 using System.Collections.Immutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using BoGLWeb.BaseClasses;
-using BoGLWeb.EditorHelper;
-using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -133,7 +133,7 @@ namespace BoGLWeb {
             this.changes = new();
         }
 
-        //Creates a system diagram with a list of elements and edges. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
+        //Creates a system diagram with a list of parsedElements and edges. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
         private SystemDiagram(Dictionary<string, double> header, List<Element> elements, List<Edge> edges) {
             this.header = header;
             this.elements = elements;
@@ -155,17 +155,17 @@ namespace BoGLWeb {
         }
 
         /// <summary>
-        /// Gets the list of elements in the system diagram
+        /// Gets the list of parsedElements in the system diagram
         /// </summary>
-        /// <returns>The list of elements</returns>
+        /// <returns>The list of parsedElements</returns>
         public List<Element> getElements() {
             return this.elements;
         }
 
         /// <summary>
-        /// Gets the elements in the system diagram
+        /// Gets the parsedElements in the system diagram
         /// </summary>
-        /// <returns>The list of elements</returns>
+        /// <returns>The list of parsedElements</returns>
         public List<Edge> getEdges() {
             return this.edges;
         }
@@ -202,7 +202,7 @@ namespace BoGLWeb {
                 tokenQueue.Enqueue(tokens[i]);
             }
 
-            //Create elements while we have symbols left
+            //Create parsedElements while we have symbols left
             //Element id
             int elementId = 0;
             while (tokenQueue.Count > 0) {
@@ -484,7 +484,7 @@ namespace BoGLWeb {
                 builder.AppendLine("<arcs />");
             }
             builder.AppendLine("<nodes>");
-            //Add elements
+            //Add parsedElements
             foreach (Element element in this.elements) {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
@@ -631,6 +631,30 @@ namespace BoGLWeb {
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Gets a list of all <c>Elements</c> in this <c>SystemDiagram</c>
+        /// that have the corresponding IDs
+        /// </summary>
+        /// <param name="IDs">
+        /// The array of IDs.
+        /// </param>
+        /// <returns>
+        /// The Dictionary containing all relevant elements.
+        /// </returns>
+        public Dictionary<int, Element> GetElementsFromIDs(int[] IDs) {
+            Dictionary<int, Element> elements = new(), parsedElements = new();
+            foreach (Element element in this.elements) {
+                elements.Add(element.GetID(), element);
+            }
+            foreach (int ID in IDs) {
+                Element? element = elements.GetValueOrDefault(ID);
+                if (element != null) {
+                    parsedElements.Add(ID, element);
+                }
+            }
+            return parsedElements;
+        }
+
         public class Element {
             private readonly string name;
             [JsonProperty]
@@ -675,6 +699,14 @@ namespace BoGLWeb {
             /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
                 this.modifiers.Add(modifierIDDict.GetValueOrDefault(name));
+            }
+
+            /// <summary>
+            /// Adds a modifier to this <c>Element</c>
+            /// </summary>
+            /// <param name="modID">The ID of the new modifier</param>
+            public void addModifier(int modID) {
+                this.modifiers.Add(modID);
             }
 
             //TODO Error checking
@@ -732,6 +764,26 @@ namespace BoGLWeb {
             /// <returns>A double</returns>
             public double getY() {
                 return this.y;
+            }
+
+            /// <summary>
+            /// Resets the x-value of this <c>Element</c>.
+            /// </summary>
+            /// <param name="x">
+            /// The new x-value.
+            /// </param>
+            public void SetX(double x) {
+                this.x = x;
+            }
+
+            /// <summary>
+            /// Resets the y-value of this <c>Element</c>.
+            /// </summary>
+            /// <param name="y">
+            /// The new y-value.
+            /// </param>
+            public void SetY(double y) {
+                this.y = y;
             }
 
             /// <summary>
@@ -880,7 +932,7 @@ namespace BoGLWeb {
             private int? ID;
 
             /// <summary>
-            /// Creates an edge between two elements
+            /// Creates an edge between two parsedElements
             /// </summary>
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
@@ -893,7 +945,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Creates an edge between two elements witha  velocity
+            /// Creates an edge between two parsedElements witha  velocity
             /// </summary>
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
