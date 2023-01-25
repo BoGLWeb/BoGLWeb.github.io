@@ -297,14 +297,16 @@
         CanvasChange cc = null; // probably switch funciton depending on isUndo
         switch(cc.GetType()) {
             case CanvasChange.AddSelection:
-                // this.URDoAddSelection(isUndo);
+                CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
+                // this.URDoAddSelection(addS. isUndo);
                 break;
             case CanvasChange.DeleteSelection:
-                // this.URDoDeleteSelection(isUndo);
+                CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
+                this.URDoDeleteSelection(ds.GetDeletedJSONElements(), isUndo);
                 break;
             case CanvasChange.ChangeSelection:
                 CanvasChange.ChangeSelection cs = (CanvasChange.ChangeSelection) cc;
-                // this.URDoChangeSelection(cs.GetNewIDs(), cs.GetIDs(), isUndo);
+                this.URDoChangeSelection(cs.GetNewElementIDs(), cs.GetNewEdgeIDs(), cs.GetIDs(), cs.GetOldEdgeIDs(), isUndo);
                 break;
             case CanvasChange.ChangeModifier:
                 CanvasChange.ChangeModifier cm = (CanvasChange.ChangeModifier) cc;
@@ -316,7 +318,7 @@
                 break;
             case CanvasChange.ChangeVelocity:
                 CanvasChange.ChangeVelocity cv = (CanvasChange.ChangeVelocity) cc;
-                // this.URDoChangeSelectionVelocity(, isUndo);
+                this.URDoChangeSelectionVelocity(cv.GetIDs(), cv.GetEdgeIDs(), cv.GetNewVelID(), cv.GetOldIDs(), isUndo);
                 break;
         }        
     }
@@ -387,7 +389,7 @@
         app?.StateHasChanged();
     }
 
-    public async void URDoAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {
+    public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoAddSelection", newObjects, prevSelectedElements, prevSelectedEdges, isUndo);
         app?.StateHasChanged();
