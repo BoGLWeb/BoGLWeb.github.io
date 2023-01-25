@@ -178,7 +178,7 @@ namespace BoGLWeb {
                 private readonly bool[] current;
 
                 /// <summary>
-                /// Creates a new ChangeSelection CanvasChange.
+                /// Creates a new <c>ChangeSelection</c> <c>CanvasChange</c>.
                 /// </summary>
                 /// <param name="IDs">
                 /// The set of IDs in the selection.
