@@ -3,6 +3,7 @@ using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
 
@@ -86,7 +87,7 @@ namespace BoGLWeb {
                 throw new ArgumentException("Graph was null");
             }
 
-            BondGraph bondGraph = new BondGraph();
+            BondGraph bondGraph = new();
 
             //Construct an Element for each node
             foreach(node node in graph.nodes) {
@@ -95,6 +96,7 @@ namespace BoGLWeb {
                     sb.Append(l);
                     sb.Append(" ");
                 }
+
                 bondGraph.addElement(node.name, new Element(node.name, sb.ToString().TrimEnd(), 0));
             }
 
@@ -103,9 +105,7 @@ namespace BoGLWeb {
                 node from = arc.From;
                 node to = arc.To;
                 List<string> labels = arc.localLabels;
-                //TODO Check if this string is correct
                 bool flip = labels.Contains("OPP");
-                //TODO Make sure that this is an okay way to check if we should have a causal stroke
                 bool useCausalStroke = labels.Contains("OPP") || labels.Contains("SAME");
 
                 int sourceId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
@@ -154,7 +154,7 @@ namespace BoGLWeb {
 
             public Element(string name, string label, double value) {
                 this.name = name;
-                this.label = label + " " + name;
+                this.label = label;
                 this.value = value;
                 AssignID(0, true);
 

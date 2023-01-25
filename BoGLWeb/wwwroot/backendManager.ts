@@ -12,17 +12,32 @@ import { SVGSelection } from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
+
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
+
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
             let elements = JSON.parse(bg.elements).map((e, i) => {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
                 return new BondGraphElement(i, e.label, e.x, e.y);
             }) as BondGraphElement[];
+
+            elements.forEach(e => {
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
+            });
+
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, b.velocity);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
-            bondGraph.changeScale(0, 0, 1, false);
             if (id == 0) {
                 window.unsimpBG = bondGraph;
             } else if (id == 1) {
@@ -31,6 +46,7 @@ export namespace backendManager {
                 window.causalBG = bondGraph;
             }
             bondGraph.updateGraph();
+            this.zoomCenterGraph(JSON.stringify(id + 2));
         }
 
         public displayUnsimplifiedBondGraph(jsonString: string) {
@@ -46,30 +62,55 @@ export namespace backendManager {
         }
 
         public loadSystemDiagram(jsonString: string) {
-            let parsedJson = JSON.parse(jsonString);
-            let elements = []
-            let i = 0;
-            for (let el of parsedJson.elements) {
-                let e = new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers);
-                elements.push(e);
-            }
             let edges = [];
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            
+            let parsedJson = JSON.parse(jsonString);
+
+            let elements = new Map<number, SystemDiagramElement>();
+            let i = 0;
+            for (let e of parsedJson.elements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+                
+                if(e.id != null){
+                    elements.set(e.id, new SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }else{
+                    elements.set(i++, new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }
+            }
+
+            elements.forEach(e => {
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
+            });
+
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements[edge.source], elements[edge.target]);
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
                 bond.velocity = edge.velocity ?? 0;
                 edges.push(bond);
             }
 
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", elements.map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 window.systemDiagram.listToIDObjects(window.systemDiagram.selectedElements), window.systemDiagram.listToIDObjects(window.systemDiagram.selectedBonds));
 
-            var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
+            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
             systemDiagram.draggingElement = null;
-
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+        }
 
-            let svgDim = d3.select('#systemDiagram > svg > g').node().getBBox();
+        public zoomCenterGraph(index: string) {
+            let graph = this.getGraphByIndex(index);
+            let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+            let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
             let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
             let scale = 1;
             if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
@@ -77,9 +118,12 @@ export namespace backendManager {
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
+            scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            systemDiagram.changeScale(xTrans, yTrans, scale, false);
+            console.log(svgDim, xTrans, yTrans);
+            graph.changeScale(xTrans, yTrans, scale);
+            graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
         public async openFile() {
@@ -155,7 +199,7 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
         
-        public areMultipleElementsSelected(){
+        public areMultipleElementsSelected() {
             return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
         }
 
@@ -204,27 +248,20 @@ export namespace backendManager {
 
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
-
-            // converts SVG position to svg center of view window
-            let svgDim = (graph.svgG.node() as SVGGraphicsElement).getBBox();
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-            let scale = i / 100;
-            let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
-            let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
 
-            let scaleDiff = 1 - (i / 100);
+            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
 
-            if (!graph.zoomWithSlider) {
-                graph.zoomWithSlider = true;
-                graph.initXPos = (graph.initXPos - scaleDiff * xTrans) / (1 - scaleDiff);
-                graph.initYPos = (graph.initYPos - scaleDiff * yTrans) / (1 - scaleDiff);
+            console.log(xOffset, windowDim.width / 2 - (windowDim.width / 2 - graph.svgX), (windowDim.width / 2 - graph.svgX), graph.svgX);
+            if (graph.prevScale * 100 - i != 0) {
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
             }
-
-            graph.changeScale(graph.initXPos + ((xTrans - graph.initXPos) * scaleDiff), graph.initYPos + ((yTrans - graph.initYPos) * scaleDiff), i / 100, true);
         }
 
         public setTab(key: string) {
             window.tabNum = key;
+            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
         public setVelocity(velocity: number) {

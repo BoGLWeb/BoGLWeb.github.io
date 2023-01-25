@@ -46,11 +46,14 @@ async function loadPage() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('q');
-    if(myParam !== null){
+    if (myParam !== null){
         let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
         getBackendManager().loadSystemDiagram(sysDiagramString);
-    }else {
+    } else {
         window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+        window.systemDiagram.updateGraph();
+        backendManager.getBackendManager().zoomCenterGraph("1");
+        window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
     }
 
     document.addEventListener("mouseup", function () {

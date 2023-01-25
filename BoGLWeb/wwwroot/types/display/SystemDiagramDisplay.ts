@@ -22,6 +22,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         7: "⮦",
         8: "⮤"
     };
+
+    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [10, 40], [-5, 40], [-30, 10], [-30, 0]];
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
@@ -170,35 +172,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         }
                     })
                     .attr("x", (d: SystemDiagramElement) => {
-                        let xOffset = 0;
-                        if (d.velocity != 0) {
-                            if (d.velocity == 1 || d.velocity == 2) {
-                                xOffset = -5;
-                            } else if (d.velocity == 3 || d.velocity == 4) {
-                                xOffset = 30;
-                            } else if (d.velocity == 5 || d.velocity == 6) {
-                                xOffset = -5;
-                            } else {
-                                xOffset = -30;
-                            }
-                        }
-                        return xOffset;
+                        return d.velocity != 0 ? graph.velocityOffsets[d.velocity - 1][0] : 0;
+                    })
+                    .attr("y", (d: SystemDiagramElement) => {
+                        return d.velocity != 0 ? graph.velocityOffsets[d.velocity - 1][1] : 0;
                     });
-                text.attr("y", (d: SystemDiagramElement) => {
-                    let yOffset = 0;
-                    if (d.velocity != 0) {
-                        if (d.velocity == 1 || d.velocity == 2) {
-                            yOffset = -37;
-                        } else if (d.velocity == 3 || d.velocity == 4) {
-                            yOffset = 7;
-                        } else if (d.velocity == 5 || d.velocity == 6) {
-                            yOffset = 38;
-                        } else {
-                            yOffset = 0;
-                        }
-                    }
-                    return yOffset;
-                });
             }
         });
 
@@ -242,19 +220,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 let xOffset = 0;
                 let yOffset = 0;
                 let mult = Math.abs(Math.cos((Math.atan2(e.source.y - e.target.y, e.target.x - e.source.x) + Math.PI) % (2 * Math.PI)));
-                if (e.velocity == 1 || e.velocity == 2) {
+                let v = e.velocity;
+                if (v == 2 || v == 3) {
                     velocityClass = "topVelocity";
                     yOffset = -7 * mult;
                     xOffset = -3;
-                } else if (e.velocity == 3 || e.velocity == 4) {
+                } else if (v == 4 || v == 5) {
                     velocityClass = "rightVelocity";
                     yOffset = 7 * mult;
                     xOffset = 0;
-                } else if (e.velocity == 5 || e.velocity == 6) {
+                } else if (v == 6 || v == 7) {
                     velocityClass = "bottomVelocity";
                     yOffset = 7 * mult;
-                    xOffset = -5;
-                } else {
+                    xOffset = v == 7 ? 0 : -5;
+                } else if (v == 1 || v == 8) {
                     velocityClass = "leftVelocity";
                     yOffset = -7 * mult;
                     xOffset = 0;
@@ -558,6 +537,18 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 d3.event.preventDefault();
                 this.deleteSelection();
                 break;
+            case this.ARROW_LEFT:
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_UP:
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale);
+                break;
+            case this.ARROW_RIGHT:
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_DOWN:
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale);
+                break;
         }
 
         if (this.checkCtrlCombo(this.A_KEY)) {
@@ -610,7 +601,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (!this.edgeOrigin) {
             this.justScaleTransGraph = true;
             if (this.prevScale !== d3.event.scale || d3.event.sourceEvent.buttons == 2) {
-                this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+                this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale);
             }
         }
     };

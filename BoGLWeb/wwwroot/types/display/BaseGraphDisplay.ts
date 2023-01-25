@@ -19,13 +19,17 @@ export class BaseGraphDisplay {
     readonly X_KEY: number = 88;
     readonly V_KEY: number = 86;
     readonly CTRL_KEY: number = 17;
+    readonly ARROW_LEFT: number = 37;
+    readonly ARROW_UP: number = 38;
+    readonly ARROW_RIGHT: number = 39;
+    readonly ARROW_DOWN: number = 40;
+    readonly PAN_SPEED: number = 2.0;
 
     // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
-    zoomWithSlider: boolean = false;
     dragAllowed: boolean = false;
     prevScale: number = 1;
-    initXPos: number;
-    initYPos: number;
+    initXPos: number = null;
+    initYPos: number = null;
     svgX: number = 0;
     svgY: number = 0;
     dragX: number;
@@ -103,6 +107,21 @@ export class BaseGraphDisplay {
     // functions needed in system diagram are called from this class but not defined by default
     svgKeyDown() {
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
+
+        switch ((<KeyboardEvent>d3.event).keyCode) {
+            case this.ARROW_LEFT:
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_UP:
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale);
+                break;
+            case this.ARROW_RIGHT:
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_DOWN:
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale);
+                break;
+        }
     }
 
     checkCtrlCombo(a: number) {
@@ -226,13 +245,14 @@ export class BaseGraphDisplay {
             });
     }
 
-    changeScale(x: number, y: number, scale: number, slider: boolean) {
-        this.initXPos = !slider ? x : this.initXPos;
-        this.initYPos = !slider ? y : this.initYPos;
+    changeScale(x: number, y: number, scale: number) {
         this.svgX = x;
         this.svgY = y;
+        if (this.initXPos == null) {
+            this.initXPos = x;
+            this.initYPos = y;
+        }
         this.prevScale = scale;
-        this.zoomWithSlider = slider;
         this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
         this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
@@ -443,7 +463,7 @@ export class BaseGraphDisplay {
     zoomed() {
         this.justScaleTransGraph = true;
         if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
-            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale, false);
+            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale);
         }
     }
 }
