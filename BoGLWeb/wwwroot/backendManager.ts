@@ -61,9 +61,10 @@ export namespace backendManager {
                 if(el.id != null){
                     elements.set(el.id, new SystemDiagramElement(el.id, el.type, el.x, el.y, el.velocity, el.modifiers));
                 }else{
-                    elements.set(i++, new SystemDiagramElement(i++, el.type, el.x, el.y, el.velocity, el.modifiers));
+                    elements.set(i++, new SystemDiagramElement(i, el.type, el.x, el.y, el.velocity, el.modifiers));
                 }
             }
+            
             let edges = [];
             for (let edge of parsedJson.edges) {
                 let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
