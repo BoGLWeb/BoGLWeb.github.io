@@ -61,20 +61,28 @@ export namespace backendManager {
         }
 
         public loadSystemDiagram(jsonString: string) {
-            let parsedJson = JSON.parse(jsonString);
             let edges = [];
             let minX = Infinity;
             let minY = Infinity;
             let maxX = -Infinity;
             let maxY = -Infinity;
+            
+            let parsedJson = JSON.parse(jsonString);
 
-            let elements = parsedJson.elements.map((e, i) => {
+            let elements = new Map<number, SystemDiagramElement>();
+            let i = 0;
+            for (let el of parsedJson.elements) {
                 if (e.x < minX) minX = e.x;
                 if (e.y < minY) minY = e.y;
                 if (e.x > maxX) maxX = e.x;
                 if (e.y > maxY) maxY = e.y;
-                return new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers);
-            }) as SystemDiagramElement[];
+                
+                if(el.id != null){
+                    elements.set(el.id, new SystemDiagramElement(el.id, el.type, el.x, el.y, el.velocity, el.modifiers));
+                }else{
+                    elements.set(i++, new SystemDiagramElement(i, el.type, el.x, el.y, el.velocity, el.modifiers));
+                }
+            }
 
             elements.forEach(e => {
                 e.x += (maxX - minX) / 2 - maxX;
@@ -82,12 +90,12 @@ export namespace backendManager {
             });
 
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements[edge.source], elements[edge.target]);
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
                 bond.velocity = edge.velocity ?? 0;
                 edges.push(bond);
             }
 
-            var systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(elements, edges));
+            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
             systemDiagram.draggingElement = null;
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
