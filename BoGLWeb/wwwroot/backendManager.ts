@@ -279,7 +279,31 @@ export namespace backendManager {
             navigator.clipboard.writeText(text);
         }
 
+        private hideMenu(menuId: string) {
+            if (document.getElementById(menuId)) {
+                document.getElementById(menuId).parentElement.parentElement.setAttribute("style", "");
+            }
+        }
+
+        public closeMenu(menuName: string) {
+            switch (menuName) {
+                case "File":
+                    this.hideMenu("fileMenu");
+                    break;
+                case "Edit":
+                    this.hideMenu("editMenu");
+                    break;
+                case "Help":
+                    this.hideMenu("helpMenu");
+                    this.hideMenu("exampleMenu");
+                    this.hideMenu("mechTransMenu");
+                    this.hideMenu("mechRotMenu");
+                    this.hideMenu("elecMenu");
+            }
+        }
+
         public runTutorial() {
+            this.closeMenu("Help");
             window.introJs().setOptions({
                 showStepNumbers: false,
                 hideNext: true,
