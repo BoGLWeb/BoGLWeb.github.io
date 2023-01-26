@@ -302,16 +302,19 @@
 
     public async void cut() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("cut");
     }
 
     public async void copy() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("copy");
     }
 
     public async void paste() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("paste");
     }
 
@@ -319,6 +322,7 @@
 
     public async void delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("delete");
     }
 
@@ -593,6 +597,7 @@
     //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("openFile");
         SystemDiagram sysDiagram;
         try {
@@ -620,6 +625,7 @@
     //Saves the system diagram to the user's file system
     private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
@@ -634,6 +640,7 @@
     //Saves the system diagram as a .bogl file to the user's file system
     private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         Console.WriteLine("System Diagram from Json");
@@ -683,6 +690,7 @@
     private async void generateUrl() {
     //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
