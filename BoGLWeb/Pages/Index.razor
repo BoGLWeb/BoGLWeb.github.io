@@ -297,14 +297,16 @@
         CanvasChange cc = null; // probably switch funciton depending on isUndo
         switch(cc.GetType()) {
             case CanvasChange.AddSelection:
-                // this.URDoAddSelection(isUndo);
+                CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
+                this.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), isUndo);
                 break;
             case CanvasChange.DeleteSelection:
-                // this.URDoDeleteSelection(isUndo);
+                CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
+                this.URDoDeleteSelection(ds.GetDeletedJSONElements(), isUndo);
                 break;
             case CanvasChange.ChangeSelection:
                 CanvasChange.ChangeSelection cs = (CanvasChange.ChangeSelection) cc;
-                // this.URDoChangeSelection(cs.GetNewIDs(), cs.GetIDs(), isUndo);
+                this.URDoChangeSelection(cs.GetNewElementIDs(), cs.GetNewEdgeIDs(), cs.GetIDs(), cs.GetOldEdgeIDs(), isUndo);
                 break;
             case CanvasChange.ChangeModifier:
                 CanvasChange.ChangeModifier cm = (CanvasChange.ChangeModifier) cc;
@@ -316,7 +318,7 @@
                 break;
             case CanvasChange.ChangeVelocity:
                 CanvasChange.ChangeVelocity cv = (CanvasChange.ChangeVelocity) cc;
-                // this.URDoChangeSelectionVelocity(, isUndo);
+                this.URDoChangeSelectionVelocity(cv.GetIDs(), cv.GetEdgeIDs(), cv.GetNewVelID(), cv.GetOldIDs(), isUndo);
                 break;
         }        
     }
@@ -352,7 +354,7 @@
     }
 
     [JSInvokable]
-    public static void URAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges) {
+    public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges) {
         Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
         app?.StateHasChanged();
     }
@@ -364,8 +366,10 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelection(int tabID, string[] addToSelection, string[] removeFromSelection) {
-        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addToSelection) + "], [" + String.Join(", ", removeFromSelection) + "]");
+    public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
+        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            + String.Join(", ", removeEdgeFromSelection) + "]");
         app?.StateHasChanged();
     }
 
@@ -382,12 +386,13 @@
     }
 
     [JSInvokable]
-    public static void URChangeSelectionVelocity(string[] elementsAndEdges, int velID, int[] prevVelVals) {
-        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elementsAndEdges) + "], " + velID + ", [" + String.Join(", ", prevVelVals) + "]");
+    public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
+        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+            + ", [" + String.Join(", ", prevVelVals) + "]");
         app?.StateHasChanged();
     }
 
-    public async void URDoAddSelection(string[] newObjects, string[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {
+    public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoAddSelection", newObjects, prevSelectedElements, prevSelectedEdges, isUndo);
         app?.StateHasChanged();

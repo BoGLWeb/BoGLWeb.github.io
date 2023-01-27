@@ -55,7 +55,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
     makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
         let marker = this.defs.append("svg:marker");
-        marker.attr("velID", id)
+        marker.attr("id", id)
             .attr("refX", refX)
             .attr("refY", refY)
             .attr("markerWidth", w)

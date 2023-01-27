@@ -97,7 +97,7 @@ export namespace backendManager {
             }
 
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
-                window.systemDiagram.listToIDObjects(window.systemDiagram.selectedElements), window.systemDiagram.listToIDObjects(window.systemDiagram.selectedBonds));
+                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)));
 
             let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
             systemDiagram.draggingElement = null;
@@ -272,7 +272,7 @@ export namespace backendManager {
                 }
             }
             window.systemDiagram.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
         }
 
         public generateURL() {
@@ -359,7 +359,7 @@ export namespace backendManager {
             let bonds: GraphBond[] = [];
             for (const object of objects) {
                 let json = JSON.parse(object);
-                if (json.hasOwnProperty("velID")) {
+                if (json.hasOwnProperty("id")) {
                     elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
                 } else {
                     bonds.push(new GraphBond(json.source, json.target, json.velocity));

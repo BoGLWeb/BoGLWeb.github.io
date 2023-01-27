@@ -6,6 +6,7 @@ import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { GraphBondID } from "../bonds/GraphBondID";
 
 export class BaseGraphDisplay {
     // constants
@@ -97,7 +98,7 @@ export class BaseGraphDisplay {
 
     svgMouseUp() {
         if (!this.justScaleTransGraph) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], this.listToIDObjects(this.getSelection()));
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
             this.setSelection([], []);
         } else {
             this.justScaleTransGraph = false;
@@ -130,8 +131,8 @@ export class BaseGraphDisplay {
 
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects(
-                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), []);
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(
+                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
         }
@@ -149,7 +150,7 @@ export class BaseGraphDisplay {
             }
         } else {
             if (!this.selectionContains(bond)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([bond]), this.getSelection());
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([bond]), this.listToIDObjects(this.getSelection()));
                 this.setSelection([], [bond]);
             }
         }
@@ -170,7 +171,7 @@ export class BaseGraphDisplay {
                 }
             } else {
                 if (!this.selectionContains(el)) {
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.getSelection());
+                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
                     this.setSelection([el], []);
                 }
             }
@@ -192,7 +193,7 @@ export class BaseGraphDisplay {
         }
         this.updateTopMenu();
         if (undoRedo) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([e]), []);
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([e]), [], []);
         }
     }
 
@@ -212,7 +213,7 @@ export class BaseGraphDisplay {
         }
         this.updateTopMenu();
         if (undoRedo) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], this.listToIDObjects([e]));
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([e]));
         }
     }
 
@@ -262,8 +263,10 @@ export class BaseGraphDisplay {
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
     }
 
-    listToIDObjects(elementsAndEdges: (GraphElement | GraphBond)[]) {
-        return elementsAndEdges.map(e => JSON.stringify((e instanceof GraphElement) ? { id: e.id } : { sourceId: e.source.id, targetId: e.target.id }));
+    listToIDObjects(eList: (GraphElement | GraphBond)[]): [number[], string[]] {
+        let elements: number[] = (eList.filter(e => e instanceof GraphElement) as GraphElement[]).map(e => e.id);
+        let bonds: string[] = (eList.filter(e => e instanceof GraphBond) as GraphBond[]).map(e => JSON.stringify({ srouce: e.source.id, target: e.target.id }));
+        return [elements, bonds];
     }
 
     // listen for dragging
@@ -296,7 +299,7 @@ export class BaseGraphDisplay {
                 graph.dragStartX = coordinates[0];
                 graph.dragStartY = coordinates[1];
                 graph.svgG.append("rect")
-                    .attr("velID", "selectionRect")
+                    .attr("id", "selectionRect")
                     .attr("x", graph.dragStartX)
                     .attr("y", graph.dragStartY)
                     .attr("width", 0)
@@ -343,10 +346,10 @@ export class BaseGraphDisplay {
                             }
                         }
 
-                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(addList), graph.listToIDObjects(removeList));
+                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(addList), ...graph.listToIDObjects(removeList));
                     } else {
                         graph.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
-                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), graph.listToIDObjects(newSelection), []);
+                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(newSelection), [], []);
                     }
                 }
                 document.getElementById("selectionRect").remove();
@@ -419,7 +422,7 @@ export class BaseGraphDisplay {
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), this.listToIDObjects([el]), this.getSelection());
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
                 // not updating menus until end of drag because it causes significant lag
                 this.selectedElements = [el];
                 this.selectedBonds = [];
