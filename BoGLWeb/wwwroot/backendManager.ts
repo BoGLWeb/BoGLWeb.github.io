@@ -270,13 +270,13 @@ export namespace backendManager {
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
                         'This application is used to construct system diagrams and generate bond graphs from those diagrams.</p>'
                 }, {
-                    element: document.querySelector('.ant-tabs-content'),
+                    element: document.querySelector('.card-container'),
                     intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams.</p>'
                 }, {
                     element: document.querySelector('#graphMenu'),
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.</p>'
                 }, {
-                    element: document.querySelector('.ant-tabs-content'),
+                    element: document.querySelector('.card-container'),
                     intro: '<p><b>Constructing a System Diagram</b></p><p>Click and drag on elements to add them to the Canvas, and then click on the element border to create an edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).' +
                         '<br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
                         '</p>'
@@ -330,6 +330,8 @@ export namespace backendManager {
                         '<li>Learn about who created BoGL Web System</li>' +
                         '</ul></p>'
                 }]
+            }).onbeforechange(function () {
+                window.dispatchEvent(new Event('resize'));
             }).start();
         }
         
