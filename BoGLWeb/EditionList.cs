@@ -12,17 +12,21 @@ namespace BoGLWeb {
         /// <typeparam name="Edit">
         /// The datatype stored in this <c>EditionList</c>.
         /// </typeparam> 
-        public class EditionList<Edit> : IEnumerable<Edit> {
+        public class EditionList<Edit> : IEnumerable<Edit?> {
             /// Fields storing the head (front), tail (end), and pointer (user location) in this 
             /// <c>EditionList</c>.
-            private Node<Edit>? head, pointer;
+            private Node<Edit?> head, pointer;
             private int size, index;
 
             /// <summary>
             /// Sets all default values for fields in this <c>EditionList</c>.
             /// </summary>
             public EditionList() {
-                Clear();
+                Node<Edit?> node = new(default);
+                this.head = node;
+                this.pointer = node;
+                this.size = 1;
+                this.index = 0;
             }
 
             /// <summary>
@@ -31,15 +35,12 @@ namespace BoGLWeb {
             /// <param name="Unit">
             /// The <c>Unit</c> object to be added to this <c>EditionList</c>.
             /// </param>
-            public void Add(Edit unit) {
-                Node<Edit> node = new(unit);
-                if (this.head == null || this.pointer == null) {
-                    Assign(node, node);
-                } else {
-                    node.prev = this.pointer;
-                    this.pointer.next = node;
-                    this.pointer = this.pointer.next;
-                }
+            public void Add(Edit? unit) {
+                Node<Edit?> node = new(unit) {
+                    prev = this.pointer
+                };
+                this.pointer.next = node;
+                this.pointer = this.pointer.next;
                 this.index++;
                 this.size = this.index + 1;
             }
@@ -51,15 +52,22 @@ namespace BoGLWeb {
             /// <c>true</c> if there exists a next element, else <c>false</c>.
             /// </returns>
             public bool Next() {
-                if (this.pointer == null) {
-                    return false;
-                }
                 bool hasNext = this.pointer.next != null;
-                if (hasNext) {
+                if (this.pointer.next != null) {
                     this.pointer = this.pointer.next;
                     this.index++;
                 }
                 return hasNext;
+            }
+
+            /// <summary>
+            /// Determines whether this <c>EditionList</c> has a next
+            /// element.
+            /// </summary>
+            /// <returns><c>true</c> if there is a next element,
+            /// else <c>false</c></returns>
+            public bool HasNext() {
+                return this.pointer.data != null;
             }
 
             /// <summary>
@@ -69,15 +77,22 @@ namespace BoGLWeb {
             /// <c>true</c> if there exists a previous element, else <c>false</c>.
             /// </returns>
             public bool Prev() {
-                if (this.pointer == null) {
-                    return false;
-                }
                 bool hasPrev = this.pointer.prev != null;
-                if (hasPrev) {
+                if (this.pointer.prev != null) {
                     this.pointer = this.pointer.prev;
                     this.index--;
                 }
                 return hasPrev;
+            }
+
+            /// <summary>
+            /// Determines whether this <c>EditionList</c> has a next
+            /// element.
+            /// </summary>
+            /// <returns><c>true</c> if there is a next element,
+            /// else <c>false</c></returns>
+            public bool HasPrev() {
+                return this.pointer.prev != null;
             }
 
             /// <summary>
@@ -92,7 +107,8 @@ namespace BoGLWeb {
 
             /// <summary>Clears all data from this <c>EditionList</c>.</summary>
             public void Clear() {
-                Assign(null, null);
+                Node<Edit?> node = new(default);
+                Assign(node, node);
                 this.size = 0;
                 this.index = -1;
             }
@@ -106,7 +122,7 @@ namespace BoGLWeb {
             /// <param name="pointer">
             /// The new <c>pointer</c> value.
             /// </param>
-            private void Assign(Node<Edit>? head, Node<Edit>? pointer) {
+            private void Assign(Node<Edit?> head, Node<Edit?> pointer) {
                 this.head = head;
                 this.pointer = pointer;
             }
@@ -137,10 +153,10 @@ namespace BoGLWeb {
             /// <returns>
             /// The <c>Enumerator</c>.
             /// </returns>
-            public IEnumerator<Edit> GetEnumerator() {
-                Node<Edit>? iterablePointer = this.head;
+            public IEnumerator<Edit?> GetEnumerator() {
+                Node<Edit?>? iterablePointer = this.head;
                 while (iterablePointer != null) {
-                    Edit edit = iterablePointer.data;
+                    Edit? edit = iterablePointer.data;
                     iterablePointer = iterablePointer.next;
                     yield return edit;
                 }
@@ -154,9 +170,9 @@ namespace BoGLWeb {
             /// Each <code>Data</code> element, one at a time.
             /// </returns>
             IEnumerator IEnumerable.GetEnumerator() {
-                Node<Edit>? iterablePointer = this.head;
+                Node<Edit?>? iterablePointer = this.head;
                 while (iterablePointer != null) {
-                    Edit edit = iterablePointer.data;
+                    Edit? edit = iterablePointer.data;
                     iterablePointer = iterablePointer.next;
                     yield return edit;
                 }
@@ -172,7 +188,7 @@ namespace BoGLWeb {
             public override String ToString() {
                 StringBuilder builder = new();
                 int index = 0;
-                foreach (Edit edit in this) {
+                foreach (Edit? edit in this) {
                     char delimiter = (index == this.index) ? '*' : ' ';
                     builder.Append(delimiter).Append(edit).Append(delimiter);
                     index++;
@@ -188,16 +204,16 @@ namespace BoGLWeb {
         /// The classtype supported in this <c>EditionList</c>.
         /// </typeparam>
         class Node<Data> {
-            public Data data;
-            public Node<Data>? next, prev;
+            public Data? data;
+            public Node<Data?>? next, prev;
 
             /// <summary>
             /// Creates a new <c>Node</c>.
             /// </summary>
             /// <param name="data">
-            /// The new <c>Unit</c> element to be contained in this <c>Node</c>.
+            /// The new <c>Data</c> element to be contained in this <c>Node</c>.
             /// </param>
-            public Node(Data data) {
+            public Node(Data? data) {
                 this.data = data;
             }
         }

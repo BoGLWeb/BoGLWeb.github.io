@@ -34,13 +34,27 @@ namespace BoGLWeb {
             /// CanvasChange subclasses.
             /// </summary>
             /// <param name="diagram">
-            /// The input diagram.
+            /// The input graph.
             /// </param>
             /// <param name="isUndo">
             /// <c>true</c> if the action executing this update was an 'undo' call,
             /// else <c>false</c> if the action was a 'redo' call.
             /// </param>
             public virtual void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+            }
+
+            /// <summary>
+            /// The parent function of the 'executeUpdate' methods in the
+            /// CanvasChange subclasses.
+            /// </summary>
+            /// <param name="graph">
+            /// The input graph.
+            /// </param>
+            /// <param name="isUndo">
+            /// <c>true</c> if the action executing this update was an 'undo' call,
+            /// else <c>false</c> if the action was a 'redo' call.
+            /// </param>
+            public virtual void ExecuteUpdate(BondGraph graph, bool isUndo) {
             }
 
             /// <summary>
@@ -55,7 +69,7 @@ namespace BoGLWeb {
 
             /// <summary>
             /// Stores a change made when the user adds a group of items to the
-            /// system diagram.
+            /// system graph.
             /// </summary>
             public class AddSelection : CanvasChange {
                 // Stores the JSON form of the added elements
@@ -82,10 +96,10 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Executes the update made to the system diagram during a 
+                /// Executes the update made to the system graph during a 
                 /// <c>AddSelection</c> action.
                 /// </summary>
-                /// <param name="diagram">The system diagram.</param>
+                /// <param name="diagram">The system graph.</param>
                 /// <param name="isUndo"><c>true</c> if this method was called during
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
@@ -112,7 +126,7 @@ namespace BoGLWeb {
 
             /// <summary>
             /// Stores a change made when the user deletes a group of items from the
-            /// system diagram.
+            /// system graph.
             /// </summary>
             public class DeleteSelection : CanvasChange {
                 // The JSON objects storing the deleted elements
@@ -132,10 +146,10 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Executes the update made to the system diagram during a 
+                /// Executes the update made to the system graph during a 
                 /// <c>DeleteSelection</c> action.
                 /// </summary>
-                /// <param name="diagram">The system diagram.</param>
+                /// <param name="diagram">The system graph.</param>
                 /// <param name="isUndo"><c>true</c> if this method was called during
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
@@ -233,7 +247,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Updates the system diagram to include changes made via a
+                /// Updates the system graph to include changes made via a
                 /// <c>ChangeModifier</c>.
                 /// </summary>
                 /// <param name="diagram">
@@ -304,7 +318,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Updates the system diagram to include changes made via a
+                /// Updates the system graph to include changes made via a
                 /// <c>MoveSelection</c>.
                 /// </summary>
                 /// <param name="diagram">
@@ -324,6 +338,29 @@ namespace BoGLWeb {
                         SystemDiagram.Element element = pair.Value;
                         element.SetX(element.getX() + x);
                         element.SetY(element.getY() + y);
+                    }
+                }
+
+                /// <summary>
+                /// Updates the bond graph to include changes made via a
+                /// <c>MoveSelection</c>.
+                /// </summary>
+                /// <param name="graph">
+                /// The <c>BondGraph</c> to which changes are made.
+                /// </param>
+                /// <param name="isUndo">
+                /// <c>true</c> if the action executing this update was an 'undo' 
+                /// call, else <c>false</c> if the action was a 'redo' call.
+                /// </param>
+                public override void ExecuteUpdate(BondGraph graph, bool isUndo) {
+                    double x = this.xOffset, y = this.yOffset;
+                    if (isUndo) {
+                        x = -x;
+                        y = -y;
+                    }
+                    foreach (KeyValuePair<int, BondGraph.Element> pair in graph.GetElementsFromIDs(this.IDs)) {
+                        BondGraph.Element element = pair.Value;
+                        element.setPosition(element.getX() + x, element.getY() + y);
                     }
                 }
 
@@ -371,7 +408,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Updates the system diagram to include changes made via a
+                /// Updates the system graph to include changes made via a
                 /// <c>ChangeVelocity</c>.
                 /// </summary>
                 /// <param name="diagram">

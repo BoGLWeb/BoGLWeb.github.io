@@ -127,6 +127,16 @@ namespace BoGLWeb {
         public EditionList<CanvasChange> changes;
 
         /// <summary>
+        /// Creates a new <c>SystemDiagram</c>.
+        /// </summary>
+        public SystemDiagram() {
+            this.elements = new List<Element>();
+            this.edges = new List<Edge>();
+            this.header = new();
+            this.changes = new();
+        }
+
+        /// <summary>
         /// Creates a system diagram instance
         /// </summary>
         /// <param name="header">A dictionary of headers for the system diagram</param>

@@ -120,6 +120,31 @@ namespace BoGLWeb {
             return bondGraph;
         }
 
+        /// <summary>
+        /// Gets a list of all <c>Elements</c> in this <c>BondGraph</c>
+        /// that have the corresponding IDs
+        /// </summary>
+        /// <param name="IDs">
+        /// The array of IDs.
+        /// </param>
+        /// <returns>
+        /// The Dictionary containing all relevant elements.
+        /// </returns>
+        public Dictionary<int, Element> GetElementsFromIDs(int[] IDs) {
+            Dictionary<int, Element> elements = new(), parsedElements = new();
+            foreach (KeyValuePair<string, Element> pair in this.elements) {
+                Element element = pair.Value;
+                elements.Add(element.GetID(), element);
+            }
+            foreach (int ID in IDs) {
+                Element? element = elements.GetValueOrDefault(ID);
+                if (element != null) {
+                    parsedElements.Add(ID, element);
+                }
+            }
+            return parsedElements;
+        }
+
         public class Element {
             [JsonProperty]
             protected readonly string label;
