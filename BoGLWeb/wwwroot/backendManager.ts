@@ -268,9 +268,7 @@ export namespace backendManager {
                 hideNext: true,
                 steps: [{
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
-                        'This application is used to construct system diagrams and generate bond graphs from those diagrams.' +
-                        '<iframe src="https://giphy.com/embed/JUqVArRY1Bz18MAxEW" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/007-JUqVArRY1Bz18MAxEW">via GIPHY</a></p>' +
-                        '</p>'
+                        'This application is used to construct system diagrams and generate bond graphs from those diagrams.</p>'
                 }, {
                     element: document.querySelector('.ant-tabs-content'),
                     intro: '<p><b>The Canvas</b></p><p>This is the canvas, where you can construct, move, and rearrange your system diagrams.</p>'
@@ -279,14 +277,18 @@ export namespace backendManager {
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements into the canvas to construct system diagrams.</p>'
                 }, {
                     element: document.querySelector('.ant-tabs-content'),
-                    intro: '<p><b>Constructing a System Diagram</b></p><p>You can use your cursor to select and drag elements into the canvas. To create an edge, hover your cursor over the border of the elements, where you will see a green circle. If you click and draw you will see a black line symbolizing the edge that you can drop in another element to complete an edge. If you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).</p>'
+                    intro: '<p><b>Constructing a System Diagram</b></p><p>Click and drag on elements to add them to the Canvas, and then click on the element border to create an edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).' +
+                        '<br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
+                        '</p>'
                 },
                 {
                     element: document.querySelector('#modifierMenu'),
                     intro: '<p><b>The Modifier Menu</b></p><p>In this menu you can add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down Ctrl and clicking elements you want to select or by dragging the canvas with the left mouse button to create a selection region.</p>'
                 }, {
                     element: document.querySelector('#zoomMenu'),
-                    intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can also use the scroll wheel to perform this action. Dragging the canvas with the right mouse click will pan the graph.</p>'
+                    intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom menu, or by scrolling.' +
+                        '<br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
+                        '</p>'
                 }, {
                     element: document.querySelector('#generateButton'),
                     intro: '<p><b>The Generate Button</b></p><p>The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.</p>'
