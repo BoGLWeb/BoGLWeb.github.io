@@ -108,19 +108,38 @@ async function loadPage() {
 var menuIdMap = {
     0: "fileMenu",
     1: "editMenu",
-    2: "helpMenu"
+    2: "helpMenu",
+    3: "exampleMenu",
+    4: "mechTransMenu",
+    5: "mechRotMenu",
+    6: "elecMenu"
 }
 
 function menuClickAction(newEl: Node, k: number) {
+    let firstTime = true;
     newEl.addEventListener("click", (e) => {
         e.stopPropagation();
-        for (let j = 0; j < 3; j++) {
-            let el = document.getElementById(menuIdMap[j]).parentElement.parentElement;
-            if (el.getAttribute("hidden-menu") != "true" && !(j == k && el.getAttribute("hidden-menu") == null)) {
-                console.log("Hiding ", j);
+        for (let i = 0; i < 3; i++) {
+            let el = document.getElementById(menuIdMap[i]).parentElement.parentElement;
+            if (firstTime && k == 2) {
+                let examplesMenu = document.querySelector("#helpMenu").parentElement.children[3];
+                menuClickAction(examplesMenu, 3);
+                firstTime = false;
+            }
+            if (el.getAttribute("hidden-menu") != "true" && !(i == k && el.getAttribute("hidden-menu") == null)) {
+                console.log("Hiding ", i);
                 el.setAttribute("hidden-menu", "true");
-            } else if (j == k) {
-                console.log("Showing ", j);
+                if (i == 2) {
+                    for (let j = 3; j < 7; j++) {
+                        let el = document.getElementById(menuIdMap[j]);
+                        if (el) {
+                            el = el.parentElement.parentElement;
+                            el.setAttribute("hidden-menu", "true");
+                        }
+                    }
+                }
+            } else if (i == k) {
+                console.log("Showing ", i);
                 el.setAttribute("hidden-menu", "false");
             }
         }
