@@ -181,7 +181,7 @@ namespace GraphSynth.Representation {
         //    location.Relaxations.NumberAllowable--;
         //    location.Relaxations.FulfilledItems.Add(new RelaxItem(Relaxations.Element_Made_Negative, 1, LNode));
         //    node standinNode;
-        //    Type nodeType = Type.GetType(LNode.TargetType, false);
+        //    Type nodeType = Type.GetChangeType(LNode.TargetType, false);
         //    if (nodeType == null || nodeType == typeof(node))
         //        standinNode = new node();
         //    else
@@ -293,7 +293,7 @@ namespace GraphSynth.Representation {
         //    location.Relaxations.NumberAllowable--;
         //    location.Relaxations.FulfilledItems.Add(new RelaxItem(Relaxations.Element_Made_Negative, 1, LHyper));
         //    hyperarc standinNode;
-        //    Type hyperarcType = Type.GetType(LHyper.TargetType, false);
+        //    Type hyperarcType = Type.GetChangeType(LHyper.TargetType, false);
         //    if (hyperarcType == null || hyperarcType == typeof(hyperarc))
         //        standinNode = new hyperarc();
         //    else

@@ -134,6 +134,10 @@ export namespace backendManager {
             return contents;
         }
 
+        public getTabNum(): number {
+            return parseInt(window.tabNum);
+        }
+
         public async saveAsFile(fileName: string, contentStreamReference: any) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
@@ -384,6 +388,10 @@ export namespace backendManager {
             let sourceID = b.source.id;
             let targetID = b.target.id;
             return elemIDs.find(e => e.checkEquality(sourceID, targetID));
+        }
+
+        async handleUndoRedo(undo: boolean) {
+            DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
         public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], isUndo: boolean) {

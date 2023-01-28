@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 using BoGLWeb.BaseClasses;
 using BoGLWeb.Utils;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -823,6 +824,28 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Creates a new <c>Element</c> for this system diagram
+            /// from a JSON Object.
+            /// </summary>
+            /// <param name="obj">The JSON Object</param>
+            public Element(JObject obj) {
+                this.id = obj.Value<int>("id");
+                this.x = obj.Value<int>("x");
+                this.y = obj.Value<int>("y");
+                this.velocity = obj.Value<int>("velocity");
+                this.type = obj.Value<int>("type");
+                JArray? modifiers = obj.Value<JArray>("modifiers");
+                this.modifiers = new();
+                if (modifiers != null) {
+                    foreach (JToken mod in modifiers) {
+                        this.modifiers.Add(mod.Value<int>());
+                    }
+                }
+                typeIDDictReverse.TryGetValue(this.type, out string? name);
+                this.name = name ?? "";
+            }
+
+            /// <summary>
             /// Adds a modifier to the element
             /// </summary>
             /// <param name="name">The name of the modifier to add</param>
@@ -1084,6 +1107,19 @@ namespace BoGLWeb {
                 this.source = source;
                 this.target = target;
                 this.velocity = velocity;
+            }
+
+            /// <summary>
+            /// Creates a new <c>Edge</c> for this system diagram
+            /// from a JSON Object.
+            /// </summary>
+            /// <param name="obj">The JSON Object</param>
+            public Edge(JObject obj) {
+                this.e1 = new Element((JObject) obj.Value<int>("source"));
+                this.source = this.e1.GetID();
+                this.e2 = new Element((JObject) obj.Value<int>("target"));
+                this.target = this.e2.GetID();
+                this.velocity = obj.Value<int>("velocity");
             }
 
             /// <summary>

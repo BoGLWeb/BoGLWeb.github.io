@@ -1,19 +1,19 @@
 ﻿namespace BoGLWeb {
     namespace EditorHelper {
-        public class UndoRedoHandler {
+        public class EditStackHandler {
             // Stores the UndoRadoHandler used.
-            public static readonly UndoRedoHandler undoRedoHandler = new(new(), new(), new(), new());
+            public static readonly EditStackHandler undoRedoHandler = new(new(), new(), new(), new());
             // Stores the edit stacks.
-            private readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
+            public readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
             // Stores the system diagram.
-            private readonly SystemDiagram systemDiagram;
+            public readonly SystemDiagram systemDiagram;
             // Stores the bond graphs.
-            private readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
+            public readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
 
             /// <summary>
-            /// Creates a new <c>UndoRedoHandler</c>.
+            /// Creates a new <c>EditStackHandler</c>.
             /// </summary>
-            public UndoRedoHandler(SystemDiagram diagram, BondGraph unsimpGraph, BondGraph simpleGraph, BondGraph causalGraph) {
+            public EditStackHandler(SystemDiagram diagram, BondGraph unsimpGraph, BondGraph simpleGraph, BondGraph causalGraph) {
                 this.systemStack = new EditionList<CanvasChange>();
                 this.unsimpStack = new EditionList<CanvasChange>();
                 this.simpleStack = new EditionList<CanvasChange>();
@@ -42,6 +42,7 @@
             /// </summary>
             /// <param name="tab"></param>
             /// <returns></returns>
+            // Remove this method when testing is finished.
             public CanvasChange? GetChange(int tab) {
                 return GetStackFromTab(GetTab(tab)).Get();
             }
@@ -88,13 +89,14 @@
             /// <param name="isUndo"><c>true</c> if the 'undo' action was 
             /// called, else <c>false</c> if the 'redo' action was called
             /// </param>
-            public void Do(int tab, bool isUndo) {
+            public CanvasChange? Do(int tab, bool isUndo) {
                 CanvasTab canvasTab = GetTab(tab);
                 EditionList<CanvasChange> edits = GetStackFromTab(canvasTab);
                 if (CanDo(edits, isUndo)) {
                     if (!isUndo) {
                         edits.Next();
                     }
+                    CanvasChange? change = edits.Get();
                     if (canvasTab == CanvasTab.SYSTEM_DIAGRAM) {
                         edits.Get()?.ExecuteUpdate(this.systemDiagram, isUndo);
                     } else {
@@ -103,7 +105,9 @@
                     if (isUndo) {
                         edits.Prev();
                     }
+                    return change;
                 }
+                return null;
             }
 
             /// <summary>
@@ -146,7 +150,7 @@
             }
 
             /// <summary>
-            /// Gets the system diagram from this <c>UndoRedoHandler</c>.
+            /// Gets the system diagram from this <c>EditStackHandler</c>.
             /// </summary>
             /// <returns>this.systemDiagram</returns>
             public SystemDiagram GetSystemDiagram() {
@@ -155,7 +159,7 @@
 
             /// <summary>
             /// Gets the appropriate bond graph from this 
-            /// <c>UndoRedoHandler</c>.
+            /// <c>EditStackHandler</c>.
             /// </summary>
             /// <param name="tab">The int corresponding to a 
             /// specific tab.</param>
@@ -166,7 +170,7 @@
 
             /// <summary>
             /// Gets the appropriate bond graph from this 
-            /// <c>UndoRedoHandler</c>.
+            /// <c>EditStackHandler</c>.
             /// </summary>
             /// <param name="tab">The desired CanvasTab.</param>
             /// <returns>The bond graph</returns>

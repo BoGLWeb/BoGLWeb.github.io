@@ -67,7 +67,7 @@ namespace BoGLWeb {
             /// <returns><c>true</c> if there is a next element,
             /// else <c>false</c></returns>
             public bool HasNext() {
-                return this.pointer.data != null;
+                return this.pointer.next != null;
             }
 
             /// <summary>
@@ -92,7 +92,7 @@ namespace BoGLWeb {
             /// <returns><c>true</c> if there is a next element,
             /// else <c>false</c></returns>
             public bool HasPrev() {
-                return this.pointer.prev != null;
+                return this.pointer.data != null;
             }
 
             /// <summary>

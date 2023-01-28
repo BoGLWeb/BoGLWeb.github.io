@@ -1,5 +1,6 @@
 ﻿using AntDesign.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Newtonsoft.Json.Linq;
 
 namespace BoGLWeb {
     /// <summary>
@@ -12,7 +13,7 @@ namespace BoGLWeb {
         public class CanvasChange {
             // Stores the elementIDs of the respective selected elements.
 
-            public new CanvasChange GetType() {
+            public Type GetChangeType() {
                 return this.GetType();
             }
 
@@ -104,7 +105,24 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    //TODO: leave empty for now
+                    SystemDiagram.Element[] newElements = new SystemDiagram.Element[this.newObjects.Length];
+                    SystemDiagram.Edge[] newEdges = new SystemDiagram.Edge[this.newObjects.Length];
+                    int elementIndex = 0, edgeIndex = 0;
+                    for (int i = 0; i < this.newObjects.Length; i++) {
+                        JObject obj = JObject.Parse(this.newObjects[i]);
+                        if (obj == null) {
+                            throw new Exception("Null object cannot be cast.");
+                        }
+                        if (obj.Value<JObject>("source") == null) { // Element
+                            newElements[elementIndex++] = new SystemDiagram.Element(obj);
+                        } else { // Edge
+                            newEdges[edgeIndex++] = new SystemDiagram.Edge(obj);
+                        }
+                    }
+                    if (isUndo) {
+                    } else {
+                    }
+                    //TODO: this is where the elements get updated into the 
                 }
 
                 /// <summary>
@@ -121,6 +139,16 @@ namespace BoGLWeb {
                 /// <returns>this.prevSelectedEdges</returns>
                 public string[] GetPrevSelectedEdges() {
                     return this.prevSelectedEdges;
+                }
+
+                /// <summary>
+                /// Converts this <c>AddSelection</c> to a printable format.
+                /// </summary>
+                /// <returns>
+                /// This <c>AddSelection</c> as a <c>string</c>.
+                /// </returns>
+                public override string ToString() {
+                    return "This is an AddSelection.";
                 }
             }
 
@@ -382,6 +410,20 @@ namespace BoGLWeb {
                 /// </returns>
                 public double GetYOffset() {
                     return this.yOffset;
+                }
+
+                /// <summary>
+                /// Converts this <c>AddSelection</c> to a printable format.
+                /// </summary>
+                /// <returns>
+                /// This <c>AddSelection</c> as a <c>string</c>.
+                /// </returns>
+                public override string ToString() {
+                    string print = "Moved:";
+                    foreach (int ID in this.IDs) {
+                        print += " " + ID;
+                    }
+                    return print + "; " + this.xOffset + "; " + this.yOffset;
                 }
             }
 
