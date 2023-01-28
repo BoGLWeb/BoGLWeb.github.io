@@ -280,8 +280,13 @@ export namespace backendManager {
         }
 
         private hideMenu(menuId: string) {
+            let el = document.getElementById(menuId);
             if (document.getElementById(menuId)) {
-                document.getElementById(menuId).parentElement.parentElement.setAttribute("style", "");
+                el = el.parentElement.parentElement;
+                if (el.getAttribute("hidden-menu") != "true") {
+                    console.log("Hiding ", j);
+                    el.setAttribute("hidden-menu", "true");
+                }
             }
         }
 

@@ -21,7 +21,7 @@
         <img src="images/logo.png" width="50"/>
         <div id="logoSave">*</div>
     </li>
-    <SubMenu title="File" Class="topMenu">
+    <SubMenu title="File" Class="topMenu" Key="File">
         <span id="fileMenu"></span>
         <!-- <MenuItem Key="setting:1">New</MenuItem> -->
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
@@ -30,7 +30,7 @@
         <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
-    <SubMenu title="Edit" Class="topMenu">
+    <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
         <MenuItem Key="setting:1" OnClick="cut">Cut</MenuItem>
         <MenuItem Key="setting:2" OnClick="copy">Copy</MenuItem>
@@ -39,7 +39,7 @@
         <MenuItem Key="setting:5">Redo</MenuItem>
         <MenuItem Key="setting:6" OnClick="delete">Delete</MenuItem>
     </SubMenu>
-    <SubMenu title="Help" Class="topMenu">
+    <SubMenu title="Help" Class="topMenu" Key="Help">
         <span id="helpMenu"></span>
         <MenuItem Key="setting:1">
             <Checkbox @bind-Checked="deleteManyChecked">Confirm deleting many items</Checkbox>
