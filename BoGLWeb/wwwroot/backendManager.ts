@@ -449,21 +449,27 @@ export namespace backendManager {
             sysDiag.updateGraph();
         }
 
-        public urDoDeleteSelection(deletedObjects: string[], isUndo: boolean) {
+        public urDoDeleteSelection(deletedObjects: string[], unselectedDeletedEdges: string[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(deletedObjects);
+            let [_, unselectedBonds] = this.parseElementAndEdgeStrings(unselectedDeletedEdges);
             if (isUndo) {
                 sysDiag.elements = sysDiag.elements.concat(elements);
+                unselectedBonds = unselectedBonds.map(b => {
+                    b.source = sysDiag.elements.find(e => e.id == b.source.id);
+                    b.target = sysDiag.elements.find(e => e.id == b.target.id);
+                    return b;
+                });
                 bonds = bonds.map(b => {
                     b.source = sysDiag.elements.find(e => e.id == b.source.id);
                     b.target = sysDiag.elements.find(e => e.id == b.target.id);
                     return b;
-                })
-                sysDiag.bonds = sysDiag.bonds.concat(bonds);
+                });
+                sysDiag.bonds = sysDiag.bonds.concat(bonds).concat(unselectedBonds);
                 sysDiag.setSelection(elements, bonds);
             } else {
                 let elIDs = elements.map(e => e.id);
-                let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
+                let elBonds = bonds.concat(unselectedBonds).map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
                 sysDiag.setSelection([], []);
