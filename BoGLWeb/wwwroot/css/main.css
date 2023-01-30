@@ -662,3 +662,11 @@ hr:not([size]) {
 .ant-tabs-tabpane[aria-hidden="true"] {
     visibility: hidden !important;
 }
+
+.ant-menu-hidden, .ant-menu-submenu-hidden {
+     display: table;
+}
+
+[hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
+    display: none !important;
+}

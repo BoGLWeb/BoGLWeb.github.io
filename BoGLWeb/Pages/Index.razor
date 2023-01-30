@@ -21,7 +21,8 @@
         <img src="images/logo.png" width="50"/>
         <div id="logoSave">*</div>
     </li>
-    <SubMenu title="File" Class="topMenu">
+    <SubMenu title="File" Class="topMenu" Key="File">
+        <span id="fileMenu"></span>
         <!-- <MenuItem Key="setting:1">New</MenuItem> -->
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
@@ -29,7 +30,8 @@
         <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
-    <SubMenu title="Edit" Class="topMenu">
+    <SubMenu title="Edit" Class="topMenu" Key="Edit">
+        <span id="editMenu"></span>
         <MenuItem Key="setting:1" OnClick="cut">Cut</MenuItem>
         <MenuItem Key="setting:2" OnClick="copy">Copy</MenuItem>
         <MenuItem Key="setting:3" OnClick="paste">Paste</MenuItem>
@@ -37,13 +39,16 @@
         <MenuItem Key="setting:5">Redo</MenuItem>
         <MenuItem Key="setting:6" OnClick="delete">Delete</MenuItem>
     </SubMenu>
-    <SubMenu title="Help" Class="topMenu">
+    <SubMenu title="Help" Class="topMenu" Key="Help">
+        <span id="helpMenu"></span>
         <MenuItem Key="setting:1">
             <Checkbox @bind-Checked="deleteManyChecked">Confirm deleting many items</Checkbox>
         </MenuItem>
         <MenuItem Key="setting:2" OnClick="runTutorial">Tutorial</MenuItem>
         <SubMenu Title="Example Files">
+            <span id="exampleMenu"></span>
             <SubMenu Title="Mechanical Translation">
+                <span id="mechTransMenu"></span>
                 <MenuItem Key="mt:1" OnClick='() => loadExample("basic-two-mass-system")'>Basic Two Mass System - 1</MenuItem>
                 <MenuItem Key="mt:2" OnClick='() => loadExample("basic-two-mass-system1")'>Basic Two Mass System - 2</MenuItem>
                 <MenuItem Key="mt:3" OnClick='() => loadExample("basic-two-mass-system2")'>Basic Two Mass System - 3</MenuItem>
@@ -52,15 +57,17 @@
                 <MenuItem Key="mt:6" OnClick='() => loadExample("spring_&_damper")'>Spring and Damper with Force</MenuItem>
             </SubMenu>
             <SubMenu Title="Mechanical Rotation">
+                            <span id="mechRotMenu"></span>
                 <MenuItem Key="mr:1" OnClick='() => loadExample("rack_pinion")'>Rack and Pinion System</MenuItem>
                 <MenuItem Key="mr:2" OnClick='() => loadExample("motor-gear-pair")'>Motor, Shaft and Gear Pair</MenuItem>
             </SubMenu>
             <SubMenu Title="Electrical">
+                <span id="elecMenu"></span>
                 <MenuItem Key="elec:1" OnClick='() => loadExample("lrc_circuit")'>LRC Circuit</MenuItem>
             </SubMenu>
         </SubMenu>
         <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
-        <MenuItem Key="setting:5" OnClick="@(() => { visible = true; })">About BoGL</MenuItem>
+        <MenuItem Key="setting:5" OnClick="OpenAboutModal">About BoGL</MenuItem>
     </SubMenu>
     <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv" id="iconButtons">
         @{
@@ -295,16 +302,19 @@
 
     public async void cut() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("cut");
     }
 
     public async void copy() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("copy");
     }
 
     public async void paste() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("paste");
     }
 
@@ -312,6 +322,7 @@
 
     public async void delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("delete");
     }
 
@@ -410,6 +421,12 @@
     public static void SetScale(double scale) {
         zoomValue = scale * 100;
         app?.StateHasChanged();
+    }
+
+    private async void OpenAboutModal() {
+        visible = true;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Help");
     }
 
     //Change the zoom
@@ -570,6 +587,7 @@
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Help");
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
@@ -579,6 +597,7 @@
     //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("openFile");
         SystemDiagram sysDiagram;
         try {
@@ -606,6 +625,7 @@
     //Saves the system diagram to the user's file system
     private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
@@ -620,6 +640,7 @@
     //Saves the system diagram as a .bogl file to the user's file system
     private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         Console.WriteLine("System Diagram from Json");
@@ -669,6 +690,7 @@
     private async void generateUrl() {
     //Get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
         string jsonStr = generatedUrl.ToString() ?? string.Empty;
         Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
@@ -815,6 +837,7 @@
     //Runs the introjs tutorial
     private async Task runTutorial() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        // ant-menu-submenu-hidden
         await module.InvokeAsync<object>("runTutorial");
     }
 
