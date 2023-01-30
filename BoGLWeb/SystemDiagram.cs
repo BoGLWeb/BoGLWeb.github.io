@@ -789,6 +789,17 @@ namespace BoGLWeb {
             return IDs;
         }
 
+        /// <summary>
+        /// Converts this <c>SystemDiagram</c> to a printable format.
+        /// </summary>
+        /// <returns>This <c>SystemDiagram</c> as a <c>string</c>.</returns>
+        public override string ToString() {
+            StringBuilder builder = new();
+            builder.Append('[').Append(string.Join(", ", this.elements.Select(element => element.GetID()))).Append(']');
+            builder.Append('[').Append(string.Join(", ", this.edges.Select(edge => (edge.getSource() + " " + edge.getTarget())))).Append(']');
+            return builder.ToString();
+        }
+
         public class Element {
             private readonly string name;
             [JsonProperty]
@@ -1184,6 +1195,19 @@ namespace BoGLWeb {
             /// <returns>An integer</returns>
             public int getVelocity() {
                 return this.velocity;
+            }
+
+            /// <summary>
+            /// Serializes this Edge in accordance with JSON
+            /// syntax.
+            /// </summary>
+            /// <returns>The converted JSON string.</returns>
+            public string SerializeToJSON() {
+                return JsonConvert.SerializeObject(new {
+                    source = this.e1,
+                    target = this.e2,
+                    this.velocity
+                });
             }
 
             /// <summary>
