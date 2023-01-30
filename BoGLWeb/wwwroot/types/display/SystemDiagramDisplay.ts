@@ -369,6 +369,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseDown(el: SystemDiagramElement) {
         d3.event.stopPropagation();
         this.mouseDownNode = el;
+        if (this.edgeOrigin == el) {
+            this.setFollowingEdge(null);
+        }
         this.justDragged = false;
     }
 
