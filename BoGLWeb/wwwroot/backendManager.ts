@@ -454,6 +454,11 @@ export namespace backendManager {
             let [elements, bonds] = this.parseElementAndEdgeStrings(deletedObjects);
             if (isUndo) {
                 sysDiag.elements = sysDiag.elements.concat(elements);
+                bonds = bonds.map(b => {
+                    b.source = sysDiag.elements.find(e => e.id == b.source.id);
+                    b.target = sysDiag.elements.find(e => e.id == b.target.id);
+                    return b;
+                })
                 sysDiag.bonds = sysDiag.bonds.concat(bonds);
                 sysDiag.setSelection(elements, bonds);
             } else {

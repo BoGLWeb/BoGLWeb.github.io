@@ -494,19 +494,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     async deleteSelection(needsConfirmation = true) {
         let result;
+        let graph = this;
+
         if (needsConfirmation) {
             result = await DotNet.invokeMethodAsync("BoGLWeb", "showDeleteConfirmationModal", this.getSelection().length > 1);
         }
 
         if (!needsConfirmation || result) {
+            let splicedBonds = [];
             for (let e of this.selectedBonds) {
                 this.bonds = this.bonds.filter(bond => bond != e);
             }
             for (let e of this.selectedElements) {
-                this.spliceLinksForNode(e);
+                let toSplice = this.bonds.filter(function (l) {
+                    return (l.source === e || l.target === e);
+                });
+                toSplice.forEach(function (l) {
+                    splicedBonds.push(l);
+                    graph.bonds.splice(graph.bonds.indexOf(l), 1);
+                });
+                this.updateVelocityMenu();
                 this.elements = this.elements.filter(el => el != e);
             }
-            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().map(e => JSON.stringify(e)));
+            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().concat(splicedBonds).map(e => JSON.stringify(e)));
             this.setSelection([], []);
             this.updateModifierMenu();
             this.updateVelocityMenu();
