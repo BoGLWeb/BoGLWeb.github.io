@@ -333,6 +333,7 @@ export class BaseGraphDisplay {
 
     drawPaths() {
         let graph = this;
+        console.log("You exist here? ", this.bonds);
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
@@ -353,10 +354,10 @@ export class BaseGraphDisplay {
             return graph.selectedBonds.includes(d);
         }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
-        this.pathExtraRendering(paths);
-
         // remove old links
         paths.exit().remove();
+
+        this.pathExtraRendering(paths);
     }
 
     fullRenderElements(dragmove: boolean = false) {
@@ -406,6 +407,9 @@ export class BaseGraphDisplay {
 
     // call to propagate changes to graph
     updateGraph(dragmove: boolean = false) {
+        if (!dragmove) {
+            d3.selectAll(".velocityArrow").remove();
+        }
         this.drawPaths();
         this.fullRenderElements(dragmove);
     }

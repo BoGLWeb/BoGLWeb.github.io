@@ -209,6 +209,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
+        console.log(this.bonds, paths);
         if (paths.node()) {
             d3.select(paths.node().parentNode).selectAll("text").html(null);
         }
