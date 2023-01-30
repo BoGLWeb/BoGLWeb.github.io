@@ -299,7 +299,7 @@
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
         Console.WriteLine(cc);
-        switch(cc?.GetChangeType().Name) {
+        switch(cc?.GetType().Name) {
             case nameof(CanvasChange.AddSelection):
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
                 app?.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), isUndo);
@@ -317,7 +317,6 @@
                 app?.URDoChangeSelectionModifier(cm.GetIDs(), cm.GetModID(), cm.GetToggle(), cm.GetCurrent(), isUndo);
                 break;
             case nameof(CanvasChange.MoveSelection):
-                Console.WriteLine("I'm an egg!!!!!!11!11!1!!!1!1");
                 CanvasChange.MoveSelection ms = (CanvasChange.MoveSelection) cc;
                 app?.URDoMoveSelection(ms.GetIDs(), ms.GetXOffset(), ms.GetYOffset(), isUndo);
                 break;
@@ -364,7 +363,7 @@
 
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges) {
-        Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
+        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -372,7 +371,7 @@
 
     [JSInvokable]
     public static void URDeleteSelection(string[] deletedObjects) {
-        Console.WriteLine("Recording elements and edges deleted: [" + String.Join(", ", deletedObjects) + "]");
+        Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -447,7 +446,6 @@
 
     public async void URDoMoveSelection(int[] elements, double xOffset, double yOffset, bool isUndo)
     {
-        Console.WriteLine("A change has been made teeheehee");
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoMoveSelection", elements, xOffset, yOffset, isUndo);
         app?.StateHasChanged();
@@ -944,7 +942,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
     }

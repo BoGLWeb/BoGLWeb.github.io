@@ -1,6 +1,7 @@
 ﻿using AntDesign.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json.Linq;
+using System.util;
 
 namespace BoGLWeb {
     /// <summary>
@@ -11,12 +12,6 @@ namespace BoGLWeb {
         /// Keeps track of changes made to the canvas.
         /// </summary>
         public class CanvasChange {
-            // Stores the elementIDs of the respective selected elements.
-
-            public Type GetChangeType() {
-                return this.GetType();
-            }
-
             // Stores the IDs of the respective selected elements.
             private readonly int[] IDs;
 
@@ -75,14 +70,12 @@ namespace BoGLWeb {
             public class AddSelection : CanvasChange {
                 // Stores the JSON form of the added elements
                 private readonly string[] newObjects;
-                // Stores the previous group of selected edges
+                // Stores the previous group of selected edgesBySource
                 private readonly string[] prevSelectedEdges;
                 // Stores the Element form of the added elements
                 private readonly Dictionary<int, SystemDiagram.Element> newElements;
-                // Stores the Edge form of the added edges by source ID
-                private readonly Dictionary<int, SystemDiagram.Edge> newEdgesBySource;
-                // Stores the Edge form of the added edges by target ID
-                private readonly Dictionary<int, SystemDiagram.Edge> newEdgesByTarget;
+                // Stores the Edge form of the added edgesBySource by source ID
+                private readonly Dictionary<int, List<SystemDiagram.Edge>> newEdges;
 
                 // TODO: fix comment
                 /// <summary> 
@@ -100,29 +93,9 @@ namespace BoGLWeb {
                 public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges) : base(IDs) {
                     this.newObjects = newObjects;
                     this.prevSelectedEdges = prevSelectedEdges;
-                    SystemDiagram.Element[] newElements = new SystemDiagram.Element[this.newObjects.Length];
-                    SystemDiagram.Edge[] newEdges = new SystemDiagram.Edge[this.newObjects.Length];
-                    int elementIndex = 0, edgeIndex = 0;
-                    for (int i = 0; i < this.newObjects.Length; i++) {
-                        JObject obj = JObject.Parse(this.newObjects[i]);
-                        if (obj == null) {
-                            throw new Exception("Null object cannot be cast.");
-                        } else if (obj.Value<JObject>("source") == null) { // Element
-                            newElements[elementIndex++] = new SystemDiagram.Element(obj);
-                        } else { // Edge
-                            newEdges[edgeIndex++] = new SystemDiagram.Edge(obj);
-                        }
-                    }
-                    this.newElements = new();// SystemDiagram.Element[elementIndex];
-                    for (int i = 0; i < elementIndex; i++) {
-                        this.newElements.Add(newElements[i].GetID(), newElements[i]);
-                    }
-                    this.newEdgesBySource = new();//new SystemDiagram.Edge[edgeIndex];
-                    this.newEdgesByTarget = new();
-                    for (int i = 0; i < edgeIndex; i++) {
-                        this.newEdgesBySource.Add(newEdges[i].getSource(), newEdges[i]);
-                        this.newEdgesByTarget.Add(newEdges[i].getTarget(), newEdges[i]);
-                    }
+                    SystemDiagram.Packager packager = new(newObjects);
+                    this.newElements = packager.GetElements();
+                    this.newEdges = packager.GetSourceEdges();
                 }
 
                 /// <summary>
@@ -137,17 +110,25 @@ namespace BoGLWeb {
                     List<SystemDiagram.Element> elements = diagram.getElements();
                     List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
-                        foreach()
+                        ListIterator<SystemDiagram.Element> elementIterator = new(elements);
+                        while (elementIterator.HasNext()) {
+                            if (this.newElements.ContainsKey(elementIterator.Next().GetID())) {
+                                elementIterator.Remove();
+                            }
+                        }
+                        ListIterator<SystemDiagram.Edge> edgeIterator = new(edges);
+                        while (edgeIterator.HasNext()) {
+                            SystemDiagram.Edge edge = edgeIterator.Next();
+                            if (this.newEdges.ContainsKey(edge.GetID())) {
+                                edgeIterator.Remove();
+                            }
+                        }
                     } else {
                         foreach (KeyValuePair<int, SystemDiagram.Element> pair in this.newElements) {
                             elements.Add(pair.Value);
-                            SystemDiagram.Edge? edgeFromSource = this.newEdgesBySource.GetValueOrDefault(pair.Key);
-                            SystemDiagram.Edge? edgeFromTarget = this.newEdgesByTarget.GetValueOrDefault(pair.Key);
-                            if (edgeFromSource != null) {
-                                edges.Add(edgeFromSource);
-                            } else if (edgeFromTarget != null) {
-                                edges.Add(edgeFromTarget);
-                            }
+                        }
+                        foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in this.newEdges) {
+                            edges.AddRange(pair.Value);
                         }
                     }
                 }
@@ -186,6 +167,12 @@ namespace BoGLWeb {
             public class DeleteSelection : CanvasChange {
                 // The JSON objects storing the deleted elements
                 private readonly string[] deleted;
+                // Stores the Element form of the added elements
+                private readonly Dictionary<int, SystemDiagram.Element> oldElements;
+                // Stores the Edge form of the added edgesBySource by source ID
+                private readonly Dictionary<int, List<SystemDiagram.Edge>> oldEdgesBySource;
+                // Stores the Edge form of the added edgesBySource by target ID
+                private readonly Dictionary<int, List<SystemDiagram.Edge>> oldEdgesByTarget;
 
                 /// <summary>
                 /// Creates a new DeleteSelection CanvasChange.
@@ -198,6 +185,10 @@ namespace BoGLWeb {
                 /// </param>
                 public DeleteSelection(int[] IDs, string[] deleted) : base(IDs) {
                     this.deleted = deleted;
+                    SystemDiagram.Packager packager = new(deleted);
+                    this.oldElements = packager.GetElements();
+                    this.oldEdgesBySource = packager.GetSourceEdges();
+                    this.oldEdgesByTarget = packager.GetTargetEdges();
                 }
 
                 /// <summary>
@@ -209,7 +200,46 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    //TODO: leave empty for now
+                    List<SystemDiagram.Element> elements = diagram.getElements();
+                    List<SystemDiagram.Edge> edges = diagram.getEdges();
+                    if (isUndo) {
+                        foreach (KeyValuePair<int, SystemDiagram.Element> pair in this.oldElements) {
+                            elements.Add(pair.Value);
+                        }
+                        HashSet<int> usedSourceIDs = new();
+                        foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in this.oldEdgesBySource) {
+                            edges.AddRange(pair.Value);
+                            usedSourceIDs.Add(pair.Key);
+                        }
+                        foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in this.oldEdgesByTarget) {
+                            foreach (SystemDiagram.Edge edge in pair.Value) {
+                                if (!usedSourceIDs.Contains(edge.getSource())) {
+                                    edges.Add(edge);
+                                }
+                            }
+                        }
+                    } else {
+                        ListIterator<SystemDiagram.Element> elementIterator = new(elements);
+                        while (elementIterator.HasNext()) {
+                            if (this.oldElements.ContainsKey(elementIterator.Next().GetID())) {
+                                elementIterator.Remove();
+                            }
+                        }
+                        ListIterator<SystemDiagram.Edge> edgeIterator = new(edges);
+                        while (edgeIterator.HasNext()) {
+                            SystemDiagram.Edge edge = edgeIterator.Next();
+                            int source = edge.getSource(), target = edge.getTarget();
+                            if (this.oldEdgesBySource.ContainsKey(source) | this.oldEdgesByTarget.ContainsKey(target)) {
+                                edgeIterator.Remove();
+                            } else if (this.oldElements.ContainsKey(source)) {
+                                edgeIterator.Remove();
+                                this.oldEdgesBySource.Add(source, new List<SystemDiagram.Edge>() { edge });
+                            } else if (this.oldElements.ContainsKey(target)) {
+                                edgeIterator.Remove();
+                                this.oldEdgesByTarget.Add(target, new List<SystemDiagram.Edge>() { edge });
+                            }
+                        }
+                    }
                 }
 
                 /// <summary>
@@ -228,9 +258,9 @@ namespace BoGLWeb {
             public class ChangeSelection : CanvasChange {
                 // Stores the array of elementIDs for the new selection of elements.
                 private readonly int[] newElementIDS;
-                //Stores the array of elementIDs for the old selected edges.
+                //Stores the array of elementIDs for the old selected edgesBySource.
                 private readonly string[] oldEdgeIDs;
-                //Stores the array of elementIDs for the new selected edges.
+                //Stores the array of elementIDs for the new selected edgesBySource.
                 private readonly string[] newEdgeIDs;
 
                 /// <summary>
@@ -299,7 +329,6 @@ namespace BoGLWeb {
                     this.modID = modID;
                     this.toggle = toggle;
                     this.current = current;
-                    Console.WriteLine("gg " + IDs.Length);
                 }
 
                 /// <summary>
@@ -517,6 +546,13 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns></returns>
                 public int[] GetOldIDs() { return this.oldIDs; }
+
+                public override string ToString() {
+                    return EditStackHandler.Stringify(this.IDs) +
+                        EditStackHandler.Stringify(this.edgeIDs) +
+                        " " + this.newVelID + " " +
+                        EditStackHandler.Stringify(this.oldIDs);
+                }
             }
         }
     }

@@ -193,7 +193,7 @@ namespace BoGLWeb.BaseClasses {
     ///   Originally, I created a separate edge and vertex class to allow for the future expansion
     ///   of GraphSynth into shape grammars. I now have decided that the division is not useful, 
     ///   since it simply deprived nodes of X,Y,Z positions. Many consider edge and arc, and vertex
-    ///   and node to be synonymous anyway but I prefer to think of edges and vertices as arcs and 
+    ///   and node to be synonymous anyway but I prefer to think of edgesBySource and vertices as arcs and 
     ///   nodes with spatial information. At any rate there is no need to have these inherited 
     ///   classes, but I keep them for backwards-compatible purposes.
     /// </summary>

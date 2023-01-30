@@ -265,7 +265,7 @@ export class BaseGraphDisplay {
 
     listToIDObjects(eList: (GraphElement | GraphBond)[]): [number[], string[]] {
         let elements: number[] = (eList.filter(e => e instanceof GraphElement) as GraphElement[]).map(e => e.id);
-        let bonds: string[] = (eList.filter(e => e instanceof GraphBond) as GraphBond[]).map(e => JSON.stringify({ srouce: e.source.id, target: e.target.id }));
+        let bonds: string[] = (eList.filter(e => e instanceof GraphBond) as GraphBond[]).map(e => JSON.stringify({ source: e.source.id, target: e.target.id }));
         return [elements, bonds];
     }
 

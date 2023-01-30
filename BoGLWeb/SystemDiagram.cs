@@ -148,7 +148,7 @@ namespace BoGLWeb {
             this.changes = new();
         }
 
-        //Creates a system diagram with a list of parsedElements and edges. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
+        //Creates a system diagram with a list of parsedElements and edgesBySource. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
         private SystemDiagram(Dictionary<string, double> header, List<Element> elements, List<Edge> edges) {
             this.header = header;
             this.elements = elements;
@@ -188,7 +188,7 @@ namespace BoGLWeb {
             }
 
             List<Edge> updatedEdges = new();
-            //Update edges
+            //Update edgesBySource
             foreach (Edge edge in systemDiagram.getEdges()) {
                 int e1 = edge.getTarget();
                 int e2 = edge.getSource();
@@ -775,6 +775,20 @@ namespace BoGLWeb {
             return parsedElements;
         }
 
+        /// <summary>
+        /// Gets an array of all IDs in a Dictionary of Elements.
+        /// </summary>
+        /// <returns>An array containing all the IDs of every
+        /// Element in the Dictionary.</returns>
+        public static int[] GetIDs(Dictionary<int, Element> elements) {
+            int[] IDs = new int[elements.Count];
+            int index = 0;
+            foreach (KeyValuePair<int, Element> pair in elements) {
+                IDs[index++] = pair.Key;
+            }
+            return IDs;
+        }
+
         public class Element {
             private readonly string name;
             [JsonProperty]
@@ -1224,6 +1238,75 @@ namespace BoGLWeb {
                     ? "Arc " + this.e1.getName() + " to " + this.e2.getName() + "\r\n"
                     : "Arc " + this.e1.getName() + " to " + this.e2.getName() + " has velocity " + this.velocity +
                       "\r\n";
+            }
+        }
+
+        /// <summary>
+        /// Stores parsed elements and edgesBySource for a system diagram.
+        /// </summary>
+        public class Packager {
+            // Stores a subset of elements belonging to a particular system diagram
+            private readonly Dictionary<int, Element> elements;
+            // Stores a subset of edgesBySource belonging to a particular system diagram by source ID.
+            private readonly Dictionary<int, List<Edge>> edgesBySource;
+            // Stores a subset of edgesBySource belonging to a particular system diagram by target ID.
+            private readonly Dictionary<int, List<Edge>> edgesByTarget;
+
+            /// <summary>
+            /// Creates a new Packager.
+            /// </summary>
+            /// <param name="newObjects">An array of JSON objects
+            /// containing the elements and edgesBySource for this 
+            /// system diagram.</param>
+            public Packager(string[] newObjects) {
+                this.elements = new();
+                this.edgesBySource = new();
+                this.edgesByTarget = new();
+                for (int i = 0; i < newObjects.Length; i++) {
+                    JObject obj = JObject.Parse(newObjects[i]);
+                    if (obj == null) {
+                        throw new Exception("Null object cannot be cast.");
+                    } else if (obj.Value<JObject>("source") == null) { // Element
+                        SystemDiagram.Element element = new(obj);
+                        this.elements.Add(element.GetID(), element);
+                    } else { // Edge
+                        SystemDiagram.Edge edge = new(obj);
+                        if (this.edgesBySource.ContainsKey(edge.getSource())) {
+                            this.edgesBySource.GetValueOrDefault(edge.getSource())?.Add(edge);
+                        } else {
+                            this.edgesBySource.Add(edge.getSource(), new List<SystemDiagram.Edge>() { edge });
+                        }
+                        if (this.edgesByTarget.ContainsKey(edge.getTarget())) {
+                            this.edgesByTarget.GetValueOrDefault(edge.getTarget())?.Add(edge);
+                        } else {
+                            this.edgesByTarget.Add(edge.getTarget(), new List<SystemDiagram.Edge>() { edge });
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of elements in this Packager.
+            /// </summary>
+            /// <returns>this.elements</returns>
+            public Dictionary<int, Element> GetElements() {
+                return this.elements;
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// </summary>
+            /// <returns>this.edgesBySource</returns>
+            public Dictionary<int, List<Edge>> GetSourceEdges() {
+                return this.edgesBySource;
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// </summary>
+            /// <returns>this.edgesBySource</returns>
+            public Dictionary<int, List<Edge>> GetTargetEdges() {
+                return this.edgesByTarget;
             }
         }
     }

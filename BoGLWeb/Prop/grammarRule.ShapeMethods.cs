@@ -37,7 +37,7 @@ using System.Linq;
 namespace GraphSynth.Representation {
     /* Here is the new overload of grammarRule that includes the ability to view
      * the graph as a 2-D shape where nodes are points or vertices, and arcs are
-     * lines or edges. */
+     * lines or edgesBySource. */
 
     public partial class grammarRule
     {
