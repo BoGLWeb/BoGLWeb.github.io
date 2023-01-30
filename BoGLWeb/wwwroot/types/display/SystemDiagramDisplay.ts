@@ -451,6 +451,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.addToSelection(element);
             }
             //Update the system diagram
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
             this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             this.clearSelection();
