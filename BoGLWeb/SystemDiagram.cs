@@ -789,6 +789,17 @@ namespace BoGLWeb {
             return IDs;
         }
 
+        /// <summary>
+        /// Converts this <c>SystemDiagram</c> to a printable format.
+        /// </summary>
+        /// <returns>This <c>SystemDiagram</c> as a <c>string</c>.</returns>
+        public override string ToString() {
+            StringBuilder builder = new();
+            builder.Append('[').Append(string.Join(", ", this.elements.Select(element => element.GetID()))).Append(']');
+            builder.Append('[').Append(string.Join(", ", this.edges.Select(edge => (edge.getSource() + " " + edge.getTarget())))).Append(']');
+            return builder.ToString();
+        }
+
         public class Element {
             private readonly string name;
             [JsonProperty]

@@ -38,6 +38,7 @@ namespace BoGLWeb {
             /// else <c>false</c> if the action was a 'redo' call.
             /// </param>
             public virtual void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                //Console.WriteLine(diagram);
             }
 
             /// <summary>
@@ -108,7 +109,6 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    base.ExecuteUpdate(diagram, isUndo);
                     List<SystemDiagram.Element> elements = diagram.getElements();
                     List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
@@ -121,7 +121,7 @@ namespace BoGLWeb {
                         ListIterator<SystemDiagram.Edge> edgeIterator = new(edges);
                         while (edgeIterator.HasNext()) {
                             SystemDiagram.Edge edge = edgeIterator.Next();
-                            if (this.newEdges.ContainsKey(edge.GetID())) {
+                            if (this.newEdges.ContainsKey(edge.getSource())) {
                                 edgeIterator.Remove();
                             }
                         }
@@ -133,6 +133,7 @@ namespace BoGLWeb {
                             edges.AddRange(pair.Value);
                         }
                     }
+                    base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
@@ -204,7 +205,6 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    base.ExecuteUpdate(diagram, isUndo);
                     List<SystemDiagram.Element> elements = diagram.getElements();
                     List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
@@ -247,6 +247,7 @@ namespace BoGLWeb {
                             }
                         }
                     }
+                    base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
@@ -359,7 +360,6 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    base.ExecuteUpdate(diagram, isUndo);
                     Dictionary<int, SystemDiagram.Element> elements = diagram.GetElementsFromIDs(this.IDs);
                     for (int i = 0; i < this.IDs.Length; i++) {
                         SystemDiagram.Element element = elements[this.IDs[i]];
@@ -368,6 +368,7 @@ namespace BoGLWeb {
                             element.addModifier(this.modID);
                         }
                     }
+                    base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
@@ -431,7 +432,6 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    base.ExecuteUpdate(diagram, isUndo);
                     double x = this.xOffset, y = this.yOffset;
                     if (isUndo) {
                         x = -x;
@@ -442,6 +442,7 @@ namespace BoGLWeb {
                         element.SetX(element.getX() + x);
                         element.SetY(element.getY() + y);
                     }
+                    base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
@@ -536,11 +537,11 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    base.ExecuteUpdate(diagram, isUndo);
                     Dictionary<int, SystemDiagram.Element> elements = diagram.GetElementsFromIDs(this.IDs);
                     for(int i = 0; i < this.IDs.Length; i++) {
                         elements[this.IDs[i]].setVelocity(isUndo ? this.oldIDs[i] : this.newVelID);
                     }
+                    base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
@@ -565,13 +566,6 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns></returns>
                 public int[] GetOldIDs() { return this.oldIDs; }
-
-                public override string ToString() {
-                    return EditStackHandler.Stringify(this.IDs) +
-                        EditStackHandler.Stringify(this.edgeIDs) +
-                        " " + this.newVelID + " " +
-                        EditStackHandler.Stringify(this.oldIDs);
-                }
             }
         }
     }

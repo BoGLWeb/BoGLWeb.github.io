@@ -97,15 +97,17 @@
                     }
                     CanvasChange? change = edits.Get();
                     if (canvasTab == CanvasTab.SYSTEM_DIAGRAM) {
-                        edits.Get()?.ExecuteUpdate(this.systemDiagram, isUndo);
+                        change?.ExecuteUpdate(this.systemDiagram, isUndo);
                     } else {
-                        edits.Get()?.ExecuteUpdate(GetBondGraph(canvasTab), isUndo);
+                        change?.ExecuteUpdate(GetBondGraph(canvasTab), isUndo);
                     }
                     if (isUndo) {
                         edits.Prev();
                     }
+                    Console.WriteLine(this.systemDiagram);
                     return change;
                 }
+                Console.WriteLine(this.systemDiagram);
                 return null;
             }
 
