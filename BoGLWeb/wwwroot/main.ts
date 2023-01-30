@@ -84,26 +84,17 @@ async function loadPage() {
 
     topMenuButtons = document.getElementsByClassName('topMenu');
 
-    for (let i = 0; i < topMenuButtons.length; i++) {
-        let el = topMenuButtons.item(i);
-        (el as HTMLElement).click();
-    }
-
-    for (let i = 0; i < topMenuButtons.length; i++) {
+    for (let i = 0; i < 3; i++) {
+        topMenuButtons.item(i).click();
+        clickSubmenus(i);
         menuClickAction(topMenuButtons.item(i), i);
     }
 
-    clickSubmenus(2);
-
-    document.getElementsByClassName("page").item(0).addEventListener("click", (e) => {
-        console.log("Closing all menus");
+    document.getElementsByClassName("page").item(0).addEventListener("click", () => {
         for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
             let el = document.getElementById(menuIdMap[i]);
             if (el) {
-                el = el.parentElement.parentElement;
-                if (el.getAttribute("hidden-menu") != "true") {
-                    el.setAttribute("hidden-menu", "true");
-                }
+                el.parentElement.parentElement.setAttribute("hidden-menu", "true");
             }
         }
     });
@@ -185,17 +176,15 @@ function pollDOM() {
     }
 }
 
-// menu ID is the ID of the parent menu, function waits until parent menu exists, then applies click actions to its children
+// clicks through all menus to get them in the DOM
 function clickSubmenus(menuId: number) {
     const cond = document.getElementById(menuIdMap[menuId])?.parentElement?.parentElement;
 
-    if (cond) {
-        if (submenuMap.hasOwnProperty(menuId)) {
-            for (let submenu of submenuMap[menuId] as SubmenuID[]) {
-                let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
-                (submenuEl as HTMLElement).click();
-                clickSubmenus(submenu.id);
-            }
+    if (cond && submenuMap.hasOwnProperty(menuId)) {
+        for (let submenu of submenuMap[menuId] as SubmenuID[]) {
+            let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
+            (submenuEl as HTMLElement).click();
+            clickSubmenus(submenu.id);
         }
     } else {
         setTimeout(() => clickSubmenus(menuId), 20);
