@@ -362,6 +362,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseDown(el: SystemDiagramElement) {
         d3.event.stopPropagation();
         this.mouseDownNode = el;
+        if (this.edgeOrigin == el) {
+            this.setFollowingEdge(null);
+        }
         this.justDragged = false;
     }
 
@@ -462,6 +465,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.setSelection([element], []);
             }
             //Update the system diagram
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
             this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));

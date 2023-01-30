@@ -459,6 +459,9 @@ export class BaseGraphDisplay {
 
     // call to propagate changes to graph
     updateGraph(dragmove: boolean = false) {
+        if (!dragmove) {
+            d3.selectAll(".velocityArrow").remove();
+        }
         this.drawPaths();
         this.fullRenderElements(dragmove);
     }
