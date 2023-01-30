@@ -366,6 +366,7 @@
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges) {
         Console.WriteLine("Recording elements and edges added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges), 1);
+        UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
     }
 
@@ -373,6 +374,7 @@
     public static void URDeleteSelection(string[] deletedObjects) {
         Console.WriteLine("Recording elements and edges deleted: [" + String.Join(", ", deletedObjects) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects), 1);
+        UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
     }
 
@@ -382,6 +384,7 @@
             + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
             + String.Join(", ", removeEdgeFromSelection) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
+        UpdateBackendWithInitialStackChange(tabID);
         app?.StateHasChanged();
     }
 
@@ -389,6 +392,7 @@
     public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
         Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
+        UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
     }
 
@@ -396,6 +400,7 @@
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
         Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
+        UpdateBackendWithInitialStackChange(tabID);
         app?.StateHasChanged();
     }
 
@@ -404,7 +409,16 @@
         Console.WriteLine("Recording velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
             + ", [" + String.Join(", ", prevVelVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
+        UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
+    }
+
+    public static void UpdateBackendWithInitialStackChange(int tab) {
+        if(tab == 1) { // System diagram
+            EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
+        } else { // Some bond graph
+            EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
+        }
     }
 
     public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool isUndo) {

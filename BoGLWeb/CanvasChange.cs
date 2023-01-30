@@ -18,7 +18,7 @@ namespace BoGLWeb {
             }
 
             // Stores the IDs of the respective selected elements.
-            public readonly int[] IDs;
+            private readonly int[] IDs;
 
             /// <summary>
             /// Creates a new Can
@@ -77,6 +77,12 @@ namespace BoGLWeb {
                 private readonly string[] newObjects;
                 // Stores the previous group of selected edges
                 private readonly string[] prevSelectedEdges;
+                // Stores the Element form of the added elements
+                private readonly Dictionary<int, SystemDiagram.Element> newElements;
+                // Stores the Edge form of the added edges by source ID
+                private readonly Dictionary<int, SystemDiagram.Edge> newEdgesBySource;
+                // Stores the Edge form of the added edges by target ID
+                private readonly Dictionary<int, SystemDiagram.Edge> newEdgesByTarget;
 
                 // TODO: fix comment
                 /// <summary> 
@@ -94,6 +100,29 @@ namespace BoGLWeb {
                 public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges) : base(IDs) {
                     this.newObjects = newObjects;
                     this.prevSelectedEdges = prevSelectedEdges;
+                    SystemDiagram.Element[] newElements = new SystemDiagram.Element[this.newObjects.Length];
+                    SystemDiagram.Edge[] newEdges = new SystemDiagram.Edge[this.newObjects.Length];
+                    int elementIndex = 0, edgeIndex = 0;
+                    for (int i = 0; i < this.newObjects.Length; i++) {
+                        JObject obj = JObject.Parse(this.newObjects[i]);
+                        if (obj == null) {
+                            throw new Exception("Null object cannot be cast.");
+                        } else if (obj.Value<JObject>("source") == null) { // Element
+                            newElements[elementIndex++] = new SystemDiagram.Element(obj);
+                        } else { // Edge
+                            newEdges[edgeIndex++] = new SystemDiagram.Edge(obj);
+                        }
+                    }
+                    this.newElements = new();// SystemDiagram.Element[elementIndex];
+                    for (int i = 0; i < elementIndex; i++) {
+                        this.newElements.Add(newElements[i].GetID(), newElements[i]);
+                    }
+                    this.newEdgesBySource = new();//new SystemDiagram.Edge[edgeIndex];
+                    this.newEdgesByTarget = new();
+                    for (int i = 0; i < edgeIndex; i++) {
+                        this.newEdgesBySource.Add(newEdges[i].getSource(), newEdges[i]);
+                        this.newEdgesByTarget.Add(newEdges[i].getTarget(), newEdges[i]);
+                    }
                 }
 
                 /// <summary>
@@ -105,24 +134,22 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
-                    SystemDiagram.Element[] newElements = new SystemDiagram.Element[this.newObjects.Length];
-                    SystemDiagram.Edge[] newEdges = new SystemDiagram.Edge[this.newObjects.Length];
-                    int elementIndex = 0, edgeIndex = 0;
-                    for (int i = 0; i < this.newObjects.Length; i++) {
-                        JObject obj = JObject.Parse(this.newObjects[i]);
-                        if (obj == null) {
-                            throw new Exception("Null object cannot be cast.");
-                        }
-                        if (obj.Value<JObject>("source") == null) { // Element
-                            newElements[elementIndex++] = new SystemDiagram.Element(obj);
-                        } else { // Edge
-                            newEdges[edgeIndex++] = new SystemDiagram.Edge(obj);
-                        }
-                    }
+                    List<SystemDiagram.Element> elements = diagram.getElements();
+                    List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
+                        foreach()
                     } else {
+                        foreach (KeyValuePair<int, SystemDiagram.Element> pair in this.newElements) {
+                            elements.Add(pair.Value);
+                            SystemDiagram.Edge? edgeFromSource = this.newEdgesBySource.GetValueOrDefault(pair.Key);
+                            SystemDiagram.Edge? edgeFromTarget = this.newEdgesByTarget.GetValueOrDefault(pair.Key);
+                            if (edgeFromSource != null) {
+                                edges.Add(edgeFromSource);
+                            } else if (edgeFromTarget != null) {
+                                edges.Add(edgeFromTarget);
+                            }
+                        }
                     }
-                    //TODO: this is where the elements get updated into the 
                 }
 
                 /// <summary>
@@ -272,6 +299,7 @@ namespace BoGLWeb {
                     this.modID = modID;
                     this.toggle = toggle;
                     this.current = current;
+                    Console.WriteLine("gg " + IDs.Length);
                 }
 
                 /// <summary>

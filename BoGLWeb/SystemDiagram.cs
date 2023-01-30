@@ -837,7 +837,7 @@ namespace BoGLWeb {
                 JArray? modifiers = obj.Value<JArray>("modifiers");
                 this.modifiers = new();
                 if (modifiers != null) {
-                    foreach (JToken mod in modifiers) {
+                    foreach (JObject mod in modifiers) {
                         this.modifiers.Add(mod.Value<int>());
                     }
                 }
@@ -1115,10 +1115,20 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="obj">The JSON Object</param>
             public Edge(JObject obj) {
-                this.e1 = new Element((JObject) obj.Value<int>("source"));
-                this.source = this.e1.GetID();
-                this.e2 = new Element((JObject) obj.Value<int>("target"));
-                this.target = this.e2.GetID();
+                JObject? e1 = obj.Value<JObject>("source");
+                if (e1 == null) {
+                    throw new Exception("Source element does not exist.");
+                } else {
+                    this.e1 = new Element(e1);
+                    this.source = this.e1.GetID();
+                }
+                JObject? e2 = obj.Value<JObject>("target");
+                if (e2 == null) {
+                    throw new Exception("Target element does not exist.");
+                } else {
+                    this.e2 = new Element(e2);
+                    this.target = this.e2.GetID();
+                }
                 this.velocity = obj.Value<int>("velocity");
             }
 
@@ -1139,7 +1149,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Returns the id of the source
+            /// Returns the id of the e1
             /// </summary>
             /// <returns>An integer</returns>
             public int getSource() {

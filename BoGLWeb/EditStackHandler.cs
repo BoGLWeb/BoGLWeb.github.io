@@ -38,11 +38,10 @@
             }
 
             /// <summary>
-            /// Gets the CanvasChange from this 
+            /// Gets the CanvasChange from this <c>EditStackHandler</c>.
             /// </summary>
             /// <param name="tab"></param>
             /// <returns></returns>
-            // Remove this method when testing is finished.
             public CanvasChange? GetChange(int tab) {
                 return GetStackFromTab(GetTab(tab)).Get();
             }
