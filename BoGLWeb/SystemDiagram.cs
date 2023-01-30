@@ -1187,6 +1187,19 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Serializes this Edge in accordance with JSON
+            /// syntax.
+            /// </summary>
+            /// <returns>The converted JSON string.</returns>
+            public string SerializeToJSON() {
+                return JsonConvert.SerializeObject(new {
+                    source = this.e1,
+                    target = this.e2,
+                    this.velocity
+                });
+            }
+
+            /// <summary>
             /// Assigns an ID to this <c>Edge</c>.
             /// </summary>
             /// <param name="ID">

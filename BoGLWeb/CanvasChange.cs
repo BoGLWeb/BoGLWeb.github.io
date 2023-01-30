@@ -1,5 +1,6 @@
 ﻿using AntDesign.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.util;
 
@@ -107,6 +108,7 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                    base.ExecuteUpdate(diagram, isUndo);
                     List<SystemDiagram.Element> elements = diagram.getElements();
                     List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
@@ -166,7 +168,9 @@ namespace BoGLWeb {
             /// </summary>
             public class DeleteSelection : CanvasChange {
                 // The JSON objects storing the deleted elements
-                private readonly string[] deleted;
+                private readonly List<string> deleted;
+                // The output array storing the deleted elements
+                private string[]? deletedArray;
                 // Stores the Element form of the added elements
                 private readonly Dictionary<int, SystemDiagram.Element> oldElements;
                 // Stores the Edge form of the added edgesBySource by source ID
@@ -184,11 +188,11 @@ namespace BoGLWeb {
                 /// the added elements.
                 /// </param>
                 public DeleteSelection(int[] IDs, string[] deleted) : base(IDs) {
-                    this.deleted = deleted;
                     SystemDiagram.Packager packager = new(deleted);
                     this.oldElements = packager.GetElements();
                     this.oldEdgesBySource = packager.GetSourceEdges();
                     this.oldEdgesByTarget = packager.GetTargetEdges();
+                    this.deleted = new(deleted);
                 }
 
                 /// <summary>
@@ -200,6 +204,7 @@ namespace BoGLWeb {
                 /// the 'undo' action, else <c>false</c> if it was called during the
                 /// 'redo' action.</param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                    base.ExecuteUpdate(diagram, isUndo);
                     List<SystemDiagram.Element> elements = diagram.getElements();
                     List<SystemDiagram.Edge> edges = diagram.getEdges();
                     if (isUndo) {
@@ -234,9 +239,11 @@ namespace BoGLWeb {
                             } else if (this.oldElements.ContainsKey(source)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesBySource.Add(source, new List<SystemDiagram.Edge>() { edge });
+                                this.deleted.Add(edge.SerializeToJSON());
                             } else if (this.oldElements.ContainsKey(target)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesByTarget.Add(target, new List<SystemDiagram.Edge>() { edge });
+                                this.deleted.Add(edge.SerializeToJSON());
                             }
                         }
                     }
@@ -247,7 +254,16 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns>The JSON string object</returns>
                 public string[] GetDeletedJSONElements() {
-                    return this.deleted;
+                    if (this.deletedArray == null) {
+                        string[] JSONstrings = new string[this.deleted.Count];
+                        int index = 0;
+                        foreach (string str in this.deleted) {
+                            JSONstrings[index++] = str;
+                        }
+                        this.deletedArray = JSONstrings;
+                    }
+                    Console.WriteLine(string.Join(", ", this.deleted));
+                    return this.deletedArray;
                 }
             }
 
@@ -343,6 +359,7 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                    base.ExecuteUpdate(diagram, isUndo);
                     Dictionary<int, SystemDiagram.Element> elements = diagram.GetElementsFromIDs(this.IDs);
                     for (int i = 0; i < this.IDs.Length; i++) {
                         SystemDiagram.Element element = elements[this.IDs[i]];
@@ -414,6 +431,7 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                    base.ExecuteUpdate(diagram, isUndo);
                     double x = this.xOffset, y = this.yOffset;
                     if (isUndo) {
                         x = -x;
@@ -518,6 +536,7 @@ namespace BoGLWeb {
                 /// call, else <c>false</c> if the action was a 'redo' call.
                 /// </param>
                 public override void ExecuteUpdate(SystemDiagram diagram, bool isUndo) {
+                    base.ExecuteUpdate(diagram, isUndo);
                     Dictionary<int, SystemDiagram.Element> elements = diagram.GetElementsFromIDs(this.IDs);
                     for(int i = 0; i < this.IDs.Length; i++) {
                         elements[this.IDs[i]].setVelocity(isUndo ? this.oldIDs[i] : this.newVelID);
