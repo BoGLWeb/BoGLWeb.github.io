@@ -4,6 +4,7 @@ import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
 import getBackendManager = backendManager.getBackendManager;
+import { SubmenuID } from "./types/display/BondGraphBond";
 
 export function populateMenu() {
     ElementNamespace.categories.map((c, i) => {
@@ -92,8 +93,11 @@ async function loadPage() {
         menuClickAction(topMenuButtons.item(i), i);
     }
 
+    clickSubmenus(2);
+
     document.getElementsByClassName("page").item(0).addEventListener("click", (e) => {
-        for (let i = 0; i < 3; i++) {
+        console.log("Closing all menus");
+        for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
             let el = document.getElementById(menuIdMap[i]);
             if (el) {
                 el = el.parentElement.parentElement;
@@ -115,32 +119,57 @@ var menuIdMap = {
     6: "elecMenu"
 }
 
-function menuClickAction(newEl: Node, k: number) {
-    let firstTime = true;
-    newEl.addEventListener("click", (e) => {
-        e.stopPropagation();
-        for (let i = 0; i < 3; i++) {
-            let el = document.getElementById(menuIdMap[i]).parentElement.parentElement;
-            if (firstTime && k == 2) {
-                let examplesMenu = document.querySelector("#helpMenu").parentElement.children[3];
-                menuClickAction(examplesMenu, 3);
-                firstTime = false;
-            }
-            if (el.getAttribute("hidden-menu") != "true" && !(i == k && el.getAttribute("hidden-menu") == null)) {
-                console.log("Hiding ", i);
-                el.setAttribute("hidden-menu", "true");
-                if (i == 2) {
-                    for (let j = 3; j < 7; j++) {
-                        let el = document.getElementById(menuIdMap[j]);
-                        if (el) {
-                            el = el.parentElement.parentElement;
-                            el.setAttribute("hidden-menu", "true");
-                        }
+// holds the index numbers of submenu children
+var submenuMap = {
+    2: [new SubmenuID(3, 3)],
+    3: [new SubmenuID(1, 4), new SubmenuID(2, 5), new SubmenuID(3, 6)]
+}
+
+function findParentMenu(menuId: number) {
+    for (let key of Object.keys(submenuMap)) {
+        if ((submenuMap[key] as SubmenuID[]).some(sub => sub.id == menuId)) {
+            return parseInt(key);
+        }
+    }
+    return null;
+}
+
+function findAllParentMenus(menuId: number) {
+    let parent = findParentMenu(menuId);
+    if (parent != null) {
+        return [parent, ...findAllParentMenus(parent)];
+    }
+    return [];
+}
+
+function menuClickAction(menuTitle: Node, k: number) {
+    let submenuInitializing = ![0, 1, 2].includes(k);
+    menuTitle.addEventListener("click", (e) => {
+        if (!submenuInitializing) {
+            e.stopPropagation();
+        }
+        submenuInitializing = false;
+        let parents = findAllParentMenus(k);
+        let el = document.getElementById(menuIdMap[k]);
+        if (el) {
+            el = el.parentElement?.parentElement;
+            el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
+
+            if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
+                for (let sub of submenuMap[k] as SubmenuID[]) {
+                    if (!sub.hasClickAction) {
+                        let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
+                        menuClickAction(el, sub.id);
+                        sub.hasClickAction = true;
                     }
                 }
-            } else if (i == k) {
-                console.log("Showing ", i);
-                el.setAttribute("hidden-menu", "false");
+            }
+
+            for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
+                el = document.getElementById(menuIdMap[i]);
+                if (i == k || parents.includes(i) || !el) continue;
+                el = el.parentElement.parentElement;
+                el.setAttribute("hidden-menu", "true");
             }
         }
     });
@@ -156,22 +185,20 @@ function pollDOM() {
     }
 }
 
-function assignMenuClickActions() {
-    const cond = document.getElementById(menuIdMap[0])?.parentElement?.parentElement && document.getElementById(menuIdMap[1])?.parentElement?.parentElement
-        && document.getElementById(menuIdMap[2])?.parentElement?.parentElement;
+// menu ID is the ID of the parent menu, function waits until parent menu exists, then applies click actions to its children
+function clickSubmenus(menuId: number) {
+    const cond = document.getElementById(menuIdMap[menuId])?.parentElement?.parentElement;
 
     if (cond) {
-        for (let i = 0; i < topMenuButtons.length; i++) {
-            let el = topMenuButtons.item(i);
-            var oldEl = el;
-            var newEl = oldEl.cloneNode(true);
-            oldEl.parentNode.replaceChild(newEl, oldEl);
-            menuClickAction(newEl, i);
-            let menu = document.getElementById(menuIdMap[i]).parentElement.parentElement;
-            menu.setAttribute("hidden-menu", "true");
+        if (submenuMap.hasOwnProperty(menuId)) {
+            for (let submenu of submenuMap[menuId] as SubmenuID[]) {
+                let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
+                (submenuEl as HTMLElement).click();
+                clickSubmenus(submenu.id);
+            }
         }
     } else {
-        setTimeout(assignMenuClickActions, 20);
+        setTimeout(() => clickSubmenus(menuId), 20);
     }
 }
 

@@ -284,7 +284,6 @@ export namespace backendManager {
             if (document.getElementById(menuId)) {
                 el = el.parentElement.parentElement;
                 if (el.getAttribute("hidden-menu") != "true") {
-                    console.log("Hiding ", j);
                     el.setAttribute("hidden-menu", "true");
                 }
             }
