@@ -98,6 +98,8 @@ async function loadPage() {
             }
         }
     });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
 }
 
 var menuIdMap = {
