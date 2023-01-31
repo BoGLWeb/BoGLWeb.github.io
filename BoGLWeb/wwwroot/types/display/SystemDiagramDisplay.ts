@@ -113,6 +113,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("x", "-40px")
             .attr("y", "-40px")
             .on("mousemove", function (e) {
+                graph.moveSelectionRect();
                 graph.moveCircle.call(graph, e);
             })
             .on("mouseenter", function (e) {
@@ -191,6 +192,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
+            graph.moveSelectionRect();
             graph.moveCircle.call(graph, e);
         })
             .on("mouseenter", function (e) {
@@ -350,6 +352,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     handleEdgeUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
+
+        if (this.handleAreaSelectionEnd()) return;
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         if (this.edgeOrigin && el !== this.edgeOrigin) {
             if (isCompatible) {

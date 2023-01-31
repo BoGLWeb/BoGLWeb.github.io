@@ -294,6 +294,19 @@ export class BaseGraphDisplay {
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
     }
 
+    moveSelectionRect() {
+        let mouse = d3.mouse(this.svgG.node());
+        this.dragX = this.svgX;
+        this.dragY = this.svgY;
+        let width = mouse[0] - this.dragStartX;
+        let height = mouse[1] - this.dragStartY;
+
+        d3.select("#selectionRect").attr("width", Math.abs(width))
+            .attr("height", Math.abs(height))
+            .attr("x", width >= 0 ? this.dragStartX : mouse[0])
+            .attr("y", height >= 0 ? this.dragStartY : mouse[1]);
+    }
+
     // listen for dragging
     dragSvg() {
         let graph = this;
@@ -304,16 +317,7 @@ export class BaseGraphDisplay {
                     graph.dragX = d3.event.translate[0];
                     graph.dragY = d3.event.translate[1];
                 } else {
-                    let mouse = d3.mouse(graph.svgG.node());
-                    graph.dragX = graph.svgX;
-                    graph.dragY = graph.svgY;
-                    let width = mouse[0] - graph.dragStartX;
-                    let height = mouse[1] - graph.dragStartY;
-
-                    d3.select("#selectionRect").attr("width", Math.abs(width))
-                        .attr("height", Math.abs(height))
-                        .attr("x", width >= 0 ? graph.dragStartX : mouse[0])
-                        .attr("y", height >= 0 ? graph.dragStartY : mouse[1]);
+                    graph.moveSelectionRect();
                 }
             })
             .on("zoomstart", function () {
