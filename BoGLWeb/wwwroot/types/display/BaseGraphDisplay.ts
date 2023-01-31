@@ -323,11 +323,11 @@ export class BaseGraphDisplay {
                 }
                 document.getElementById("selectionRect").remove();
                 d3.select("body").style("cursor", "auto");
+                graph.updateGraph();
                 if (graph instanceof SystemDiagramDisplay) {
                     graph.updateModifierMenu();
                     graph.updateVelocityMenu();
                 }
-                graph.updateGraph();
             });
     }
 

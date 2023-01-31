@@ -454,9 +454,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.addToSelection(element);
             }
             //Update the system diagram
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             this.clearSelection();
         }
@@ -492,9 +492,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.elements = this.elements.filter(el => el != e);
             }
             this.setSelection([], []);
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         }
     }
 
@@ -503,9 +503,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.bonds = this.bonds.concat(this.copiedBonds);
         this.setSelection(this.copiedElements, this.copiedBonds);
         this.copySelection();
+        this.updateGraph();
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     // keydown on main svg
@@ -540,9 +540,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         if (this.checkCtrlCombo(this.A_KEY)) {
             this.setSelection(this.elements, this.bonds);
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         } else if (this.checkCtrlCombo(this.C_KEY)) {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {
