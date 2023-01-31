@@ -323,7 +323,7 @@ export namespace backendManager {
                 }, {
                     element: document.querySelector('.card-container'),
                     intro: '<p><b>Constructing a System Diagram</b></p><p>Click and drag on elements to add them to the Canvas, and then click on the element border to create an edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).' +
-                        '<br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
+                        '<br><br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
                         '</p>'
                 },
                 {
@@ -332,7 +332,7 @@ export namespace backendManager {
                 }, {
                     element: document.querySelector('#zoomMenu'),
                     intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom menu, or by scrolling.' +
-                        '<br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
+                        '<br><br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
                         '</p>'
                 }, {
                     element: document.querySelector('#generateButton'),
