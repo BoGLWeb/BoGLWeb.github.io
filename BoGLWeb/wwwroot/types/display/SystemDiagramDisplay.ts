@@ -378,6 +378,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
+        if (this.handleAreaSelectionEnd()) return;
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
 

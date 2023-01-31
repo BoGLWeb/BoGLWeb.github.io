@@ -144,10 +144,61 @@ export class BaseGraphDisplay {
         this.updateGraph();
     }
 
+    handleAreaSelectionEnd() {
+        let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
+        if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
+            let newSelection = [];
+            if (this instanceof SystemDiagramDisplay) {
+                for (const el of this.elementSelection.selectAll(".outline")) {
+                    if (this.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                        newSelection.push(el[0].__data__);
+                    }
+                }
+            } else {
+                for (const el of this.elementSelection[0]) {
+                    if (this.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
+                        newSelection.push(el.__data__);
+                    }
+                }
+            }
+            for (const bond of this.bondSelection[0]) {
+                if (bond && this.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                    newSelection.push(bond.__data__);
+                }
+            }
+            if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
+                for (const e of newSelection) {
+                    if (this.selectionContains(e)) {
+                        this.removeFromSelection(e);
+                    } else {
+                        this.addToSelection(e);
+                    }
+                }
+            } else {
+                this.setSelection([], []);
+                for (const e of newSelection) {
+                    this.addToSelection(e);
+                }
+            }
+            d3.select("body").style("cursor", "auto");
+            this.updateGraph();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
+            document.getElementById("selectionRect").remove();
+            return true;
+        }
+        document.getElementById("selectionRect").remove();
+        return false;
+    }
+
     nodeMouseUp(el: GraphElement) {
         d3.event.stopPropagation();
 
         this.mouseDownNode = null;
+        if (this.handleAreaSelectionEnd()) return;
+
         if (!this.justDragged) {
             if (d3.event.ctrlKey || d3.event.metaKey) {
                 if (this.selectionContains(el)) {
@@ -285,48 +336,13 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-                let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
-                if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
-                    let newSelection = [];
-                    if (this instanceof SystemDiagramDisplay) {
-                        for (const el of graph.elementSelection.selectAll(".outline")) {
-                            if (graph.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
-                                newSelection.push(el[0].__data__);
-                            }
-                        }
-                    } else {
-                        for (const el of graph.elementSelection[0]) {
-                            if (graph.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
-                                newSelection.push(el.__data__);
-                            }
-                        }
+                if (!graph.handleAreaSelectionEnd()) {
+                    graph.setSelection([], []);
+                    graph.updateGraph();
+                    if (graph instanceof SystemDiagramDisplay) {
+                        graph.updateVelocityMenu();
+                        graph.updateModifierMenu();
                     }
-                    for (const bond of graph.bondSelection[0]) {
-                        if (bond && graph.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
-                            newSelection.push(bond.__data__);
-                        }
-                    }
-                    if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
-                        for (const e of newSelection) {
-                            if (graph.selectionContains(e)) {
-                                graph.removeFromSelection(e);
-                            } else {
-                                graph.addToSelection(e);
-                            }
-                        }
-                    } else {
-                        graph.setSelection([], []);
-                        for (const e of newSelection) {
-                            graph.addToSelection(e);
-                        }
-                    }
-                }
-                document.getElementById("selectionRect").remove();
-                d3.select("body").style("cursor", "auto");
-                graph.updateGraph();
-                if (graph instanceof SystemDiagramDisplay) {
-                    graph.updateModifierMenu();
-                    graph.updateVelocityMenu();
                 }
             });
     }
