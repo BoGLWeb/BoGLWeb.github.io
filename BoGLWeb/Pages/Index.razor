@@ -419,7 +419,7 @@
 
     [JSInvokable]
     public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
-        Console.WriteLine("Recording velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+        Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
             + ", [" + String.Join(", ", prevVelVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
         UpdateBackendWithInitialStackChange(1);
