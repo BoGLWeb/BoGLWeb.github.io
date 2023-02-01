@@ -148,6 +148,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "50px")
             .attr("width", "50px");
 
+        let asterisk = newElements.append("text");
+        asterisk
+            .text("*")
+            .attr("x", "16")
+            .attr("y", "-13")
+            .style("font-size", "30px")
+            .style("display", e => {
+                return (e as SystemDiagramElement).modifiers.length > 0 ? "block" : "none";
+            });
+
         group.selectAll("text").html(null);
 
         group.each(function (d: SystemDiagramElement) {
@@ -192,7 +202,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
-            graph.moveSelectionRect();
+            if (graph.zooming) {
+                graph.moveSelectionRect();
+            }
             graph.moveCircle.call(graph, e);
         })
             .on("mouseenter", function (e) {
@@ -382,9 +394,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
+        this.mouseDownNode = null;
         if (this.handleAreaSelectionEnd()) return;
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
-        this.mouseDownNode = null;
 
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
             if (isCompatible) {

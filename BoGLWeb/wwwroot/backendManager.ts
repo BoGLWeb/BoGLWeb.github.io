@@ -225,6 +225,7 @@ export namespace backendManager {
                 }
             }
             window.systemDiagram.updateModifierMenu();
+            window.systemDiagram.updateGraph();
         }
 
         public getGraphByIndex(i: string) {
