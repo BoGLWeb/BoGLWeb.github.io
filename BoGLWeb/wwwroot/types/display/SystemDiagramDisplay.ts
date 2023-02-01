@@ -202,9 +202,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
-            if (graph.zooming) {
-                graph.moveSelectionRect();
-            }
+            graph.moveSelectionRect();
             graph.moveCircle.call(graph, e);
         })
             .on("mouseenter", function (e) {
