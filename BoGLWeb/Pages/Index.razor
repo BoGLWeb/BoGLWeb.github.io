@@ -313,7 +313,7 @@
                 break;
             case nameof(CanvasChange.DeleteSelection):
                 CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
-                app?.URDoDeleteSelection(ds.GetDeletedJSONElements(), isUndo);
+                app?.URDoDeleteSelection(ds.GetDeletedJSONElements(), ds.GetUnselectedEdges(), isUndo);
                 break;
             case nameof(CanvasChange.ChangeSelection):
                 CanvasChange.ChangeSelection cs = (CanvasChange.ChangeSelection) cc;
@@ -386,7 +386,7 @@
     public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
         Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
         // Need to add unselected deleted edges
-        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects), 1);
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
     }
@@ -440,10 +440,10 @@
         app?.StateHasChanged();
     }
 
-    public async void URDoDeleteSelection(string[] deletedObjects, bool isUndo) {
+    public async void URDoDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         // put unselected deleted edges here where the empty list is
-        await module.InvokeVoidAsync("urDoDeleteSelection", deletedObjects, new string[] {}, isUndo);
+        await module.InvokeVoidAsync("urDoDeleteSelection", deletedObjects, unselectedDeletedEdges, isUndo);
         app?.StateHasChanged();
     }
 

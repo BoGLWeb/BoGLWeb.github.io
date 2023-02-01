@@ -169,9 +169,9 @@ namespace BoGLWeb {
             /// </summary>
             public class DeleteSelection : CanvasChange {
                 // The JSON objects storing the deleted elements
-                private readonly List<string> deleted;
-                // The output array storing the deleted elements
-                private string[]? deletedArray;
+                private readonly string[] deleted;
+                // The set of unselected deleted edges
+                private readonly string[] unselectedDeletedEdges;
                 // Stores the Element form of the added elements
                 private readonly Dictionary<int, SystemDiagram.Element> oldElements;
                 // Stores the Edge form of the added edgesBySource by source ID
@@ -188,12 +188,21 @@ namespace BoGLWeb {
                 /// <param name="json">The JSON string carrying info about
                 /// the added elements.
                 /// </param>
-                public DeleteSelection(int[] IDs, string[] deleted) : base(IDs) {
-                    SystemDiagram.Packager packager = new(deleted);
-                    this.oldElements = packager.GetElements();
-                    this.oldEdgesBySource = packager.GetSourceEdges();
-                    this.oldEdgesByTarget = packager.GetTargetEdges();
-                    this.deleted = new(deleted);
+                public DeleteSelection(int[] IDs, string[] deleted, string[] unselectedDeletedEdges) : base(IDs) {
+                    Console.WriteLine("These are the unselected items: " + string.Join(", ", unselectedDeletedEdges));
+                    SystemDiagram.Packager deletedPackager = new(deleted);
+                    this.oldElements = deletedPackager.GetElements();
+                    this.oldEdgesBySource = deletedPackager.GetSourceEdges();
+                    this.oldEdgesByTarget = deletedPackager.GetTargetEdges();
+                    this.deleted = deleted;
+                    this.unselectedDeletedEdges = unselectedDeletedEdges;
+                    SystemDiagram.Packager unselectedPackager = new(unselectedDeletedEdges);
+                    foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in unselectedPackager.GetSourceEdges()) {
+                        this.oldEdgesBySource.GetValueOrDefault(pair.Key)?.AddRange(pair.Value);
+                    }
+                    foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in unselectedPackager.GetTargetEdges()) {
+                        this.oldEdgesByTarget.GetValueOrDefault(pair.Key)?.AddRange(pair.Value);
+                    }
                 }
 
                 /// <summary>
@@ -239,11 +248,11 @@ namespace BoGLWeb {
                             } else if (this.oldElements.ContainsKey(source)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesBySource.Add(source, new List<SystemDiagram.Edge>() { edge });
-                                this.deleted.Add(edge.SerializeToJSON());
+                                //this.deleted.Add(edge.SerializeToJSON());
                             } else if (this.oldElements.ContainsKey(target)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesByTarget.Add(target, new List<SystemDiagram.Edge>() { edge });
-                                this.deleted.Add(edge.SerializeToJSON());
+                                //this.deleted.Add(edge.SerializeToJSON());
                             }
                         }
                     }
@@ -255,16 +264,16 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns>The JSON string object</returns>
                 public string[] GetDeletedJSONElements() {
-                    if (this.deletedArray == null) {
-                        string[] JSONstrings = new string[this.deleted.Count];
-                        int index = 0;
-                        foreach (string str in this.deleted) {
-                            JSONstrings[index++] = str;
-                        }
-                        this.deletedArray = JSONstrings;
-                    }
-                    Console.WriteLine(string.Join(", ", this.deleted));
-                    return this.deletedArray;
+                    return this.deleted;
+                }
+
+                /// <summary>
+                /// Gets the set of unselected deleted edges in this 
+                /// <c>DeleteSelection</c>.
+                /// </summary>
+                /// <returns><c>this.unselectedDeletedEdges</c></returns>
+                public string[] GetUnselectedEdges() {
+                    return this.unselectedDeletedEdges;
                 }
             }
 
