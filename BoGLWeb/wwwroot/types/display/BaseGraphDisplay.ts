@@ -51,7 +51,6 @@ export class BaseGraphDisplay {
     highestElemId: number = 0;
     dragStartX: number;
     dragStartY: number;
-    zooming: boolean;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -146,7 +145,10 @@ export class BaseGraphDisplay {
     }
 
     handleAreaSelectionEnd() {
-        if (!d3.select("#selectionRect")) return false;
+        if (!d3.select("#selectionRect").node()) {
+            document.getElementById("selectionRect").remove();
+            return false;
+        }
         let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
         if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
             let newSelection = [];
@@ -215,7 +217,6 @@ export class BaseGraphDisplay {
                 }
             }
             this.updateGraph();
-            this.zooming = false;
         }
 
         this.justDragged = false;
@@ -304,10 +305,13 @@ export class BaseGraphDisplay {
         let width = mouse[0] - this.dragStartX;
         let height = mouse[1] - this.dragStartY;
 
-        d3.select("#selectionRect").attr("width", Math.abs(width))
-            .attr("height", Math.abs(height))
-            .attr("x", width >= 0 ? this.dragStartX : mouse[0])
-            .attr("y", height >= 0 ? this.dragStartY : mouse[1]);
+        console.log(d3.select("#selectionRect").node());
+        if (d3.select("#selectionRect").node()) {
+            d3.select("#selectionRect").attr("width", Math.abs(width))
+                .attr("height", Math.abs(height))
+                .attr("x", width >= 0 ? this.dragStartX : mouse[0])
+                .attr("y", height >= 0 ? this.dragStartY : mouse[1]);
+        }
     }
 
     // listen for dragging
@@ -325,12 +329,14 @@ export class BaseGraphDisplay {
             })
             .on("zoomstart", function () {
                 graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
-                graph.zooming = true;
                 graph.dragX = graph.dragX ?? graph.svgX;
                 graph.dragY = graph.dragY ?? graph.svgY;
                 let coordinates = d3.mouse(graph.svgG.node());
                 graph.dragStartX = coordinates[0];
                 graph.dragStartY = coordinates[1];
+                if (document.getElementById("selectionRect")) {
+                    document.getElementById("selectionRect").remove();
+                }
                 graph.svgG.append("rect")
                     .attr("id", "selectionRect")
                     .attr("x", graph.dragStartX)
@@ -344,6 +350,7 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
+                console.log("IT ENDS HERE BUCKO");
                 if (!graph.handleAreaSelectionEnd()) {
                     graph.setSelection([], []);
                     graph.updateGraph();
@@ -351,6 +358,8 @@ export class BaseGraphDisplay {
                         graph.updateVelocityMenu();
                         graph.updateModifierMenu();
                     }
+                } else {
+                    console.log("Problems >:(");
                 }
             });
     }
