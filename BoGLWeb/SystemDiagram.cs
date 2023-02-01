@@ -795,8 +795,8 @@ namespace BoGLWeb {
         /// <returns>This <c>SystemDiagram</c> as a <c>string</c>.</returns>
         public override string ToString() {
             StringBuilder builder = new();
-            builder.Append('[').Append(string.Join(", ", this.elements.Select(element => element.GetID()))).Append(']');
-            builder.Append('[').Append(string.Join(", ", this.edges.Select(edge => (edge.getSource() + " " + edge.getTarget())))).Append(']');
+            builder.Append('[').Append(string.Join(", ", this.elements.Select(element => element.GetID() + " (" + element.getVelocity() + ")"))).Append(']');
+            builder.Append('[').Append(string.Join(", ", this.edges.Select(edge => edge.getSource() + " " + edge.getTarget() + " (" + edge.getVelocity() + ")"))).Append(']');
             return builder.ToString();
         }
 

@@ -184,22 +184,6 @@
                 };
             }
 
-            public static string Stringify(int[] ar) {
-                string str = "";
-                foreach (int s in ar) {
-                    str += s + " ";
-                }
-                return "[" + str + "]";
-            }
-
-            public static string Stringify(string[] ar) {
-                string str = "";
-                foreach (string s in ar) {
-                    str += s + " ";
-                }
-                return "[" + str + "]";
-            }
-
             /// <summary>
             /// Gets the <c>CanvasTab</c> corresponding to a
             /// specified int.

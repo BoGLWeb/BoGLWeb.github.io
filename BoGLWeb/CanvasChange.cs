@@ -189,7 +189,6 @@ namespace BoGLWeb {
                 /// the added elements.
                 /// </param>
                 public DeleteSelection(int[] IDs, string[] deleted, string[] unselectedDeletedEdges) : base(IDs) {
-                    Console.WriteLine("These are the unselected items: " + string.Join(", ", unselectedDeletedEdges));
                     SystemDiagram.Packager deletedPackager = new(deleted);
                     this.oldElements = deletedPackager.GetElements();
                     this.oldEdgesBySource = deletedPackager.GetSourceEdges();
@@ -248,11 +247,9 @@ namespace BoGLWeb {
                             } else if (this.oldElements.ContainsKey(source)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesBySource.Add(source, new List<SystemDiagram.Edge>() { edge });
-                                //this.deleted.Add(edge.SerializeToJSON());
                             } else if (this.oldElements.ContainsKey(target)) {
                                 edgeIterator.Remove();
                                 this.oldEdgesByTarget.Add(target, new List<SystemDiagram.Edge>() { edge });
-                                //this.deleted.Add(edge.SerializeToJSON());
                             }
                         }
                     }
@@ -575,6 +572,13 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns></returns>
                 public int[] GetOldIDs() { return this.oldIDs; }
+
+                public override string ToString() {
+                    return "[" + string.Join(", ", this.IDs) + "] ["
+                        + string.Join(", ", this.edgeIDs)
+                        + "] " + this.newVelID + " ["
+                        + string.Join(", ", this.oldIDs) + "]";
+                }
             }
         }
     }
