@@ -1098,7 +1098,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int target;
             [JsonProperty]
-            protected readonly int velocity;
+            protected int velocity;
 
             /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Edge</c>.
@@ -1195,6 +1195,14 @@ namespace BoGLWeb {
             /// <returns>An integer</returns>
             public int getVelocity() {
                 return this.velocity;
+            }
+
+            /// <summary>
+            /// Sets the velocity of this <c>Edge</c> to a new value.
+            /// </summary>
+            /// <param name="vel">The new velocity ID.</param>
+            public void SetVelocity(int vel) {
+                this.velocity = vel;
             }
 
             /// <summary>

@@ -145,7 +145,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Gets the previous edge selection from this <c>AddSelection</c>.
+                /// Gets the previous packager selection from this <c>AddSelection</c>.
                 /// </summary>
                 /// <returns>this.prevSelectedEdges</returns>
                 public string[] GetPrevSelectedEdges() {
@@ -314,7 +314,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Gets the old edge elementIDs
+                /// Gets the old packager elementIDs
                 /// </summary>
                 /// <returns><c>this.oldEdgeIDs</c></returns>
                 public string[] GetOldEdgeIDs() {
@@ -322,7 +322,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Gets the new edge elementIDs
+                /// Gets the new packager elementIDs
                 /// </summary>
                 /// <returns><c>this.newEdgeIDs</c></returns>
                 public string[] GetNewEdgeIDs() {
@@ -513,7 +513,10 @@ namespace BoGLWeb {
             /// Stores a change in velocity made to a selection of elements.
             /// </summary>
             public class ChangeVelocity : CanvasChange {
+                // Stores partial JSON strings for all edges in the selection.
                 private readonly string[] edgeIDs;
+                // Stores EdgeIDPackagers for all edges in the selection.
+                private readonly Dictionary<int, List<EdgeIDPackager>> edges;
                 // Stores the ID of the new velocity.
                 private readonly int newVelID;
                 // Stores the elementIDs of the previous velocities for each target element.
@@ -529,6 +532,17 @@ namespace BoGLWeb {
                     this.edgeIDs = edgeIDs;
                     this.newVelID = newVelID;
                     this.oldIDs = oldVelIDs;
+                    this.edges = new();
+                    for (int i = 0; i < edgeIDs.Length; i++) {
+                        EdgeIDPackager packager = new(edgeIDs[i], oldVelIDs[i + elementIDs.Length]);
+                        int source = packager.Source();
+                        List<EdgeIDPackager>? list = this.edges.GetValueOrDefault(source);
+                        if (list == null) {
+                            this.edges.Add(source, new List<EdgeIDPackager> { packager });
+                        } else {
+                            list.Add(packager);
+                        }
+                    }
                 }
 
                 /// <summary>
@@ -547,11 +561,22 @@ namespace BoGLWeb {
                     for(int i = 0; i < this.IDs.Length; i++) {
                         elements[this.IDs[i]].setVelocity(isUndo ? this.oldIDs[i] : this.newVelID);
                     }
+                    foreach (SystemDiagram.Edge edge in diagram.getEdges()) {
+                        List<EdgeIDPackager>? edgeList = this.edges.GetValueOrDefault(edge.getSource());
+                        if (edgeList != null) {
+                            int target = edge.getTarget();
+                            foreach (EdgeIDPackager packager in edgeList) {
+                                if (packager.Target() == target) {
+                                    edge.SetVelocity(isUndo ? packager.Velocity() : this.newVelID);
+                                }
+                            }
+                        }
+                    }
                     base.ExecuteUpdate(diagram, isUndo);
                 }
 
                 /// <summary>
-                /// Gets the set of edge IDs 
+                /// Gets the set of packager IDs 
                 /// </summary>
                 /// <returns></returns>
                 public string[] GetEdgeIDs() {
@@ -573,11 +598,65 @@ namespace BoGLWeb {
                 /// <returns></returns>
                 public int[] GetOldIDs() { return this.oldIDs; }
 
+                /// <summary>
+                /// Converts this <c>ChangeVelocity</c> to a printable format.
+                /// </summary>
+                /// <returns>This <c>ChangeVelocity</c> as a <c>string</c>.</returns>
                 public override string ToString() {
                     return "[" + string.Join(", ", this.IDs) + "] ["
                         + string.Join(", ", this.edgeIDs)
                         + "] " + this.newVelID + " ["
                         + string.Join(", ", this.oldIDs) + "]";
+                }
+
+                /// <summary>
+                /// Stores the source and target ID of an packager
+                /// in a system diagram that can't be assigned 
+                /// to a specified diagram yet.
+                /// </summary>
+                public class EdgeIDPackager {
+                    // Stores the source and target IDs of a specified edge.
+                    private readonly int source, target, velocity;
+                    // Stores the previous velocity value for the edge 
+
+                    /// <summary>
+                    /// Creates a new <c>EdgeIDPackager</c>.
+                    /// </summary>
+                    /// <param name="JSONstring">The JSON string
+                    /// to be parsed into the source and target IDs
+                    /// of an packager.</param>
+                    /// <param name="velocity">The previous velocity
+                    /// for this edge.</param>
+                    public EdgeIDPackager(string JSONstring, int velocity) {
+                        this.velocity = velocity;
+                        JObject obj = JObject.Parse(JSONstring);
+                        this.source = obj.Value<int>("source");
+                        this.target = obj.Value<int>("target");
+                    }
+
+                    /// <summary>
+                    /// Gets the source element ID for this packager.
+                    /// </summary>
+                    /// <returns><c>this.source</c></returns>
+                    public int Source() {
+                        return this.source;
+                    }
+
+                    /// <summary>
+                    /// Gets the target element ID for this packager.
+                    /// </summary>
+                    /// <returns><c>this.target</c></returns>
+                    public int Target() {
+                        return this.target;
+                    }
+
+                    /// <summary>
+                    /// Gets the previous velocity assigned to this edge.
+                    /// </summary>
+                    /// <returns><c>this.velocity</c></returns>
+                    public int Velocity() {
+                        return this.velocity;
+                    }
                 }
             }
         }
