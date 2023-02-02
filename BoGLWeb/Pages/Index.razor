@@ -92,10 +92,10 @@
         <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
-        <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
+        <Button Shape="Square" Disabled="@disableUndo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
             <Icon Component="UndoSvg"/>
         </Button>
-        <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
+        <Button Shape="Square" Disabled="@disableRedo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
             <Icon Component="RedoSvg"/>
         </Button>
         <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
@@ -284,6 +284,9 @@
         public int value { get; set; }
     }
 
+    static bool disableUndo = true;
+    static bool disableRedo = true;
+
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
@@ -332,6 +335,8 @@
                 app?.URDoChangeSelectionVelocity(cv.GetIDs(), cv.GetEdgeIDs(), cv.GetNewVelID(), cv.GetOldIDs(), isUndo);
                 break;
         }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
     }
 
     public async void Undo()
@@ -393,11 +398,13 @@
 
     [JSInvokable]
     public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
-        Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+        if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
+            Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
             + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
             + String.Join(", ", removeEdgeFromSelection) + "]");
-        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
-        UpdateBackendWithInitialStackChange(tabID);
+            EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
+            UpdateBackendWithInitialStackChange(tabID);
+        }
         app?.StateHasChanged();
     }
 
@@ -427,6 +434,7 @@
     }
 
     public static void UpdateBackendWithInitialStackChange(int tab) {
+        disableUndo = false;
         if(tab == 1) { // System diagram
             EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
         } else { // Some bond graph
@@ -594,6 +602,10 @@
         this.currTab = key;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setTab", key);
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
+        Console.WriteLine("Setting undo/redo: ", disableUndo, disableRedo);
+        base.StateHasChanged();
     }
 
     //TODO What does this do?
