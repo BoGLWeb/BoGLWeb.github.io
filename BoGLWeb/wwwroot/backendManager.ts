@@ -117,7 +117,6 @@ export namespace backendManager {
             scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
-            console.log(svgDim, xTrans, yTrans);
             graph.changeScale(xTrans, yTrans, scale);
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
@@ -247,7 +246,6 @@ export namespace backendManager {
             let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
             let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
 
-            console.log(xOffset, windowDim.width / 2 - (windowDim.width / 2 - graph.svgX), (windowDim.width / 2 - graph.svgX), graph.svgX);
             if (graph.prevScale * 100 - i != 0) {
                 graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
             }
