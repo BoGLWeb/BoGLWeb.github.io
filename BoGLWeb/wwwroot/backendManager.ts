@@ -407,22 +407,21 @@ export namespace backendManager {
             return [elements, bonds];
         }
 
-        public parseEdgeIDStrings(edgeIDs: string[]): [GraphBondID[], number[]] {
-            let elementIndeces: number[] = [];
+        public parseEdgeIDStrings(edgeIDs: string[]): GraphBondID[] {
             let edges: GraphBondID[] = [];
             let i = 0;
             for (const edgeString of edgeIDs) {
                 let json = JSON.parse(edgeString);
-                edges.push(new GraphBondID(json.sourceId, json.targetId, i));
+                edges.push(new GraphBondID(json.source, json.target, i));
                 i++;
             }
-            return [edges, elementIndeces];
+            return edges;
         }
 
-        checkBondIDs(elemIDs: GraphBondID[], b: GraphBond): GraphBondID {
+        checkBondIDs(bondIDs: GraphBondID[], b: GraphBond): GraphBondID {
             let sourceID = b.source.id;
             let targetID = b.target.id;
-            return elemIDs.find(e => e.checkEquality(sourceID, targetID));
+            return bondIDs.find(e => e.checkEquality(sourceID, targetID));
         }
 
         async handleUndoRedo(undo: boolean) {
@@ -437,7 +436,7 @@ export namespace backendManager {
                 let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
-                let [prevSelEdgeIDs] = this.parseEdgeIDStrings(prevSelectedEdges);
+                let prevSelEdgeIDs = this.parseEdgeIDStrings(prevSelectedEdges);
                 sysDiag.setSelection(sysDiag.elements.filter(e => prevSelElIDs.includes(e.id)), sysDiag.bonds.filter(b => this.checkBondIDs(prevSelEdgeIDs, b)));
             } else {
                 sysDiag.elements = sysDiag.elements.concat(elements);
@@ -481,8 +480,8 @@ export namespace backendManager {
 
         public urDoChangeSelection(elIDsToAdd: number[], edgesToAdd: string[], elIDsToRemove: number[], edgesToRemove: string[], isUndo: boolean) {
             let diagram = this.getGraphByIndex(window.tabNum);
-            let [addToSelectionEdges] = this.parseEdgeIDStrings(edgesToAdd);
-            let [removeFromSelectionEdges] = this.parseEdgeIDStrings(edgesToRemove);
+            let addToSelectionEdges = this.parseEdgeIDStrings(edgesToAdd);
+            let removeFromSelectionEdges = this.parseEdgeIDStrings(edgesToRemove);
             let elAddSet = isUndo ? elIDsToRemove : elIDsToAdd;
             let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
@@ -509,12 +508,12 @@ export namespace backendManager {
         }
 
         public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
-            //let sysDiag = window.systemDiagram;
-            //let [bondIDs, numberIDs] = this.parseEdgeIDStrings(edgeIDs);
-            //sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[numberIDs[elIDs.findIndex(i => i == e.id)]] : velID);
-            //sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[this.checkBondIDs(bondIDs, b).velID] : velID);
-            //sysDiag.updateVelocityMenu();
-            //sysDiag.updateGraph();
+            let sysDiag = window.systemDiagram;
+            let bondIDs = this.parseEdgeIDStrings(edgeIDs);
+            sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
+            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
+            sysDiag.updateVelocityMenu();
+            sysDiag.updateGraph();
         }
 
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
