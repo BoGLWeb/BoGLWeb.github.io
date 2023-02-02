@@ -187,7 +187,6 @@ function pollDOM() {
 function clickSubmenus(menuId: number) {
     const cond = document.getElementById(menuIdMap[menuId])?.parentElement?.parentElement;
 
-    console.log("Click submenus ", menuId);
     if (cond) {
         for (let submenu of submenuMap[menuId] as SubmenuID[]) {
             let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
@@ -198,15 +197,12 @@ function clickSubmenus(menuId: number) {
         setTimeout(() => clickSubmenus(menuId), 20);
     }
     if (menuId == 6) {
-        console.log("Setting menu click true");
         menuClickingDone = true;
     }
 }
 
 function waitForMenuClickingDone(func) {
-    console.log("Checking whether menus clicked");
     if (menuClickingDone) {
-        console.log("All menus clicked!");
         func();
     } else {
         setTimeout(() => waitForMenuClickingDone(func), 20);

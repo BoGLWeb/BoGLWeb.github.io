@@ -305,7 +305,6 @@ export class BaseGraphDisplay {
         let width = mouse[0] - this.dragStartX;
         let height = mouse[1] - this.dragStartY;
 
-        console.log(d3.select("#selectionRect").node());
         if (d3.select("#selectionRect").node()) {
             d3.select("#selectionRect").attr("width", Math.abs(width))
                 .attr("height", Math.abs(height))
@@ -350,7 +349,6 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-                console.log("IT ENDS HERE BUCKO");
                 if (!graph.handleAreaSelectionEnd()) {
                     graph.setSelection([], []);
                     graph.updateGraph();
@@ -358,8 +356,6 @@ export class BaseGraphDisplay {
                         graph.updateVelocityMenu();
                         graph.updateModifierMenu();
                     }
-                } else {
-                    console.log("Problems >:(");
                 }
             });
     }
