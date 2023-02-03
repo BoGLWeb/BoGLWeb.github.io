@@ -1,6 +1,10 @@
 ﻿self.assetsManifest = {
   "assets": [
     {
+      "hash": "sha256-47DEQpj8HBSa+\/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": ".nojekyll"
+    },
+    {
       "hash": "sha256-wL+LZQvDQSsa5tqPYiQLEhqLk6HY2OZAR7MFgjUen98=",
       "url": "css\/main.css"
     },
@@ -3377,7 +3381,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-rTcAD\/Nf6gjra+5ikhGWnny7FgIlCL7b9fsWQPy3m8I=",
+      "hash": "sha256-TzbANc0N4flyD45wM1+mEchFjVE5g0Tk\/r2rCrg+aRk=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3385,7 +3389,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-QDuTS1xm4JnrBp8qCWaWjGH\/SCFEQwo9e6+8f0pwJ2M=",
+      "hash": "sha256-HntUKsUPO8O8SdhXAQXvMHpDyJUZtU6xF\/HTKhrQ1Lc=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5585,5 +5589,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "zusj+e\/\/"
+  "version": "zsrHNvCI"
 };
