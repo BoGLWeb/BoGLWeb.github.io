@@ -54,6 +54,14 @@
             public override int GetHashCode() {
                 return this.ID;
             }
+
+            /// <summary>
+            /// Converts this <c>FunctionEquation</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>FunctionEquation</c> as a <c>string</c>.</returns>
+            public override string ToString() {
+                return f1.ToString() + "=" + f2.ToString();
+            }
         }
     }
 }
