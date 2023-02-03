@@ -1,5 +1,15 @@
+@font-face {
+    font-family: SegoeUI;
+    src: url(SegoeUI.woff);
+}
+
+@font-face {
+    font-family: SegoeUIBold;
+    src: url(SegoeUIBold.woff);
+}
+
 html, body {
-    font-family: "Segoe UI" !important
+    font-family: "SegoeUI" !important
 }
 
 h1:focus {
@@ -299,7 +309,7 @@ path.link.hidden {
 }
 
 .topMenu {
-    font-weight: 700
+    font-family: "SegoeUIBold" !important
 }
 
 circle {
@@ -548,7 +558,7 @@ hr:not([size]) {
 .sliderLabel {
     color: #a9a9a9;
     font-size: 15px;
-    font-weight: 700
+    font-family: "SegoeUIBold" !important
 }
 
 .ant-slider-track, .ant-slider .ant-slider-track:hover {
@@ -616,7 +626,7 @@ hr:not([size]) {
 
 .velocityArrow {
     font-size: 25px;
-    font-weight: 700
+    font-family: "SegoeUIBold" !important
 }
 
 .topVelocity {
