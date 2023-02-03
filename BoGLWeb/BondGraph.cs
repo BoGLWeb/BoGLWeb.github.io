@@ -110,11 +110,19 @@ namespace BoGLWeb {
 
                 int sourceId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
                 int targetId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
-                bondGraph.addBond(flip
+                if (arc.localLabels.Contains("dir")) {
+                    bondGraph.addBond(flip
                     ? new Bond(sourceId, targetId, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "",
-                        useCausalStroke, flip, 0, 0)
+                    useCausalStroke, flip, true, 0, 0)
                     : new Bond(targetId, sourceId, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "",
-                        useCausalStroke, flip, 0, 0));
+                    useCausalStroke, flip, true, 0, 0));    
+                } else {
+                    bondGraph.addBond(flip
+                    ? new Bond(sourceId, targetId, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "",
+                    useCausalStroke, flip, false, 0, 0)
+                    : new Bond(targetId, sourceId, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "",
+                    useCausalStroke, flip,  false, 0, 0));
+                }
             }
 
             return bondGraph;
@@ -299,6 +307,8 @@ namespace BoGLWeb {
             //True means the causal stroke is at the source
             [JsonProperty]
             protected readonly bool causalStrokeDirection;
+            [JsonProperty] 
+            protected readonly bool hasDirection;
 
             /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Bond</c>.
@@ -318,7 +328,7 @@ namespace BoGLWeb {
             /// <param name="flow">The flow value for the bond</param>
             /// <param name="effort">The effor value for the bond</param>
             
-            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, bool hasDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
                 this.source = source;
@@ -328,6 +338,7 @@ namespace BoGLWeb {
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+                this.hasDirection = hasDirection;
                 AssignID(0, true);
             }
 
@@ -394,7 +405,7 @@ namespace BoGLWeb {
             /// </returns>
             public Bond Copy(bool isDistinct) {
                 Bond copy = new(this.sourceID, this.targetID, this.source, this.sink,
-                    this.label, this.causalStroke, this.causalStrokeDirection,
+                    this.label, this.causalStroke, this.causalStrokeDirection, this.hasDirection,
                     this.flow, this.effort);
                 copy.AssignID(this.ID, isDistinct);
                 return copy;

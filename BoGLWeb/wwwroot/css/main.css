@@ -489,16 +489,16 @@ hr:not([size]) {
 
 #ruleLoadProgress {
     bottom: 20px;
-    left: 370px;
+    left: 395px;
     position: absolute;
-    width: calc(100% - 470px)
+    width: calc(100% - 490px)
 }
 
 #generateProgress {
     bottom: 20px;
-    left: 412px;
+    left: 434px;
     position: absolute;
-    width: calc(100% - 500px)
+    width: calc(100% - 530px)
 }
 
 #causalSelect {

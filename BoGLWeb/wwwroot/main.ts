@@ -118,6 +118,8 @@ var submenuMap = {
     3: [new SubmenuID(1, 4), new SubmenuID(2, 5), new SubmenuID(3, 6)]
 }
 
+var menuClickingDone = false;
+
 function findParentMenu(menuId: number) {
     for (let key of Object.keys(submenuMap)) {
         if ((submenuMap[key] as SubmenuID[]).some(sub => sub.id == menuId)) {
@@ -136,35 +138,38 @@ function findAllParentMenus(menuId: number) {
 }
 
 function menuClickAction(menuTitle: Node, k: number) {
-    let submenuInitializing = ![0, 1, 2].includes(k);
     menuTitle.addEventListener("click", (e) => {
-        if (!submenuInitializing) {
-            e.stopPropagation();
-        }
-        submenuInitializing = false;
+        e.stopPropagation();
         let parents = findAllParentMenus(k);
-        let el = document.getElementById(menuIdMap[k]);
-        if (el) {
-            el = el.parentElement?.parentElement;
-            el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
+        waitForMenuClickingDone(() => {
+            let el = document.getElementById(menuIdMap[k]);
+            if (el) {
+                el = el.parentElement?.parentElement;
+                el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
+                if (![0, 1, 2].includes(k)) {
+                    let menuTitleBounds = (menuTitle as Element).getBoundingClientRect();
+                    el.style.top = menuTitleBounds.top + "px";
+                    el.style.left = (menuTitleBounds.left + menuTitleBounds.width + 4) + "px";
+                }
 
-            if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
-                for (let sub of submenuMap[k] as SubmenuID[]) {
-                    if (!sub.hasClickAction) {
-                        let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
-                        menuClickAction(el, sub.id);
-                        sub.hasClickAction = true;
+                if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
+                    for (let sub of submenuMap[k] as SubmenuID[]) {
+                        if (!sub.hasClickAction) {
+                            let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
+                            menuClickAction(el, sub.id);
+                            sub.hasClickAction = true;
+                        }
                     }
                 }
-            }
 
-            for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
-                el = document.getElementById(menuIdMap[i]);
-                if (i == k || parents.includes(i) || !el) continue;
-                el = el.parentElement.parentElement;
-                el.setAttribute("hidden-menu", "true");
+                for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
+                    el = document.getElementById(menuIdMap[i]);
+                    if (i == k || parents.includes(i) || !el) continue;
+                    el = el.parentElement.parentElement;
+                    el.setAttribute("hidden-menu", "true");
+                }
             }
-        }
+        });
     });
 }
 
@@ -182,14 +187,25 @@ function pollDOM() {
 function clickSubmenus(menuId: number) {
     const cond = document.getElementById(menuIdMap[menuId])?.parentElement?.parentElement;
 
-    if (cond && submenuMap.hasOwnProperty(menuId)) {
+    if (cond) {
         for (let submenu of submenuMap[menuId] as SubmenuID[]) {
             let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
             (submenuEl as HTMLElement).click();
             clickSubmenus(submenu.id);
         }
-    } else {
+    } else if (submenuMap.hasOwnProperty(menuId)) {
         setTimeout(() => clickSubmenus(menuId), 20);
+    }
+    if (menuId == 6) {
+        menuClickingDone = true;
+    }
+}
+
+function waitForMenuClickingDone(func) {
+    if (menuClickingDone) {
+        func();
+    } else {
+        setTimeout(() => waitForMenuClickingDone(func), 20);
     }
 }
 

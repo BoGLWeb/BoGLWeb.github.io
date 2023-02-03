@@ -115,6 +115,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("x", "-40px")
             .attr("y", "-40px")
             .on("mousemove", function (e) {
+                graph.moveSelectionRect();
                 graph.moveCircle.call(graph, e);
             })
             .on("mouseenter", function (e) {
@@ -148,6 +149,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("height", "50px")
             .attr("width", "50px");
+
+        let asterisk = newElements.append("text");
+        asterisk
+            .text("*")
+            .attr("x", "16")
+            .attr("y", "-13")
+            .style("font-size", "30px")
+            .style("display", e => {
+                return (e as SystemDiagramElement).modifiers.length > 0 ? "block" : "none";
+            });
 
         group.selectAll("text").html(null);
 
@@ -193,6 +204,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // edgeMouseUp
         box.on("mousemove", function (e) {
+            graph.moveSelectionRect();
             graph.moveCircle.call(graph, e);
         })
             .on("mouseenter", function (e) {
@@ -345,6 +357,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     handleEdgeUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
+
+        if (this.handleAreaSelectionEnd()) return;
         let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         if (this.edgeOrigin && el !== this.edgeOrigin) {
             if (isCompatible) {
@@ -386,8 +400,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     nodeMouseUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
-        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         this.mouseDownNode = null;
+        if (this.handleAreaSelectionEnd()) return;
+        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
 
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
             if (isCompatible) {
@@ -465,9 +480,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.setSelection([element], []);
             }
             //Update the system diagram
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         } else if (!this.justScaleTransGraph) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
             this.setSelection([], []);
@@ -518,9 +533,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
             DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().map(e => JSON.stringify(e)), splicedBonds.map(e => JSON.stringify(e)));
             this.setSelection([], []);
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         }
     }
 
@@ -530,9 +545,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [[].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e))], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
         this.setSelection(this.copiedElements, this.copiedBonds);
         this.copySelection();
+        this.updateGraph();
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateGraph();
     }
 
     // keydown on main svg
@@ -571,9 +586,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
             this.setSelection(this.elements, this.bonds);
+            this.updateGraph();
             this.updateModifierMenu();
             this.updateVelocityMenu();
-            this.updateGraph();
         } else if (this.checkCtrlCombo(this.C_KEY)) {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {
