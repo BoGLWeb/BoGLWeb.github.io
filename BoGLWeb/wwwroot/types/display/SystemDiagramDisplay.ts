@@ -32,7 +32,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
 
-        this.highestElemId = systemDiagram.nodes.length;
+        this.highestElemId = systemDiagram.nodes.length + 1;
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
