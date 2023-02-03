@@ -51,6 +51,7 @@ export class BaseGraphDisplay {
     highestElemId: number = 0;
     dragStartX: number;
     dragStartY: number;
+    justDragMoved: boolean = false;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -145,10 +146,7 @@ export class BaseGraphDisplay {
     }
 
     handleAreaSelectionEnd() {
-        if (!d3.select("#selectionRect").node()) {
-            document.getElementById("selectionRect").remove();
-            return false;
-        }
+        if (!d3.select("#selectionRect").node()) return false;
         let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
         if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
             let newSelection = [];
@@ -421,8 +419,10 @@ export class BaseGraphDisplay {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
                 this.setSelection([el], []);
+                this.updateGraph();
             }
 
+            this.justDragMoved = true;
             for (const el of this.selectedElements) {
                 el.x += (<DragEvent>d3.event).dx;
                 el.y += (<DragEvent>d3.event).dy;
@@ -430,6 +430,14 @@ export class BaseGraphDisplay {
 
             // Just update element selection positions without editing anything else since dragmove gets called so much
             this.updateGraph(true);
+        } else if (this.justDragMoved) {
+            this.justDragMoved = false;
+            this.updateGraph(false);
+            this.updateTopMenu();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
         }
     }
 
