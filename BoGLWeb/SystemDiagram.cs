@@ -1,12 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.EditorHelper;
+using Newtonsoft.Json;
 using System.Collections.Immutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using BoGLWeb.BaseClasses;
 using BoGLWeb.Utils;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace BoGLWeb {
     public class SystemDiagram {
@@ -112,12 +116,25 @@ namespace BoGLWeb {
             typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
 
-        [JsonProperty] protected List<Element> elements;
-
-        [JsonProperty] protected List<Edge> edges;
+        [JsonProperty]
+        protected List<Element> elements;
+        [JsonProperty]
+        protected List<Edge> edges;
 
         // Leaving this out of JSON for now because we're not expecting to use it currently
         private Dictionary<string, double> header;
+
+        // Editor list for Canvas changes
+        //public EditionList<CanvasChange> changes;
+
+        /// <summary>
+        /// Creates a new <c>SystemDiagram</c>.
+        /// </summary>
+        public SystemDiagram() {
+            this.elements = new List<Element>();
+            this.edges = new List<Edge>();
+            this.header = new();
+        }
 
         /// <summary>
         /// Creates a system diagram instance
@@ -129,7 +146,7 @@ namespace BoGLWeb {
             this.header = header;
         }
 
-        //Creates a system diagram with a list of elements and edges. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
+        //Creates a system diagram with a list of parsedElements and edgesBySource. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
         private SystemDiagram(Dictionary<string, double> header, List<Element> elements, List<Edge> edges) {
             this.header = header;
             this.elements = elements;
@@ -168,7 +185,7 @@ namespace BoGLWeb {
             }
 
             List<Edge> updatedEdges = new();
-            //Update edges
+            //Update edgesBySource
             foreach (Edge edge in systemDiagram.getEdges()) {
                 int e1 = edge.getTarget();
                 int e2 = edge.getSource();
@@ -204,17 +221,17 @@ namespace BoGLWeb {
         }
 
         /// <summary>
-        /// Gets the list of elements in the system diagram
+        /// Gets the list of parsedElements in the system diagram
         /// </summary>
-        /// <returns>The list of elements</returns>
+        /// <returns>The list of parsedElements</returns>
         public List<Element> getElements() {
             return this.elements;
         }
 
         /// <summary>
-        /// Gets the elements in the system diagram
+        /// Gets the parsedElements in the system diagram
         /// </summary>
-        /// <returns>The list of elements</returns>
+        /// <returns>The list of parsedElements</returns>
         public List<Edge> getEdges() {
             return this.edges;
         }
@@ -252,7 +269,7 @@ namespace BoGLWeb {
                 tokenQueue.Enqueue(tokens[i]);
             }
 
-            //Create elements while we have symbols left
+            //Create parsedElements while we have symbols left
             //Element id
             int elementId = 0;
             while (tokenQueue.Count > 0) {
@@ -576,7 +593,7 @@ namespace BoGLWeb {
             }
 
             builder.AppendLine("<nodes>");
-            //Add elements
+            //Add parsedElements
             foreach (Element element in this.elements) {
                 builder.AppendLine("<node>");
                 builder.AppendLine("<name>" + element.getName() + "</name>");
@@ -731,6 +748,55 @@ namespace BoGLWeb {
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Gets a list of all <c>Elements</c> in this <c>SystemDiagram</c>
+        /// that have the corresponding IDs
+        /// </summary>
+        /// <param name="IDs">
+        /// The array of IDs.
+        /// </param>
+        /// <returns>
+        /// The Dictionary containing all relevant elements.
+        /// </returns>
+        public Dictionary<int, Element> GetElementsFromIDs(int[] IDs) {
+            Dictionary<int, Element> elements = new(), parsedElements = new();
+            foreach (Element element in this.elements) {
+                elements.Add(element.GetID(), element);
+            }
+            foreach (int ID in IDs) {
+                Element? element = elements.GetValueOrDefault(ID);
+                if (element != null) {
+                    parsedElements.Add(ID, element);
+                }
+            }
+            return parsedElements;
+        }
+
+        /// <summary>
+        /// Gets an array of all IDs in a Dictionary of Elements.
+        /// </summary>
+        /// <returns>An array containing all the IDs of every
+        /// Element in the Dictionary.</returns>
+        public static int[] GetIDs(Dictionary<int, Element> elements) {
+            int[] IDs = new int[elements.Count];
+            int index = 0;
+            foreach (KeyValuePair<int, Element> pair in elements) {
+                IDs[index++] = pair.Key;
+            }
+            return IDs;
+        }
+
+        /// <summary>
+        /// Converts this <c>SystemDiagram</c> to a printable format.
+        /// </summary>
+        /// <returns>This <c>SystemDiagram</c> as a <c>string</c>.</returns>
+        public override string ToString() {
+            StringBuilder builder = new();
+            builder.Append('[').Append(string.Join(", ", this.elements.Select(element => element.GetID() + " (" + element.getVelocity() + ")"))).Append(']');
+            builder.Append('[').Append(string.Join(", ", this.edges.Select(edge => edge.getSource() + " " + edge.getTarget() + " (" + edge.getVelocity() + ")"))).Append(']');
+            return builder.ToString();
+        }
+
         public class Element {
             private readonly string name;
             [JsonProperty]
@@ -744,6 +810,12 @@ namespace BoGLWeb {
             [JsonProperty]
             protected int velocity;
 
+
+            //For graph visualization
+            //TODO Create a way to modify these values
+            //private double x, y;
+
+            // Assigns a unique ID to each Element
             private static int universalID = 0;
             private int? id;
 
@@ -774,11 +846,41 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Creates a new <c>Element</c> for this system diagram
+            /// from a JSON Object.
+            /// </summary>
+            /// <param name="obj">The JSON Object</param>
+            public Element(JObject obj) {
+                this.id = obj.Value<int>("id");
+                this.x = obj.Value<int>("x");
+                this.y = obj.Value<int>("y");
+                this.velocity = obj.Value<int>("velocity");
+                this.type = obj.Value<int>("type");
+                JArray? modifiers = obj.Value<JArray>("modifiers");
+                this.modifiers = new();
+                if (modifiers != null) {
+                    foreach (JObject mod in modifiers) {
+                        this.modifiers.Add(mod.Value<int>());
+                    }
+                }
+                typeIDDictReverse.TryGetValue(this.type, out string? name);
+                this.name = name ?? "";
+            }
+
+            /// <summary>
             /// Adds a modifier to the element
             /// </summary>
             /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
                 this.modifiers.Add(modifierIDDict.GetValueOrDefault(name));
+            }
+
+            /// <summary>
+            /// Adds a modifier to this <c>Element</c>
+            /// </summary>
+            /// <param name="modID">The ID of the new modifier</param>
+            public void addModifier(int modID) {
+                this.modifiers.Add(modID);
             }
 
             //TODO Error checking
@@ -836,6 +938,26 @@ namespace BoGLWeb {
             /// <returns>A double</returns>
             public double getY() {
                 return this.y;
+            }
+
+            /// <summary>
+            /// Resets the x-value of this <c>Element</c>.
+            /// </summary>
+            /// <param name="x">
+            /// The new x-value.
+            /// </param>
+            public void SetX(double x) {
+                this.x = x;
+            }
+
+            /// <summary>
+            /// Resets the y-value of this <c>Element</c>.
+            /// </summary>
+            /// <param name="y">
+            /// The new y-value.
+            /// </param>
+            public void SetY(double y) {
+                this.y = y;
             }
 
             /// <summary>
@@ -900,6 +1022,56 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Assigns an ID to this <code>Element</code>.
+            /// </summary>
+            /// <param name="ID">
+            /// A reference ID for this <code>Element</code>.
+            /// </param>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be
+            /// tied to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            private void assignID(int? ID, bool isDistinct) {
+                if (this.id == null || isDistinct) {
+                    this.id = universalID++;
+                } else {
+                    this.id = ID;
+                }
+            }
+
+            /// <summary>
+            /// Makes a copy of this <code>Element</code>.
+            /// </summary>
+            /// <param name="isDistinct">
+            /// <code>true</code> if this <code>Element</code> should not be
+            /// tied to any other object in the canvas, else <code>false</code>.
+            /// </param>
+            /// <returns>
+            /// The copy.
+            /// </returns>
+            public Element copy(bool isDistinct) {
+                Element copy = new(this.type, this.name, this.x, this.y) {
+                    modifiers = new(),
+                    velocity = this.velocity
+                };
+                foreach (int modifier in this.modifiers) {
+                    copy.addModifier(modifier + "");
+                }
+                copy.assignID(this.id, isDistinct);
+                return copy;
+            }
+
+            /// <summary>
+            /// Finds the hashing code for this <code>Element</code>
+            /// </summary>
+            /// <returns>
+            /// <code>this.ID</code>
+            /// </returns>
+            public override int GetHashCode() {
+                return this.id is int ID ? ID : 0;
+            }
+
+            /// <summary>
             /// Creates a string representation of the element
             /// </summary>
             /// <returns>A string</returns>
@@ -923,7 +1095,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int target;
             [JsonProperty]
-            protected readonly int velocity;
+            protected int velocity;
 
             /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Edge</c>.
@@ -933,7 +1105,7 @@ namespace BoGLWeb {
             private int? ID;
 
             /// <summary>
-            /// Creates an edge between two elements
+            /// Creates an edge between two parsedElements
             /// </summary>
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
@@ -946,7 +1118,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Creates an edge between two elements witha  velocity
+            /// Creates an edge between two parsedElements witha  velocity
             /// </summary>
             /// <param name="e1">The first element</param>
             /// <param name="e2">The second element</param>
@@ -957,6 +1129,29 @@ namespace BoGLWeb {
                 this.source = source;
                 this.target = target;
                 this.velocity = velocity;
+            }
+
+            /// <summary>
+            /// Creates a new <c>Edge</c> for this system diagram
+            /// from a JSON Object.
+            /// </summary>
+            /// <param name="obj">The JSON Object</param>
+            public Edge(JObject obj) {
+                JObject? e1 = obj.Value<JObject>("source");
+                if (e1 == null) {
+                    throw new Exception("Source element does not exist.");
+                } else {
+                    this.e1 = new Element(e1);
+                    this.source = this.e1.GetID();
+                }
+                JObject? e2 = obj.Value<JObject>("target");
+                if (e2 == null) {
+                    throw new Exception("Target element does not exist.");
+                } else {
+                    this.e2 = new Element(e2);
+                    this.target = this.e2.GetID();
+                }
+                this.velocity = obj.Value<int>("velocity");
             }
 
             /// <summary>
@@ -976,7 +1171,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Returns the id of the source
+            /// Returns the id of the e1
             /// </summary>
             /// <returns>An integer</returns>
             public int getSource() {
@@ -997,6 +1192,27 @@ namespace BoGLWeb {
             /// <returns>An integer</returns>
             public int getVelocity() {
                 return this.velocity;
+            }
+
+            /// <summary>
+            /// Sets the velocity of this <c>Edge</c> to a new value.
+            /// </summary>
+            /// <param name="vel">The new velocity ID.</param>
+            public void SetVelocity(int vel) {
+                this.velocity = vel;
+            }
+
+            /// <summary>
+            /// Serializes this Edge in accordance with JSON
+            /// syntax.
+            /// </summary>
+            /// <returns>The converted JSON string.</returns>
+            public string SerializeToJSON() {
+                return JsonConvert.SerializeObject(new {
+                    source = this.e1,
+                    target = this.e2,
+                    this.velocity
+                });
             }
 
             /// <summary>
@@ -1051,6 +1267,75 @@ namespace BoGLWeb {
                     ? "Arc " + this.e1.getName() + " to " + this.e2.getName() + "\r\n"
                     : "Arc " + this.e1.getName() + " to " + this.e2.getName() + " has velocity " + this.velocity +
                       "\r\n";
+            }
+        }
+
+        /// <summary>
+        /// Stores parsed elements and edgesBySource for a system diagram.
+        /// </summary>
+        public class Packager {
+            // Stores a subset of elements belonging to a particular system diagram
+            private readonly Dictionary<int, Element> elements;
+            // Stores a subset of edgesBySource belonging to a particular system diagram by source ID.
+            private readonly Dictionary<int, List<Edge>> edgesBySource;
+            // Stores a subset of edgesBySource belonging to a particular system diagram by target ID.
+            private readonly Dictionary<int, List<Edge>> edgesByTarget;
+
+            /// <summary>
+            /// Creates a new Packager.
+            /// </summary>
+            /// <param name="newObjects">An array of JSON objects
+            /// containing the elements and edgesBySource for this 
+            /// system diagram.</param>
+            public Packager(string[] newObjects) {
+                this.elements = new();
+                this.edgesBySource = new();
+                this.edgesByTarget = new();
+                for (int i = 0; i < newObjects.Length; i++) {
+                    JObject obj = JObject.Parse(newObjects[i]);
+                    if (obj == null) {
+                        throw new Exception("Null object cannot be cast.");
+                    } else if (obj.Value<JObject>("source") == null) { // Element
+                        SystemDiagram.Element element = new(obj);
+                        this.elements.Add(element.GetID(), element);
+                    } else { // Edge
+                        SystemDiagram.Edge edge = new(obj);
+                        if (this.edgesBySource.ContainsKey(edge.getSource())) {
+                            this.edgesBySource.GetValueOrDefault(edge.getSource())?.Add(edge);
+                        } else {
+                            this.edgesBySource.Add(edge.getSource(), new List<SystemDiagram.Edge>() { edge });
+                        }
+                        if (this.edgesByTarget.ContainsKey(edge.getTarget())) {
+                            this.edgesByTarget.GetValueOrDefault(edge.getTarget())?.Add(edge);
+                        } else {
+                            this.edgesByTarget.Add(edge.getTarget(), new List<SystemDiagram.Edge>() { edge });
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of elements in this Packager.
+            /// </summary>
+            /// <returns>this.elements</returns>
+            public Dictionary<int, Element> GetElements() {
+                return this.elements;
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// </summary>
+            /// <returns>this.edgesBySource</returns>
+            public Dictionary<int, List<Edge>> GetSourceEdges() {
+                return this.edgesBySource;
+            }
+
+            /// <summary>
+            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// </summary>
+            /// <returns>this.edgesBySource</returns>
+            public Dictionary<int, List<Edge>> GetTargetEdges() {
+                return this.edgesByTarget;
             }
         }
     }

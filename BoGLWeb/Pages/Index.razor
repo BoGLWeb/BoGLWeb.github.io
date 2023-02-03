@@ -4,6 +4,7 @@
 @page "/"
 @using System.Text;
 @using System.Text.RegularExpressions
+@using BoGLWeb.EditorHelper
 @using BoGLWeb.Json
 @using Newtonsoft.Json
 
@@ -31,12 +32,12 @@
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
-        <MenuItem Key="setting:1" OnClick="cut">Cut</MenuItem>
-        <MenuItem Key="setting:2" OnClick="copy">Copy</MenuItem>
-        <MenuItem Key="setting:3" OnClick="paste">Paste</MenuItem>
-        <MenuItem Key="setting:4">Undo</MenuItem>
-        <MenuItem Key="setting:5">Redo</MenuItem>
-        <MenuItem Key="setting:6" OnClick="delete">Delete</MenuItem>
+        <MenuItem Key="setting:1" OnClick="Cut">Cut</MenuItem>
+        <MenuItem Key="setting:2" OnClick="Copy">Copy</MenuItem>
+        <MenuItem Key="setting:3" OnClick="Paste">Paste</MenuItem>
+        <MenuItem Key="setting:4" OnClick="Undo">Undo</MenuItem>
+        <MenuItem Key="setting:5" OnClick="Redo">Redo</MenuItem>
+        <MenuItem Key="setting:6" OnClick="Delete">Delete</MenuItem>
     </SubMenu>
     <SubMenu title="Help" Class="topMenu" Key="Help">
         <span id="helpMenu"></span>
@@ -56,7 +57,7 @@
                 <MenuItem Key="mt:6" OnClick='() => loadExample("spring_&_damper")'>Spring and Damper with Force</MenuItem>
             </SubMenu>
             <SubMenu Title="Mechanical Rotation">
-                            <span id="mechRotMenu"></span>
+                <span id="mechRotMenu"></span>
                 <MenuItem Key="mr:1" OnClick='() => loadExample("rack_pinion")'>Rack and Pinion System</MenuItem>
                 <MenuItem Key="mr:2" OnClick='() => loadExample("motor-gear-pair")'>Motor, Shaft and Gear Pair</MenuItem>
             </SubMenu>
@@ -81,22 +82,22 @@
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CutSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CopySvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
-        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Shape="Square" Disabled="@disableUndo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
             <Icon Component="UndoSvg"/>
         </Button>
-        <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Shape="Square" Disabled="@disableRedo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
             <Icon Component="RedoSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
         </Button>
     </li>
@@ -273,12 +274,17 @@
 @code {
     private bool generatingBondGraph;
 
-    private static Index? app;
+    public static Index? app;
+
+    private int tabNum;
 
     public class Option {
         public string label { get; set; }
         public int value { get; set; }
     }
+
+    static bool disableUndo = true;
+    static bool disableRedo = true;
 
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
@@ -289,7 +295,6 @@
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
-    static IJSObjectReference staticModule;
 
     public Index() {
         app = this;
@@ -299,19 +304,68 @@
     private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
-    public async void cut() {
+    [JSInvokable]
+    public static async void UndoRedoHandler(int tab, bool isUndo) {
+        CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
+        Console.WriteLine(cc);
+        switch(cc?.GetType().Name) {
+            case nameof(CanvasChange.AddSelection):
+                CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
+                app?.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), addS.GetHighlight(), isUndo);
+                break;
+            case nameof(CanvasChange.DeleteSelection):
+                CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
+                app?.URDoDeleteSelection(ds.GetDeletedJSONElements(), ds.GetUnselectedEdges(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeSelection):
+                CanvasChange.ChangeSelection cs = (CanvasChange.ChangeSelection) cc;
+                app?.URDoChangeSelection(cs.GetNewElementIDs(), cs.GetNewEdgeIDs(), cs.GetIDs(), cs.GetOldEdgeIDs(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeModifier):
+                CanvasChange.ChangeModifier cm = (CanvasChange.ChangeModifier) cc;
+                app?.URDoChangeSelectionModifier(cm.GetIDs(), cm.GetModID(), cm.GetToggle(), cm.GetCurrent(), isUndo);
+                break;
+            case nameof(CanvasChange.MoveSelection):
+                CanvasChange.MoveSelection ms = (CanvasChange.MoveSelection) cc;
+                app?.URDoMoveSelection(ms.GetIDs(), ms.GetXOffset(), ms.GetYOffset(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeVelocity):
+                CanvasChange.ChangeVelocity cv = (CanvasChange.ChangeVelocity) cc;
+                app?.URDoChangeSelectionVelocity(cv.GetIDs(), cv.GetEdgeIDs(), cv.GetNewVelID(), cv.GetOldIDs(), isUndo);
+                break;
+        }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
+    }
+
+    public async void Undo()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("handleUndoRedo", true);
+    }
+
+    public async void Redo()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("handleUndoRedo", false);
+    }
+
+    public async void Cut() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("cut");
     }
 
-    public async void copy() {
+    public async void Copy() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("copy");
     }
 
-    public async void paste() {
+    public async void Paste() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("paste");
@@ -319,10 +373,113 @@
 
     static bool deleteManyChecked = true;
 
-    public async void delete() {
+    public async void Delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("delete");
+    }
+
+    [JSInvokable]
+    public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
+        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
+        Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
+        // Need to add unselected deleted edges
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
+        if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
+            Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            + String.Join(", ", removeEdgeFromSelection) + "]");
+            EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
+            UpdateBackendWithInitialStackChange(tabID);
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
+        Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
+        Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
+        UpdateBackendWithInitialStackChange(tabID);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
+        Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+            + ", [" + String.Join(", ", prevVelVals) + "]");
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    public static void UpdateBackendWithInitialStackChange(int tab) {
+        if(tab == 1) { // System diagram
+            EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
+        } else { // Some bond graph
+            EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
+        }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoAddSelection", newObjects, prevSelectedElements, prevSelectedEdges, highlight, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        // put unselected deleted edges here where the empty list is
+        await module.InvokeVoidAsync("urDoDeleteSelection", deletedObjects, unselectedDeletedEdges, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelection(int[] elIDsToAdd, string[] edgesToAdd, int[] elIDsToRemove, string[] edgesToRemove, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", elIDsToAdd, edgesToAdd, elIDsToRemove, edgesToRemove, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelectionModifier", elIDs, modID, modVal, prevModVals, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoMoveSelection(int[] elements, double xOffset, double yOffset, bool isUndo)
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoMoveSelection", elements, xOffset, yOffset, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elIDs, edgeIDs, velID, prevVelVals, isUndo);
+        app?.StateHasChanged();
     }
 
     [JSInvokable]
@@ -447,6 +604,9 @@
         this.currTab = key;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setTab", key);
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
+        base.StateHasChanged();
     }
 
     //TODO What does this do?
@@ -821,7 +981,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
     }
