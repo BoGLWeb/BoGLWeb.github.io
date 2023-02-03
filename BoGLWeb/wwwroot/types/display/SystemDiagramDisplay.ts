@@ -393,8 +393,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     addBond(source, target) {
         let bond = new GraphBond(source, target);
         this.bonds.push(bond);
-        this.setSelection([], [bond]);
         DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
+        this.setSelection([], [bond]);
     }
 
     nodeMouseUp(el: SystemDiagramElement) {

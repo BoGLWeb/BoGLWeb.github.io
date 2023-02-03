@@ -337,6 +337,7 @@
         }
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
         disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
     }
 
     public async void Undo()
@@ -381,7 +382,7 @@
 
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
-        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "]");
+        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -434,12 +435,14 @@
     }
 
     public static void UpdateBackendWithInitialStackChange(int tab) {
-        disableUndo = false;
         if(tab == 1) { // System diagram
             EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
         } else { // Some bond graph
             EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
         }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
     }
 
     public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight, bool isUndo) {
@@ -604,7 +607,6 @@
         await module.InvokeVoidAsync("setTab", key);
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
         disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
-        Console.WriteLine("Setting undo/redo: ", disableUndo, disableRedo);
         base.StateHasChanged();
     }
 
