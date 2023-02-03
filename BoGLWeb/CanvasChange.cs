@@ -78,6 +78,8 @@ namespace BoGLWeb {
                 private readonly Dictionary<int, SystemDiagram.Element> newElements;
                 // Stores the Edge form of the added edgesBySource by source ID
                 private readonly Dictionary<int, List<SystemDiagram.Edge>> newEdges;
+                // Stores whether the added selection should be highlighted
+                private bool highlight;
 
                 // TODO: fix comment
                 /// <summary> 
@@ -92,12 +94,13 @@ namespace BoGLWeb {
                 /// <param name="prevSelectedEdges">The JSON string carrying info about
                 /// the added elements.
                 /// </param>
-                public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges) : base(IDs) {
+                public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges, bool highlight) : base(IDs) {
                     this.newObjects = newObjects;
                     this.prevSelectedEdges = prevSelectedEdges;
                     SystemDiagram.Packager packager = new(newObjects);
                     this.newElements = packager.GetElements();
                     this.newEdges = packager.GetSourceEdges();
+                    this.highlight = highlight;
                 }
 
                 /// <summary>
@@ -150,6 +153,14 @@ namespace BoGLWeb {
                 /// <returns>this.prevSelectedEdges</returns>
                 public string[] GetPrevSelectedEdges() {
                     return this.prevSelectedEdges;
+                }
+
+                /// <summary>
+                /// Gets the highlight boolean for the selection</c>.
+                /// </summary>
+                /// <returns>this.highlight</returns>
+                public bool GetHighlight() {
+                    return this.highlight;
                 }
 
                 /// <summary>

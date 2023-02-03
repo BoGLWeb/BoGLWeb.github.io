@@ -97,7 +97,7 @@ export namespace backendManager {
             }
 
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
-                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)));
+                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
 
             let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
             systemDiagram.draggingElement = null;
@@ -428,7 +428,7 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
-        public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], isUndo: boolean) {
+        public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], highlight: boolean, isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(newObjects);
             if (isUndo) {
@@ -437,11 +437,19 @@ export namespace backendManager {
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
                 let prevSelEdgeIDs = this.parseEdgeIDStrings(prevSelectedEdges);
-                sysDiag.setSelection(sysDiag.elements.filter(e => prevSelElIDs.includes(e.id)), sysDiag.bonds.filter(b => this.checkBondIDs(prevSelEdgeIDs, b)));
+                if (highlight) {
+                    sysDiag.setSelection(sysDiag.elements.filter(e => prevSelElIDs.includes(e.id)), sysDiag.bonds.filter(b => this.checkBondIDs(prevSelEdgeIDs, b)));
+                } else {
+                    sysDiag.setSelection([], []);
+                }
             } else {
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 sysDiag.bonds = sysDiag.bonds.concat(bonds);
-                sysDiag.setSelection(elements, bonds);
+                if (highlight) {
+                    sysDiag.setSelection(elements, bonds);
+                } else {
+                    sysDiag.setSelection([], []);
+                }
             }
             sysDiag.updateModifierMenu();
             sysDiag.updateVelocityMenu();
@@ -508,12 +516,12 @@ export namespace backendManager {
         }
 
         public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
-            let sysDiag = window.systemDiagram;
+            /*let sysDiag = window.systemDiagram;
             let bondIDs = this.parseEdgeIDStrings(edgeIDs);
             sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
             sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
             sysDiag.updateVelocityMenu();
-            sysDiag.updateGraph();
+            sysDiag.updateGraph();*/
         }
 
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {

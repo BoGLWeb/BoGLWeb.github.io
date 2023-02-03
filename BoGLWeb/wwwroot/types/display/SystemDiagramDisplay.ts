@@ -34,7 +34,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
 
-        this.highestElemId = systemDiagram.nodes.length;
+        this.highestElemId = systemDiagram.nodes.length + 1;
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
@@ -380,7 +380,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let bond = new GraphBond(source, target);
         this.bonds.push(bond);
         this.setSelection([], [bond]);
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)));
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
     }
 
     nodeMouseUp(el: SystemDiagramElement) {
@@ -454,14 +454,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     subBondList.push(bond);
                 }
 
-                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(subElementList).concat(subBondList).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)));
+                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(subElementList).concat(subBondList).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
                 this.setSelection(subElementList, subBondList);
             } else {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
                 let element = new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []);
                 this.elements.push(element);
-                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(element)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)));
+                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(element)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
                 this.setSelection([element], []);
             }
             //Update the system diagram
@@ -527,7 +527,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pasteSelection() {
         this.elements = this.elements.concat(this.copiedElements);
         this.bonds = this.bonds.concat(this.copiedBonds);
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [[].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e))], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)));
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [[].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e))], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
         this.setSelection(this.copiedElements, this.copiedBonds);
         this.copySelection();
         this.updateModifierMenu();
