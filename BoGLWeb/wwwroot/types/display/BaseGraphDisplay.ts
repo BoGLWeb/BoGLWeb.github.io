@@ -186,19 +186,19 @@ export class BaseGraphDisplay {
                 let addList = [];
 
                 for (const e of newSelection) {
-                    if (graph.selectionContains(e)) {
-                        graph.removeFromSelection(e, false);
+                    if (this.selectionContains(e)) {
+                        this.removeFromSelection(e, false);
                         removeList.push(e);
                     } else {
-                        graph.addToSelection(e, false);
+                        this.addToSelection(e, false);
                         addList.push(e);
                     }
                 }
 
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(addList), ...graph.listToIDObjects(removeList));
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
             } else {
-                graph.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(newSelection), [], []);
+                this.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(newSelection), [], []);
             }
             d3.select("body").style("cursor", "auto");
             this.updateGraph();

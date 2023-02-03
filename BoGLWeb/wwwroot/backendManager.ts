@@ -514,12 +514,12 @@ export namespace backendManager {
         }
 
         public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
-            /*let sysDiag = window.systemDiagram;
+            let sysDiag = window.systemDiagram;
             let bondIDs = this.parseEdgeIDStrings(edgeIDs);
             sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
             sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
             sysDiag.updateVelocityMenu();
-            sysDiag.updateGraph();*/
+            sysDiag.updateGraph();
         }
 
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
