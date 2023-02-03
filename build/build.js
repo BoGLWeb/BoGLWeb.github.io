@@ -919,10 +919,8 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/elements/
         }
         handleAreaSelectionEnd() {
             var _a, _b;
-            if (!d3.select("#selectionRect").node()) {
-                document.getElementById("selectionRect").remove();
+            if (!d3.select("#selectionRect").node())
                 return false;
-            }
             let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
             if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
                 let newSelection = [];
