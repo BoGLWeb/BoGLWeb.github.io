@@ -4,7 +4,7 @@ import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
-import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
+//import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { GraphBondID } from "../bonds/GraphBondID";
 

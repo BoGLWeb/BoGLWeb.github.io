@@ -125,7 +125,7 @@ namespace BoGLWeb {
         private Dictionary<string, double> header;
 
         // Editor list for Canvas changes
-        public EditionList<CanvasChange> changes;
+        //public EditionList<CanvasChange> changes;
 
         /// <summary>
         /// Creates a new <c>SystemDiagram</c>.
@@ -134,7 +134,6 @@ namespace BoGLWeb {
             this.elements = new List<Element>();
             this.edges = new List<Edge>();
             this.header = new();
-            this.changes = new();
         }
 
         /// <summary>
@@ -145,7 +144,6 @@ namespace BoGLWeb {
             this.elements = new List<Element>();
             this.edges = new List<Edge>();
             this.header = header;
-            this.changes = new();
         }
 
         //Creates a system diagram with a list of parsedElements and edgesBySource. This is not exposed to other classes because there should be no way to create system diagrams without xml or json
@@ -153,7 +151,6 @@ namespace BoGLWeb {
             this.header = header;
             this.elements = elements;
             this.edges = edges;
-            this.changes = new();
         }
 
         public static SystemDiagram squishIds(SystemDiagram systemDiagram) {
