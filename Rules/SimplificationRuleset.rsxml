@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet2</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>CleanGA.grxml</string>
+    <string>SimplificationParallel0Step1.grxml</string>
+    <string>SimplificationParallel0Step2.grxml</string>
+    <string>SimplificationParallel0Step4.grxml</string>
+    <string>SimplificationParallel0Step3.grxml</string>
+    <string>SimplificationParallel1Step1.grxml</string>
+    <string>SimplificationParallel1Step2.grxml</string>
+    <string>SimplificationParallel1Step4.grxml</string>
+    <string>SimplificationParallel1Step3.grxml</string>
+    <string>Simplification11Step1.grxml</string>
+    <string>Simplification11Step2.grxml</string>
+    <string>Simplification11Step3.grxml</string>
+    <string>Simplification11Step4.grxml</string>
+    <string>SimplificationTF11Step1.grxml</string>
+    <string>SimplificationTF11Step2.grxml</string>
+    <string>SimplificationTFTFStep1.grxml</string>
+    <string>SimplificationTFTFStep2.grxml</string>
+    <string>SimplificationTFTFStep3.grxml</string>
+    <string>SimplificationTFTFStep4.grxml</string>
+    <string>Simplification00Step1.grxml</string>
+    <string>Simplification00Step2.grxml</string>
+    <string>Simplification00Step3.grxml</string>
+    <string>Simplification00Step4.grxml</string>
+    <string>SimplificationDoubleArrow00.grxml</string>
+    <string>SimplificationDoubleArrow10.grxml</string>
+    <string>SimplificationDoubleArrow11.grxml</string>
+    <string>SimplificationGroundStep1.grxml</string>
+    <string>SimplificationGroundStep2.grxml</string>
+  </ruleFileNames>
+  <name>SimplificationRuleset</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet2</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

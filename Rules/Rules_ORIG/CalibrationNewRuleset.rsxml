@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nextGenerationStep>
+    <nextGenerationSteps>Loop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+    <nextGenerationSteps>GoToRuleSet5</nextGenerationSteps>
+    <nextGenerationSteps>Stop</nextGenerationSteps>
+  </nextGenerationStep>
+  <ruleFileNames>
+    <string>INVDFlip.grxml</string>
+    <string>INVDFlip2.grxml</string>
+    <string>INVDRFlagFlip1.grxml</string>
+    <string>INVDRFlagFlip2.grxml</string>
+    <string>ResistorApply1.grxml</string>
+    <string>ResistorApply2.grxml</string>
+    <string>ResistorApply3.grxml</string>
+    <string>ResistorApply4.grxml</string>
+    <string>10Flip1.grxml</string>
+    <string>10Flip2.grxml</string>
+    <string>10Flip3.grxml</string>
+    <string>10Flip4.grxml</string>
+  </ruleFileNames>
+  <name>CalibrationNewRuleset</name>
+  <TriggerRuleNum>0</TriggerRuleNum>
+  <choiceMethod>Design</choiceMethod>
+  <interimCandidates>Unspecified</interimCandidates>
+  <finalCandidates>Unspecified</finalCandidates>
+  <recognizeSourceFiles />
+  <applySourceFiles />
+  <generationAfterNormal>Loop</generationAfterNormal>
+  <generationAfterChoice>Stop</generationAfterChoice>
+  <generationAfterCycleLimit>Stop</generationAfterCycleLimit>
+  <generationAfterNoRules>GoToRuleSet5</generationAfterNoRules>
+  <generationAfterTriggerRule>Stop</generationAfterTriggerRule>
+</ruleSet>

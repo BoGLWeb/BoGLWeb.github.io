@@ -1,0 +1,111 @@
+[Header]
+panX 19.82499999999999
+panY -17.620000000000005
+zoom 0.7499999999999997
+
+[Elements]
+{
+	name System_E_Current_Input
+	x -349.9
+	y 132.92000000000002
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -322.9
+	y -72.67999999999998
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x -215.59999999999997
+	y -110.28000000000003
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -42.89999999999998
+	y -70.27999999999997
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x -79.60000000000014
+	y 44.12000000000006
+	modifiers {
+	}
+}
+{
+	name System_E_Junction
+	x -45.83333333333326
+	y 174.51999999999998
+	modifiers {
+	}
+}
+{
+	name System_E_Capacitor
+	x 50.80000000000007
+	y -108.67999999999995
+	modifiers {
+	}
+}
+{
+	name System_E_Ground
+	x 25.966666666666583
+	y 257.18666666666707
+	modifiers {
+	}
+}
+{
+	name System_E_Inductor
+	x 152.03333333333353
+	y 51.586666666666815
+	modifiers {
+	}
+}
+
+[Arcs]
+{
+	element1 1
+	element2 0
+}
+{
+	element1 2
+	element2 1
+}
+{
+	element1 3
+	element2 2
+}
+{
+	element1 4
+	element2 3
+}
+{
+	element1 5
+	element2 0
+}
+{
+	element1 5
+	element2 4
+}
+{
+	element1 6
+	element2 3
+}
+{
+	element1 7
+	element2 5
+}
+{
+	element1 8
+	element2 6
+}
+{
+	element1 8
+	element2 7
+}
