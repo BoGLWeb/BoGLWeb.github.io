@@ -3,6 +3,8 @@ import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
+import getBackendManager = backendManager.getBackendManager;
+import { SubmenuID } from "./types/display/BondGraphBond";
 
 export function populateMenu() {
     ElementNamespace.categories.map((c, i) => {
@@ -12,7 +14,7 @@ export function populateMenu() {
             group.classList.add("groupDiv");
             group.addEventListener("mousedown", function () {
                 document.body.style.cursor = "grabbing";
-                (<any>window).systemDiagram.draggingElement = e.id;
+                window.systemDiagram.draggingElement = e.id;
             });
 
             document.getElementById(c.folderName).appendChild(group);
@@ -30,35 +32,182 @@ export function populateMenu() {
     });
 }
 
-function loadPage() {
-    (<any>window).backendManager = backendManager;
-    (<any>window).systemDiagramSVG = d3.select("#systemDiagram").append("svg");
-    (<any>window).systemDiagramSVG.classed("graphSVG", true);
-    (<any>window).systemDiagram = new SystemDiagramDisplay((<any>window).systemDiagramSVG, new SystemDiagram([], []));
+var topMenuButtons;
+
+async function loadPage() {
+    window.tabNum = "1"; 
+    let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
+    let sliderImg: any = document.createElement("img"); 
+    sliderImg.src = "images/sliderIcon.svg";
+    sliderImg.id = "sliderImg";
+    sliderImg.draggable = false;
+    sliderHolder.appendChild(sliderImg);
+
+    window.backendManager = backendManager;
+    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    window.systemDiagramSVG.classed("graphSVG", true);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('q');
+    if (myParam !== null){
+        let sysDiagramString  = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
+        getBackendManager().loadSystemDiagram(sysDiagramString);
+    } else {
+        window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+        window.systemDiagram.updateGraph();
+        backendManager.getBackendManager().zoomCenterGraph("1");
+        window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
+    }
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
-        (<any>window).systemDiagram.draggingElement = null;
+        window.systemDiagram.draggingElement = null;
     });
 
     populateMenu();
 
-    (<any>window).unsimpBGSVG = d3.select("#unsimpBG").append("svg");
-    (<any>window).unsimpBGSVG.classed("graphSVG", true);
-    (<any>window).simpBGSVG = d3.select("#simpBG").append("svg");
-    (<any>window).simpBGSVG.classed("graphSVG", true);
-    (<any>window).causalBGSVG = d3.select("#causalBG").append("svg");
-    (<any>window).causalBGSVG.classed("graphSVG", true);
+    window.unsimpBGSVG = d3.select("#unsimpBG").append("svg");
+    window.unsimpBGSVG.classed("graphSVG", true);
+    window.simpBGSVG = d3.select("#simpBG").append("svg");
+    window.simpBGSVG.classed("graphSVG", true);
+    window.causalBGSVG = d3.select("#causalBG").append("svg");
+    window.causalBGSVG.classed("graphSVG", true);
+
+    d3.select(window).on("keydown", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyDown.call(graph);
+    })
+    .on("keyup", function () {
+        let graph = backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+        graph.svgKeyUp.call(graph);
+    });
+
+    topMenuButtons = document.getElementsByClassName('topMenu');
+
+    for (let i = 0; i < 3; i++) {
+        topMenuButtons.item(i).click();
+        clickSubmenus(i);
+        menuClickAction(topMenuButtons.item(i), i);
+    }
+
+    document.getElementsByClassName("page").item(0).addEventListener("click", () => {
+        for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
+            let el = document.getElementById(menuIdMap[i]);
+            if (el) {
+                el.parentElement.parentElement.setAttribute("hidden-menu", "true");
+            }
+        }
+    });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
+}
+
+var menuIdMap = {
+    0: "fileMenu",
+    1: "editMenu",
+    2: "helpMenu",
+    3: "exampleMenu",
+    4: "mechTransMenu",
+    5: "mechRotMenu",
+    6: "elecMenu"
+}
+
+// holds the index numbers of submenu children
+var submenuMap = {
+    2: [new SubmenuID(3, 3)],
+    3: [new SubmenuID(1, 4), new SubmenuID(2, 5), new SubmenuID(3, 6)]
+}
+
+var menuClickingDone = false;
+
+function findParentMenu(menuId: number) {
+    for (let key of Object.keys(submenuMap)) {
+        if ((submenuMap[key] as SubmenuID[]).some(sub => sub.id == menuId)) {
+            return parseInt(key);
+        }
+    }
+    return null;
+}
+
+function findAllParentMenus(menuId: number) {
+    let parent = findParentMenu(menuId);
+    if (parent != null) {
+        return [parent, ...findAllParentMenus(parent)];
+    }
+    return [];
+}
+
+function menuClickAction(menuTitle: Node, k: number) {
+    menuTitle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        let parents = findAllParentMenus(k);
+        waitForMenuClickingDone(() => {
+            let el = document.getElementById(menuIdMap[k]);
+            if (el) {
+                el = el.parentElement?.parentElement;
+                el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
+                if (![0, 1, 2].includes(k)) {
+                    let menuTitleBounds = (menuTitle as Element).getBoundingClientRect();
+                    el.style.top = menuTitleBounds.top + "px";
+                    el.style.left = (menuTitleBounds.left + menuTitleBounds.width + 4) + "px";
+                }
+
+                if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
+                    for (let sub of submenuMap[k] as SubmenuID[]) {
+                        if (!sub.hasClickAction) {
+                            let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
+                            menuClickAction(el, sub.id);
+                            sub.hasClickAction = true;
+                        }
+                    }
+                }
+
+                for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
+                    el = document.getElementById(menuIdMap[i]);
+                    if (i == k || parents.includes(i) || !el) continue;
+                    el = el.parentElement.parentElement;
+                    el.setAttribute("hidden-menu", "true");
+                }
+            }
+        });
+    });
 }
 
 function pollDOM() {
-    const el = document.getElementById('graphMenu');
+    const el = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
 
-    if (el != null) {
+    if (el) {
         loadPage();
     } else {
         setTimeout(pollDOM, 20);
     }
 }
+
+// clicks through all menus to get them in the DOM
+function clickSubmenus(menuId: number) {
+    const cond = document.getElementById(menuIdMap[menuId])?.parentElement?.parentElement;
+
+    if (cond) {
+        for (let submenu of submenuMap[menuId] as SubmenuID[]) {
+            let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
+            (submenuEl as HTMLElement).click();
+            clickSubmenus(submenu.id);
+        }
+    } else if (submenuMap.hasOwnProperty(menuId)) {
+        setTimeout(() => clickSubmenus(menuId), 20);
+    }
+    if (menuId == 6) {
+        menuClickingDone = true;
+    }
+}
+
+function waitForMenuClickingDone(func) {
+    if (menuClickingDone) {
+        func();
+    } else {
+        setTimeout(() => waitForMenuClickingDone(func), 20);
+    }
+}
+
 
 pollDOM();

@@ -1,274 +1,632 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager NavManager
+@inject IMessageService messageService
 @page "/"
 @using System.Text;
-@using System.Diagnostics
+@using System.Text.RegularExpressions
+@using BoGLWeb.EditorHelper
+@using BoGLWeb.Json
+@using Newtonsoft.Json
 
 <PageTitle>BoGLWeb</PageTitle>
 
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
-<body>
-    <div class="page">
-        <main>
-            <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
-                <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
-                    <img src="images/logo.png" width="50" />
-                    <div id="logoSave">*</div>
-                </li>
-                <SubMenu title="File" Class="topMenu">
-                    <MenuItem Key="setting:1">New</MenuItem>
-                    <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
-                    <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
-                    <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-                    <MenuItem Key="setting:5">Export as Image</MenuItem>
-                </SubMenu>
-                <SubMenu title="Edit" Class="topMenu">
-                    <MenuItem Key="setting:1">Cut</MenuItem>
-                    <MenuItem Key="setting:2">Copy</MenuItem>
-                    <MenuItem Key="setting:3">Paste</MenuItem>
-                    <MenuItem Key="setting:4">Undo</MenuItem>
-                    <MenuItem Key="setting:5">Redo</MenuItem>
-                    <MenuItem Key="setting:6">Delete</MenuItem>
-                </SubMenu>
-                <SubMenu title="Help" Class="topMenu">
-                    <MenuItem Key="setting:1"><Checkbox>Confirm deleting many items</Checkbox></MenuItem>
-                    <MenuItem Key="setting:2">Tutorial</MenuItem>
-                    <SubMenu Title="Example Files">
-                        <SubMenu Title="Mechanical Translation">
-                            <MenuItem Key="mt:1" OnClick='() => loadExample("basic-two-mass-system")'>Basic Two Mass System - 1</MenuItem>
-                            <MenuItem Key="mt:2" OnClick='() => loadExample("basic-two-mass-system1")'>Basic Two Mass System - 2</MenuItem>
-                            <MenuItem Key="mt:3" OnClick='() => loadExample("basic-two-mass-system2")'>Basic Two Mass System - 3</MenuItem>
-                            <MenuItem Key="mt:4" OnClick='() => loadExample("masses_on_a_spring")'>Quarter Car Model</MenuItem>
-                            <MenuItem Key="mt:5" OnClick='() => loadExample("moving_masses")'>Basic Mass, Spring System with Directions</MenuItem>
-                            <MenuItem Key="mt:6" OnClick='() => loadExample("spring_&_damper")'>Spring and Damper with Force</MenuItem>
-                        </SubMenu>
-                        <SubMenu Title="Mechanical Rotation">
-                            <MenuItem Key="mr:1" OnClick='() => loadExample("rack_pinion")'>Rack and Pinion System</MenuItem>
-                            <MenuItem Key="mr:2" OnClick='() => loadExample("motor-gear-pair")'>Motor, Shaft and Gear Pair</MenuItem>
-                        </SubMenu>
-                        <SubMenu Title="Electrical">
-                            <MenuItem Key="elec:1" OnClick='() => loadExample("lrc_circuit")'>LRC Circuit</MenuItem>
-                        </SubMenu>
-                    </SubMenu>
-                    <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
-                    <MenuItem Key="setting:5" OnClick="@(() => {_visible = true; })">About BoGL</MenuItem>
-                </SubMenu>
-                <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv">
-                    @{
-                        RenderFragment SaveSvg =@<img class="menuIcon" src="images/menuBar/save.png" title="Save" />;
-                        RenderFragment CutSvg =@<img class="menuIcon" src="images/menuBar/cut.png" title="Cut" />;
-                        RenderFragment CopySvg =@<img class="menuIcon" src="images/menuBar/copy.png" title="Copy" />;
-                        RenderFragment PasteSvg =@<img class="menuIcon" src="images/menuBar/paste.png" title="Paste" />;
-                        RenderFragment UndoSvg =@<img class="menuIcon" src="images/menuBar/undo.png" title="Undo" />;
-                        RenderFragment RedoSvg =@<img class="menuIcon" src="images/menuBar/redo.png" title="Redo" />;
-                        RenderFragment TrashSvg =@<img class="menuIcon" src="images/menuBar/trash.png" title="Trash" />;
-                    }
-                    <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="SaveSvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="CutSvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="CopySvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="PasteSvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="UndoSvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="RedoSvg" />
-                    </Button>
-                    <Button Disabled Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
-                        <Icon Component="TrashSvg" />
-                    </Button>
-                </li>
-            </Menu>
-            <div class="pageContainer">
-                <div id="graphMenu">
-                    <Collapse Bordered="false">
-                        <ExpandIconTemplate>
-                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" />
-                        </ExpandIconTemplate>
+<body oncontextmenu="return false;">
+<div class="page">
+<main>
+<AntContainer/>
+<Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
+    <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
+        <img src="images/logo.png" width="50"/>
+        <div id="logoSave">*</div>
+    </li>
+    <SubMenu title="File" Class="topMenu" Key="File">
+        <span id="fileMenu"></span>
+        <!-- <MenuItem Key="setting:1">New</MenuItem> -->
+        <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
+        <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
+        <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
+        <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
+        <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
+    </SubMenu>
+    <SubMenu title="Edit" Class="topMenu" Key="Edit">
+        <span id="editMenu"></span>
+        <MenuItem Key="setting:1" OnClick="Cut">Cut</MenuItem>
+        <MenuItem Key="setting:2" OnClick="Copy">Copy</MenuItem>
+        <MenuItem Key="setting:3" OnClick="Paste">Paste</MenuItem>
+        <MenuItem Key="setting:4" OnClick="Undo">Undo</MenuItem>
+        <MenuItem Key="setting:5" OnClick="Redo">Redo</MenuItem>
+        <MenuItem Key="setting:6" OnClick="Delete">Delete</MenuItem>
+    </SubMenu>
+    <SubMenu title="Help" Class="topMenu" Key="Help">
+        <span id="helpMenu"></span>
+        <MenuItem Key="setting:1">
+            <Checkbox @bind-Checked="deleteManyChecked">Confirm deleting many items</Checkbox>
+        </MenuItem>
+        <MenuItem Key="setting:2" OnClick="runTutorial">Tutorial</MenuItem>
+        <SubMenu Title="Example Files">
+            <span id="exampleMenu"></span>
+            <SubMenu Title="Mechanical Translation">
+                <span id="mechTransMenu"></span>
+                <MenuItem Key="mt:1" OnClick='() => loadExample("basic-two-mass-system")'>Basic Two Mass System - 1</MenuItem>
+                <MenuItem Key="mt:2" OnClick='() => loadExample("basic-two-mass-system1")'>Basic Two Mass System - 2</MenuItem>
+                <MenuItem Key="mt:3" OnClick='() => loadExample("basic-two-mass-system2")'>Basic Two Mass System - 3</MenuItem>
+                <MenuItem Key="mt:4" OnClick='() => loadExample("masses_on_a_spring")'>Quarter Car Model</MenuItem>
+                <MenuItem Key="mt:5" OnClick='() => loadExample("moving_masses")'>Basic Mass, Spring System with Directions</MenuItem>
+                <MenuItem Key="mt:6" OnClick='() => loadExample("spring_&_damper")'>Spring and Damper with Force</MenuItem>
+            </SubMenu>
+            <SubMenu Title="Mechanical Rotation">
+                <span id="mechRotMenu"></span>
+                <MenuItem Key="mr:1" OnClick='() => loadExample("rack_pinion")'>Rack and Pinion System</MenuItem>
+                <MenuItem Key="mr:2" OnClick='() => loadExample("motor-gear-pair")'>Motor, Shaft and Gear Pair</MenuItem>
+            </SubMenu>
+            <SubMenu Title="Electrical">
+                <span id="elecMenu"></span>
+                <MenuItem Key="elec:1" OnClick='() => loadExample("lrc_circuit")'>LRC Circuit</MenuItem>
+            </SubMenu>
+        </SubMenu>
+        <MenuItem Key="setting:4" OnClick="reportBugs">Report Bugs</MenuItem>
+        <MenuItem Key="setting:5" OnClick="OpenAboutModal">About BoGL</MenuItem>
+    </SubMenu>
+    <li class="ant-menu-submenu ant-menu-submenu-horizontal iconDiv" id="iconButtons">
+        @{
+            RenderFragment SaveSvg = @<img class="menuIcon" src="images/menuBar/save.png" title="Save"/>;
+            RenderFragment CutSvg = @<img class="menuIcon" src="images/menuBar/cut.png" title="Cut"/>;
+            RenderFragment CopySvg = @<img class="menuIcon" src="images/menuBar/copy.png" title="Copy"/>;
+            RenderFragment PasteSvg = @<img class="menuIcon" src="images/menuBar/paste.png" title="Paste"/>;
+            RenderFragment UndoSvg = @<img class="menuIcon" src="images/menuBar/undo.png" title="Undo"/>;
+            RenderFragment RedoSvg = @<img class="menuIcon" src="images/menuBar/redo.png" title="Redo"/>;
+            RenderFragment TrashSvg = @<img class="menuIcon" src="images/menuBar/trash.png" title="Trash"/>;
+        }
+        <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
+            <Icon Component="SaveSvg"/>
+        </Button>
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="CutSvg"/>
+        </Button>
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="CopySvg"/>
+        </Button>
+        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="PasteSvg"/>
+        </Button>
+        <Button Shape="Square" Disabled="@disableUndo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
+            <Icon Component="UndoSvg"/>
+        </Button>
+        <Button Shape="Square" Disabled="@disableRedo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
+            <Icon Component="RedoSvg"/>
+        </Button>
+        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="TrashSvg"/>
+        </Button>
+    </li>
+</Menu>
+<div class="pageContainer">
+    <div id="graphMenu">
+        <Collapse Bordered="false">
+            <ExpandIconTemplate>
+                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+            </ExpandIconTemplate>
+            <ChildContent>
+                <Panel Header="Basic Mechanical Translation" Key="1">
+                    <div id="mechTrans" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Basic Mechanical Rotation" Key="2">
+                    <div id="mechRot" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Transmission Elements" Key="3">
+                    <div id="transElem" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Electrical" Key="3">
+                    <div id="electrical" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Actuators" Key="3">
+                    <div id="actuators" class="elementHolder"></div>
+                </Panel>
+            </ChildContent>
+        </Collapse>
+    </div>
+    <div class="card-container">
+        <div id="zoomMenu">
+            <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
+                <ChildContent>
+                    <Panel Header="Zoom" Key="1">
+                        <div id="plusLabel" class="sliderLabel">+</div>
+                        <div id="minusLabel" class="sliderLabel">-</div>
+                        <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange"/>
+                        <Button Type="@ButtonType.Primary" Class="bogl_button" OnClick="e => { SliderChange(100); }">Reset</Button>
+                    </Panel>
+                </ChildContent>
+                <ExpandIconTemplate>
+                    <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                </ExpandIconTemplate>
+            </Collapse>
+        </div>
+        <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
+            <TabPane Key="1" Tab="System" ForceRender=true>
+                <div id="modifierMenu">
+                    <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
                         <ChildContent>
-                            <Panel Header="Basic Mechanical Translation" Key="1">
-                                <div id="mechTrans" class="elementHolder"></div>
-                            </Panel>
-                            <Panel Header="Basic Mechanical Rotation" Key="2">
-                                <div id="mechRot" class="elementHolder"></div>
-                            </Panel>
-                            <Panel Header="Transmission Elements" Key="3">
-                                <div id="transElem" class="elementHolder"></div>
-                            </Panel>
-                            <Panel Header="Electrical" Key="3">
-                                <div id="electrical" class="elementHolder"></div>
-                            </Panel>
-                            <Panel Header="Actuators" Key="3">
-                                <div id="actuators" class="elementHolder"></div>
+                            <Panel Header="Modifers" Key="1">
+                                <div id="modifierCheckboxWrapper">
+                                    <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                    <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                    <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                    <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                    <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                    <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                    <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                </div>
+                                <hr/>
+                                <div>
+                                    <div style="font-size: 12px">Velocity Direction</div>
+                                    <div id="velocities">
+                                        <div id="clearVelocityWrapper">
+                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">
+                                                Clear
+                                                <br/>Velocity
+                                            </Button>
+                                        </div>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
+                                            <div class="arrowButton topArrow">⮢</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
+                                            <div class="arrowButton topArrow">⮣</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
+                                            <div class="arrowButton sideTopArrow">⮥</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
+                                            <div class="arrowButton">⮧</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
+                                            <div class="arrowButton bottomArrow">⮡</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
+                                            <div class="arrowButton bottomArrow">⮠</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
+                                            <div class="arrowButton">⮦</div>
+                                        </Button>
+                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
+                                            <div class="arrowButton sideTopArrow">⮤</div>
+                                        </Button>
+                                    </div>
+                                </div>
                             </Panel>
                         </ChildContent>
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                        </ExpandIconTemplate>
                     </Collapse>
                 </div>
-                <div class="card-container">
-                    <Tabs Type="@TabType.Card">
-                        <TabPane Key="1" Tab="System" ForceRender=true>
-                            <div id="modifierMenu">
-                                <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[]{"1"})">
-                                    <ChildContent>
-                                        <Panel Header="Modifers" Key="1">
-                                            <div id="modifierCheckboxWrapper">
-                                                <Checkbox Checked="@checkValues[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                                <Checkbox Checked="@checkValues[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                                <Checkbox Checked="@checkValues[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                                <Checkbox Checked="@checkValues[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                                <Checkbox Checked="@checkValues[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                                <Checkbox Checked="@checkValues[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                                <Checkbox Checked="@checkValues[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
-                                            </div>
-                                            <hr />
-                                            <div>
-                                                <div style="font-size: 12px">Velocity Direction</div>
-                                                <div id="velocities">
-                                                    <div id="clearVelocityWrapper">
-                                                        <Button Class="bogl_button">Clear<br />Velocity</Button>
-                                                    </div>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px" Class="longArrow"><div class="arrowButton topArrow">⮢</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px" Class="longArrow"><div class="arrowButton topArrow">⮣</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮥</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px" Class="tallArrow"><div class="arrowButton">⮧</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮡</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px" Class="longArrow"><div class="arrowButton bottomArrow">⮠</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px" Class="tallArrow"><div class="arrowButton">⮦</div></Button>
-                                                    <Button Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px" Class="tallArrow"><div class="arrowButton sideTopArrow">⮤</div></Button>
-                                                </div>
-                                            </div>
-                                        </Panel>
-                                    </ChildContent>
-                                    <ExpandIconTemplate>
-                                        <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px" />
-                                    </ExpandIconTemplate>
-                                </Collapse>
-                            </div>
-                            <Button Type="@ButtonType.Primary" Loading="generatingBondGraph" Id="generateButton" Disabled="!allRulesLoaded" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
-                            @if (!allRulesLoaded) {
-                                <p id="ruleLoadProgressText">Loading Rulesets:</p>
-                                <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed" />
-                            }
-                            <div id="systemDiagram"></div>
-                        </TabPane>
-                        <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
-                            <div id="unsimpBG"></div>
-                        </TabPane>
-                        <TabPane Key="3" Tab="Simplified BG" ForceRender=true>
-                            <div id="simpBG"></div>
-                        </TabPane>
-                        <TabPane Key="4" Tab="Causal BG" ForceRender=true>
-                            <Select Id="causalSelect"
-                                    TItem="Option"
-                                    TItemValue="int"
-                                    DataSource="@causalSwitchOptions"
-		                            @bind-Value="@selectedCausalOption"
-		                            DefaultValue="@(0)"
-                                    ValueName="@nameof(Option.value)"
-		                            LabelName="@nameof(Option.label)"
-		                            Style="width:120px"
-		                            OnSelectedItemChanged="ChangeCausalOption">
-                            </Select>
-                            <div id="causalBG"></div>
-                        </TabPane>
-                    </Tabs>
-                </div>
-            </div>
-        </main>
+                <Button Type="@ButtonType.Primary" Id="generateButton" Disabled="!allRulesLoaded || generatingBondGraph" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                @if (generatingBondGraph) {
+                    <p id="generateProgressText">Processing System Diagram:</p>
+                    <Progress id="generateProgress" Percent=@generateProgress ShowInfo="false" TrailColor="#ededed"/>
+                }
+                @if (!allRulesLoaded) {
+                    <p id="ruleLoadProgressText">Preparing Generation:</p>
+                    <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
+                }
+                <div id="systemDiagram"></div>
+            </TabPane>
+            <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
+                <div id="unsimpBG"></div>
+            </TabPane>
+            <TabPane Key="3" Tab="Simplified BG" ForceRender=true>
+                <div id="simpBG"></div>
+            </TabPane>
+            <TabPane Key="4" Tab="Causal BG" ForceRender=true>
+                <Select Id="causalSelect"
+                        TItem="Option"
+                        TItemValue="int"
+                        DataSource="@causalSwitchOptions"
+                        @bind-Value="@selectedCausalOption"
+                        DefaultValue="@(0)"
+                        ValueName="@nameof(Option.value)"
+                        LabelName="@nameof(Option.label)"
+                        Style="width:120px"
+                        OnSelectedItemChanged="ChangeCausalOption">
+                </Select>
+                <div id="causalBG"></div>
+            </TabPane>
+        </Tabs>
     </div>
-    <Modal Title="About BoGL Web" Visible="@_visible" OnOk="@handleOk" OnCancel="@handleOk">
-        <div class="modal-body">
-            <p>Original application developed by:</p>
-            <p>Daniel Grande</p>
-            <p>Felice Mancini</p>
-            <p>Corey Alicchio</p>
-            <p>Justin Vitiello</p>
-            <p>Terry Hearst</p>
-            <p>Talal Jaber</p>
-            <p>Corrin Courville</p>
-            <p>BoGL Web Developed by:</p>
-            <p>Margaret Earnest</p>
-            <p>Jakob Misbach</p>
-            <p>Anthony Vuolo</p>
-            <p>Advisors:</p>
-            <p>Prof. David Brown</p>
-            <p>Prof. Pradeep Radhakrishan</p>
-            <p>Prof. Brigitte Servatius</p>
-        </div>
-    </Modal>
-    <Modal Title="Error Loading .bogl File" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
-        <div class="modal-body">
-            <p>@errorMessage</p>
-        </div>
-    </Modal>
-    <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleURLOk" OnCancel="@handleURLOk">
-        <p>@url</p>
-    </Modal>
+</div>
+</main>
+</div>
+<Modal Title="About BoGL Web" Visible="@visible" OnOk="@handleOk" OnCancel="@handleOk">
+    <div class="modal-body">
+        <p>BoGL Web Developed by:</p>
+        <p>Margaret Earnest</p>
+        <p>Jakob Misbach</p>
+        <p>Anthony Vuolo</p>
+        <p>Original application developed by:</p>
+        <p>Daniel Grande</p>
+        <p>Felice Mancini</p>
+        <p>Corey Alicchio</p>
+        <p>Justin Vitiello</p>
+        <p>Terry Hearst</p>
+        <p>Talal Jaber</p>
+        <p>Corrin Courville</p>
+        <p>Advisors:</p>
+        <p>Prof. David Brown</p>
+        <p>Prof. Pradeep Radhakrishan</p>
+        <p>Prof. Brigitte Servatius</p>
+    </div>
+</Modal>
+<Modal Title="@errorTitle" Visible="@errorVisible" OnOk="@handleErrorOk" OnCancel="@handleErrorOk">
+    <div class="modal-body">
+        <p>@errorMessage</p>
+    </div>
+</Modal>
+<Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
+    <Input DefaultValue="@url" TValue="string" ReadOnly/>
+    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+</Modal>
+<Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
+    <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
+</Modal>
 </body>
 
 @code {
     private bool generatingBondGraph;
 
-    private static Index? _app;
+    public static Index? app;
+
+    private int tabNum;
+
     public class Option {
         public string label { get; set; }
         public int value { get; set; }
     }
+
+    static bool disableUndo = true;
+    static bool disableRedo = true;
+
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    static double zoomValue = 100;
+    static List<int> selectedVelocity = new List<int> { };
+    static bool velocityDisabled = true;
+    string currTab = "1";
+    static bool isSelecting = false;
+    static bool hasCopiedSelection = false;
 
     public Index() {
-        _app = this;
+        app = this;
     }
 
     private static bool[] checkValues { get; set; } = { false, false, false, false, false, false, false };
-    private static bool[] disabledValues { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] checkIndeterminate { get; set; } = { false, false, false, false, false, false, false };
+    private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
+    [JSInvokable]
+    public static async void UndoRedoHandler(int tab, bool isUndo) {
+        CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
+        Console.WriteLine(cc);
+        switch(cc?.GetType().Name) {
+            case nameof(CanvasChange.AddSelection):
+                CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
+                app?.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), addS.GetHighlight(), isUndo);
+                break;
+            case nameof(CanvasChange.DeleteSelection):
+                CanvasChange.DeleteSelection ds = (CanvasChange.DeleteSelection) cc;
+                app?.URDoDeleteSelection(ds.GetDeletedJSONElements(), ds.GetUnselectedEdges(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeSelection):
+                CanvasChange.ChangeSelection cs = (CanvasChange.ChangeSelection) cc;
+                app?.URDoChangeSelection(cs.GetNewElementIDs(), cs.GetNewEdgeIDs(), cs.GetIDs(), cs.GetOldEdgeIDs(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeModifier):
+                CanvasChange.ChangeModifier cm = (CanvasChange.ChangeModifier) cc;
+                app?.URDoChangeSelectionModifier(cm.GetIDs(), cm.GetModID(), cm.GetToggle(), cm.GetCurrent(), isUndo);
+                break;
+            case nameof(CanvasChange.MoveSelection):
+                CanvasChange.MoveSelection ms = (CanvasChange.MoveSelection) cc;
+                app?.URDoMoveSelection(ms.GetIDs(), ms.GetXOffset(), ms.GetYOffset(), isUndo);
+                break;
+            case nameof(CanvasChange.ChangeVelocity):
+                CanvasChange.ChangeVelocity cv = (CanvasChange.ChangeVelocity) cc;
+                app?.URDoChangeSelectionVelocity(cv.GetIDs(), cv.GetEdgeIDs(), cv.GetNewVelID(), cv.GetOldIDs(), isUndo);
+                break;
+        }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
+    }
+
+    public async void Undo()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("handleUndoRedo", true);
+    }
+
+    public async void Redo()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("handleUndoRedo", false);
+    }
+
+    public async void Cut() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("cut");
+    }
+
+    public async void Copy() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("copy");
+    }
+
+    public async void Paste() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("paste");
+    }
+
+    static bool deleteManyChecked = true;
+
+    public async void Delete() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("delete");
+    }
+
+    [JSInvokable]
+    public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
+        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
+        Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
+        // Need to add unselected deleted edges
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
+        if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
+            Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            + String.Join(", ", removeEdgeFromSelection) + "]");
+            EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
+            UpdateBackendWithInitialStackChange(tabID);
+        }
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
+        Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
+        Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
+        UpdateBackendWithInitialStackChange(tabID);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
+        Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+            + ", [" + String.Join(", ", prevVelVals) + "]");
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
+        UpdateBackendWithInitialStackChange(1);
+        app?.StateHasChanged();
+    }
+
+    public static void UpdateBackendWithInitialStackChange(int tab) {
+        if(tab == 1) { // System diagram
+            EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
+        } else { // Some bond graph
+            EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
+        }
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoAddSelection", newObjects, prevSelectedElements, prevSelectedEdges, highlight, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        // put unselected deleted edges here where the empty list is
+        await module.InvokeVoidAsync("urDoDeleteSelection", deletedObjects, unselectedDeletedEdges, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelection(int[] elIDsToAdd, string[] edgesToAdd, int[] elIDsToRemove, string[] edgesToRemove, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelection", elIDsToAdd, edgesToAdd, elIDsToRemove, edgesToRemove, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelectionModifier", elIDs, modID, modVal, prevModVals, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoMoveSelection(int[] elements, double xOffset, double yOffset, bool isUndo)
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoMoveSelection", elements, xOffset, yOffset, isUndo);
+        app?.StateHasChanged();
+    }
+
+    public async void URDoChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals, bool isUndo) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elIDs, edgeIDs, velID, prevVelVals, isUndo);
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static async Task<bool> showDeleteConfirmationModal(bool multiElementsSelected) {
+        if (!deleteManyChecked) {
+            return true;
+        } else {
+            if (multiElementsSelected) {
+                confirmDeleteModalVisible = true;
+                app?.StateHasChanged();
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    [JSInvokable]
+    public static void SetIsSelecting(bool value) {
+        Index.isSelecting = value;
+        app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void SetHasCopied(bool value) {
+        Index.hasCopiedSelection = value;
+        app?.StateHasChanged();
+    }
+
+    //Set is the velocity option is disabled in the modifier menu
+    [JSInvokable]
+    public static void SetVelocityDisabled(bool disabled) {
+        Index.velocityDisabled = disabled;
+        if (disabled) {
+            selectedVelocity = new List<int> {};
+        }
+        app?.StateHasChanged();
+    }
+
+    //Set the velocity
+    [JSInvokable]
+    public static void SetVelocity(List<int> velocities) {
+        Index.selectedVelocity = velocities;
+        app?.StateHasChanged();
+    }
+
+    //Change the velocity on the backend
+    public async void ChangeVelocity(int velocity) {
+        Index.selectedVelocity = new List<int> { velocity };
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setVelocity", velocity);
+        app?.StateHasChanged();
+    }
+
+    //Clear the check boxes in the modifier menu
     [JSInvokable]
     public static void ClearCheckboxes() {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
+            Index.checkIndeterminate[i] = false;
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
+    //Set which check boxes are pressed
     [JSInvokable]
-    public static void SetCheckboxes(int[] indeces) {
+    public static void SetCheckboxes(int[] checkboxValues) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
-            Index.checkValues[i] = indeces.Contains(i);
+            Index.checkValues[i] = checkboxValues[i] != 0;
+            Index.checkIndeterminate[i] = checkboxValues[i] == 1;
         }
-        _app?.StateHasChanged();
+        app?.StateHasChanged();
     }
 
-    public async void CheckChange(bool b, int i) {
-        Index.checkValues[i] = b;
+    //Clear the check boxes which are disabled
+    [JSInvokable]
+    public static void ClearDisabled() {
+        for (int i = 0; i < disabledValues.Length; i++) {
+            disabledValues[i] = true;
+        }
+        app?.StateHasChanged();
+    }
+
+    //Sets which check boxes are disabled
+    [JSInvokable]
+    public static void SetDisabled(int[] indices) {
+        for (int i = 0; i < disabledValues.Length; i++) {
+            disabledValues[i] = !indices.Contains(i);
+        }
+        app?.StateHasChanged();
+    }
+
+    //Set the current zoom
+    [JSInvokable]
+    public static void SetScale(double scale) {
+        zoomValue = scale * 100;
+        app?.StateHasChanged();
+    }
+
+    private async void OpenAboutModal() {
+        visible = true;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Help");
+    }
+
+    //Change the zoom
+    private async void SliderChange(double i) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        zoomValue = i;
+        await module.InvokeVoidAsync("setZoom", i);
+    }
+
+    //Check if a modifier has changed
+    private async void CheckChange(bool b, int i) {
+        Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
 
-    public async void ChangeCausalOption(Option selection) {
+    //Change tabs
+    private async void TabChange(string key) {
+        this.currTab = key;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setTab", key);
+        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
+        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
+        base.StateHasChanged();
+    }
+
+    //TODO What does this do?
+    private async void ChangeCausalOption(Option selection) {
         if (generatingBondGraph) {
-            Console.WriteLine("Switched to " + selection.value);
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
             await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
         }
     }
 
-    private readonly List<string> ruleNames = new List<string>();
+    private readonly List<string> ruleNames = new();
     private readonly double totalRules = 19.0;
     private string fileToLoad = "";
     private double loadPercent = 0;
 
+    //Called when the page is loaded
     protected override async Task OnInitializedAsync() {
+        Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
+
+        //Loads rulesets
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -300,38 +658,58 @@
         base.StateHasChanged();
     }
 
-    public async Task generateButtonClicked() {
+    private double generateProgress = 0.0;
+
+    //Generates the series of bond graphs and displays them to the screen
+    private async Task generateButtonClicked() {
+        generateProgress = 0.0;
         generatingBondGraph = true;
         base.StateHasChanged();
         await Task.Delay(1);
-        
+
+        //Generates the bond graphs
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
+        generateProgress = 5.0;
 
-        SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        Console.WriteLine("-------- SYSTEM DIAGRAM --------");
-        Console.WriteLine(sysDiagram.generateBoGLString());
-        var graphs = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        SystemDiagram? sysDiagram;
+        BondGraph bondGraph;
+        BondGraph item2;
+        List<BondGraph> causal;
+        
+        try {
+            sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+            (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+        } catch (ArgumentException e) {
+            errorVisible = true;
+            errorTitle = "Error Generating Bond Graph";
+            errorMessage = e.Message;
+            base.StateHasChanged();
+            return;
+        }
 
-        BondGraphEmbedder unsimplifiedEmbedder = new(graphs.Item1);
+        generateProgress = 25.0;
 
+        BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
+
+        //Lays out the bond graphs
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
             unsimplifiedEmbedder.embedBondGraph();
         }
         var unsimplified = unsimplifiedEmbedder.getBondGraph();
-        
-        BondGraphEmbedder simplifiedEmbedder = new(graphs.Item2);
+        generateProgress = 50.0;
+
+        BondGraphEmbedder simplifiedEmbedder = new(item2);
 
         while (!simplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
             simplifiedEmbedder.embedBondGraph();
         }
-        
         var simplified = simplifiedEmbedder.getBondGraph();
-        var causal = graphs.Item3;
+        generateProgress = 75.0;
 
         foreach (BondGraph g in causal) {
             BondGraphEmbedder causalEmbedder = new(g);
@@ -340,49 +718,53 @@
                 base.StateHasChanged();
                 await Task.Delay(1);
                 causalEmbedder.embedBondGraph();
-            }     
+            }
             causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
+        generateProgress = 100.0;
 
+        //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
-        causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => {
-            return new Option { label = "Option " + (i + 1), value = i };
-        }).ToList();
+        causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => { return new Option { label = "Option " + (i + 1), value = i }; }).ToList();
         generatingBondGraph = false;
         base.StateHasChanged();
+        await messageService.Success("Bond Graphs Successfully Generated!");
     }
 
     /// <summary>
     /// Loads a file in the example directory
     /// </summary>
     /// <param name="filename">The name of the example file without .bogl</param>
-    public async void loadExample(string filename) {
+    private async void loadExample(string filename) {
         string xmlString = "";
-        if (!fileToLoad.Equals("")) {
-            Console.WriteLine(fileToLoad);
-        }
 
         HttpClient client = new HttpClient();
-        HttpResponseMessage exampleResponse = await client.GetAsync("http://localhost:5006/examples/" + filename + ".bogl");
+        HttpResponseMessage exampleResponse = await client.GetAsync("https://boglweb.github.io/rules-and-examples/examples/" + filename + ".bogl");
         xmlString = await exampleResponse.Content.ReadAsStringAsync();
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromXML(xmlString);
 
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Help");
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     private string errorMessage = "";
-    
-    public async void openBoGLFile() {
+    private string errorTitle = "";
+
+    //Opens a .bogl file
+    private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("openFile");
         SystemDiagram sysDiagram;
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
-        } catch (ArgumentException e) {
+        }
+        catch (ArgumentException e) {
             errorVisible = true;
+            errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
             base.StateHasChanged();
             return;
@@ -391,19 +773,20 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
+    //Turns a string into a Stream
     private Stream getFileStream(string fileData) {
         var testData = fileData;
         var fileStream = new MemoryStream(Encoding.ASCII.GetBytes(testData));
 
         return fileStream;
     }
-    
-    public async void save() {
-        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        var file = await module.InvokeAsync<object>("getSystemDiagram");
-        Console.WriteLine(file.ToString());
 
-        //TODO Make this use the current system diagram
+    //Saves the system diagram to the user's file system
+    private async void save() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
+        var file = await module.InvokeAsync<object>("getSystemDiagram");
+
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
         var fileName = "SystemDiagram.bogl";
@@ -413,12 +796,15 @@
         await module.InvokeVoidAsync("saveFile", fileName, streamRef);
     }
 
-    public async void saveAs() {
+    //Saves the system diagram as a .bogl file to the user's file system
+    private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-        //TODO Make this use the current system diagram
+        Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+        Console.WriteLine("BoGL String");
         var fileStream = getFileStream(sysDiagram.generateBoGLString());
         var fileName = "SystemDiagram.bogl";
 
@@ -427,21 +813,24 @@
         await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
     }
 
-    public void reportBugs() {
+    //Handles the but report button
+    private void reportBugs() {
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
 
-    public bool allRulesLoaded { get; set; } = false;
+    private bool allRulesLoaded { get; set; } = false;
 
-    bool _visible = false;
+    bool visible = false;
 
+    //Handles the ok button on the about modal
     private void handleOk() {
-        _visible = false;
+        visible = false;
         base.StateHasChanged();
     }
-    
+
     bool errorVisible = false;
 
+    //Handles the ok button on the error modal
     private void handleErrorOk() {
         errorVisible = false;
         base.StateHasChanged();
@@ -450,8 +839,178 @@
     bool urlModalVisible = false;
     string url = "";
 
-    private void handleURLOk() {
+    //Handles the ok button on the url modal
+    private void handleUrlOk() {
         urlModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    //Converts the system diagram to a url
+    private async void generateUrl() {
+    //Get information from backend
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
+        var generatedUrl = await module.InvokeAsync<object>("generateURL");
+        string jsonStr = generatedUrl.ToString() ?? string.Empty;
+        Root? deSerializedJson = JsonConvert.DeserializeObject<Root>(jsonStr);
+        if (deSerializedJson != null) {
+            jsonStr = deSerializedJson.generateUrl();
+        } else {
+            await messageService.Error("Invalid URL Generated");
+        }
+
+    //Process json into url
+        Regex elementName = new Regex("\"elements\":");
+        Regex typeName = new Regex("\"type\":");
+        Regex xName = new Regex("\"x\":");
+        Regex yName = new Regex("\"y\":");
+        Regex velocityName = new Regex("\"velocity\":");
+        Regex sourceName = new Regex("\"source\":");
+        Regex idName = new Regex("\"id\":");
+        Regex modifiersName = new Regex("\"modifiers\":");
+        Regex targetName = new Regex("\"target\":");
+        Regex bondsName = new Regex("\"bonds\"");
+
+        jsonStr = elementName.Replace(jsonStr, "");
+        jsonStr = typeName.Replace(jsonStr, "");
+        jsonStr = xName.Replace(jsonStr, "");
+        jsonStr = yName.Replace(jsonStr, "");
+        jsonStr = velocityName.Replace(jsonStr, "");
+        jsonStr = sourceName.Replace(jsonStr, "");
+        jsonStr = idName.Replace(jsonStr, "");
+        jsonStr = modifiersName.Replace(jsonStr, "");
+        jsonStr = targetName.Replace(jsonStr, "");
+        jsonStr = bondsName.Replace(jsonStr, "");
+
+    //Shorten URL
+        Regex urlShort1 = new Regex("{\\[{");
+        Regex urlShort2 = new Regex("\\[]");
+        Regex urlShort3 = new Regex("},{");
+        Regex urlShort4 = new Regex("}],:\\[{{");
+        Regex urlShort5 = new Regex("}]}");
+        Regex urlShort6 = new Regex("},{{");
+        Regex urlShort7 = new Regex("},");
+        Regex urlShort8 = new Regex(",");
+
+        jsonStr = urlShort4.Replace(jsonStr, "a");
+        jsonStr = urlShort6.Replace(jsonStr, "b");
+        jsonStr = urlShort3.Replace(jsonStr, "c");
+        jsonStr = urlShort2.Replace(jsonStr, "d");
+        jsonStr = urlShort5.Replace(jsonStr, "e");
+        jsonStr = urlShort1.Replace(jsonStr, "f");
+        jsonStr = urlShort7.Replace(jsonStr, "g");
+        jsonStr = urlShort8.Replace(jsonStr, "h");
+
+
+    //Add url to modal
+        url = "https://boglweb.azurewebsites.net/?q=" + jsonStr;
+        urlModalVisible = true;
+        base.StateHasChanged();
+    }
+
+    //Removes the compression from the url and turns it back into a json string
+    [JSInvokable]
+    public static string uncompressUrl(string compressedUrl) {
+        Regex urlShort1 = new Regex("f");
+        Regex urlShort2 = new Regex("d");
+        Regex urlShort3 = new Regex("c");
+        Regex urlShort4 = new Regex("a");
+        Regex urlShort5 = new Regex("e");
+        Regex urlShort6 = new Regex("b");
+        Regex urlShort7 = new Regex("g");
+        Regex urlShort8 = new Regex("h");
+
+        compressedUrl = urlShort1.Replace(compressedUrl, "{[{");
+        compressedUrl = urlShort2.Replace(compressedUrl, "[]");
+        compressedUrl = urlShort3.Replace(compressedUrl, "},{");
+        compressedUrl = urlShort4.Replace(compressedUrl, "}],:[{{");
+        compressedUrl = urlShort5.Replace(compressedUrl, "}]}");
+        compressedUrl = urlShort6.Replace(compressedUrl, "},{{");
+        compressedUrl = urlShort7.Replace(compressedUrl, "},");
+        compressedUrl = urlShort8.Replace(compressedUrl, ",");
+
+        string[] splitCompressedUrl = compressedUrl.Split(":");
+
+        string[] splitElements = Regex.Split(splitCompressedUrl[0].Substring(3), @"},{");
+        List<string> generatedElementList = new();
+        foreach (string elementString in splitElements) {
+            Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
+            Match modifier = modifierRegex.Match(elementString);
+
+            string[] splitElementString = elementString.Split(",");
+            splitElementString[0] = "\"id\":" + splitElementString[0];
+            splitElementString[1] = "\"x\":" + splitElementString[1];
+            splitElementString[2] = "\"y\":" + splitElementString[2];
+            splitElementString[3] = "\"modifiers\":" + modifier.Value;
+            splitElementString[4] = "\"velocity\":" + splitElementString[4].Replace("]", "");
+            splitElementString[5] = "\"type\":" + splitElementString[5];
+            string generatedElementString = "{" + splitElementString[0] + "," + splitElementString[1] + "," + splitElementString[2] + "," + splitElementString[3] + "," + splitElementString[4] + "," + splitElementString[5] + "}";
+            generatedElementList.Add(generatedElementString);
+        }
+
+        string builtElementString = "";
+        for (int i = 0; i < generatedElementList.Count; i++) {
+            builtElementString += generatedElementList[i];
+            if (i != generatedElementList.Count - 1) {
+                builtElementString += ",";
+            }
+        }
+        builtElementString = builtElementString.Remove(builtElementString.Length - 1);
+        builtElementString = "{\"elements\":[" + builtElementString + ",";
+
+        string[] splitEdges = Regex.Split(splitCompressedUrl[1].Substring(2), @"},{{");
+        List<string> generatedEdgeList = new();
+        foreach (string edgeString in splitEdges) {
+            Regex modifierRegex = new Regex(@"\[(\d,)*\d*\]");
+            string edgeStringNoModifiers = modifierRegex.Replace(edgeString, "");
+
+            string[] splitEdgeString = edgeStringNoModifiers.Split(",");
+            splitEdgeString[0] = "\"source\":" + splitEdgeString[0].Replace("{", "").Replace("}", "");
+            splitEdgeString[6] = "\"target\":" + splitEdgeString[6].Replace("{", "").Replace("}", "");
+            splitEdgeString[12] = "\"velocity\":" + splitEdgeString[12].Replace("{", "").Replace("}", "");
+            string generatedEdgeString = "{" + splitEdgeString[0] + "," + splitEdgeString[6] + "," + splitEdgeString[12] + "}";
+            generatedEdgeList.Add(generatedEdgeString);
+        }
+
+        string builtEdgeString = "";
+        for (int i = 0; i < generatedEdgeList.Count; i++) {
+            builtEdgeString += generatedEdgeList[i];
+            if (i != generatedEdgeList.Count - 1) {
+                builtEdgeString += ",";
+            }
+        }
+        builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
+
+        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+
+        return compressedUrl;
+    }
+
+    //Copies the url representation of the system diagram to the system's clipboard 
+    private async void copyUrl() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("textToClipboard", url);
+        await messageService.Success("URL copied to clipboard!");
+    }
+
+    //Runs the introjs tutorial
+    private async Task runTutorial() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        // ant-menu-submenu-hidden
+        await module.InvokeAsync<object>("runTutorial");
+    }
+
+    private static bool confirmDeleteModalVisible = false;
+
+    private async void handleDeleteOk() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("delete", false);
+        confirmDeleteModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private void handleDeleteCancel() {
+        confirmDeleteModalVisible = false;
         base.StateHasChanged();
     }
 }

@@ -1,16 +1,9 @@
-﻿using AntDesign;
-using BoGLWeb.BaseClasses;
-using BoGLWeb.DifferentialEquationHelper;
+﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
-/*using Newtonsoft.Json;
-*/using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Globalization;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using System.Text;
-using static Microsoft.Playwright.NUnit.SkipAttribute;
+using System.Text.RegularExpressions;
 
 namespace BoGLWeb {
 
@@ -25,8 +18,8 @@ namespace BoGLWeb {
         /// Creates an instance of BondGraph
         /// </summary>
         public BondGraph() {
-            elements = new Dictionary<string, Element>();
-            bonds = new List<Bond>();
+            this.elements = new Dictionary<string, Element>();
+            this.bonds = new List<Bond>();
         }
 
         /// <summary>
@@ -35,7 +28,7 @@ namespace BoGLWeb {
         /// <param name="name">The name of the element</param>
         /// <param name="e">The instance of the element</param>
         public void addElement(string name, Element e) {
-            elements.Add(name, e);
+            this.elements.Add(name, e);
         }
 
         /// <summary>
@@ -43,7 +36,7 @@ namespace BoGLWeb {
         /// </summary>
         /// <param name="bond">The bond to add</param>
         public void addBond(Bond bond) {
-            bonds.Add(bond);
+            this.bonds.Add(bond);
         }
 
         /// <summary>
@@ -52,17 +45,29 @@ namespace BoGLWeb {
         /// <param name="name">The name of the element</param>
         /// <returns>The element with the input name</returns>
         public Element getElement(string name) {
-            return elements[name];
+            return this.elements[name];
         }
 
+        /// <summary>
+        /// Returns a dictionary with the names of elements as Keys and Elements as values
+        /// </summary>
+        /// <returns>A Dictionary</returns>
         public Dictionary<string, Element> getElements() {
-            return elements;
+            return this.elements;
         }
 
+        /// <summary>
+        /// Returns a list of the bonds in the bond graph
+        /// </summary>
+        /// <returns>A List</returns>
         public List<Bond> getBonds() {
-            return bonds;
+            return this.bonds;
         }
 
+        /// <summary>
+        /// Converts a Bond Graph to a Json string
+        /// </summary>
+        /// <returns>A string representation of a bond graph</returns>
         public string convertToJson() {
             return JsonConvert.SerializeObject(new {
                 elements = JsonConvert.SerializeObject(this.elements.Values.ToList()),
@@ -82,39 +87,70 @@ namespace BoGLWeb {
                 throw new ArgumentException("Graph was null");
             }
 
-            BondGraph bondGraph = new BondGraph();
+            BondGraph bondGraph = new();
 
             //Construct an Element for each node
-            foreach(var node in graph.nodes) {
+            foreach(node node in graph.nodes) {
                 StringBuilder sb = new();
                 foreach (string l in node.localLabels) {
                     sb.Append(l);
                     sb.Append(" ");
                 }
+
                 bondGraph.addElement(node.name, new Element(node.name, sb.ToString().TrimEnd(), 0));
             }
 
             //Construct each arc
-            foreach (var arc in graph.arcs) {
-                var from = arc.From;
-                var to = arc.To;
-                var labels = arc.localLabels;
-                //TODO Check if this string is correct
+            foreach (arc arc in graph.arcs) {
+                node from = arc.From;
+                node to = arc.To;
+                List<string> labels = arc.localLabels;
                 bool flip = labels.Contains("OPP");
-                //TODO Make sure that this is an okay way to check if we should have a causal stroke
                 bool useCausalStroke = labels.Contains("OPP") || labels.Contains("SAME");
 
-                var sourceID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
-                var targetID = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
-                if (flip) {
-                    bondGraph.addBond(new Bond(sourceID, targetID, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "", useCausalStroke, flip, 0, 0));
+                int sourceId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == to.name);
+                int targetId = bondGraph.elements.ToList().FindIndex(e => e.Value.getName() == from.name);
+                if (arc.localLabels.Contains("dir")) {
+                    bondGraph.addBond(flip
+                    ? new Bond(sourceId, targetId, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "",
+                    useCausalStroke, flip, true, 0, 0)
+                    : new Bond(targetId, sourceId, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "",
+                    useCausalStroke, flip, true, 0, 0));    
                 } else {
-                    bondGraph.addBond(new Bond(targetID, sourceID, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "", useCausalStroke, flip, 0, 0));
+                    bondGraph.addBond(flip
+                    ? new Bond(sourceId, targetId, bondGraph.getElement(to.name), bondGraph.getElement(from.name), "",
+                    useCausalStroke, flip, false, 0, 0)
+                    : new Bond(targetId, sourceId, bondGraph.getElement(from.name), bondGraph.getElement(to.name), "",
+                    useCausalStroke, flip,  false, 0, 0));
                 }
-
             }
 
             return bondGraph;
+        }
+
+        /// <summary>
+        /// Gets a list of all <c>Elements</c> in this <c>BondGraph</c>
+        /// that have the corresponding IDs
+        /// </summary>
+        /// <param name="IDs">
+        /// The array of IDs.
+        /// </param>
+        /// <returns>
+        /// The Dictionary containing all relevant elements.
+        /// </returns>
+        public Dictionary<int, Element> GetElementsFromIDs(int[] IDs) {
+            Dictionary<int, Element> elements = new(), parsedElements = new();
+            foreach (KeyValuePair<string, Element> pair in this.elements) {
+                Element element = pair.Value;
+                elements.Add(element.GetID(), element);
+            }
+            foreach (int ID in IDs) {
+                Element? element = elements.GetValueOrDefault(ID);
+                if (element != null) {
+                    parsedElements.Add(ID, element);
+                }
+            }
+            return parsedElements;
         }
 
         public class Element {
@@ -122,16 +158,11 @@ namespace BoGLWeb {
             protected readonly string label;
             [JsonProperty]
             protected readonly double value;
-            protected readonly string name;
+            private readonly string name;
 
             //For graph visualization
             [JsonProperty]
             protected double x, y;
-
-            /// <summary>
-            /// Tracks all neighbors of this <c>BondGraph.Element</c>.
-            /// </summary>
-            protected readonly Dictionary<Element, Bond> neighbors;
 
             /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Element</c>.
@@ -139,6 +170,10 @@ namespace BoGLWeb {
             private static int universalID = 0;
             private int? ID;
 
+            /// <summary>
+            /// Returns a string representing the element. The string includes label, value, name, x, and y coordinates of the element
+            /// </summary>
+            /// <returns> A string</returns>
             public string getString() {
                 return this.label + " " + this.value + " " + this.name + " " + this.x + " " + this.y;
             }
@@ -152,7 +187,7 @@ namespace BoGLWeb {
 
             public Element(string name, string label, double value) {
                 this.name = name;
-                this.label = label + " " + name;
+                this.label = label;
                 this.value = value;
                 AssignID(0, true);
 
@@ -161,63 +196,39 @@ namespace BoGLWeb {
                 this.y = rnd.Next(2000);
             }
 
+            /// <summary>
+            /// Sets the x and y coordinates of the element
+            /// </summary>
+            /// <param name="x">The x coordinate</param>
+            /// <param name="y">The y coordinate</param>
             public void setPosition(double x, double y) {
                 this.x = x;
                 this.y = y;
             }
 
+            /// <summary>
+            /// Gets the x coordinate of the element
+            /// </summary>
+            /// <returns>The x coordinate</returns>
             public double getX() {
-                return x;
+                return this.x;
             }
 
+            /// <summary>
+            /// Gets the y coordinate of the element
+            /// </summary>
+            /// <returns>The y coordinate</returns>
             public double getY() {
-                return y;
+                return this.y;
             }
 
+            /// <summary>
+            /// Gets the name of the element
+            /// </summary>
+            /// <returns>The name of the element</returns>
             public string getName() {
                 return this.name;
             }
-
-            /// <summary>
-            /// Adds a neighboring <c>BondGraph.Element</c> to this one.
-            /// </summary>
-            /// <param name="e">
-            /// The neighbor.
-            /// </param>
-            /// <param name="b">
-            /// The <c>BondGraph.Bond</c> bridging the two <c>Element</c> objects.
-            /// </param>
-            public void AddNeighbor(Element e, Bond b) {
-                this.neighbors.Add(e, b);
-            }
-
-            /// <summary>
-            /// Gets the set of all <c>FunctionEquations</c> for each variable
-            /// <c>Function</c> derived from the <c>Bonds</c> in this
-            /// <c>BondGraph</c>.
-            /// </summary>
-            /// <returns>
-            /// A <c>Dictionary</c> pairing <c>Functions</c> with their
-            /// corresponding equations around this <c>Bond</c>.
-            /// </returns>
-            protected Dictionary<Function, FunctionEquation> GetFunctionEquations() {
-                HashSet<Function> flowVars = new(), effortVars = new();
-                foreach (Bond bond in this.neighbors.Values) {
-                    flowVars.Add(new("F" + bond.GetID()));
-                    effortVars.Add(new("E" + bond.GetID()));
-                }
-                Dictionary<Function, FunctionEquation> equations = new();
-                Function incoming = new(), outgoing = new();
-                bool isZeroJunction = this.name.Equals("0_JUNCTION"); // replace with actual tag for zero junctions
-                foreach (Bond bond in this.neighbors.Values) {
-                    if (isZeroJunction) {
-                    } else {
-                    }
-                } //TODO: finish and update with GraphSynth tags
-                return equations;
-            }
-
-            public 
 
             /// <summary>
             /// Assigns an ID to this <c>Element</c>.
@@ -265,11 +276,20 @@ namespace BoGLWeb {
                 return (this.ID is int ID) ? ID : 0;
             }
 
+            /// <summary>
+            /// Checks if two elements are equal
+            /// </summary>
+            /// <param name="obj">An element</param>
+            /// <returns>True if the elements are equal, false otherwise</returns>
             public override bool Equals(object? obj) {
                 return obj is Element element &&
                        this.name.Equals(element.name);
             }
 
+            /// <summary>
+            /// Creates a hash code for the element using the element's name
+            /// </summary>
+            /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.name);
             }
@@ -279,7 +299,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected readonly int sourceID, targetID;
             protected readonly Element source, sink;
-            protected readonly string label;
+            private readonly string label;
             protected readonly double flow, effort;
 
             [JsonProperty]
@@ -287,6 +307,8 @@ namespace BoGLWeb {
             //True means the causal stroke is at the source
             [JsonProperty]
             protected readonly bool causalStrokeDirection;
+            [JsonProperty] 
+            protected readonly bool hasDirection;
 
             /// <summary>
             /// Tracks the undo/redo and general IDs for this <c>Bond</c>.
@@ -306,35 +328,52 @@ namespace BoGLWeb {
             /// <param name="flow">The flow value for the bond</param>
             /// <param name="effort">The effor value for the bond</param>
             
-            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, double flow, double effort) {
+            public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, bool hasDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
-                source.AddNeighbor(sink, this);
                 this.source = source;
-                sink.AddNeighbor(source, this);
                 this.sink = sink;
                 this.label = label;
                 this.causalStroke = causalStroke;
                 this.causalStrokeDirection = causalStrokeDirection;
                 this.flow = flow;
                 this.effort = effort;
+                this.hasDirection = hasDirection;
                 AssignID(0, true);
             }
 
+            /// <summary>
+            /// Checks if an element is the source
+            /// </summary>
+            /// <param name="e">An element</param>
+            /// <returns>True if the element is the source, false otherwise</returns>
             public bool isSource(Element e) {
-                return e.Equals(source);
+                return e.Equals(this.source);
             }
 
+            /// <summary>
+            /// Checks if an element is the sink
+            /// </summary>
+            /// <param name="e">An element</param>
+            /// <returns>True if the element is the source, false otherwise</returns>
             public bool isSink(Element e) {
-                return e.Equals(sink);
+                return e.Equals(this.sink);
             }
 
+            /// <summary>
+            /// Returns the source
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getSource() {
-                return source;
+                return this.source;
             }
 
+            /// <summary>
+            /// Returns the sink
+            /// </summary>
+            /// <returns>An element</returns>
             public Element getSink() {
-                return sink;
+                return this.sink;
             }
 
             /// <summary>
@@ -366,7 +405,7 @@ namespace BoGLWeb {
             /// </returns>
             public Bond Copy(bool isDistinct) {
                 Bond copy = new(this.sourceID, this.targetID, this.source, this.sink,
-                    this.label, this.causalStroke, this.causalStrokeDirection,
+                    this.label, this.causalStroke, this.causalStrokeDirection, this.hasDirection,
                     this.flow, this.effort);
                 copy.AssignID(this.ID, isDistinct);
                 return copy;
@@ -382,6 +421,11 @@ namespace BoGLWeb {
                 return (this.ID is int ID) ? ID : 0;
             }
 
+            /// <summary>
+            /// Checks if two bonds are equal
+            /// </summary>
+            /// <param name="obj">A bond</param>
+            /// <returns>True if two bonds are equal, false otherwise</returns>
             public override bool Equals(object? obj) {
                 return obj is Bond bond &&
                        this.sourceID.Equals(bond.sourceID) &&
@@ -390,6 +434,10 @@ namespace BoGLWeb {
                        this.causalStrokeDirection.Equals(bond.causalStrokeDirection);
             }
 
+            /// <summary>
+            /// Creates a hash code of the bond using the source id, target id, causal stroke, and causal stroke direction
+            /// </summary>
+            /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.sourceID, this.targetID, this.causalStroke, this.causalStrokeDirection);
             }

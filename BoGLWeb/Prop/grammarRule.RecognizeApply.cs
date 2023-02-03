@@ -522,7 +522,7 @@ namespace GraphSynth.Representation {
                     rNode.copy(D.nodes.Last());
                     /* give that new node a name and labels to match with the R. */
                     newElements.Add(D.nodes.Last());
-                    /* add the new node to the list of newElements that is returned by this function.*/
+                    /* add the new node to the list of elements that is returned by this function.*/
                     TransformPositionOfNode(D.nodes.Last(), positionT, rNode);
                     if (TransformNodeShapes)
                         TransfromShapeOfNode(D.nodes.Last(), positionT);
@@ -618,7 +618,7 @@ namespace GraphSynth.Representation {
                     Rmapping.arcs[i] = D.arcs.Last();
                     rArc.copy(D.arcs.Last());
                     newElements.Add(D.arcs.Last());
-                    /* add the new arc to the list of newElements that is returned by this function.*/
+                    /* add the new arc to the list of elements that is returned by this function.*/
                 }
                 #endregion
                 #region Step 4. update K arcs
@@ -699,7 +699,7 @@ namespace GraphSynth.Representation {
                     Rmapping.hyperarcs[i] = D.hyperarcs.Last();
                     rHyperarc.copy(D.hyperarcs.Last());
                     newElements.Add(D.hyperarcs.Last());
-                    /* add the new hyperarc to the list of newElements that is returned by this function.*/
+                    /* add the new hyperarc to the list of elements that is returned by this function.*/
                 }
                 #endregion
                 #region Step 6. update K hyperarcs
@@ -755,7 +755,7 @@ namespace GraphSynth.Representation {
                                 newNeighborNodes.Add(newNodeToConnect);
                                 host.addHyperArc(dangleHyperArc.copy(), newNeighborNodes);
                                 newElements.Add(host.hyperarcs.Last());
-                                /* add the new hyperarc to the list of newElements that is returned by this function.*/
+                                /* add the new hyperarc to the list of elements that is returned by this function.*/
                             }
                             else
                             {
@@ -868,7 +868,7 @@ namespace GraphSynth.Representation {
                                  * delete any dangling nodes that were not recognized in any rules. */
                                 host.addArc(dangleArc.copy(), fromNode, toNode);
                                 newElements.Add(host.arcs.Last());
-                                /* add the new arc to the list of newElements that is returned by this function.*/
+                                /* add the new arc to the list of elements that is returned by this function.*/
                             }
                             #endregion
 

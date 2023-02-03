@@ -1,9 +1,12 @@
 ﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { GraphBond } from "../bonds/GraphBond";
 import { GraphElement } from "../elements/GraphElement";
-import { GraphState } from "./GraphState";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
+import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
+//import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
+import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { GraphBondID } from "../bonds/GraphBondID";
 
 export class BaseGraphDisplay {
     // constants
@@ -12,17 +15,49 @@ export class BaseGraphDisplay {
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
+    readonly A_KEY: number = 65;
+    readonly C_KEY: number = 67;
+    readonly X_KEY: number = 88;
+    readonly V_KEY: number = 86;
+    readonly CTRL_KEY: number = 17;
+    readonly ARROW_LEFT: number = 37;
+    readonly ARROW_UP: number = 38;
+    readonly ARROW_RIGHT: number = 39;
+    readonly ARROW_DOWN: number = 40;
+    readonly PAN_SPEED: number = 2.0;
 
-    idct: number = 0;
+    // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
+    dragAllowed: boolean = false;
+    prevScale: number = 1;
+    initXPos: number = null;
+    initYPos: number = null;
+    svgX: number = 0;
+    svgY: number = 0;
+    dragX: number;
+    dragY: number;
+
     elements: GraphElement[];
     bonds: GraphBond[];
-    state: GraphState = new GraphState();
     svg: SVGSelection;
     svgG: SVGSelection;
     dragBond: SVGSelection;
     bondSelection: BGBondSelection;
     elementSelection: GraphElementSelection;
     draggingElement: number = null;
+    selectedElements: GraphElement[] = [];
+    selectedBonds: GraphBond[] = [];
+
+    mouseDownNode: GraphElement = null;
+    justDragged: boolean = false;
+    justScaleTransGraph: boolean = false;
+    lastKeyDown: number = -1;
+    highestElemId: number = 0;
+    dragStartX: number;
+    dragStartY: number;
+    elementsBeforeDrag: GraphElement[] = null;
+    dragXOffset: number = 0;
+    dragYOffset: number = 0;
+    startedSelectionDrag: boolean = false;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -44,30 +79,212 @@ export class BaseGraphDisplay {
         this.elementSelection = svgG.append("g").selectAll("g");
 
         svg.call(this.dragSvg()).on("dblclick.zoom", null);
+
+        // listen for key events
+        let graph = this;
+        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
+        svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
+        svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
+    }
+
+    svgMouseDown() { }
+    svgMouseMove() { }
+    pathExtraRendering(path: BGBondSelection) { }
+    renderElements(newElements: GraphElementSelection) { }
+
+    getSelection() {
+        return ([] as (GraphElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
+    }
+
+    svgMouseUp() {
+        if (!this.justScaleTransGraph) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
+            this.setSelection([], []);
+        } else {
+            this.justScaleTransGraph = false;
+        }
     }
 
     // functions needed in system diagram are called from this class but not defined by default
-    svgKeyDown() { }
-    svgKeyUp() { }
-    svgMouseDown() { }
-    svgMouseUp() { }
-    pathMouseDown(d3Bond: SVGSelection, bond: GraphBond) { }
-    pathExtraRendering(path: BGBondSelection) { }
-    renderElements(newElements: GraphElementSelection) { }
+    svgKeyDown() {
+        this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
+
+        switch ((<KeyboardEvent>d3.event).keyCode) {
+            case this.ARROW_LEFT:
+                this.changeScale(this.svgX - this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_UP:
+                this.changeScale(this.svgX, this.svgY - this.PAN_SPEED, this.prevScale);
+                break;
+            case this.ARROW_RIGHT:
+                this.changeScale(this.svgX + this.PAN_SPEED, this.svgY, this.prevScale);
+                break;
+            case this.ARROW_DOWN:
+                this.changeScale(this.svgX, this.svgY + this.PAN_SPEED, this.prevScale);
+                break;
+        }
+    }
+
+    checkCtrlCombo(a: number) {
+        return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
+    }
+
+    svgKeyUp() {
+        if (this.checkCtrlCombo(this.A_KEY)) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(
+                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
+            this.setSelection(this.elements, this.bonds);
+            this.updateGraph();
+        }
+    }
+
+    // test this on return
+    pathMouseDown(bond: GraphBond) {
+        d3.event.stopPropagation();
+
+        if (d3.event.ctrlKey || d3.event.metaKey) {
+            if (this.selectionContains(bond)) {
+                this.removeFromSelection(bond);
+            } else {
+                this.addToSelection(bond);
+            }
+        } else {
+            if (!this.selectionContains(bond)) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([bond]), this.listToIDObjects(this.getSelection()));
+                this.setSelection([], [bond]);
+            }
+        }
+
+        this.updateGraph();
+    }
+
+    handleAreaSelectionEnd() {
+        if (!d3.select("#selectionRect").node()) return false;
+        let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
+        if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
+            let newSelection = [];
+            if (this instanceof SystemDiagramDisplay) {
+                for (const el of this.elementSelection.selectAll(".outline")) {
+                    if (this.checkOverlap(selectionBounds, el[0].getBoundingClientRect())) {
+                        newSelection.push(el[0].__data__);
+                    }
+                }
+            } else {
+                for (const el of this.elementSelection[0]) {
+                    if (this.checkOverlap(selectionBounds, el.getBoundingClientRect())) {
+                        newSelection.push(el.__data__);
+                    }
+                }
+            }
+            for (const bond of this.bondSelection[0]) {
+                if (bond && this.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
+                    newSelection.push(bond.__data__);
+                }
+            }
+            if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
+                let removeList = [];
+                let addList = [];
+
+                for (const e of newSelection) {
+                    if (this.selectionContains(e)) {
+                        this.removeFromSelection(e, false);
+                        removeList.push(e);
+                    } else {
+                        this.addToSelection(e, false);
+                        addList.push(e);
+                    }
+                }
+
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
+            } else {
+                this.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(newSelection), [], []);
+            }
+            d3.select("body").style("cursor", "auto");
+            this.updateGraph();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
+            document.getElementById("selectionRect").remove();
+            return true;
+        }
+        document.getElementById("selectionRect").remove();
+        return false;
+    }
+
+    nodeMouseUp(el: GraphElement) {
+        d3.event.stopPropagation();
+
+        this.mouseDownNode = null;
+        if (this.handleAreaSelectionEnd()) return;
+
+        if (!this.justDragged) {
+            if (d3.event.ctrlKey || d3.event.metaKey) {
+                if (this.selectionContains(el)) {
+                    this.removeFromSelection(el);
+                } else {
+                    this.addToSelection(el);
+                }
+            } else {
+                if (!this.selectionContains(el)) {
+                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                    this.setSelection([el], []);
+                }
+            }
+            this.updateGraph();
+        }
+
+        this.justDragged = false;
+    }
+
+    updateTopMenu() {
+        DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
+    }
+
+    addToSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
+        if (e instanceof GraphElement) {
+            this.selectedElements.push(e);
+        } else {
+            this.selectedBonds.push(e);
+        }
+        this.updateTopMenu();
+        if (undoRedo) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([e]), [], []);
+        }
+    }
+
+    selectionContains(e: GraphElement | GraphBond) {
+        if (e instanceof GraphElement) {
+            return this.selectedElements.includes(e);
+        } else {
+            return this.selectedBonds.includes(e);
+        }
+    }
+
+    removeFromSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
+        if (e instanceof GraphElement) {
+            this.selectedElements = this.selectedElements.filter(d => d != e);
+        } else {
+            this.selectedBonds = this.selectedBonds.filter(d => d != e);
+        }
+        this.updateTopMenu();
+        if (undoRedo) {
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([e]));
+        }
+    }
+
+    setSelection(elList: GraphElement[], bondList: GraphBond[]) {
+        this.selectedElements = elList;
+        this.selectedBonds = bondList;
+        this.updateTopMenu();
+    }
 
     // mousedown on element
     nodeMouseDown(el: GraphElement) {
         (<Event>d3.event).stopPropagation();
-        this.state.mouseDownNode = el;
-        this.state.justDragged = false;
-    }
-
-    dragmove(el: GraphElement) {
-        if (this.state.mouseDownNode) {
-            el.x += (<DragEvent>d3.event).dx;
-            el.y += (<DragEvent>d3.event).dy;
-            this.updateGraph();
-        }
+        this.mouseDownNode = el;
+        this.justDragged = false;
     }
 
     drawPath(d: GraphBond) {
@@ -81,9 +298,47 @@ export class BaseGraphDisplay {
                 return { x: d.x, y: d.y };
             })
             .on("drag", function (args) {
-                graph.state.justDragged = true;
+                graph.justDragged = true;
                 graph.dragmove.call(graph, args);
             });
+    }
+
+    changeScale(x: number, y: number, scale: number) {
+        this.svgX = x;
+        this.svgY = y;
+        if (this.initXPos == null) {
+            this.initXPos = x;
+            this.initYPos = y;
+        }
+        this.prevScale = scale;
+        this.svgG.attr("transform", "translate(" + x + ", " + y + ") scale(" + scale + ")");
+        this.svg.call(this.dragSvg().scaleExtent([0.25, 1.75]).scale(scale).translate([x, y])).on("dblclick.zoom", null);
+        DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
+    }
+
+    checkOverlap(rect1, rect2) {
+        return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
+    }
+
+    listToIDObjects(eList: (GraphElement | GraphBond)[]): [number[], string[]] {
+        let elements: number[] = (eList.filter(e => e instanceof GraphElement) as GraphElement[]).map(e => e.id);
+        let bonds: string[] = (eList.filter(e => e instanceof GraphBond) as GraphBond[]).map(e => JSON.stringify({ source: e.source.id, target: e.target.id }));
+        return [elements, bonds];
+    }
+
+    moveSelectionRect() {
+        let mouse = d3.mouse(this.svgG.node());
+        this.dragX = this.svgX;
+        this.dragY = this.svgY;
+        let width = mouse[0] - this.dragStartX;
+        let height = mouse[1] - this.dragStartY;
+
+        if (d3.select("#selectionRect").node()) {
+            d3.select("#selectionRect").attr("width", Math.abs(width))
+                .attr("height", Math.abs(height))
+                .attr("x", width >= 0 ? this.dragStartX : mouse[0])
+                .attr("y", height >= 0 ? this.dragStartY : mouse[1]);
+        }
     }
 
     // listen for dragging
@@ -92,13 +347,44 @@ export class BaseGraphDisplay {
         return d3.behavior.zoom()
             .on("zoom", function () {
                 graph.zoomed.call(graph);
-                return true;
+                if (graph.dragAllowed) {
+                    graph.dragX = d3.event.translate[0];
+                    graph.dragY = d3.event.translate[1];
+                } else {
+                    graph.moveSelectionRect();
+                }
             })
             .on("zoomstart", function () {
+                graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
+                graph.dragX = graph.dragX ?? graph.svgX;
+                graph.dragY = graph.dragY ?? graph.svgY;
+                let coordinates = d3.mouse(graph.svgG.node());
+                graph.dragStartX = coordinates[0];
+                graph.dragStartY = coordinates[1];
+                if (document.getElementById("selectionRect")) {
+                    document.getElementById("selectionRect").remove();
+                }
+                graph.svgG.append("rect")
+                    .attr("id", "selectionRect")
+                    .attr("x", graph.dragStartX)
+                    .attr("y", graph.dragStartY)
+                    .attr("width", 0)
+                    .attr("height", 0)
+                    .style("stroke", "black")
+                    .style("fill", "blue")
+                    .style("opacity", "0.3");
+                graph.svg.call(graph.dragSvg().scaleExtent([0.25, 1.75]).scale(graph.prevScale).translate([graph.dragX, graph.dragY])).on("dblclick.zoom", null);
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-                d3.select("body").style("cursor", "auto");
+                if (!graph.handleAreaSelectionEnd()) {
+                    graph.setSelection([], []);
+                    graph.updateGraph();
+                    if (graph instanceof SystemDiagramDisplay) {
+                        graph.updateVelocityMenu();
+                        graph.updateModifierMenu();
+                    }
+                }
             });
     }
 
@@ -107,11 +393,8 @@ export class BaseGraphDisplay {
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
             return String(d.source.id) + "+" + String(d.target.id);
         });
+
         let paths = this.bondSelection;
-        // update existing bondSelection
-        paths.classed(this.selectedClass, function (d) {
-            return d === graph.state.selectedBond;
-        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         // add new bondSelection
         paths.enter()
@@ -119,11 +402,13 @@ export class BaseGraphDisplay {
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
-                graph.pathMouseDown.call(graph, d3.select(this), d);
-            })
-            .on("mouseup", function () {
-                graph.state.mouseDownLink = null;
+                graph.pathMouseDown.call(graph, d);
             });
+
+        // update existing bondSelection
+        paths.classed(this.selectedClass, function (d) {
+            return graph.selectedBonds.includes(d);
+        }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
         this.pathExtraRendering(paths);
 
@@ -131,14 +416,28 @@ export class BaseGraphDisplay {
         paths.exit().remove();
     }
 
-    fullRenderElements() {
+    fullRenderElements(dragmove: boolean = false) {
+        if (dragmove) {
+            this.elementSelection.filter(e => this.selectedElements.includes(e)).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+            return;
+        }
+
         // update existing elements
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
+
+        this.elementSelection.selectAll("*").remove();
+
+        let newElements = this.elementSelection;
         // add new elementSelection
-        let newElements = this.elementSelection.enter().append("g");
+        newElements.enter().append("g");
         newElements.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+
+        let graph = this;
+        newElements.classed(this.selectedClass, function (d) {
+            return graph.selectedElements.includes(d);
+        });
 
         this.renderElements(newElements);
 
@@ -146,14 +445,57 @@ export class BaseGraphDisplay {
         this.elementSelection.exit().remove();
     }
 
+    dragmove(el: GraphElement) {
+        if (this.mouseDownNode) {
+            if (!this.selectedElements.includes(el)) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                // not updating menus until end of drag because it causes significant lag
+                this.selectedElements = [el];
+                this.selectedBonds = [];
+                this.updateGraph();
+            }
+
+            this.startedSelectionDrag = true;
+
+            let dx = (<DragEvent>d3.event).dx;
+            let dy = (<DragEvent>d3.event).dy;
+            this.dragXOffset += dx;
+            this.dragYOffset += dy;
+            for (const el of this.selectedElements) {
+                el.x += dx;
+                el.y += dy;
+            }
+
+            // Just update element selection positions without editing anything else since dragmove gets called so much
+            this.updateGraph(true);
+        } else {
+            if (this.startedSelectionDrag) {
+                DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", parseInt(window.tabNum), this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);
+                this.dragXOffset = 0;
+                this.dragYOffset = 0;
+                this.startedSelectionDrag = false;
+                if (this instanceof SystemDiagramDisplay) {
+                    this.updateModifierMenu();
+                    this.updateVelocityMenu();
+                    this.updateTopMenu();
+                }
+            }
+        }
+    }
+
     // call to propagate changes to graph
-    updateGraph() {
+    updateGraph(dragmove: boolean = false) {
+        if (!dragmove) {
+            d3.selectAll(".velocityArrow").remove();
+        }
         this.drawPaths();
-        this.fullRenderElements();
+        this.fullRenderElements(dragmove);
     }
 
     zoomed() {
-        this.state.justScaleTransGraph = true;
-        this.svgG.attr("transform", "translate(" + (<ZoomEvent>d3.event).translate + ") scale(" + (<ZoomEvent>d3.event).scale + ")");
+        this.justScaleTransGraph = true;
+        if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
+            this.changeScale((<ZoomEvent>d3.event).translate[0], (<ZoomEvent>d3.event).translate[1], (<ZoomEvent>d3.event).scale);
+        }
     }
 }

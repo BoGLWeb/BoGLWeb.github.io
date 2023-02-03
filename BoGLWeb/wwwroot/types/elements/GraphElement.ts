@@ -8,4 +8,8 @@
         this.x = x;
         this.y = y;
     }
+
+    copy(id) {
+        return new GraphElement(id, this.x, this.y);
+    }
 }
