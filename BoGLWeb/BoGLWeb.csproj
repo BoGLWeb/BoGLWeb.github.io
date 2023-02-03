@@ -834,17 +834,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\bootstrap\bootstrap.min.css" />
-    <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
-    <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
-    <None Include="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
-    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
-    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
-    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
-    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
-    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
-    <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
-    <None Include="wwwroot\css\open-iconic\README.md" />
     <None Include="wwwroot\icon-192.png" />
     <None Include="wwwroot\icon-512.png" />
     <None Include="wwwroot\index.html" />
