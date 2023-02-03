@@ -542,7 +542,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pasteSelection() {
         this.elements = this.elements.concat(this.copiedElements);
         this.bonds = this.bonds.concat(this.copiedBonds);
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [[].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e))], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
+            ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
         this.setSelection(this.copiedElements, this.copiedBonds);
         this.copySelection();
         this.updateGraph();
