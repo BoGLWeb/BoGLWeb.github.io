@@ -844,6 +844,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/elements/
             this.justScaleTransGraph = false;
             this.lastKeyDown = -1;
             this.highestElemId = 0;
+            this.justDragMoved = false;
             this.elements = baseGraph.nodes || [];
             this.bonds = baseGraph.edges || [];
             svg.selectAll('*').remove();
@@ -919,10 +920,8 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/elements/
         }
         handleAreaSelectionEnd() {
             var _a, _b;
-            if (!d3.select("#selectionRect").node()) {
-                document.getElementById("selectionRect").remove();
+            if (!d3.select("#selectionRect").node())
                 return false;
-            }
             let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
             if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
                 let newSelection = [];
@@ -1167,12 +1166,23 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/elements/
             if (this.mouseDownNode) {
                 if (!this.selectedElements.includes(el)) {
                     this.setSelection([el], []);
+                    this.updateGraph();
                 }
+                this.justDragMoved = true;
                 for (const el of this.selectedElements) {
                     el.x += d3.event.dx;
                     el.y += d3.event.dy;
                 }
                 this.updateGraph(true);
+            }
+            else if (this.justDragMoved) {
+                this.justDragMoved = false;
+                this.updateGraph(false);
+                this.updateTopMenu();
+                if (this instanceof SystemDiagramDisplay_1.SystemDiagramDisplay) {
+                    this.updateModifierMenu();
+                    this.updateVelocityMenu();
+                }
             }
         }
         updateGraph(dragmove = false) {
