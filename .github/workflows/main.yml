@@ -13,7 +13,7 @@ jobs:
         with:
           dotnet-version: 3.1
       - name: publish .NET Core Project
-        run: dotnet publish BoGLWeb.csproj -c Release -o release --nologo
+        run: dotnet publish BoGLWeb/BoGLWeb.csproj -c Release -o release --nologo
       - name: Commit wwwroot to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
