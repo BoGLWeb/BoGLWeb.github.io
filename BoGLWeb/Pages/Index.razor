@@ -5,6 +5,7 @@
 @using System.Text;
 @using System.Text.RegularExpressions
 @using BoGLWeb.EditorHelper
+@using BoGLWeb.DifferentialEquationHelper
 @using BoGLWeb.Json
 @using Newtonsoft.Json
 
@@ -418,6 +419,7 @@
 
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
+        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.causalGraph).ToString());
         Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
         UpdateBackendWithInitialStackChange(tabID);

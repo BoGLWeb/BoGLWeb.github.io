@@ -4,11 +4,11 @@
             // Stores the UndoRadoHandler used.
             public static readonly EditStackHandler undoRedoHandler = new(new(), new(), new(), new());
             // Stores the edit stacks.
-            public readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
+            private readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
             // Stores the system diagram.
-            public readonly SystemDiagram systemDiagram;
+            private readonly SystemDiagram systemDiagram;
             // Stores the bond graphs.
-            public readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
+            private readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
 
             /// <summary>
             /// Creates a new <c>EditStackHandler</c>.
@@ -191,7 +191,7 @@
             /// <param name="tab">the int</param>
             /// <returns>the correct <c>CanvasTab</c> according to the
             /// enum settings</returns>
-            private static CanvasTab GetTab(int tab) {
+            public static CanvasTab GetTab(int tab) {
                 return tab switch {
                     (int) CanvasTab.SYSTEM_DIAGRAM => CanvasTab.SYSTEM_DIAGRAM,
                     (int) CanvasTab.UNSIMPLIFIED_BOND_GRAPH => CanvasTab.UNSIMPLIFIED_BOND_GRAPH,
