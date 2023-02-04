@@ -5,7 +5,11 @@
       "url": ".nojekyll"
     },
     {
-      "hash": "sha256-wL+LZQvDQSsa5tqPYiQLEhqLk6HY2OZAR7MFgjUen98=",
+      "hash": "sha256-ekw2MzjgmBCMBG6\/YIDzj5u7Jy1k1bUrRR8sdvTIu7A=",
+      "url": "bouncingLogo.png"
+    },
+    {
+      "hash": "sha256-1ulZE7RM\/5GyTbLfxbLoivQ39fadmjsaZ47FEI4bMH0=",
       "url": "css\/main.css"
     },
     {
@@ -151,6 +155,10 @@
     {
       "hash": "sha256-MW13b0BbqGp6qhZ2wWOf2R5oSRY0KtcOD6q\/q64lF9E=",
       "url": "favicon.ico"
+    },
+    {
+      "hash": "sha256-XMtnJyoA9DbZcVneLl9BruI6UX3Ev+FUyKvq1ganBGM=",
+      "url": "gear.png"
     },
     {
       "hash": "sha256-SdjAA3vb9LIZc9sjdYmxQp91at0xwCHQGWs\/\/4RK1fs=",
@@ -329,7 +337,7 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-bRWjuodqN3kSRPCDtTwFkls4q0IkJmy1gSu2pWoljnA=",
+      "hash": "sha256-mzuyQU2mR8XJF2wZEAaF9oCz+8YWwoZcAHvldPAkmfc=",
       "url": "index.html"
     },
     {
@@ -5609,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "wruX9zmj"
+  "version": "2YoeFioz"
 };
