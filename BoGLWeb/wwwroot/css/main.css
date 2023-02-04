@@ -680,3 +680,13 @@ hr:not([size]) {
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
     display: none !important;
 }
+
+.ant-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ant-modal-body > .ant-btn {
+    margin-top: 20px;
+}

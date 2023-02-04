@@ -29,7 +29,8 @@
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
         <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
         <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
-        <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
+        <MenuItem Key="setting:6" OnClick="showStateEquations">View State Equations</MenuItem>
+        <MenuItem Key="setting:7" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
@@ -264,9 +265,17 @@
     </div>
 </Modal>
 <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
-    <Input DefaultValue="@url" TValue="string" ReadOnly/>
+        <Input DefaultValue="@url" TValue="string" ReadOnly />
     <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
 </Modal>
+    <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
+        @if (stateEquations.Length > 0) {
+            <TextArea Rows="@(Convert.ToUInt32(stateEquations.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquations))" TValue="string" ReadOnly />
+            <Button @onclick="copyStateEquations"><Icon Type="link" Theme="outline" /> Copy State Equations</Button>
+        } else {
+            <p>Generate a bond graph to see its state equations here.</p>
+        }
+    </Modal>
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
@@ -678,7 +687,7 @@
         BondGraph bondGraph;
         BondGraph item2;
         List<BondGraph> causal;
-        
+
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
@@ -839,11 +848,26 @@
     }
 
     bool urlModalVisible = false;
+    bool stateEquationModalVisible = false;
     string url = "";
+    string[] stateEquations = new string[] { };
 
     //Handles the ok button on the url modal
     private void handleUrlOk() {
         urlModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private void closeStateEquations() {
+        stateEquationModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private async void showStateEquations() {
+        //Get information from backend
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
+        stateEquationModalVisible = true;
         base.StateHasChanged();
     }
 
@@ -986,6 +1010,12 @@
         compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
+    }
+
+    private async void copyStateEquations() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquations));
+        await messageService.Success("State equations copied to clipboard!");
     }
 
     //Copies the url representation of the system diagram to the system's clipboard 
