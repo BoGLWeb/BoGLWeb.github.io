@@ -788,7 +788,13 @@
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        Stream fileStream;
+        try {
+            fileStream = getFileStream(sysDiagram.generateBoGLString());
+        } catch (ArgumentOutOfRangeException e) {
+            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
+           return; 
+        }
         var fileName = "SystemDiagram.bogl";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
@@ -805,7 +811,13 @@
         Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         Console.WriteLine("BoGL String");
-        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        Stream fileStream;
+        try {
+            fileStream = getFileStream(sysDiagram.generateBoGLString());
+        } catch (ArgumentOutOfRangeException e) {
+            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
+            return; 
+        }
         var fileName = "SystemDiagram.bogl";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
