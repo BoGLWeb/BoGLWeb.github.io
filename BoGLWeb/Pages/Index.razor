@@ -757,7 +757,12 @@
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        var file = await module.InvokeAsync<object>("openFile");
+        object file;
+        try {
+            file = await module.InvokeAsync<object>("openFile");
+        } catch (Exception e) {
+            return;
+        }
         SystemDiagram sysDiagram;
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
