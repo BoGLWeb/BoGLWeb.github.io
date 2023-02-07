@@ -165,7 +165,7 @@
       "url": "icon-192.png"
     },
     {
-      "hash": "sha256-qq94wdLtpNETht2Pm0EM47F\/0hUytcGp1ipR2dqhOYQ=",
+      "hash": "sha256-v48ooZFa26qFZ8oxxXV1Hker0NJznRKMd8YmQ4lQcr0=",
       "url": "icon-512.png"
     },
     {
@@ -5617,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "lvxANKI+"
+  "version": "jObwzJD0"
 };
