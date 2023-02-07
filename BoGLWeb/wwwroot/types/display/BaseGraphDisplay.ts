@@ -99,9 +99,10 @@ export class BaseGraphDisplay {
 
     svgMouseUp() {
         if (!this.justScaleTransGraph) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
+            let prevSelection = this.getSelection();
             this.setSelection([], []);
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(prevSelection));
             if (this instanceof SystemDiagramDisplay) {
                 this.updateModifierMenu();
                 this.updateVelocityMenu();
@@ -138,10 +139,10 @@ export class BaseGraphDisplay {
 
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(
-                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
+            let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
             if (this instanceof SystemDiagramDisplay) {
                 this.updateModifierMenu();
                 this.updateVelocityMenu();
@@ -150,28 +151,31 @@ export class BaseGraphDisplay {
         }
     }
 
-    // test this on return
     pathMouseDown(bond: GraphBond) {
         d3.event.stopPropagation();
+        let addEdges = [];
+        let removeEl = [];
+        let removeEdges = [];
 
         if (d3.event.ctrlKey || d3.event.metaKey) {
             if (this.selectionContains(bond)) {
                 this.removeFromSelection(bond);
+                removeEdges = [bond];
             } else {
                 this.addToSelection(bond);
+                addEdges = [bond];
             }
         } else {
             if (!this.selectionContains(bond)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([bond]), this.listToIDObjects(this.getSelection()));
+                addEdges = [bond];
+                removeEl = this.selectedElements;
+                removeEdges = this.selectedBonds;
                 this.setSelection([], [bond]);
             }
         }
 
         this.updateGraph();
-        if (this instanceof SystemDiagramDisplay) {
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-        }
+        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([].concat(addEdges)), ...this.listToIDObjects(removeEl.concat(removeEdges)));
         this.updateTopMenu();
     }
 

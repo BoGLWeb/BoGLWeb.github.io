@@ -233,9 +233,9 @@ export namespace backendManager {
                     }
                 }
             }
+            window.systemDiagram.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
-            window.systemDiagram.updateGraph();
         }
 
         public getGraphByIndex(i: string) {

@@ -296,34 +296,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     pathMouseDown(bond: GraphBond) {
-        d3.event.stopPropagation();
         this.justClickedEdge = true;
-        let addEdges = [];
-        let removeEl = [];
-        let removeEdges = [];
-
-        if (d3.event.ctrlKey || d3.event.metaKey) {
-            if (this.selectionContains(bond)) {
-                this.removeFromSelection(bond);
-                removeEdges = [bond];
-            } else {
-                this.addToSelection(bond);
-                addEdges = [bond];
-            }
-        } else {
-            if (!this.selectionContains(bond)) {
-                addEdges = [bond];
-                removeEl = this.selectedElements;
-                removeEdges = this.selectedBonds;
-                this.setSelection([], [bond]);
-            }
-        }
-
-        this.updateGraph();
-        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([].concat(addEdges)), ...this.listToIDObjects(removeEl.concat(removeEdges)));
+        super.pathMouseDown(bond);
         this.updateModifierMenu();
         this.updateVelocityMenu();
-        this.updateTopMenu();
     }
 
     handleEdgeDown(el: SystemDiagramElement) {
