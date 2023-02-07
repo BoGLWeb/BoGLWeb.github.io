@@ -161,7 +161,7 @@
       "url": "gear.png"
     },
     {
-      "hash": "sha256-SdjAA3vb9LIZc9sjdYmxQp91at0xwCHQGWs\/\/4RK1fs=",
+      "hash": "sha256-9po2egS6VNs3byPQgMvp1EtR6ewds+CjxlemtNxUB08=",
       "url": "icon-192.png"
     },
     {
@@ -5617,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "jObwzJD0"
+  "version": "6VcdCW4d"
 };
