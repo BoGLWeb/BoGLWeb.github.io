@@ -337,7 +337,7 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-hfHoLU6QnemdIgq24\/mbsNOv+3f78wJjdF4NOvO3t9o=",
+      "hash": "sha256-Nc7Gvfcuy+vFXVne2tyvDA9w8dS2N3mL+Ic6bqmfljs=",
       "url": "index.html"
     },
     {
@@ -5617,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "2\/SGFyx3"
+  "version": "iCfvUm12"
 };
