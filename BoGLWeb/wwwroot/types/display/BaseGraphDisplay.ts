@@ -7,6 +7,7 @@ import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 //import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 import { GraphBondID } from "../bonds/GraphBondID";
+import { SystemDiagram } from "../graphs/SystemDiagram";
 
 export class BaseGraphDisplay {
     // constants
@@ -100,6 +101,12 @@ export class BaseGraphDisplay {
         if (!this.justScaleTransGraph) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
             this.setSelection([], []);
+            this.updateGraph();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
+            this.updateTopMenu();
         } else {
             this.justScaleTransGraph = false;
         }
@@ -135,6 +142,11 @@ export class BaseGraphDisplay {
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
+            this.updateTopMenu();
         }
     }
 
@@ -156,6 +168,11 @@ export class BaseGraphDisplay {
         }
 
         this.updateGraph();
+        if (this instanceof SystemDiagramDisplay) {
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+        }
+        this.updateTopMenu();
     }
 
     handleAreaSelectionEnd() {
@@ -188,6 +205,7 @@ export class BaseGraphDisplay {
                 for (const e of newSelection) {
                     if (this.selectionContains(e)) {
                         this.removeFromSelection(e, false);
+                        this.updateTopMenu();
                         removeList.push(e);
                     } else {
                         this.addToSelection(e, false);
@@ -206,6 +224,7 @@ export class BaseGraphDisplay {
                 this.updateModifierMenu();
                 this.updateVelocityMenu();
             }
+            this.updateTopMenu();
             document.getElementById("selectionRect").remove();
             return true;
         }
@@ -233,12 +252,18 @@ export class BaseGraphDisplay {
                 }
             }
             this.updateGraph();
+            if (this instanceof SystemDiagramDisplay) {
+                this.updateModifierMenu();
+                this.updateVelocityMenu();
+            }
+            this.updateTopMenu();
         }
 
         this.justDragged = false;
     }
 
     updateTopMenu() {
+        console.log("Top menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
     }
 
@@ -248,7 +273,6 @@ export class BaseGraphDisplay {
         } else {
             this.selectedBonds.push(e);
         }
-        this.updateTopMenu();
         if (undoRedo) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([e]), [], []);
         }
@@ -268,7 +292,6 @@ export class BaseGraphDisplay {
         } else {
             this.selectedBonds = this.selectedBonds.filter(d => d != e);
         }
-        this.updateTopMenu();
         if (undoRedo) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([e]));
         }
@@ -277,7 +300,6 @@ export class BaseGraphDisplay {
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList;
         this.selectedBonds = bondList;
-        this.updateTopMenu();
     }
 
     // mousedown on element
@@ -384,6 +406,7 @@ export class BaseGraphDisplay {
                         graph.updateVelocityMenu();
                         graph.updateModifierMenu();
                     }
+                    graph.updateTopMenu();
                 }
             });
     }
@@ -422,6 +445,7 @@ export class BaseGraphDisplay {
             return;
         }
 
+        console.log("Update graph");
         // update existing elements
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });

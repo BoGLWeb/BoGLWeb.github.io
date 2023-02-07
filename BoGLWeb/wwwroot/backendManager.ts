@@ -449,9 +449,10 @@ export namespace backendManager {
                     sysDiag.setSelection([], []);
                 }
             }
+            sysDiag.updateGraph();
             sysDiag.updateModifierMenu();
             sysDiag.updateVelocityMenu();
-            sysDiag.updateGraph();
+            sysDiag.updateTopMenu();
         }
 
         public urDoDeleteSelection(deletedObjects: string[], unselectedDeletedEdges: string[], isUndo: boolean) {
@@ -479,9 +480,10 @@ export namespace backendManager {
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
                 sysDiag.setSelection([], []);
             }
+            sysDiag.updateGraph();
             sysDiag.updateModifierMenu();
             sysDiag.updateVelocityMenu();
-            sysDiag.updateGraph();
+            sysDiag.updateTopMenu();
         }
 
         public urDoChangeSelection(elIDsToAdd: number[], edgesToAdd: string[], elIDsToRemove: number[], edgesToRemove: string[], isUndo: boolean) {
