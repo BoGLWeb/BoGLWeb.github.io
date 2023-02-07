@@ -161,11 +161,11 @@
       "url": "gear.png"
     },
     {
-      "hash": "sha256-SdjAA3vb9LIZc9sjdYmxQp91at0xwCHQGWs\/\/4RK1fs=",
+      "hash": "sha256-9po2egS6VNs3byPQgMvp1EtR6ewds+CjxlemtNxUB08=",
       "url": "icon-192.png"
     },
     {
-      "hash": "sha256-v48ooZFa26qFZ8oxxXV1Hker0NJznRKMd8YmQ4lQcr0=",
+      "hash": "sha256-qq94wdLtpNETht2Pm0EM47F\/0hUytcGp1ipR2dqhOYQ=",
       "url": "icon-512.png"
     },
     {
@@ -5617,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "jObwzJD0"
+  "version": "6ETEtr8d"
 };
