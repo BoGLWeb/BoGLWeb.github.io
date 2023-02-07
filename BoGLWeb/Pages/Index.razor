@@ -148,7 +148,7 @@
                 <div id="modifierMenu">
                     <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
                         <ChildContent>
-                            <Panel Header="Modifers" Key="1">
+                            <Panel Header="Modifers" Key="1" Id="modifierPanel">
                                 <div id="modifierCheckboxWrapper">
                                     <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
                                     <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
