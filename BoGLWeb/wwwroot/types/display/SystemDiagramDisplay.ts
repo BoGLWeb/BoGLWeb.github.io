@@ -505,9 +505,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.updateVelocityMenu();
                 this.elements = this.elements.filter(el => el != e);
             }
-            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().map(e => JSON.stringify(e)), splicedBonds.map(e => JSON.stringify(e)));
+            let selectionStrings = this.getSelection().map(e => JSON.stringify(e));
             this.setSelection([], []);
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", selectionStrings, splicedBonds.map(e => JSON.stringify(e)));
             this.updateModifierMenu();
             this.updateVelocityMenu();
             this.updateTopMenu();

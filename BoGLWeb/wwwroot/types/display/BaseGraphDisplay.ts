@@ -476,11 +476,11 @@ export class BaseGraphDisplay {
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                let selection = this.getSelection();
                 // not updating menus until end of drag because it causes significant lag
-                this.selectedElements = [el];
-                this.selectedBonds = [];
+                this.setSelection([el], []);
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(selection));
             }
 
             this.startedSelectionDrag = true;
