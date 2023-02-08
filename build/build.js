@@ -505,6 +505,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             });
         }
         updateModifierMenu() {
+            console.log("Modifier menu");
             if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
                 let allAllowedModifiers = [];
                 let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
@@ -530,6 +531,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             }
         }
         updateVelocityMenu() {
+            console.log("Velocity menu");
             DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
             let velocities = [];
             for (const el of this.getSelection()) {
@@ -539,51 +541,9 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             }
             DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", velocities);
         }
-        spliceLinksForNode(el) {
-            let graph = this;
-            let toSplice = this.bonds.filter(function (l) {
-                return (l.source === el || l.target === el);
-            });
-            toSplice.map(function (l) {
-                graph.bonds.splice(graph.bonds.indexOf(l), 1);
-            });
-            this.updateVelocityMenu();
-        }
-        addSelectEdge(bond) {
-            this.addToSelection(bond);
-            this.updateVelocityMenu();
-        }
-        addSelectNode(el) {
-            this.addToSelection(el);
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-        }
-        removeSelectFromEdge(edge) {
-            this.removeFromSelection(edge);
-            this.updateVelocityMenu();
-        }
-        removeSelectFromNode(el) {
-            this.removeFromSelection(el);
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-        }
         pathMouseDown(bond) {
-            d3.event.stopPropagation();
             this.justClickedEdge = true;
-            if (d3.event.ctrlKey || d3.event.metaKey) {
-                if (this.selectionContains(bond)) {
-                    this.removeSelectFromEdge(bond);
-                }
-                else {
-                    this.addSelectEdge(bond);
-                }
-            }
-            else {
-                if (!this.selectionContains(bond)) {
-                    this.setSelection([], [bond]);
-                }
-            }
-            this.updateGraph();
+            super.pathMouseDown(bond);
         }
         handleEdgeDown(el) {
             d3.event.stopPropagation();
@@ -596,13 +556,8 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             d3.event.stopPropagation();
             if (this.handleAreaSelectionEnd())
                 return;
-            let isCompatible = ElementNamespace_1.ElementNamespace.isCompatible(this.edgeOrigin, el, this);
             if (this.edgeOrigin && el !== this.edgeOrigin) {
-                if (isCompatible) {
-                    this.addBond(this.edgeOrigin, el);
-                }
-                this.setFollowingEdge(null);
-                this.updateGraph();
+                this.addBond(this.edgeOrigin, el);
             }
             else if (!this.edgeOrigin) {
                 this.setFollowingEdge(el);
@@ -620,56 +575,78 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
         setSelection(elList, bondList) {
             this.selectedElements = elList;
             this.selectedBonds = bondList;
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateTopMenu();
         }
         addBond(source, target) {
-            let bond = new GraphBond_2.GraphBond(source, target);
-            this.bonds.push(bond);
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-            this.setSelection([], [bond]);
+            let isCompatible = ElementNamespace_1.ElementNamespace.isCompatible(source, target, this);
+            if (isCompatible) {
+                let bond = new GraphBond_2.GraphBond(source, target);
+                this.bonds.push(bond);
+                let selectedElements = this.selectedElements;
+                let selectedBonds = this.selectedBonds;
+                this.setSelection([], [bond]);
+                this.setFollowingEdge(null);
+                this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+            }
+            else {
+                this.setFollowingEdge(null);
+                this.updateGraph();
+            }
+            this.updateMenus();
         }
         nodeMouseUp(el) {
             d3.event.stopPropagation();
             this.mouseDownNode = null;
             if (this.handleAreaSelectionEnd())
                 return;
-            let isCompatible = ElementNamespace_1.ElementNamespace.isCompatible(this.edgeOrigin, el, this);
             if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-                if (isCompatible) {
-                    this.addBond(this.edgeOrigin, el);
-                }
-                this.setFollowingEdge(null);
-                this.updateGraph();
+                this.addBond(this.edgeOrigin, el);
             }
             else {
                 if (!this.justDragged) {
+                    let addEl = [];
+                    let removeEl = [];
+                    let removeEdges = [];
                     if (d3.event.ctrlKey || d3.event.metaKey) {
                         if (this.selectionContains(el)) {
-                            this.removeSelectFromNode(el);
+                            this.removeFromSelection(el, false);
+                            removeEl = [el];
                         }
                         else {
-                            this.addSelectNode(el);
+                            this.addToSelection(el, false);
+                            addEl = [el];
                         }
                     }
                     else {
                         if (!this.selectionContains(el)) {
-                            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                            addEl = [el];
+                            removeEl = this.selectedElements;
+                            removeEdges = this.selectedBonds;
                             this.setSelection([el], []);
                         }
                     }
                     this.updateGraph();
+                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl.concat([])), ...this.listToIDObjects(removeEl.concat(removeEdges)));
+                    this.updateMenus();
                 }
             }
             this.justDragged = false;
         }
+        updateMenus() {
+            this.updateModifierMenu();
+            this.updateVelocityMenu();
+            this.updateTopMenu();
+        }
         svgMouseUp() {
             this.setFollowingEdge(null);
+            let selectedElements = this.selectedElements;
+            let selectedBonds = this.selectedBonds;
             if (this.justClickedEdge) {
                 this.justClickedEdge = false;
             }
             else if (this.draggingElement != null) {
+                let newElementSelection;
+                let newBondSelection;
                 if (ElementNamespace_1.ElementNamespace.elementTypes[this.draggingElement].isMultiElement) {
                     document.body.style.cursor = "auto";
                     let xycoords = d3.mouse(this.svgG.node());
@@ -692,27 +669,27 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                         this.addToSelection(bond, false);
                         subBondList.push(bond);
                     }
-                    DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(subElementList).concat(subBondList).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-                    this.setSelection(subElementList, subBondList);
+                    newElementSelection = subElementList;
+                    newBondSelection = subBondList;
                 }
                 else {
                     document.body.style.cursor = "auto";
                     let xycoords = d3.mouse(this.svgG.node());
                     let element = new SystemDiagramElement_1.SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []);
                     this.elements.push(element);
-                    DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(element)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-                    this.setSelection([element], []);
+                    newElementSelection = [element];
+                    newBondSelection = [];
                 }
+                this.setSelection(newElementSelection, newBondSelection);
                 this.updateGraph();
-                this.updateModifierMenu();
-                this.updateVelocityMenu();
+                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(newElementSelection).concat(newBondSelection).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+                this.updateMenus();
             }
             else if (!this.justScaleTransGraph) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
                 this.setSelection([], []);
-                this.updateModifierMenu();
-                this.updateVelocityMenu();
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)));
+                this.updateMenus();
             }
             if (this.justScaleTransGraph) {
                 this.justScaleTransGraph = false;
@@ -750,23 +727,24 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                         this.updateVelocityMenu();
                         this.elements = this.elements.filter(el => el != e);
                     }
-                    DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().map(e => JSON.stringify(e)), splicedBonds.map(e => JSON.stringify(e)));
+                    let selectionStrings = this.getSelection().map(e => JSON.stringify(e));
                     this.setSelection([], []);
                     this.updateGraph();
-                    this.updateModifierMenu();
-                    this.updateVelocityMenu();
+                    DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", selectionStrings, splicedBonds.map(e => JSON.stringify(e)));
+                    this.updateMenus();
                 }
             });
         }
         pasteSelection() {
+            let selectedElements = this.selectedElements;
+            let selectedBonds = this.selectedBonds;
             this.elements = this.elements.concat(this.copiedElements);
             this.bonds = this.bonds.concat(this.copiedBonds);
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
             this.setSelection(this.copiedElements, this.copiedBonds);
-            this.copySelection();
             this.updateGraph();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+            this.copySelection();
+            this.updateMenus();
         }
         svgKeyDown() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -800,8 +778,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                     DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects([].concat(this.elements.filter(e => !this.selectedElements.includes(e))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
                     this.setSelection(this.elements, this.bonds);
                     this.updateGraph();
-                    this.updateModifierMenu();
-                    this.updateVelocityMenu();
+                    this.updateMenus();
                 }
                 else if (this.checkCtrlCombo(this.C_KEY)) {
                     this.copySelection();
@@ -904,21 +881,23 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.elementSelection = svgG.append("g").selectAll("g");
             svg.call(this.dragSvg()).on("dblclick.zoom", null);
             let graph = this;
-            svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
             svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
             svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
         }
-        svgMouseDown() { }
         svgMouseMove() { }
         pathExtraRendering(path) { }
         renderElements(newElements) { }
         getSelection() {
             return [].concat(this.selectedElements).concat(this.selectedBonds);
         }
+        updateMenus() {
+            this.updateTopMenu();
+        }
         svgMouseUp() {
             if (!this.justScaleTransGraph) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
+                let prevSelection = this.getSelection();
                 this.setSelection([], []);
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(prevSelection));
             }
             else {
                 this.justScaleTransGraph = false;
@@ -946,28 +925,39 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
         }
         svgKeyUp() {
             if (this.checkCtrlCombo(this.A_KEY)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([].concat(this.elements.filter(e => !this.selectedElements.includes(e))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
+                let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
                 this.setSelection(this.elements, this.bonds);
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
+                this.updateMenus();
             }
         }
         pathMouseDown(bond) {
             d3.event.stopPropagation();
+            let addEdges = [];
+            let removeEl = [];
+            let removeEdges = [];
             if (d3.event.ctrlKey || d3.event.metaKey) {
                 if (this.selectionContains(bond)) {
                     this.removeFromSelection(bond);
+                    removeEdges = [bond];
                 }
                 else {
                     this.addToSelection(bond);
+                    addEdges = [bond];
                 }
             }
             else {
                 if (!this.selectionContains(bond)) {
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([bond]), this.listToIDObjects(this.getSelection()));
+                    addEdges = [bond];
+                    removeEl = this.selectedElements;
+                    removeEdges = this.selectedBonds;
                     this.setSelection([], [bond]);
                 }
             }
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([].concat(addEdges)), ...this.listToIDObjects(removeEl.concat(removeEdges)));
+            this.updateMenus();
         }
         handleAreaSelectionEnd() {
             var _a, _b;
@@ -995,9 +985,9 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                         newSelection.push(bond.__data__);
                     }
                 }
+                let removeList = [];
+                let addList = [];
                 if (((_a = d3.event.sourceEvent) === null || _a === void 0 ? void 0 : _a.ctrlKey) || ((_b = d3.event.sourceEvent) === null || _b === void 0 ? void 0 : _b.metaKey)) {
-                    let removeList = [];
-                    let addList = [];
                     for (const e of newSelection) {
                         if (this.selectionContains(e)) {
                             this.removeFromSelection(e, false);
@@ -1008,18 +998,15 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                             addList.push(e);
                         }
                     }
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
                 }
                 else {
                     this.setSelection(newSelection.filter(e => e instanceof GraphElement_3.GraphElement), newSelection.filter(e => e instanceof GraphBond_3.GraphBond));
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(newSelection), [], []);
+                    addList = newSelection;
                 }
                 d3.select("body").style("cursor", "auto");
                 this.updateGraph();
-                if (this instanceof SystemDiagramDisplay_1.SystemDiagramDisplay) {
-                    this.updateModifierMenu();
-                    this.updateVelocityMenu();
-                }
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
+                this.updateMenus();
                 document.getElementById("selectionRect").remove();
                 return true;
             }
@@ -1032,25 +1019,33 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             if (this.handleAreaSelectionEnd())
                 return;
             if (!this.justDragged) {
+                let addEl = [];
+                let remove = [];
                 if (d3.event.ctrlKey || d3.event.metaKey) {
                     if (this.selectionContains(el)) {
                         this.removeFromSelection(el);
+                        remove = [el];
                     }
                     else {
                         this.addToSelection(el);
+                        addEl = [el];
                     }
                 }
                 else {
                     if (!this.selectionContains(el)) {
-                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                        addEl = [el];
+                        remove = this.getSelection();
                         this.setSelection([el], []);
                     }
                 }
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl), ...this.listToIDObjects(remove));
+                this.updateMenus();
             }
             this.justDragged = false;
         }
         updateTopMenu() {
+            console.log("Top menu");
             DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
         }
         addToSelection(e, undoRedo = true) {
@@ -1060,7 +1055,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             else {
                 this.selectedBonds.push(e);
             }
-            this.updateTopMenu();
             if (undoRedo) {
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([e]), [], []);
             }
@@ -1080,7 +1074,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             else {
                 this.selectedBonds = this.selectedBonds.filter(d => d != e);
             }
-            this.updateTopMenu();
             if (undoRedo) {
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([e]));
             }
@@ -1088,7 +1081,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
         setSelection(elList, bondList) {
             this.selectedElements = elList;
             this.selectedBonds = bondList;
-            this.updateTopMenu();
         }
         nodeMouseDown(el) {
             d3.event.stopPropagation();
@@ -1180,14 +1172,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                     d3.select("body").style("cursor", "move");
             })
                 .on("zoomend", function () {
-                if (!graph.handleAreaSelectionEnd()) {
-                    graph.setSelection([], []);
-                    graph.updateGraph();
-                    if (graph instanceof SystemDiagramDisplay_1.SystemDiagramDisplay) {
-                        graph.updateVelocityMenu();
-                        graph.updateModifierMenu();
-                    }
-                }
+                graph.handleAreaSelectionEnd();
             });
         }
         drawPaths() {
@@ -1214,6 +1199,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                 this.elementSelection.filter(e => this.selectedElements.includes(e)).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
                 return;
             }
+            console.log("Update graph");
             this.elementSelection = this.elementSelection.data(this.elements, function (d) { return d.id.toString(); });
             this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             this.elementSelection.selectAll("*").remove();
@@ -1230,10 +1216,10 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
         dragmove(el) {
             if (this.mouseDownNode) {
                 if (!this.selectedElements.includes(el)) {
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
-                    this.selectedElements = [el];
-                    this.selectedBonds = [];
+                    let selection = this.getSelection();
+                    this.setSelection([el], []);
                     this.updateGraph();
+                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(selection));
                 }
                 this.startedSelectionDrag = true;
                 let dx = d3.event.dx;
@@ -1252,11 +1238,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                     this.dragXOffset = 0;
                     this.dragYOffset = 0;
                     this.startedSelectionDrag = false;
-                    if (this instanceof SystemDiagramDisplay_1.SystemDiagramDisplay) {
-                        this.updateModifierMenu();
-                        this.updateVelocityMenu();
-                        this.updateTopMenu();
-                    }
+                    this.updateMenus();
                 }
             }
         }
@@ -1610,9 +1592,9 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         }
                     }
                 }
+                window.systemDiagram.updateGraph();
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
                 window.systemDiagram.updateModifierMenu();
-                window.systemDiagram.updateGraph();
             }
             getGraphByIndex(i) {
                 if (i == "1") {
@@ -1819,9 +1801,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         sysDiag.setSelection([], []);
                     }
                 }
-                sysDiag.updateModifierMenu();
-                sysDiag.updateVelocityMenu();
                 sysDiag.updateGraph();
+                sysDiag.updateMenus();
             }
             urDoDeleteSelection(deletedObjects, unselectedDeletedEdges, isUndo) {
                 let sysDiag = window.systemDiagram;
@@ -1849,9 +1830,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
                     sysDiag.setSelection([], []);
                 }
-                sysDiag.updateModifierMenu();
-                sysDiag.updateVelocityMenu();
                 sysDiag.updateGraph();
+                sysDiag.updateMenus();
             }
             urDoChangeSelection(elIDsToAdd, edgesToAdd, elIDsToRemove, edgesToRemove, isUndo) {
                 let diagram = this.getGraphByIndex(window.tabNum);
@@ -1865,11 +1845,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 diagram.selectedBonds = diagram.selectedBonds.concat(diagram.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
                 diagram.selectedElements = diagram.selectedElements.filter(e => !elRemoveSet.includes(e.id));
                 diagram.selectedBonds = diagram.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
-                if (diagram instanceof SystemDiagramDisplay_2.SystemDiagramDisplay) {
-                    diagram.updateModifierMenu();
-                    diagram.updateVelocityMenu();
-                }
                 diagram.updateGraph();
+                diagram.updateMenus();
             }
             urDoMoveSelection(elements, xOffset, yOffset, isUndo) {
                 let diagram = this.getGraphByIndex(window.tabNum);
@@ -1884,8 +1861,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 let bondIDs = this.parseEdgeIDStrings(edgeIDs);
                 sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
                 sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
-                sysDiag.updateVelocityMenu();
                 sysDiag.updateGraph();
+                sysDiag.updateVelocityMenu();
             }
             urDoChangeSelectionModifier(elIDs, modID, modVal, prevModVals, isUndo) {
                 let sysDiag = window.systemDiagram;
@@ -1908,8 +1885,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         }
                     }
                 });
-                sysDiag.updateModifierMenu();
                 sysDiag.updateGraph();
+                sysDiag.updateModifierMenu();
             }
             initInstance(instance) {
                 this.instance = instance;
@@ -1987,6 +1964,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                 backendManager_1.backendManager.getBackendManager().zoomCenterGraph("1");
                 window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
             }
+            document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => e.focus()));
             document.addEventListener("mouseup", function () {
                 document.body.style.cursor = "auto";
                 window.systemDiagram.draggingElement = null;
@@ -2020,7 +1998,6 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                     }
                 }
             });
-            document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => e.focus()));
         });
     }
     var menuIdMap = {
