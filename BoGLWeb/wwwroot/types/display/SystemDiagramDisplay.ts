@@ -298,8 +298,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathMouseDown(bond: GraphBond) {
         this.justClickedEdge = true;
         super.pathMouseDown(bond);
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
     }
 
     handleEdgeDown(el: SystemDiagramElement) {
@@ -353,8 +351,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.setFollowingEdge(null);
             this.updateGraph();
         }
-        this.updateVelocityMenu();
-        this.updateTopMenu();
+        this.updateMenus();
     }
 
     nodeMouseUp(el: SystemDiagramElement) {
@@ -389,12 +386,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 }
                 this.updateGraph();
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl.concat([])), ...this.listToIDObjects(removeEl.concat(removeEdges)));
-                this.updateModifierMenu();
-                this.updateVelocityMenu();
-                this.updateTopMenu();
+                this.updateMenus();
             }
         }
         this.justDragged = false;
+    }
+
+    updateMenus() {
+        this.updateModifierMenu();
+        this.updateVelocityMenu();
+        this.updateTopMenu();
     }
 
     // mouseup on main svg
@@ -453,16 +454,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.setSelection(newElementSelection, newBondSelection);
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(newElementSelection).concat(newBondSelection).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateTopMenu();
+            this.updateMenus();
         } else if (!this.justScaleTransGraph) {
             this.setSelection([], []);
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)));
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateTopMenu();
+            this.updateMenus();
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked
@@ -509,9 +506,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.setSelection([], []);
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", selectionStrings, splicedBonds.map(e => JSON.stringify(e)));
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateTopMenu();
+            this.updateMenus();
         }
     }
 
@@ -525,9 +520,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
             ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
         this.copySelection();
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-        this.updateTopMenu();
+        this.updateMenus();
     }
 
     // keydown on main svg
@@ -567,9 +560,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
-            this.updateTopMenu();
+            this.updateMenus();
         } else if (this.checkCtrlCombo(this.C_KEY)) {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {
