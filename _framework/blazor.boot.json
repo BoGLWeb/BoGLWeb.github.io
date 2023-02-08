@@ -8,7 +8,7 @@
   "resources": {
     "assembly": {
       "AntDesign.dll": "sha256-RcybFyexTFGHfdOh0KyXFHIm8dNBlxCsTbJtZfZVrMo=",
-      "BoGLWeb.dll": "sha256-Q\/X5S3m\/geC6uMwRxQvPU8Ld0d4BADRHkojnPobIKC0=",
+      "BoGLWeb.dll": "sha256-kzNlbeTsBr5pJ5m8gXI5Y3qUCiE+wHftrTTFcpuGN4I=",
       "BouncyCastle.Crypto.dll": "sha256-MzkDx9IqJwmORfxkt3omSqIgYFz70+MpwgDX5LQsiBw=",
       "itextsharp.dll": "sha256-zloQfa1DpBAe6z\/oT\/bRc6bVXzTwv\/cltTY2bxDplBA=",
       "Microsoft.AspNetCore.Components.DataAnnotations.Validation.dll": "sha256-VGaB03HIjFg4jeK7BomIFzlhhY3vW5N+jWuRqZkbJsY=",
