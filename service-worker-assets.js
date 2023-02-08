@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-qpUedG0r9WqW+rb9nHWzQPKDDuHe70DH8ca0or2eNw4=",
+      "hash": "sha256-E5ZTevalrDzDlcu0Dv2QSnHdjEEXeGnTzyVhz9iNfgs=",
       "url": "css\/main.css"
     },
     {
@@ -3389,7 +3389,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-bJChvCeMWyCFYI79\/wgA2ApyIUErIUsGGnCyFcjaaWA=",
+      "hash": "sha256-6qhzp+Ttz9uCkkS+upd+QGGNTlWuetcyco6vDDBGax0=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3397,7 +3397,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-kzNlbeTsBr5pJ5m8gXI5Y3qUCiE+wHftrTTFcpuGN4I=",
+      "hash": "sha256-4Ve2x9XBNS3LQHZAzfaHyiyFe8hY8eJxz+0ZNtQd3wU=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5617,5 +5617,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "riM0KEb0"
+  "version": "1rfxlF2z"
 };
