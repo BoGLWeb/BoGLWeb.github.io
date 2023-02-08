@@ -239,9 +239,22 @@ path.link.hidden {
     text-shadow: none !important
 }
 
-.ant-tabs-tab:not(.ant-tabs-tab-active):hover {
+.tabsEnabled > div > div > div > div > .ant-tabs-tab:not(.ant-tabs-tab-active) {
+    background-color: #D6EEFF !important;
+    cursor: pointer !important;
+}
+
+.ant-tabs-tab:not(.ant-tabs-tab-active).ant-tabs-tab-disabled {
+    background-color: #f5f5f5 !important;
+}
+
+.ant-tabs-tab:not(.ant-tabs-tab-active):not(.ant-tabs-tab-disabled):hover, .tabsEnabled > div > div > div > div > .ant-tabs-tab:not(.ant-tabs-tab-active):hover {
     background-color: #c2d9ff !important;
     transition: background-color .1s cubic-bezier(0.645,0.045,0.355,1)
+}
+
+.tabsEnabled > div > div > div > div > .ant-tabs-tab {
+    cursor: pointer !important;
 }
 
 .ant-tabs-tabpane {
