@@ -23,6 +23,15 @@ namespace BoGLWeb {
         }
 
         /// <summary>
+        /// Copies a separate object into this <c>BondGraph</c>.
+        /// </summary>
+        /// <param name="model">The model <c>BondGraph</c>.</param>
+        public void CopyFromModel(BondGraph model) {
+            this.elements = new(model.elements);
+            this.bonds = new(model.bonds);
+        }
+
+        /// <summary>
         /// Adds an elements to the BondGraph
         /// </summary>
         /// <param name="name">The name of the element</param>
@@ -151,6 +160,14 @@ namespace BoGLWeb {
                 }
             }
             return parsedElements;
+        }
+
+        /// <summary>
+        /// Gets the JSON string form of this <c>BondGraph</c>.
+        /// </summary>
+        /// <returns>This <c>BondGraph</c> as a <c>string</c>.</returns>
+        public string GetJSON() {
+            return JsonConvert.SerializeObject(this);
         }
 
         public class Element {
@@ -293,6 +310,22 @@ namespace BoGLWeb {
             public override int GetHashCode() {
                 return HashCode.Combine(this.name);
             }
+
+            /// <summary>
+            /// Converts this <c>BondGraph</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>BondGraph</c> as a <c>string</c>.</returns>
+            public string GetLabel() {
+                return this.label;
+            }
+
+            /// <summary>
+            /// Converts this <c>Element</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>Element</c> as a string.</returns>
+            public override string ToString() {
+                return GetLabel() + ";" + GetID();
+            }
         }
 
         public class Bond {
@@ -377,6 +410,16 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Returns the causal stroke direction of this <c>Bond</c>.
+            /// </summary>
+            /// <returns><c>true</c> if the causal stroke points from the source to
+            /// the target (such that the visual stroke itself is on the source side
+            /// of the bond), else <c>false</c>.</returns>
+            public bool GetCausalDirection() {
+                return this.causalStrokeDirection;
+            }
+
+            /// <summary>
             /// Assigns an ID to this <c>Bond</c>.
             /// </summary>
             /// <param name="ID">
@@ -440,6 +483,14 @@ namespace BoGLWeb {
             /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.sourceID, this.targetID, this.causalStroke, this.causalStrokeDirection);
+            }
+
+            /// <summary>
+            /// Converts this <c>Bond</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>Bond</c> as a string.</returns>
+            public override string ToString() {
+                return "(" + this.source + " " + this.sink + ")";
             }
         }
     }

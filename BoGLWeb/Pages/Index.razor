@@ -428,7 +428,6 @@
 
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
-        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.causalGraph).ToString());
         Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
         UpdateBackendWithInitialStackChange(tabID);
@@ -699,6 +698,11 @@
             return;
         }
 
+        // Reset backend bond graphs and prints state equations. TODO: find global variable 
+        // storing equations in Index and replace with StateEquationSet object/methods.
+        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
+        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).ToString());
+        
         generateProgress = 25.0;
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
@@ -864,7 +868,8 @@
     }
 
     private async void showStateEquations() {
-        //Get information from backend
+        // Get information from backend - '4' is the index of the causal bond graph tab
+        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).ToString());
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
         stateEquationModalVisible = true;

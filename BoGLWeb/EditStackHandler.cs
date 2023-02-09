@@ -141,10 +141,15 @@
             }
 
             /// <summary>
-            /// Generates all bond graphs from a system diagram and 
-            /// clears all graph EditionLists
+            /// Resets all <c>BondGraphs</c> in this <c>EditStackHandler</c>.
             /// </summary>
-            public void ClearBondGraphEditHistories() {
+            /// <param name="unsimp">The unsimplified bond graph.</param>
+            /// <param name="simple">The simplified bond graph.</param>
+            /// <param name="causal">The causal bond graph.</param>
+            public void ResetBondGraphs(BondGraph unsimp, BondGraph simple, BondGraph causal) {
+                this.unsimpGraph.CopyFromModel(unsimp);
+                this.simpleGraph.CopyFromModel(simple);
+                this.causalGraph.CopyFromModel(causal);
                 unsimpStack.Clear();
                 simpleStack.Clear();
                 causalStack.Clear();
