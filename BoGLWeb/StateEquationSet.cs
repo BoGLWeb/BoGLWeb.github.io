@@ -140,7 +140,7 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns></returns>
                 public Function GetExpression() {
-                    Function stateExpression= new();
+                    Function stateExpression= new(this.element.GetVar());
                     Stack<CausalPackager> packageStack = new(new[] { this });
                     Stack<List<Function>> equationStack = new();
                     equationStack.Push(new(new[] { stateExpression }));
