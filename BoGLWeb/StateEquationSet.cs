@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using NUnit.Framework;
+using System.Linq;
 using System.Text;
 
 namespace BoGLWeb {
@@ -13,9 +14,7 @@ namespace BoGLWeb {
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
                 List<CausalPackager> packages = CausalPackager.GenerateList(graph);
-                foreach (CausalPackager causalPackager in packages) {
-                    Console.WriteLine(causalPackager);
-                }
+                //
                 this.equations = new string[] { "Dummy 21", "Dummy 5", "Dummy 15", "Dummy 74" };
             }
 
@@ -52,7 +51,8 @@ namespace BoGLWeb {
                 /// <summary>
                 /// Creates a new CausalPackager with the specified criteria.
                 /// </summary>
-                /// <param name="element"></param>
+                /// <param name="element">The <c>BondGraph.Element</c> stored in this
+                /// <c>CausalPackager</c>.</param>
                 /// <param name="isSource"><c>true</c> if this <c>Element</c> is
                 /// the source of the connector <c>Bond</c>, else <c>false</c>.</param>
                 private CausalPackager(BondGraph.Element element, bool isSource) {
@@ -122,20 +122,45 @@ namespace BoGLWeb {
                             targetBondsByElement.Add(bond);
                         }
                     }
-                    Console.WriteLine(string.Join(", ", bondsBySource.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
-                    Console.WriteLine(string.Join(", ", bondsByTarget.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
+                    //Console.WriteLine(string.Join(", ", bondsBySource.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
+                    //Console.WriteLine(string.Join(", ", bondsByTarget.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
                     List<CausalPackager> packagerList = new();
                     foreach (KeyValuePair<string, BondGraph.Element> pair in elements) {
-                        string label = pair.Value.GetLabel();
-                        if (label.Length > 1) {
-                            char indicator = label[^2];
-                            bool isIStorage = indicator == 'I';
-                            if (isIStorage | indicator == 'C') {
-                                packagerList.Add(GeneratePackager(pair.Value, isIStorage, bondsBySource, bondsByTarget));
-                            }
+                        char indicator = pair.Value.GetTypeChar();
+                        bool isIStorage = indicator == 'I';
+                        if (isIStorage | indicator == 'C') {
+                            packagerList.Add(GeneratePackager(pair.Value, isIStorage, bondsBySource, bondsByTarget));
                         }
                     }
                     return packagerList;
+                }
+
+                /// <summary>
+                /// Forms an incomplete state equation.
+                /// </summary>
+                /// <returns></returns>
+                public Function GetExpression() {
+                    Function stateExpression= new();
+                    Stack<CausalPackager> packageStack = new(new[] { this });
+                    Stack<List<Function>> equationStack = new();
+                    equationStack.Push(new(new[] { stateExpression }));
+                    Stack<bool> checkStack = new(new[] { false });
+                    while (packageStack.Count > 0) {
+                        CausalPackager packager = packageStack.Pop();
+                        List<Function> equation = equationStack.Pop();
+                        if (checkStack.Pop()) {
+                        } else {
+                            packageStack.Push(packager);
+                            equationStack.Push(equation);
+                            checkStack.Push(true);
+                            foreach (CausalPackager child in packager.neighbors) {
+                                Function childFunction = new();
+                                //
+                                checkStack.Push(false);
+                            }
+                        }
+                    }
+                    return stateExpression;
                 }
 
                 /// <summary>
@@ -151,7 +176,7 @@ namespace BoGLWeb {
                         if (checkStack.Pop()) {
                             print.Append(']');
                         } else {
-                            print.Append('[').Append(packager.element);
+                            print.Append("[ ").Append(packager.element).Append(' ');
                             packageStack.Push(packager);
                             checkStack.Push(true);
                             foreach (CausalPackager neighbor in packager.neighbors) {

@@ -312,11 +312,13 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <c>BondGraph</c> to a printable format.
+            /// Determines from a character the type for this <c>Element</c>.
             /// </summary>
-            /// <returns>This <c>BondGraph</c> as a <c>string</c>.</returns>
-            public string GetLabel() {
-                return this.label;
+            /// <returns>A single character from the label that designates the 
+            /// type of <c>Element</c>.</returns>
+            public char GetTypeChar() {
+                int length = this.label.Length;
+                return this.label[length > 1 ? length - 2 : 0];
             }
 
             /// <summary>
@@ -324,7 +326,16 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>This <c>Element</c> as a string.</returns>
             public override string ToString() {
-                return GetLabel() + ";" + GetID();
+                return GetTypeChar() + ";" + GetID();
+            }
+
+            /// <summary>
+            /// Gets the variable name for this <c>Element</c>.
+            /// </summary>
+            /// <returns></returns>
+            // Change this once we get variable name input.
+            public string GetVar() {
+                return ToString();
             }
         }
 
