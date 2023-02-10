@@ -4,9 +4,7 @@ import { GraphElement } from "../elements/GraphElement";
 import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
-//import { Undo } from "../../../../../../../node_modules/@mui/icons-material/index";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
-import { GraphBondID } from "../bonds/GraphBondID";
 
 export class BaseGraphDisplay {
     // constants
@@ -82,12 +80,10 @@ export class BaseGraphDisplay {
 
         // listen for key events
         let graph = this;
-        svg.on("mousedown", function (d) { graph.svgMouseDown.call(graph, d); });
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
     }
 
-    svgMouseDown() { }
     svgMouseMove() { }
     pathExtraRendering(path: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
@@ -96,10 +92,15 @@ export class BaseGraphDisplay {
         return ([] as (GraphElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
     }
 
+    updateMenus() {
+        this.updateTopMenu();
+    }
+
     svgMouseUp() {
         if (!this.justScaleTransGraph) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
+            let prevSelection = this.getSelection();
             this.setSelection([], []);
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(prevSelection));
         } else {
             this.justScaleTransGraph = false;
         }
@@ -131,31 +132,40 @@ export class BaseGraphDisplay {
 
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(
-                [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
+            let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
+            this.updateMenus();
         }
     }
 
-    // test this on return
     pathMouseDown(bond: GraphBond) {
         d3.event.stopPropagation();
+        let addEdges = [];
+        let removeEl = [];
+        let removeEdges = [];
 
         if (d3.event.ctrlKey || d3.event.metaKey) {
             if (this.selectionContains(bond)) {
                 this.removeFromSelection(bond);
+                removeEdges = [bond];
             } else {
                 this.addToSelection(bond);
+                addEdges = [bond];
             }
         } else {
             if (!this.selectionContains(bond)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([bond]), this.listToIDObjects(this.getSelection()));
+                addEdges = [bond];
+                removeEl = this.selectedElements;
+                removeEdges = this.selectedBonds;
                 this.setSelection([], [bond]);
             }
         }
 
         this.updateGraph();
+        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([].concat(addEdges)), ...this.listToIDObjects(removeEl.concat(removeEdges)));
+        this.updateMenus();
     }
 
     handleAreaSelectionEnd() {
@@ -181,10 +191,10 @@ export class BaseGraphDisplay {
                     newSelection.push(bond.__data__);
                 }
             }
-            if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
-                let removeList = [];
-                let addList = [];
 
+            let removeList = [];
+            let addList = [];
+            if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
                 for (const e of newSelection) {
                     if (this.selectionContains(e)) {
                         this.removeFromSelection(e, false);
@@ -194,18 +204,14 @@ export class BaseGraphDisplay {
                         addList.push(e);
                     }
                 }
-
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
             } else {
                 this.setSelection(newSelection.filter(e => e instanceof GraphElement), newSelection.filter(e => e instanceof GraphBond));
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(newSelection), [], []);
+                addList = newSelection;
             }
             d3.select("body").style("cursor", "auto");
             this.updateGraph();
-            if (this instanceof SystemDiagramDisplay) {
-                this.updateModifierMenu();
-                this.updateVelocityMenu();
-            }
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addList), ...this.listToIDObjects(removeList));
+            this.updateMenus();
             document.getElementById("selectionRect").remove();
             return true;
         }
@@ -220,25 +226,34 @@ export class BaseGraphDisplay {
         if (this.handleAreaSelectionEnd()) return;
 
         if (!this.justDragged) {
+            let addEl = [];
+            let remove = [];
+
             if (d3.event.ctrlKey || d3.event.metaKey) {
                 if (this.selectionContains(el)) {
                     this.removeFromSelection(el);
+                    remove = [el];
                 } else {
                     this.addToSelection(el);
+                    addEl = [el];
                 }
             } else {
                 if (!this.selectionContains(el)) {
-                    DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                    addEl = [el];
+                    remove = this.getSelection();
                     this.setSelection([el], []);
                 }
             }
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl), ...this.listToIDObjects(remove));
+            this.updateMenus();
         }
 
         this.justDragged = false;
     }
 
     updateTopMenu() {
+        console.log("Top menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
     }
 
@@ -248,7 +263,6 @@ export class BaseGraphDisplay {
         } else {
             this.selectedBonds.push(e);
         }
-        this.updateTopMenu();
         if (undoRedo) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([e]), [], []);
         }
@@ -268,7 +282,6 @@ export class BaseGraphDisplay {
         } else {
             this.selectedBonds = this.selectedBonds.filter(d => d != e);
         }
-        this.updateTopMenu();
         if (undoRedo) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([e]));
         }
@@ -277,7 +290,6 @@ export class BaseGraphDisplay {
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList;
         this.selectedBonds = bondList;
-        this.updateTopMenu();
     }
 
     // mousedown on element
@@ -377,14 +389,7 @@ export class BaseGraphDisplay {
                 if (!((<KeyboardEvent>(<ZoomEvent>d3.event).sourceEvent).shiftKey)) d3.select("body").style("cursor", "move");
             })
             .on("zoomend", function () {
-                if (!graph.handleAreaSelectionEnd()) {
-                    graph.setSelection([], []);
-                    graph.updateGraph();
-                    if (graph instanceof SystemDiagramDisplay) {
-                        graph.updateVelocityMenu();
-                        graph.updateModifierMenu();
-                    }
-                }
+                graph.handleAreaSelectionEnd();
             });
     }
 
@@ -422,6 +427,7 @@ export class BaseGraphDisplay {
             return;
         }
 
+        console.log("Update graph");
         // update existing elements
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -448,11 +454,11 @@ export class BaseGraphDisplay {
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
             if (!this.selectedElements.includes(el)) {
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                let selection = this.getSelection();
                 // not updating menus until end of drag because it causes significant lag
-                this.selectedElements = [el];
-                this.selectedBonds = [];
+                this.setSelection([el], []);
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(selection));
             }
 
             this.startedSelectionDrag = true;
@@ -474,11 +480,7 @@ export class BaseGraphDisplay {
                 this.dragXOffset = 0;
                 this.dragYOffset = 0;
                 this.startedSelectionDrag = false;
-                if (this instanceof SystemDiagramDisplay) {
-                    this.updateModifierMenu();
-                    this.updateVelocityMenu();
-                    this.updateTopMenu();
-                }
+                this.updateMenus();
             }
         }
     }

@@ -233,9 +233,9 @@ export namespace backendManager {
                     }
                 }
             }
+            window.systemDiagram.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
-            window.systemDiagram.updateGraph();
         }
 
         public getGraphByIndex(i: string) {
@@ -449,9 +449,8 @@ export namespace backendManager {
                     sysDiag.setSelection([], []);
                 }
             }
-            sysDiag.updateModifierMenu();
-            sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
+            sysDiag.updateMenus();
         }
 
         public urDoDeleteSelection(deletedObjects: string[], unselectedDeletedEdges: string[], isUndo: boolean) {
@@ -479,9 +478,8 @@ export namespace backendManager {
                 sysDiag.bonds = sysDiag.bonds.filter(b => !this.checkBondIDs(elBonds, b));
                 sysDiag.setSelection([], []);
             }
-            sysDiag.updateModifierMenu();
-            sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
+            sysDiag.updateMenus();
         }
 
         public urDoChangeSelection(elIDsToAdd: number[], edgesToAdd: string[], elIDsToRemove: number[], edgesToRemove: string[], isUndo: boolean) {
@@ -497,11 +495,8 @@ export namespace backendManager {
             diagram.selectedBonds = diagram.selectedBonds.concat(diagram.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
             diagram.selectedElements = diagram.selectedElements.filter(e => !elRemoveSet.includes(e.id));
             diagram.selectedBonds = diagram.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
-            if (diagram instanceof SystemDiagramDisplay) {
-                diagram.updateModifierMenu();
-                diagram.updateVelocityMenu();
-            }
             diagram.updateGraph();
+            diagram.updateMenus();
         }
 
         public urDoMoveSelection(elements: number[], xOffset: number, yOffset: number, isUndo: boolean) {
@@ -518,8 +513,8 @@ export namespace backendManager {
             let bondIDs = this.parseEdgeIDStrings(edgeIDs);
             sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
             sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
-            sysDiag.updateVelocityMenu();
             sysDiag.updateGraph();
+            sysDiag.updateVelocityMenu();
         }
 
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
@@ -542,8 +537,8 @@ export namespace backendManager {
                 }
             });
 
-            sysDiag.updateModifierMenu();
             sysDiag.updateGraph();
+            sysDiag.updateModifierMenu();
         }
         
         instance: any;

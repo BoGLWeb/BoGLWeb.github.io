@@ -259,6 +259,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateModifierMenu() {
+        console.log("Modifier menu");
         if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
             let allAllowedModifiers = [];
             let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
@@ -283,6 +284,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
+        console.log("Velocity menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
         let velocities = [];
         for (const el of this.getSelection()) {
@@ -293,58 +295,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", velocities);
     }
 
-    // remove bonds associated with a node
-    spliceLinksForNode(el: SystemDiagramElement) {
-        let graph = this;
-
-        let toSplice = this.bonds.filter(function (l) {
-            return (l.source === el || l.target === el);
-        });
-        toSplice.map(function (l) {
-            graph.bonds.splice(graph.bonds.indexOf(l), 1);
-        });
-        this.updateVelocityMenu();
-    }
-
-    addSelectEdge(bond: GraphBond) {
-        this.addToSelection(bond);
-        this.updateVelocityMenu();
-    }
-
-    addSelectNode(el: SystemDiagramElement) {
-        this.addToSelection(el);
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-    }
-
-    removeSelectFromEdge(edge: GraphBond) {
-        this.removeFromSelection(edge);
-        this.updateVelocityMenu();
-    }
-
-    removeSelectFromNode(el: SystemDiagramElement) {
-        this.removeFromSelection(el);
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-    }
-
     pathMouseDown(bond: GraphBond) {
-        d3.event.stopPropagation();
         this.justClickedEdge = true;
-
-        if (d3.event.ctrlKey || d3.event.metaKey) {
-            if (this.selectionContains(bond)) {
-                this.removeSelectFromEdge(bond);
-            } else {
-                this.addSelectEdge(bond);
-            }
-        } else {
-            if (!this.selectionContains(bond)) {
-                this.setSelection([], [bond]);
-            }
-        }
-
-        this.updateGraph();
+        super.pathMouseDown(bond);
     }
 
     handleEdgeDown(el: SystemDiagramElement) {
@@ -359,13 +312,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         d3.event.stopPropagation();
 
         if (this.handleAreaSelectionEnd()) return;
-        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
         if (this.edgeOrigin && el !== this.edgeOrigin) {
-            if (isCompatible) {
-                this.addBond(this.edgeOrigin, el);
-            }
-            this.setFollowingEdge(null);
-            this.updateGraph();
+             this.addBond(this.edgeOrigin, el);
         } else if (!this.edgeOrigin) {
             this.setFollowingEdge(el);
             d3.event.stopPropagation();
@@ -385,16 +333,25 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList as SystemDiagramElement[];
         this.selectedBonds = bondList;
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
-        this.updateTopMenu();
     }
 
     addBond(source, target) {
-        let bond = new GraphBond(source, target);
-        this.bonds.push(bond);
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-        this.setSelection([], [bond]);
+        let isCompatible = ElementNamespace.isCompatible(source, target, this);
+
+        if (isCompatible) {
+            let bond = new GraphBond(source, target);
+            this.bonds.push(bond);
+            let selectedElements = this.selectedElements;
+            let selectedBonds = this.selectedBonds;
+            this.setSelection([], [bond]);
+            this.setFollowingEdge(null);
+            this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+        } else {
+            this.setFollowingEdge(null);
+            this.updateGraph();
+        }
+        this.updateMenus();
     }
 
     nodeMouseUp(el: SystemDiagramElement) {
@@ -402,41 +359,55 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         this.mouseDownNode = null;
         if (this.handleAreaSelectionEnd()) return;
-        let isCompatible = ElementNamespace.isCompatible(this.edgeOrigin, el, this);
 
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
-            if (isCompatible) {
-                this.addBond(this.edgeOrigin, el);
-            }
-            this.setFollowingEdge(null);
-            this.updateGraph();
+            this.addBond(this.edgeOrigin, el);
         } else {
             // we"re in the same node
             if (!this.justDragged) {
+                let addEl = [];
+                let removeEl = [];
+                let removeEdges = [];
                 if (d3.event.ctrlKey || d3.event.metaKey) {
                     if (this.selectionContains(el)) {
-                        this.removeSelectFromNode(el);
+                        this.removeFromSelection(el, false);
+                        removeEl = [el];
                     } else {
-                        this.addSelectNode(el);
+                        this.addToSelection(el, false);
+                        addEl = [el];
                     }
                 } else {
                     if (!this.selectionContains(el)) {
-                        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects([el]), ...this.listToIDObjects(this.getSelection()));
+                        addEl = [el];
+                        removeEl = this.selectedElements;
+                        removeEdges = this.selectedBonds;
                         this.setSelection([el], []);
                     }
                 }
                 this.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl.concat([])), ...this.listToIDObjects(removeEl.concat(removeEdges)));
+                this.updateMenus();
             }
         }
         this.justDragged = false;
     }
 
+    updateMenus() {
+        this.updateModifierMenu();
+        this.updateVelocityMenu();
+        this.updateTopMenu();
+    }
+
     // mouseup on main svg
     svgMouseUp() {
         this.setFollowingEdge(null);
+        let selectedElements = this.selectedElements;
+        let selectedBonds = this.selectedBonds;
         if (this.justClickedEdge) {
             this.justClickedEdge = false;
         } else if (this.draggingElement != null) {
+            let newElementSelection;
+            let newBondSelection;
             if (ElementNamespace.elementTypes[this.draggingElement].isMultiElement) {
                 //Get mouse location
                 document.body.style.cursor = "auto";
@@ -469,26 +440,26 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     subBondList.push(bond);
                 }
 
-                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(subElementList).concat(subBondList).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-                this.setSelection(subElementList, subBondList);
+                newElementSelection = subElementList;
+                newBondSelection = subBondList;
             } else {
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
                 let element = new SystemDiagramElement(this.highestElemId++, this.draggingElement, xycoords[0], xycoords[1], 0, []);
                 this.elements.push(element);
-                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(element)], ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
-                this.setSelection([element], []);
+                newElementSelection = [element];
+                newBondSelection = [];
             }
             //Update the system diagram
+            this.setSelection(newElementSelection, newBondSelection);
             this.updateGraph();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(newElementSelection).concat(newBondSelection).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+            this.updateMenus();
         } else if (!this.justScaleTransGraph) {
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(this.getSelection()));
             this.setSelection([], []);
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
             this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)));
+            this.updateMenus();
         }
         if (this.justScaleTransGraph) {
             // dragged not clicked
@@ -531,24 +502,25 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 this.updateVelocityMenu();
                 this.elements = this.elements.filter(el => el != e);
             }
-            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", this.getSelection().map(e => JSON.stringify(e)), splicedBonds.map(e => JSON.stringify(e)));
+            let selectionStrings = this.getSelection().map(e => JSON.stringify(e));
             this.setSelection([], []);
             this.updateGraph();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
+            DotNet.invokeMethodAsync("BoGLWeb", "URDeleteSelection", selectionStrings, splicedBonds.map(e => JSON.stringify(e)));
+            this.updateMenus();
         }
     }
 
     pasteSelection() {
+        let selectedElements = this.selectedElements;
+        let selectedBonds = this.selectedBonds;
         this.elements = this.elements.concat(this.copiedElements);
         this.bonds = this.bonds.concat(this.copiedBonds);
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
-            ...this.listToIDObjects([].concat(this.selectedElements).concat(this.selectedBonds)), true);
         this.setSelection(this.copiedElements, this.copiedBonds);
-        this.copySelection();
         this.updateGraph();
-        this.updateModifierMenu();
-        this.updateVelocityMenu();
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
+            ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+        this.copySelection();
+        this.updateMenus();
     }
 
     // keydown on main svg
@@ -588,8 +560,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
             this.setSelection(this.elements, this.bonds);
             this.updateGraph();
-            this.updateModifierMenu();
-            this.updateVelocityMenu();
+            this.updateMenus();
         } else if (this.checkCtrlCombo(this.C_KEY)) {
             this.copySelection();
         } else if (this.checkCtrlCombo(this.X_KEY)) {

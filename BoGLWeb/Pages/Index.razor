@@ -20,7 +20,6 @@
 <Menu Selectable=false Mode=MenuMode.Horizontal TriggerSubMenuAction=Trigger.Click>
     <li class="ant-menu-submenu ant-menu-submenu-horizontal boglLogo">
         <img src="images/logo.png" width="50"/>
-        <div id="logoSave">*</div>
     </li>
     <SubMenu title="File" Class="topMenu" Key="File">
         <span id="fileMenu"></span>
@@ -145,96 +144,98 @@
                 </ExpandIconTemplate>
             </Collapse>
         </div>
-        <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
-            <TabPane Key="1" Tab="System" ForceRender=true>
-                <div id="modifierMenu">
-                    <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
-                        <ChildContent>
-                            <Panel Header="Modifers" Key="1">
-                                <div id="modifierCheckboxWrapper">
-                                    <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                    <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                    <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                    <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                    <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                    <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                    <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
-                                </div>
-                                <hr/>
-                                <div>
-                                    <div style="font-size: 12px">Velocity Direction</div>
-                                    <div id="velocities">
-                                        <div id="clearVelocityWrapper">
-                                            <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">
-                                                Clear
-                                                <br/>Velocity
+        <span class="@(tabsDisabled ? "tabsDisabled" : "tabsEnabled")">
+            <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
+                <TabPane Key="1" Tab="System" ForceRender=true>
+                    <div id="modifierMenu">
+                        <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
+                            <ChildContent>
+                                <Panel Header="Modifers" Key="1" Id="modifierPanel">
+                                    <div id="modifierCheckboxWrapper">
+                                        <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
+                                        <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
+                                        <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
+                                        <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
+                                        <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
+                                        <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
+                                        <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                    </div>
+                                    <hr/>
+                                    <div>
+                                        <div style="font-size: 12px">Velocity Direction</div>
+                                        <div id="velocities">
+                                            <div id="clearVelocityWrapper">
+                                                <Button Disabled="@velocityDisabled" Class="bogl_button" OnClick="b => { ChangeVelocity(0); }">
+                                                    Clear
+                                                    <br/>Velocity
+                                                </Button>
+                                            </div>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
+                                                <div class="arrowButton topArrow">⮢</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
+                                                <div class="arrowButton topArrow">⮣</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
+                                                <div class="arrowButton sideTopArrow">⮥</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
+                                                <div class="arrowButton">⮧</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
+                                                <div class="arrowButton bottomArrow">⮡</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
+                                                <div class="arrowButton bottomArrow">⮠</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
+                                                <div class="arrowButton">⮦</div>
+                                            </Button>
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
+                                                <div class="arrowButton sideTopArrow">⮤</div>
                                             </Button>
                                         </div>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
-                                            <div class="arrowButton topArrow">⮢</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
-                                            <div class="arrowButton topArrow">⮣</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
-                                            <div class="arrowButton sideTopArrow">⮥</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
-                                            <div class="arrowButton">⮧</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
-                                            <div class="arrowButton bottomArrow">⮡</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
-                                            <div class="arrowButton bottomArrow">⮠</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
-                                            <div class="arrowButton">⮦</div>
-                                        </Button>
-                                        <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
-                                            <div class="arrowButton sideTopArrow">⮤</div>
-                                        </Button>
                                     </div>
-                                </div>
-                            </Panel>
-                        </ChildContent>
-                        <ExpandIconTemplate>
-                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
-                        </ExpandIconTemplate>
-                    </Collapse>
-                </div>
-                <Button Type="@ButtonType.Primary" Id="generateButton" Disabled="!allRulesLoaded || generatingBondGraph" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
-                @if (generatingBondGraph) {
-                    <p id="generateProgressText">Processing System Diagram:</p>
-                    <Progress id="generateProgress" Percent=@generateProgress ShowInfo="false" TrailColor="#ededed"/>
-                }
-                @if (!allRulesLoaded) {
-                    <p id="ruleLoadProgressText">Preparing Generation:</p>
-                    <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
-                }
-                <div id="systemDiagram"></div>
-            </TabPane>
-            <TabPane Key="2" Tab="Unsimplified BG" ForceRender=true>
-                <div id="unsimpBG"></div>
-            </TabPane>
-            <TabPane Key="3" Tab="Simplified BG" ForceRender=true>
-                <div id="simpBG"></div>
-            </TabPane>
-            <TabPane Key="4" Tab="Causal BG" ForceRender=true>
-                <Select Id="causalSelect"
-                        TItem="Option"
-                        TItemValue="int"
-                        DataSource="@causalSwitchOptions"
-                        @bind-Value="@selectedCausalOption"
-                        DefaultValue="@(0)"
-                        ValueName="@nameof(Option.value)"
-                        LabelName="@nameof(Option.label)"
-                        Style="width:120px"
-                        OnSelectedItemChanged="ChangeCausalOption">
-                </Select>
-                <div id="causalBG"></div>
-            </TabPane>
-        </Tabs>
+                                </Panel>
+                            </ChildContent>
+                            <ExpandIconTemplate>
+                                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                            </ExpandIconTemplate>
+                        </Collapse>
+                    </div>
+                    <Button Type="@ButtonType.Primary" Id="generateButton" Disabled="!allRulesLoaded || generatingBondGraph" Class="bogl_button" @onclick="generateButtonClicked">Generate</Button>
+                    @if (generatingBondGraph) {
+                        <p id="generateProgressText">Processing System Diagram:</p>
+                        <Progress id="generateProgress" Percent=@generateProgress ShowInfo="false" TrailColor="#ededed"/>
+                    }
+                    @if (!allRulesLoaded) {
+                        <p id="ruleLoadProgressText">Preparing Generation:</p>
+                        <Progress id="ruleLoadProgress" Percent=@loadPercent ShowInfo="false" TrailColor="#ededed"/>
+                    }
+                    <div id="systemDiagram"></div>
+                </TabPane>
+                <TabPane Disabled="tabsDisabled" Key="2" Tab="Unsimplified BG" ForceRender=true>
+                    <div id="unsimpBG"></div>
+                </TabPane>
+                <TabPane Disabled="tabsDisabled" Key="3" Tab="Simplified BG" ForceRender=true>
+                    <div id="simpBG"></div>
+                </TabPane>
+                <TabPane Disabled="tabsDisabled" Key="4" Tab="Causal BG" ForceRender=true>
+                    <Select Id="causalSelect"
+                            TItem="Option"
+                            TItemValue="int"
+                            DataSource="@causalSwitchOptions"
+                            @bind-Value="@selectedCausalOption"
+                            DefaultValue="@(0)"
+                            ValueName="@nameof(Option.value)"
+                            LabelName="@nameof(Option.label)"
+                            Style="width:120px"
+                            OnSelectedItemChanged="ChangeCausalOption">
+                    </Select>
+                    <div id="causalBG"></div>
+                </TabPane>
+            </Tabs>
+        </span>
     </div>
 </div>
 </main>
@@ -293,6 +294,7 @@
         public int value { get; set; }
     }
 
+    static bool tabsDisabled = true;
     static bool disableUndo = true;
     static bool disableRedo = true;
 
@@ -611,12 +613,14 @@
 
     //Change tabs
     private async void TabChange(string key) {
-        this.currTab = key;
-        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("setTab", key);
-        disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
-        disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
-        base.StateHasChanged();
+        if (!tabsDisabled) {
+            this.currTab = key;
+            var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+            await module.InvokeVoidAsync("setTab", key);
+            disableRedo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), false);
+            disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
+            base.StateHasChanged();
+        }
     }
 
     //TODO What does this do?
@@ -744,6 +748,7 @@
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
         causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => { return new Option { label = "Option " + (i + 1), value = i }; }).ToList();
         generatingBondGraph = false;
+        tabsDisabled = false;
         base.StateHasChanged();
         await messageService.Success("Bond Graphs Successfully Generated!");
     }
@@ -772,7 +777,12 @@
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        var file = await module.InvokeAsync<object>("openFile");
+        object file;
+        try {
+            file = await module.InvokeAsync<object>("openFile");
+        } catch (Exception e) {
+            return;
+        }
         SystemDiagram sysDiagram;
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
@@ -803,7 +813,13 @@
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        Stream fileStream;
+        try {
+            fileStream = getFileStream(sysDiagram.generateBoGLString());
+        } catch (ArgumentOutOfRangeException e) {
+            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
+           return; 
+        }
         var fileName = "SystemDiagram.bogl";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
@@ -820,7 +836,13 @@
         Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
         Console.WriteLine("BoGL String");
-        var fileStream = getFileStream(sysDiagram.generateBoGLString());
+        Stream fileStream;
+        try {
+            fileStream = getFileStream(sysDiagram.generateBoGLString());
+        } catch (ArgumentOutOfRangeException e) {
+            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
+            return; 
+        }
         var fileName = "SystemDiagram.bogl";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
@@ -934,7 +956,7 @@
 
 
     //Add url to modal
-        url = "https://boglweb.azurewebsites.net/?q=" + jsonStr;
+        url = "https://boglweb.github.io/?q=" + jsonStr;
         urlModalVisible = true;
         base.StateHasChanged();
     }
