@@ -689,6 +689,7 @@
             errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
+            generatingBondGraph = false;
             return;
         }
 
