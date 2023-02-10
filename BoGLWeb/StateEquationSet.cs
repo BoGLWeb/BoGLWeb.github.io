@@ -13,8 +13,11 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
-                List<CausalPackager> packages = CausalPackager.GenerateList(graph);
-                //
+                List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
+                foreach (CausalPackager packager in packagers) {
+                    Console.WriteLine(packager);
+                    //Console.WriteLine(packager.GetExpression());
+                }
                 this.equations = new string[] { "Dummy 21", "Dummy 5", "Dummy 15", "Dummy 74" };
             }
 
@@ -44,9 +47,11 @@ namespace BoGLWeb {
                 // Stores the element at this node.
                 private readonly BondGraph.Element element;
                 // Stores the direction of energy flow.
-                private readonly bool isSource;
+                private readonly bool isSource, followsCausality;
                 // Stores all neighboring elements ahead in the flow.
                 private readonly List<CausalPackager> neighbors;
+                // Stores the current state equation.
+                private Function stateEquation;
 
                 /// <summary>
                 /// Creates a new CausalPackager with the specified criteria.
@@ -55,10 +60,20 @@ namespace BoGLWeb {
                 /// <c>CausalPackager</c>.</param>
                 /// <param name="isSource"><c>true</c> if this <c>Element</c> is
                 /// the source of the connector <c>Bond</c>, else <c>false</c>.</param>
-                private CausalPackager(BondGraph.Element element, bool isSource) {
+                private CausalPackager(BondGraph.Element element, bool isSource, bool followsCausality) {
                     this.element = element;
                     this.isSource = isSource;
+                    this.followsCausality = followsCausality;
+                    this.stateEquation = new(GenerateVariableName());
                     this.neighbors = new();
+                }
+
+                /// <summary>
+                /// Generates the variable name for the Function associated with this CausalPackager.
+                /// </summary>
+                /// <returns></returns>
+                private string GenerateVariableName() {
+                    return (this.followsCausality ? "E" : "F") + this.element.GetID();
                 }
 
                 /// <summary>
@@ -69,7 +84,7 @@ namespace BoGLWeb {
                 /// <param name="bondsBySource"></param>
                 /// <param name="bondsByTarget"></param>
                 private static CausalPackager GeneratePackager(BondGraph.Element element, bool followsCausality, Dictionary<int, List<BondGraph.Bond>> bondsBySource, Dictionary<int, List<BondGraph.Bond>> bondsByTarget) {
-                    CausalPackager returnValue = new(element, true);
+                    CausalPackager returnValue = new(element, true, followsCausality);
                     Stack<CausalPackager> packagerStack = new(new[] { returnValue });
                     while (packagerStack.Count > 0) {
                         CausalPackager packager = packagerStack.Pop();
@@ -78,7 +93,7 @@ namespace BoGLWeb {
                         if (bondsToTarget != null) {
                             foreach (BondGraph.Bond bond in bondsToTarget) {
                                 if (followsCausality == bond.GetCausalDirection()) {
-                                    CausalPackager neighborPackager = new(bond.getSink(), true);
+                                    CausalPackager neighborPackager = new(bond.getSink(), true, followsCausality);
                                     packager.neighbors.Add(neighborPackager);
                                     packagerStack.Push(neighborPackager);
                                 }
@@ -88,7 +103,7 @@ namespace BoGLWeb {
                         if (bondsToSource != null) {
                             foreach (BondGraph.Bond bond in bondsToSource) {
                                 if (followsCausality ^ bond.GetCausalDirection()) {
-                                    CausalPackager neighborPackager = new(bond.getSource(), false);
+                                    CausalPackager neighborPackager = new(bond.getSource(), false, followsCausality);
                                     packager.neighbors.Add(neighborPackager);
                                     packagerStack.Push(neighborPackager);
                                 }
@@ -140,27 +155,29 @@ namespace BoGLWeb {
                 /// </summary>
                 /// <returns></returns>
                 public Function GetExpression() {
-                    Function stateExpression= new(this.element.GetVar());
                     Stack<CausalPackager> packageStack = new(new[] { this });
-                    Stack<List<Function>> equationStack = new();
-                    equationStack.Push(new(new[] { stateExpression }));
                     Stack<bool> checkStack = new(new[] { false });
                     while (packageStack.Count > 0) {
                         CausalPackager packager = packageStack.Pop();
-                        List<Function> equation = equationStack.Pop();
                         if (checkStack.Pop()) {
+                            this.stateEquation = new Function();
+                            foreach (CausalPackager child in packager.neighbors) {
+                                if (this.isSource ^ child.isSource) {
+                                    this.stateEquation = this.stateEquation.Add(child.stateEquation);
+                                } else {
+                                    this.stateEquation = this.stateEquation.Subtract(child.stateEquation);
+                                }
+                            }
                         } else {
                             packageStack.Push(packager);
-                            equationStack.Push(equation);
                             checkStack.Push(true);
                             foreach (CausalPackager child in packager.neighbors) {
-                                Function childFunction = new();
-                                //
+                                packageStack.Push(child);
                                 checkStack.Push(false);
                             }
                         }
                     }
-                    return stateExpression;
+                    return this.stateEquation;
                 }
 
                 /// <summary>
