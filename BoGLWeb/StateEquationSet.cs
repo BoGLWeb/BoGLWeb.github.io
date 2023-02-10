@@ -13,10 +13,11 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
+                //Function function = new("E3");
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
                 foreach (CausalPackager packager in packagers) {
                     Console.WriteLine(packager);
-                    //Console.WriteLine(packager.GetExpression());
+                    Console.WriteLine(packager.GetExpression());
                 }
                 this.equations = new string[] { "Dummy 21", "Dummy 5", "Dummy 15", "Dummy 74" };
             }
@@ -160,12 +161,14 @@ namespace BoGLWeb {
                     while (packageStack.Count > 0) {
                         CausalPackager packager = packageStack.Pop();
                         if (checkStack.Pop()) {
-                            this.stateEquation = new Function();
-                            foreach (CausalPackager child in packager.neighbors) {
-                                if (this.isSource ^ child.isSource) {
-                                    this.stateEquation = this.stateEquation.Add(child.stateEquation);
-                                } else {
-                                    this.stateEquation = this.stateEquation.Subtract(child.stateEquation);
+                            if (packager.neighbors.Count > 0) {
+                                packager.stateEquation = new Function();
+                                foreach (CausalPackager child in packager.neighbors) {
+                                    if (this.isSource ^ child.isSource) {
+                                        packager.stateEquation = packager.stateEquation.Add(child.stateEquation);
+                                    } else {
+                                        packager.stateEquation = packager.stateEquation.Subtract(child.stateEquation);
+                                    }
                                 }
                             }
                         } else {

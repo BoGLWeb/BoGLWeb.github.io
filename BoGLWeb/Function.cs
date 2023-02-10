@@ -129,8 +129,9 @@ namespace BoGLWeb {
                     default:
                         throw new ArgumentException("Must be unary operator.");
                 }
-                AddChild(child);
-                AssignOperator(fop);
+                this.fn = child.fn;
+                this.children.Clear();
+                this.children.AddRange(child.children);
             }
 
             /// <summary>
@@ -144,7 +145,7 @@ namespace BoGLWeb {
             /// </param>
             private void FormulateBinaryOperator(String fn, FunctionOperator fop) {
                 VerifyLength(fn);
-                FunctionOperator next = fop;
+                FunctionOperator next = FunctionOperator.SUBTRACTION;
                 switch (fop) {
                     case FunctionOperator.SUBTRACTION:
                         next = FunctionOperator.MULTIPLICATION;
@@ -291,11 +292,20 @@ namespace BoGLWeb {
                                             break;
                                     }
                                 }
-                                targetFn.AssignValues(targetFn.fn, aChildren);
+                                if (aChildren.Count == 0) {
+                                    aChildren.Add(new Function());
+                                }
+                                if (aChildren.Count == 1) {
+                                    targetFn.AssignValues(aChildren[0].fn, aChildren[0].children);
+                                } else {
+                                    targetFn.AssignValues(targetFn.fn, aChildren);
+                                }
                                 break;
                             case FunctionOperator.SUBTRACTION:
                                 if (targetFn.children[0].Equals(targetFn.children[1])) {
                                     targetFn.AssignValues("0", new());
+                                } else if (targetFn.children[0].fn.Equals("0")) {
+                                    targetFn.AssignValues("!", new(new[] { targetFn.children[1] }));
                                 }
                                 break;
                             case FunctionOperator.MULTIPLICATION:
@@ -331,6 +341,7 @@ namespace BoGLWeb {
                                 }
                                 if (isZero) {
                                     mChildren.Clear();
+                                    mChildren.Add(new Function("0"));
                                 }
                                 targetFn.AssignValues(targetFn.fn, mChildren);
                                 break;
@@ -670,6 +681,16 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Simplifies this Function and its first layer of children.
+            /// </summary>
+            private void SimplifyChildren() {
+                foreach (Function child in this.children) {
+                    child.Simplify(false);
+                }
+                Simplify(false);
+            }
+
+            /// <summary>
             /// Adds two <c>Function</c> objects.
             /// </summary>
             /// <param name="addend">
@@ -681,7 +702,7 @@ namespace BoGLWeb {
             public Function Add(Function addend) {
                 Function sum = new();
                 sum.AssignValues("+", new() { Copy(), addend.Copy() });
-                sum.Simplify(false);
+                sum.SimplifyChildren();
                 return sum;
             }
 
@@ -702,7 +723,7 @@ namespace BoGLWeb {
                 }
                 Function difference = new();
                 difference.AssignValues("-", new() {Copy(), newSub});
-                difference.Simplify(false);
+                difference.SimplifyChildren();
                 return difference;
             }
 
@@ -728,7 +749,7 @@ namespace BoGLWeb {
                 }
                 Function product = new();
                 product.AssignValues("*", new() { thisCopy, multCopy});
-                product.Simplify(false);
+                product.SimplifyChildren();
                 return product;
             }
 
@@ -754,7 +775,7 @@ namespace BoGLWeb {
                 }
                 Function quotient = new();
                 quotient.AssignValues("/", new() { thisCopy, diviCopy });
-                quotient.Simplify(false);
+                quotient.SimplifyChildren();
                 return quotient;
             }
 
@@ -772,7 +793,7 @@ namespace BoGLWeb {
                 }
                 Function negation = new();
                 negation.AssignValues("!", new() { thisCopy });
-                negation.Simplify(false);
+                negation.SimplifyChildren();
                 return negation;
             }
 
@@ -845,6 +866,19 @@ namespace BoGLWeb {
             public override int GetHashCode() {
                 AssertVariable();
                 return HashCode.Combine(this.ToString());
+            }
+
+            public string ToTree() {
+                return ToTree("");
+            }
+
+            private string ToTree(string indent) {
+                string print = indent + this.fn;
+                indent += "\t";
+                foreach (Function child in this.children) {
+                    print = print + "\n" + child.ToTree(indent);
+                }
+                return print;
             }
 
             /// <summary>
