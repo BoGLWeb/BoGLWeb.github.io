@@ -261,23 +261,23 @@ namespace BoGLWeb {
             /// <summary>
             /// Simplifies this <c>Function</c>.
             /// </summary>
-            /// <param name="proceedThroughLayers">
+            /// <param name="simplifyAllLayers">
             /// <c>true</c> if the simplification process should continue 
             /// throughout the whole <c>Function</c>, else <c>false</c>
             /// if the process should be confined to this index.
             /// </param>
             public void Simplify(bool simplifyAllLayers) {
-                Stack<Function> fnStack = new();
-                Stack<bool> checkStack = new();
-                fnStack.Push(this);
-                checkStack.Push(false);
+                Stack<Function> fnStack = new(new[] { this });
+                Stack<bool> checkStack = new(new[] { false });
+                Stack<bool> simplifyChildrenStack = new(new[] { simplifyAllLayers });
                 while (fnStack.Count > 0) {
                     Function targetFn = fnStack.Pop();
+                    bool simplifyChildren = simplifyChildrenStack.Pop();
                     if (checkStack.Pop()) {
                         String fn = targetFn.fn;
                         switch (GetOperatorObject(fn[0])) {
                             case FunctionOperator.ADDITION:
-                                List<Function> aChildren = new();
+                                List<Function> aChildren = new(), sChildren = new();
                                 foreach (Function child in targetFn.children) {
                                     String childFn = child.fn;
                                     switch (GetOperatorObject(childFn[0])) {
@@ -287,6 +287,9 @@ namespace BoGLWeb {
                                             break;
                                         case FunctionOperator.ZERO:
                                             break; // does nothing
+                                        case FunctionOperator.NEGATION:
+                                            sChildren.Add(child.children[0]);
+                                            break;
                                         default:
                                             aChildren.Add(child);
                                             break;
@@ -300,12 +303,25 @@ namespace BoGLWeb {
                                 } else {
                                     targetFn.AssignValues(targetFn.fn, aChildren);
                                 }
+                                if (sChildren.Count > 0) {
+                                    foreach (Function subChild in sChildren) {
+                                        Function child = new();
+                                        child.AssignValues(targetFn.fn, targetFn.children);
+                                        targetFn.AssignValues("-", new(new[] { child, subChild }));
+                                    }
+                                    fnStack.Push(targetFn);
+                                    checkStack.Push(false);
+                                    simplifyChildrenStack.Push(true);
+                                }
                                 break;
                             case FunctionOperator.SUBTRACTION:
                                 if (targetFn.children[0].Equals(targetFn.children[1])) {
                                     targetFn.AssignValues("0", new());
                                 } else if (targetFn.children[0].fn.Equals("0")) {
                                     targetFn.AssignValues("!", new(new[] { targetFn.children[1] }));
+                                } else if (targetFn.children[1].fn.Equals("!")) {
+                                    targetFn.children[1] = targetFn.children[1].children[0];
+                                    targetFn.fn = "+";
                                 }
                                 break;
                             case FunctionOperator.MULTIPLICATION:
@@ -381,10 +397,12 @@ namespace BoGLWeb {
                     } else {
                         fnStack.Push(targetFn);
                         checkStack.Push(true);
+                        simplifyChildrenStack.Push(simplifyChildren);
                         if (simplifyAllLayers) {
                             foreach (Function child in targetFn.children) {
                                 fnStack.Push(child);
                                 checkStack.Push(false);
+                                simplifyChildrenStack.Push(simplifyChildren);
                             }
                         }
                     }
