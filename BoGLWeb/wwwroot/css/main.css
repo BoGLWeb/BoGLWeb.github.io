@@ -621,8 +621,9 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    height: calc(100vh - 540px);
+    max-height: calc(100vh - 540px);
     min-height: 100px;
+    height: 30vh;
 }
 
 .ant-slider-rail, .ant-slider:hover .ant-slider-rail {
