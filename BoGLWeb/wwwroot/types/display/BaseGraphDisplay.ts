@@ -474,6 +474,9 @@ export class BaseGraphDisplay {
 
             // Just update element selection positions without editing anything else since dragmove gets called so much
             this.updateGraph(true);
+           /* if (this instanceof SystemDiagramDisplay) {
+                d3.select(this.svgG).selectAll("text").remove();
+            }*/
         } else {
             if (this.startedSelectionDrag) {
                 DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", parseInt(window.tabNum), this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);

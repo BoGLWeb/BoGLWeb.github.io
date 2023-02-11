@@ -13,6 +13,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
+        0: "",
         1: "⮢",
         2: "⮣",
         3: "⮥",
@@ -223,9 +224,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
-        if (paths.node()) {
-            d3.select(paths.node().parentNode).selectAll("text").html(null);
-        }
+        /*      if (paths.node()) {
+                  d3.select(paths.node().parentNode).selectAll("text").remove();
+              }*/
+
+        // I dunno I'm struggling, try sleeping
         paths.each(e => {
             if (e.velocity != 0) {
                 let velocityClass = "";
