@@ -5,7 +5,6 @@ import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
-import { SystemDiagram } from "../graphs/SystemDiagram";
 
 export class BaseGraphDisplay {
     // constants
