@@ -544,9 +544,9 @@ hr:not([size]) {
     width: 25px !important
 }
 
-    .tallArrow > span > .arrowButton {
-        line-height: 30px
-    }
+.tallArrow > span > .arrowButton {
+    line-height: 30px
+}
 
 .topArrow {
     margin-top: -5px
@@ -605,7 +605,7 @@ hr:not([size]) {
 #zoomMenu .ant-collapse-content-box {
     align-items: center;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 }
 
 #zoomMenu .ant-slider {
@@ -621,7 +621,9 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    height: 180px
+    max-height: calc(100vh - 540px);
+    min-height: 100px;
+    height: 30vh;
 }
 
 .ant-slider-rail, .ant-slider:hover .ant-slider-rail {
@@ -648,7 +650,7 @@ hr:not([size]) {
 #minusLabel {
     left: 20px;
     position: absolute;
-    top: 179px
+    top: calc(100% - 85px)
 }
 
 .ant-slider-handle {
@@ -748,7 +750,7 @@ hr:not([size]) {
 }
 
 .ant-menu-hidden, .ant-menu-submenu-hidden {
-     display: table;
+    display: table;
 }
 
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
