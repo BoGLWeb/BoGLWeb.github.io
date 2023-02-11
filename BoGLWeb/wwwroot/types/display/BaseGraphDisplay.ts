@@ -5,6 +5,7 @@ import { DragEvent, ZoomEvent } from "../../type_libraries/d3";
 import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
+import { SystemDiagram } from "../graphs/SystemDiagram";
 
 export class BaseGraphDisplay {
     // constants
@@ -253,7 +254,6 @@ export class BaseGraphDisplay {
     }
 
     updateTopMenu() {
-        console.log("Top menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
     }
 
@@ -427,7 +427,6 @@ export class BaseGraphDisplay {
             return;
         }
 
-        console.log("Update graph");
         // update existing elements
         this.elementSelection = this.elementSelection.data<GraphElement>(this.elements, function (d) { return d.id.toString(); });
         this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -490,9 +489,6 @@ export class BaseGraphDisplay {
 
     // call to propagate changes to graph
     updateGraph(dragmove: boolean = false) {
-        if (!dragmove) {
-            d3.selectAll(".velocityArrow").remove();
-        }
         this.drawPaths();
         this.fullRenderElements(dragmove);
     }

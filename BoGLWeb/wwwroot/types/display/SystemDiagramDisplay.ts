@@ -224,12 +224,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
-        /*      if (paths.node()) {
-                  d3.select(paths.node().parentNode).selectAll("text").remove();
-              }*/
 
-        // I dunno I'm struggling, try sleeping
-        paths.each(e => {
+        // removed velocity arrows because they're not generated directly through d3 and are therefore not removed on update
+        // if we can find a way to do this through D3 this removal would no longer be needed, which would be cool, but haven't found that yet
+        this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove()
+        paths.each((e, i) => {
             if (e.velocity != 0) {
                 let velocityClass = "";
                 let xOffset = 0;
@@ -254,7 +253,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     xOffset = 0;
                 }
 
-                d3.select(paths.node().parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
             }
@@ -262,7 +261,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateModifierMenu() {
-        console.log("Modifier menu");
         if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
             let allAllowedModifiers = [];
             let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
@@ -287,7 +285,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
-        console.log("Velocity menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
         let velocities = [];
         for (const el of this.getSelection()) {
