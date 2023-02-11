@@ -613,12 +613,9 @@
         }
     }
 
-    //TODO What does this do?
     private async void ChangeCausalOption(Option selection) {
-        if (generatingBondGraph) {
-            var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-            await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
-        }
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
     }
 
     private readonly List<string> ruleNames = new();
@@ -716,6 +713,7 @@
         var simplified = simplifiedEmbedder.getBondGraph();
         generateProgress = 75.0;
 
+        causalOptions.Clear();
         foreach (BondGraph g in causal) {
             BondGraphEmbedder causalEmbedder = new(g);
 
