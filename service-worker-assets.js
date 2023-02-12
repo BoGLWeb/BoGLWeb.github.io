@@ -21,6 +21,10 @@
       "url": "css\/SegoeUIBold.woff"
     },
     {
+      "hash": "sha256-SgoOOY9q5EkW7XWNfAYWn2dZdfa1gEvaIz6ymM7\/XaA=",
+      "url": "css\/Symbola.ttf"
+    },
+    {
       "hash": "sha256-vMFcT9cUBeFIoUV3RGsQAdzMsVo+QhVjy7JcngwjnNs=",
       "url": "examples\/basic-two-mass-system.bogl"
     },
@@ -5617,5 +5621,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "LzJ5plC2"
+  "version": "Wbf80hYg"
 };
