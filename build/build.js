@@ -1944,6 +1944,18 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
     var topMenuButtons;
     function loadPage() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!document.fonts.check("12px Segoe UI")) {
+                let elements = document.getElementsByClassName('topMenu');
+                for (let i = 0; i < elements.length; i++) {
+                    elements.item(i).classList.add("segoeUIBold");
+                }
+                elements = document.getElementsByClassName('sliderLabel');
+                for (let i = 0; i < elements.length; i++) {
+                    elements.item(i).classList.add("segoeUIBold");
+                }
+                document.getElementsByTagName("html").item(0).classList.add("segoeUI");
+                document.getElementsByTagName("body").item(0).classList.add("segoeUI");
+            }
             window.tabNum = "1";
             let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
             let sliderImg = document.createElement("img");

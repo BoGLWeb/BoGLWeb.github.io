@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-vqmtXD3AZ6Zoy8xX3LUdgwTPpWZmsJaGi1YMsN29zxM=",
+      "hash": "sha256-rtdyakNV923gS6GTBQmfspAT88Cne9rbdfLNhhICmDI=",
       "url": "css\/main.css"
     },
     {
@@ -345,7 +345,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-IzCS9aCE253WrQw9d7rSooktjh7bjW8lwBM4UYYE5DU=",
+      "hash": "sha256-XLmJeifC\/Zjc8lsqcud\/XrK+n1jhZ7QBruO71VSKfOE=",
       "url": "manifest.json"
     },
     {
@@ -3393,7 +3393,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-DnRqXVV1hCQaJpB2NOkdJBUvbGIRdC+3KWUIp1+1tvs=",
+      "hash": "sha256-2phs3AWosjbHB6RLjG1\/InEKFMLNFpPbx7NAgPgi0uU=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3401,7 +3401,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-+fOYRNwe\/hUvPltZRSnGMsLruBSxQJtcpjNz5jK84kE=",
+      "hash": "sha256-eRPm6D6qP1orFhzhX3UN03QM7hZt9EjuPsZt8K9k\/G0=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5621,5 +5621,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "4Ok\/Abiu"
+  "version": "gNj7zgtl"
 };
