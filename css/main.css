@@ -281,7 +281,7 @@ path.link.hidden {
 }
 
 .graphSVG {
-    height: calc(100vh - 79px);
+    height: calc(100vh - 81px);
     width: 100%
 }
 
@@ -611,7 +611,7 @@ hr:not([size]) {
 #zoomMenu .ant-collapse-content-box {
     align-items: center;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 }
 
 #zoomMenu .ant-slider {
@@ -627,7 +627,9 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    height: 180px
+    max-height: calc(100vh - 540px);
+    min-height: 100px;
+    height: 30vh;
 }
 
 .ant-slider-rail, .ant-slider:hover .ant-slider-rail {
@@ -654,7 +656,7 @@ hr:not([size]) {
 #minusLabel {
     left: 20px;
     position: absolute;
-    top: 179px
+    top: calc(100% - 85px)
 }
 
 .ant-slider-handle {
@@ -729,6 +731,16 @@ hr:not([size]) {
     text-anchor: end
 }
 
+.rightVelocityMath {
+    alignment-baseline: mathematical;
+    text-anchor: start
+}
+
+.bottomVelocityMath {
+    dominant-baseline: mathematical;
+    text-anchor: end
+}
+
 .leftVelocity {
     alignment-baseline: middle;
     text-anchor: end
@@ -754,7 +766,7 @@ hr:not([size]) {
 }
 
 .ant-menu-hidden, .ant-menu-submenu-hidden {
-     display: table;
+    display: table;
 }
 
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {

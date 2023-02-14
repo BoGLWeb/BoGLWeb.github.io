@@ -278,6 +278,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             super(svg, systemDiagram);
             this.edgeOrigin = null;
             this.velocityMap = {
+                0: "",
                 1: "⮢",
                 2: "⮣",
                 3: "⮥",
@@ -287,7 +288,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 7: "⮦",
                 8: "⮤"
             };
-            this.velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [10, 40], [-5, 40], [-30, 10], [-30, 0]];
+            this.velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
             this.justClickedEdge = false;
             this.selectedElements = [];
             this.copiedElements = [];
@@ -469,10 +470,8 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
         pathExtraRendering(paths) {
             let graph = this;
             paths.classed("hoverablePath", true);
-            if (paths.node()) {
-                d3.select(paths.node().parentNode).selectAll("text").html(null);
-            }
-            paths.each(e => {
+            this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove();
+            paths.each((e, i) => {
                 if (e.velocity != 0) {
                     let velocityClass = "";
                     let xOffset = 0;
@@ -484,28 +483,37 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                         yOffset = -7 * mult;
                         xOffset = -3;
                     }
-                    else if (v == 4 || v == 5) {
+                    else if (v == 4) {
                         velocityClass = "rightVelocity";
                         yOffset = 7 * mult;
                         xOffset = 0;
                     }
-                    else if (v == 6 || v == 7) {
+                    else if (v == 5) {
+                        velocityClass = "rightVelocityMath";
+                        yOffset = 7 * mult;
+                        xOffset = -3;
+                    }
+                    else if (v == 6) {
+                        velocityClass = "bottomVelocityMath";
+                        yOffset = 7 * mult;
+                        xOffset = 3;
+                    }
+                    else if (v == 7) {
                         velocityClass = "bottomVelocity";
                         yOffset = 7 * mult;
-                        xOffset = v == 7 ? 0 : -5;
+                        xOffset = 0;
                     }
                     else if (v == 1 || v == 8) {
                         velocityClass = "leftVelocity";
                         yOffset = -7 * mult;
                         xOffset = 0;
                     }
-                    d3.select(paths.node().parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                    d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
                         .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y", (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
                 }
             });
         }
         updateModifierMenu() {
-            console.log("Modifier menu");
             if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
                 let allAllowedModifiers = [];
                 let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
@@ -531,7 +539,6 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             }
         }
         updateVelocityMenu() {
-            console.log("Velocity menu");
             DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
             let velocities = [];
             for (const el of this.getSelection()) {
@@ -1045,7 +1052,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.justDragged = false;
         }
         updateTopMenu() {
-            console.log("Top menu");
             DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
         }
         addToSelection(e, undoRedo = true) {
@@ -1199,7 +1205,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                 this.elementSelection.filter(e => this.selectedElements.includes(e)).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
                 return;
             }
-            console.log("Update graph");
             this.elementSelection = this.elementSelection.data(this.elements, function (d) { return d.id.toString(); });
             this.elementSelection.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             this.elementSelection.selectAll("*").remove();
@@ -1243,9 +1248,6 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             }
         }
         updateGraph(dragmove = false) {
-            if (!dragmove) {
-                d3.selectAll(".velocityArrow").remove();
-            }
             this.drawPaths();
             this.fullRenderElements(dragmove);
         }
@@ -1480,7 +1482,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
                 graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
                 let svgDim = graph.svgG.node().getBBox();
-                let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
+                let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
                 let scale = 1;
                 if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
                     scale = (0.8 * windowDim.width) / svgDim.width;
