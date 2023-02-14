@@ -164,14 +164,29 @@ namespace BoGLWeb {
                         if (checkStack.Pop()) {
                             if (packager.neighbors.Count > 0) {
                                 packager.stateEquation = new Function();
-                                foreach (CausalPackager child in packager.neighbors) {
-                                    if (this.isSource ^ child.isSource) {
-                                        packager.stateEquation = packager.stateEquation.Add(child.stateEquation);
-                                        child.stateEquation = new(child.GenerateVariableName());
-                                    } else {
-                                        packager.stateEquation = packager.stateEquation.Subtract(child.stateEquation);
-                                        child.stateEquation = new(child.GenerateVariableName());
-                                    }
+                                CausalPackager loneChild = packager.neighbors[0];
+                                char typeChar = packager.element.GetTypeChar();
+                                switch (typeChar) {
+                                    case '0':
+                                    case '1':
+                                        if (typeChar == '1' == packager.isEffort) {
+                                            foreach (CausalPackager child in packager.neighbors) {
+                                                if (packager.isSource == child.isSource) {
+                                                    packager.stateEquation = packager.stateEquation.Add(child.stateEquation);
+                                                } else {
+                                                    packager.stateEquation = packager.stateEquation.Subtract(child.stateEquation);
+                                                }
+                                                child.stateEquation = new(child.GenerateVariableName());
+                                            }
+                                        } else {
+                                            packager.stateEquation = loneChild.stateEquation;
+                                            loneChild.stateEquation = new(loneChild.GenerateVariableName());
+                                        }
+                                        break;
+                                    default:
+                                        packager.stateEquation = loneChild.stateEquation;
+                                        loneChild.stateEquation = new(loneChild.GenerateVariableName());
+                                        break;
                                 }
                             }
                         } else {
