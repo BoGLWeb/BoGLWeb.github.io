@@ -133,7 +133,7 @@
                     <Panel Header="Zoom" Key="1">
                         <div id="plusLabel" class="sliderLabel">+</div>
                         <div id="minusLabel" class="sliderLabel">-</div>
-                        <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange"/>
+                        <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange" OnAfterChange="SliderChange"/>
                         <Button Type="@ButtonType.Primary" Class="bogl_button" OnClick="e => { SliderChange(100); }">Reset</Button>
                     </Panel>
                 </ChildContent>
