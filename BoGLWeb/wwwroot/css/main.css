@@ -13,8 +13,12 @@
     src: url(Symbola.ttf);
 }
 
-html, body {
+html.segoeUI, body.segoeUI {
     font-family: "SegoeUI" !important
+}
+
+html:not(.segoeUI), body:not(.segoeUI) {
+    font-family: "Segoe UI" !important
 }
 
 h1:focus {
@@ -326,8 +330,8 @@ path.link.hidden {
     opacity: 40% !important
 }
 
-.topMenu {
-    font-family: "SegoeUIBold" !important
+.topMenu:not(.segoeUIBold) {
+    font-weight: 700;
 }
 
 circle {
@@ -637,10 +641,17 @@ hr:not([size]) {
     border: solid 1px #d6d6d6
 }
 
+.segoeUIBold {
+    font-family: "SegoeUIBold" !important
+}
+
 .sliderLabel {
     color: #a9a9a9;
     font-size: 15px;
-    font-family: "SegoeUIBold" !important
+}
+
+.sliderLabel:not(.segoeUIBold) {
+    font-weight: 700;
 }
 
 .ant-slider-track, .ant-slider .ant-slider-track:hover {
