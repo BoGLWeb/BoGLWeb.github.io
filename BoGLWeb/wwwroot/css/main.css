@@ -462,8 +462,8 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 
 #modifierMenu {
     height: fit-content;
-    position: absolute;
-    right: 15px;
+    position: fixed;
+    margin-left: calc(100% - 378px);
     width: 120px
 }
 
