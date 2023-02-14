@@ -8,6 +8,11 @@
     src: url(SegoeUIBold.woff);
 }
 
+@font-face {
+    font-family: Symbola;
+    src: url(Symbola.ttf);
+}
+
 html, body {
     font-family: "SegoeUI" !important
 }
@@ -495,7 +500,8 @@ hr:not([size]) {
 .arrowButton {
     color: #a9a9a9;
     font-size: 30px;
-    line-height: 20px
+    line-height: 20px;
+    font-family: Symbola !important;
 }
 
 .longArrow.ant-btn-lg, .tallArrow.ant-btn-lg {
@@ -536,7 +542,7 @@ hr:not([size]) {
 
 .longArrow {
     height: 25px !important;
-    width: 30px !important
+    width: 30px !important;
 }
 
 .tallArrow {
@@ -702,7 +708,7 @@ hr:not([size]) {
 
 .velocityArrow {
     font-size: 25px;
-    font-family: "SegoeUIBold" !important
+    font-family: Symbola !important;
 }
 
 .topVelocity {

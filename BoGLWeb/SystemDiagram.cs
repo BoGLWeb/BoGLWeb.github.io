@@ -680,8 +680,16 @@ namespace BoGLWeb {
             StringBuilder sb = new();
 
             sb.Append("[Header]\n");
-            if (squishedSystemDiagram.header == null) {
-                squishedSystemDiagram.header = new Dictionary<string, double> { { "panX", 0.0 }, { "panY", 0.0 }, { "zoom", 0.0 } };
+            if (!squishedSystemDiagram.header.ContainsKey("panX")) {
+                squishedSystemDiagram.header.Add("panX", 0.0); 
+            }
+            
+            if (!squishedSystemDiagram.header.ContainsKey("panY")) {
+                squishedSystemDiagram.header.Add("panY", 0.0); 
+            }
+            
+            if (!squishedSystemDiagram.header.ContainsKey("zoom")) {
+                squishedSystemDiagram.header.Add("zoom", 5.0); 
             }
 
             foreach (KeyValuePair<string, double> entry in squishedSystemDiagram.header) {
