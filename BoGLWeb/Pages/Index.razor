@@ -705,7 +705,7 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable 
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).ToString());
+        stateEquations = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
         
         generateProgress = 25.0;
 

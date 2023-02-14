@@ -15,11 +15,12 @@ namespace BoGLWeb {
             public StateEquationSet(BondGraph graph) {
                 //Function function = new("E3");
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
+                Dictionary<string, Function> associatedFunctions = new();
+                this.equations = new string[packagers.Count];
+                int index = 0;
                 foreach (CausalPackager packager in packagers) {
-                    Console.WriteLine(packager);
-                    Console.WriteLine(packager.GetExpression());
+                    this.equations[index++] = packager.GenerateVariableName() + "=" + packager.GetExpression();
                 }
-                this.equations = new string[] { "Dummy 21", "Dummy 5", "Dummy 15", "Dummy 74" };
             }
 
             /// <summary>
@@ -48,7 +49,7 @@ namespace BoGLWeb {
                 // Stores the element at this node.
                 private readonly BondGraph.Element element;
                 // Stores the direction of energy flow.
-                private readonly bool isSource, followsCausality;
+                private readonly bool isSource, isEffort;
                 // Stores all neighboring elements ahead in the flow.
                 private readonly List<CausalPackager> neighbors;
                 // Stores the current state equation.
@@ -61,10 +62,10 @@ namespace BoGLWeb {
                 /// <c>CausalPackager</c>.</param>
                 /// <param name="isSource"><c>true</c> if this <c>Element</c> is
                 /// the source of the connector <c>Bond</c>, else <c>false</c>.</param>
-                private CausalPackager(BondGraph.Element element, bool isSource, bool followsCausality) {
+                private CausalPackager(BondGraph.Element element, bool isSource, bool isEffort) {
                     this.element = element;
                     this.isSource = isSource;
-                    this.followsCausality = followsCausality;
+                    this.isEffort = isEffort;
                     this.stateEquation = new(GenerateVariableName());
                     this.neighbors = new();
                 }
@@ -73,19 +74,19 @@ namespace BoGLWeb {
                 /// Generates the variable name for the Function associated with this CausalPackager.
                 /// </summary>
                 /// <returns></returns>
-                private string GenerateVariableName() {
-                    return (this.followsCausality ? "E" : "F") + this.element.GetID();
+                public string GenerateVariableName() {
+                    return (this.isEffort ? "E" : "F") + this.element.GetID();
                 }
 
                 /// <summary>
                 /// Recursively generates a new CausalPackager.
                 /// </summary>
                 /// <param name="element"></param>
-                /// <param name="followsCausality"></param>
+                /// <param name="isEffort"></param>
                 /// <param name="bondsBySource"></param>
                 /// <param name="bondsByTarget"></param>
-                private static CausalPackager GeneratePackager(BondGraph.Element element, bool followsCausality, Dictionary<int, List<BondGraph.Bond>> bondsBySource, Dictionary<int, List<BondGraph.Bond>> bondsByTarget) {
-                    CausalPackager returnValue = new(element, true, followsCausality);
+                private static CausalPackager GeneratePackager(BondGraph.Element element, bool isEffort, Dictionary<int, List<BondGraph.Bond>> bondsBySource, Dictionary<int, List<BondGraph.Bond>> bondsByTarget) {
+                    CausalPackager returnValue = new(element, true, isEffort);
                     Stack<CausalPackager> packagerStack = new(new[] { returnValue });
                     while (packagerStack.Count > 0) {
                         CausalPackager packager = packagerStack.Pop();
@@ -93,8 +94,8 @@ namespace BoGLWeb {
                         List<BondGraph.Bond>? bondsToTarget = bondsBySource.GetValueOrDefault(elementID);
                         if (bondsToTarget != null) {
                             foreach (BondGraph.Bond bond in bondsToTarget) {
-                                if (followsCausality == bond.GetCausalDirection()) {
-                                    CausalPackager neighborPackager = new(bond.getSink(), true, followsCausality);
+                                if (isEffort == bond.GetCausalDirection()) {
+                                    CausalPackager neighborPackager = new(bond.getSink(), true, isEffort);
                                     packager.neighbors.Add(neighborPackager);
                                     packagerStack.Push(neighborPackager);
                                 }
@@ -103,8 +104,8 @@ namespace BoGLWeb {
                         List<BondGraph.Bond>? bondsToSource = bondsByTarget.GetValueOrDefault(elementID);
                         if (bondsToSource != null) {
                             foreach (BondGraph.Bond bond in bondsToSource) {
-                                if (followsCausality ^ bond.GetCausalDirection()) {
-                                    CausalPackager neighborPackager = new(bond.getSource(), false, followsCausality);
+                                if (isEffort ^ bond.GetCausalDirection()) {
+                                    CausalPackager neighborPackager = new(bond.getSource(), false, isEffort);
                                     packager.neighbors.Add(neighborPackager);
                                     packagerStack.Push(neighborPackager);
                                 }
@@ -143,10 +144,10 @@ namespace BoGLWeb {
                     List<CausalPackager> packagerList = new();
                     foreach (KeyValuePair<string, BondGraph.Element> pair in elements) {
                         char indicator = pair.Value.GetTypeChar();
-                        bool isIStorage = indicator == 'I';
-                        if (isIStorage | indicator == 'C') {
-                            packagerList.Add(GeneratePackager(pair.Value, isIStorage, bondsBySource, bondsByTarget));
+                        if ("IRC".Contains(indicator)) {
+                            packagerList.Add(GeneratePackager(pair.Value, indicator == 'I', bondsBySource, bondsByTarget));
                         }
+                        Console.WriteLine(pair.Value);
                     }
                     return packagerList;
                 }
@@ -166,8 +167,10 @@ namespace BoGLWeb {
                                 foreach (CausalPackager child in packager.neighbors) {
                                     if (this.isSource ^ child.isSource) {
                                         packager.stateEquation = packager.stateEquation.Add(child.stateEquation);
+                                        child.stateEquation = new(child.GenerateVariableName());
                                     } else {
                                         packager.stateEquation = packager.stateEquation.Subtract(child.stateEquation);
+                                        child.stateEquation = new(child.GenerateVariableName());
                                     }
                                 }
                             }
@@ -180,7 +183,9 @@ namespace BoGLWeb {
                             }
                         }
                     }
-                    return this.stateEquation;
+                    Function stateEquation = this.stateEquation;
+                    this.stateEquation = new(GenerateVariableName());
+                    return stateEquation;
                 }
 
                 /// <summary>

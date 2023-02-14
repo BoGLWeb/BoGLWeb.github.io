@@ -886,10 +886,40 @@ namespace BoGLWeb {
                 return HashCode.Combine(this.ToString());
             }
 
+            /// <summary>
+            /// Converts this <c>Function</c> to a printable format that exposes
+            /// its parse tree.
+            /// </summary>
+            /// <returns>The string parse tree.</returns>
             public string ToTree() {
-                return ToTree("");
+                //return ToTree("");
+                StringBuilder builder = new();
+                Stack<Function> fnStack = new(new[] { this });
+                Stack<string> indentStack = new(new[] { "" });
+                while (fnStack.Count > 0) {
+                    Function fn = fnStack.Pop();
+                    string indent = indentStack.Pop();
+                    builder.Append(indent).Append(fn.fn);
+                    Stack<Function> proxyStack = new();
+                    foreach (Function child in fn.children) {
+                        proxyStack.Push(child);
+                    }
+                    string nextIndent = indent + '\t';
+                    while (proxyStack.Count > 0) {
+                        fnStack.Push(proxyStack.Pop());
+                        indentStack.Push(nextIndent);
+                    }
+                }
+                return builder.ToString();
             }
 
+            /// <summary>
+            /// Converts this <c>Function</c> to a printable format that exposes
+            /// its parse tree.
+            /// </summary>
+            /// <param name="indent">The indent placed before every item in this
+            /// list, exposing its displacement in the tree from the parent.</param>
+            /// <returns></returns>
             private string ToTree(string indent) {
                 string print = indent + this.fn;
                 indent += "\t";
