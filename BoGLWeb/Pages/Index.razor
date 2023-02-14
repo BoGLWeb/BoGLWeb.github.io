@@ -133,7 +133,7 @@
                     <Panel Header="Zoom" Key="1">
                         <div id="plusLabel" class="sliderLabel">+</div>
                         <div id="minusLabel" class="sliderLabel">-</div>
-                        <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange"/>
+                        <Slider Value="@zoomValue" TValue="double" Vertical DefaultValue="100" TooltipPlacement="AntDesign.Placement.Left" Min="25" Max="175" OnChange="SliderChange" OnAfterChange="SliderChange"/>
                         <Button Type="@ButtonType.Primary" Class="bogl_button" OnClick="e => { SliderChange(100); }">Reset</Button>
                     </Panel>
                 </ChildContent>
@@ -180,10 +180,10 @@
                                             <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
                                                 <div class="arrowButton">⮧</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 12px">
                                                 <div class="arrowButton bottomArrow">⮡</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 22px">
                                                 <div class="arrowButton bottomArrow">⮠</div>
                                             </Button>
                                             <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">

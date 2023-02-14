@@ -111,7 +111,7 @@ export namespace backendManager {
             let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
             let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
-            let windowDim = document.getElementById("systemDiagram").getBoundingClientRect();
+            let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
             let scale = 1;
             if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
                 scale = (0.8 * windowDim.width) / svgDim.width;
