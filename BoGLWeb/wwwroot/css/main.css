@@ -281,7 +281,7 @@ path.link.hidden {
 }
 
 .graphSVG {
-    height: calc(100vh - 79px);
+    height: calc(100vh - 81px);
     width: 100%
 }
 
