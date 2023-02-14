@@ -261,8 +261,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     xOffset = 0;
                 }
 
-                console.log("Y offset ", i, yOffset);
-
                 d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
