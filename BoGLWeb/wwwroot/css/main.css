@@ -731,6 +731,16 @@ hr:not([size]) {
     text-anchor: end
 }
 
+.rightVelocityMath {
+    alignment-baseline: mathematical;
+    text-anchor: start
+}
+
+.bottomVelocityMath {
+    dominant-baseline: mathematical;
+    text-anchor: end
+}
+
 .leftVelocity {
     alignment-baseline: middle;
     text-anchor: end
