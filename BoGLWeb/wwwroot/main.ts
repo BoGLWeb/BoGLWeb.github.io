@@ -35,6 +35,20 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
+    if (!document.fonts.check("12px Segoe UI")) {
+        let elements = document.getElementsByClassName('topMenu');
+        for (let i = 0; i < elements.length; i++) {
+            elements.item(i).classList.add("segoeUIBold");
+        }
+
+        elements = document.getElementsByClassName('sliderLabel');
+        for (let i = 0; i < elements.length; i++) {
+            elements.item(i).classList.add("segoeUIBold");
+        }
+
+        document.getElementsByTagName("html").item(0).classList.add("segoeUI");
+        document.getElementsByTagName("body").item(0).classList.add("segoeUI");
+    }
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 
