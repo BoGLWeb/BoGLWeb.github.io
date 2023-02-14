@@ -13,6 +13,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     velocityMap = {
+        0: "",
         1: "⮢",
         2: "⮣",
         3: "⮥",
@@ -23,7 +24,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         8: "⮤"
     };
 
-    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [10, 40], [-5, 40], [-30, 10], [-30, 0]];
+    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
@@ -223,10 +224,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
-        if (paths.node()) {
-            d3.select(paths.node().parentNode).selectAll("text").html(null);
-        }
-        paths.each(e => {
+
+        // removed velocity arrows because they're not generated directly through d3 and are therefore not removed on update
+        // if we can find a way to do this through D3 this removal would no longer be needed, which would be cool, but haven't found that yet
+        this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove()
+        paths.each((e, i) => {
             if (e.velocity != 0) {
                 let velocityClass = "";
                 let xOffset = 0;
@@ -237,21 +239,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     velocityClass = "topVelocity";
                     yOffset = -7 * mult;
                     xOffset = -3;
-                } else if (v == 4 || v == 5) {
+                } else if (v == 4) {
                     velocityClass = "rightVelocity";
                     yOffset = 7 * mult;
                     xOffset = 0;
-                } else if (v == 6 || v == 7) {
+                } else if (v == 5) {
+                    velocityClass = "rightVelocityMath";
+                    yOffset = 7 * mult;
+                    xOffset = -3;
+                } else if (v == 6) {
+                    velocityClass = "bottomVelocityMath";
+                    yOffset = 7 * mult;
+                    xOffset = 3;
+                } else if (v == 7) {
                     velocityClass = "bottomVelocity";
                     yOffset = 7 * mult;
-                    xOffset = v == 7 ? 0 : -5;
+                    xOffset = 0;
                 } else if (v == 1 || v == 8) {
                     velocityClass = "leftVelocity";
                     yOffset = -7 * mult;
                     xOffset = 0;
                 }
 
-                d3.select(paths.node().parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
             }
@@ -259,7 +269,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateModifierMenu() {
-        console.log("Modifier menu");
         if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
             let allAllowedModifiers = [];
             let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
@@ -284,7 +293,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     }
 
     updateVelocityMenu() {
-        console.log("Velocity menu");
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
         let velocities = [];
         for (const el of this.getSelection()) {

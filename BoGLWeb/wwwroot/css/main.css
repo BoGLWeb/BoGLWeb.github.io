@@ -8,6 +8,11 @@
     src: url(SegoeUIBold.woff);
 }
 
+@font-face {
+    font-family: Symbola;
+    src: url(Symbola.ttf);
+}
+
 html, body {
     font-family: "SegoeUI" !important
 }
@@ -276,7 +281,7 @@ path.link.hidden {
 }
 
 .graphSVG {
-    height: calc(100vh - 79px);
+    height: calc(100vh - 81px);
     width: 100%
 }
 
@@ -495,7 +500,8 @@ hr:not([size]) {
 .arrowButton {
     color: #a9a9a9;
     font-size: 30px;
-    line-height: 20px
+    line-height: 20px;
+    font-family: Symbola !important;
 }
 
 .longArrow.ant-btn-lg, .tallArrow.ant-btn-lg {
@@ -536,7 +542,7 @@ hr:not([size]) {
 
 .longArrow {
     height: 25px !important;
-    width: 30px !important
+    width: 30px !important;
 }
 
 .tallArrow {
@@ -544,9 +550,9 @@ hr:not([size]) {
     width: 25px !important
 }
 
-    .tallArrow > span > .arrowButton {
-        line-height: 30px
-    }
+.tallArrow > span > .arrowButton {
+    line-height: 30px
+}
 
 .topArrow {
     margin-top: -5px
@@ -605,7 +611,7 @@ hr:not([size]) {
 #zoomMenu .ant-collapse-content-box {
     align-items: center;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 }
 
 #zoomMenu .ant-slider {
@@ -621,7 +627,9 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    height: 180px
+    max-height: calc(100vh - 540px);
+    min-height: 100px;
+    height: 30vh;
 }
 
 .ant-slider-rail, .ant-slider:hover .ant-slider-rail {
@@ -648,7 +656,7 @@ hr:not([size]) {
 #minusLabel {
     left: 20px;
     position: absolute;
-    top: 179px
+    top: calc(100% - 85px)
 }
 
 .ant-slider-handle {
@@ -700,7 +708,7 @@ hr:not([size]) {
 
 .velocityArrow {
     font-size: 25px;
-    font-family: "SegoeUIBold" !important
+    font-family: Symbola !important;
 }
 
 .topVelocity {
@@ -720,6 +728,16 @@ hr:not([size]) {
 
 .bottomVelocity {
     dominant-baseline: central;
+    text-anchor: end
+}
+
+.rightVelocityMath {
+    alignment-baseline: mathematical;
+    text-anchor: start
+}
+
+.bottomVelocityMath {
+    dominant-baseline: mathematical;
     text-anchor: end
 }
 
@@ -748,19 +766,9 @@ hr:not([size]) {
 }
 
 .ant-menu-hidden, .ant-menu-submenu-hidden {
-     display: table;
+    display: table;
 }
 
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
     display: none !important;
-}
-
-.ant-modal-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.ant-modal-body > .ant-btn {
-    margin-top: 20px;
 }
