@@ -180,10 +180,10 @@
                                             <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
                                                 <div class="arrowButton">⮧</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 12px">
                                                 <div class="arrowButton bottomArrow">⮡</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 22px">
                                                 <div class="arrowButton bottomArrow">⮠</div>
                                             </Button>
                                             <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
@@ -613,9 +613,12 @@
         }
     }
 
+    //TODO What does this do?
     private async void ChangeCausalOption(Option selection) {
-        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
-        await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        if (generatingBondGraph) {
+            var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+            await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        }
     }
 
     private readonly List<string> ruleNames = new();
@@ -686,7 +689,6 @@
             errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
-            generatingBondGraph = false;
             return;
         }
 
@@ -713,7 +715,6 @@
         var simplified = simplifiedEmbedder.getBondGraph();
         generateProgress = 75.0;
 
-        causalOptions.Clear();
         foreach (BondGraph g in causal) {
             BondGraphEmbedder causalEmbedder = new(g);
 

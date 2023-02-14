@@ -24,7 +24,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         8: "⮤"
     };
 
-    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [10, 40], [-5, 40], [-30, 10], [-30, 0]];
+    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
@@ -239,19 +239,29 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     velocityClass = "topVelocity";
                     yOffset = -7 * mult;
                     xOffset = -3;
-                } else if (v == 4 || v == 5) {
+                } else if (v == 4) {
                     velocityClass = "rightVelocity";
                     yOffset = 7 * mult;
                     xOffset = 0;
-                } else if (v == 6 || v == 7) {
+                } else if (v == 5) {
+                    velocityClass = "rightVelocityMath";
+                    yOffset = 7 * mult;
+                    xOffset = -3;
+                } else if (v == 6) {
+                    velocityClass = "bottomVelocityMath";
+                    yOffset = 7 * mult;
+                    xOffset = 3;
+                } else if (v == 7) {
                     velocityClass = "bottomVelocity";
                     yOffset = 7 * mult;
-                    xOffset = v == 7 ? 0 : -5;
+                    xOffset = 0;
                 } else if (v == 1 || v == 8) {
                     velocityClass = "leftVelocity";
                     yOffset = -7 * mult;
                     xOffset = 0;
                 }
+
+                console.log("Y offset ", i, yOffset);
 
                 d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
