@@ -2,9 +2,9 @@
     namespace DifferentialEquationHelper {
         public class FunctionEquation {
             /// <summary>
-            /// Stores the <c>Function</c> objects in this equation.
+            /// Stores the <c>Expression</c> objects in this equation.
             /// </summary>
-            private readonly Function f1, f2;
+            private readonly Expression f1, f2;
 
             /// <summary>
             /// Stores the static ID tracker and unique ID for this FunctionEquation.
@@ -16,12 +16,12 @@
             /// Creates a new <c>FunctionEquation</c>.
             /// </summary>
             /// <param name="f1">
-            /// The first <c>Function</c>.
+            /// The first <c>Expression</c>.
             /// </param>
             /// <param name="f2">
-            /// The second <c>Function</c>.
+            /// The second <c>Expression</c>.
             /// </param>
-            public FunctionEquation(Function f1, Function f2) {
+            public FunctionEquation(Expression f1, Expression f2) {
                 this.f1 = f1;
                 this.f2 = f2;
                 this.ID = universalID++;
@@ -32,7 +32,7 @@
             /// </summary>
             /// <param name="var"></param>
             /// <returns></returns>
-            public Function Isolate(Function var) {
+            public Expression Isolate(Expression var) {
                 int countF1 = this.f1.CountInstances(var, false);
                 int countF2 = this.f2.CountInstances(var, false);
                 if (countF1 + countF2 != 1) {

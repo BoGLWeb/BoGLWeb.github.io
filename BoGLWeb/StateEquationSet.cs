@@ -15,7 +15,7 @@ namespace BoGLWeb {
             public StateEquationSet(BondGraph graph) {
                 int count = graph.GetDifferentialElements().Count;
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
-                Dictionary<string, Function> associatedFunctions = new();
+                Dictionary<string, Expression> associatedFunctions = new();
                 this.equations = new string[packagers.Count];
                 int index = 0;
                 foreach (CausalPackager packager in packagers) {
@@ -53,7 +53,7 @@ namespace BoGLWeb {
                 // Stores all neighboring elements ahead in the flow.
                 private readonly List<CausalPackager> neighbors;
                 // Stores the current state equation.
-                private Function stateEquation;
+                private Expression stateEquation;
 
                 /// <summary>
                 /// Creates a new CausalPackager with the specified criteria.
@@ -71,7 +71,7 @@ namespace BoGLWeb {
                 }
 
                 /// <summary>
-                /// Generates the variable name for the Function associated with this CausalPackager.
+                /// Generates the variable name for the Expression associated with this CausalPackager.
                 /// </summary>
                 /// <returns></returns>
                 public string GenerateVariableName() {
@@ -156,14 +156,14 @@ namespace BoGLWeb {
                 /// Forms an incomplete state equation.
                 /// </summary>
                 /// <returns></returns>
-                public Function GetExpression() {
+                public Expression GetExpression() {
                     Stack<CausalPackager> packageStack = new(new[] { this });
                     Stack<bool> checkStack = new(new[] { false });
                     while (packageStack.Count > 0) {
                         CausalPackager packager = packageStack.Pop();
                         if (checkStack.Pop()) {
                             if (packager.neighbors.Count > 0) {
-                                packager.stateEquation = new Function();
+                                packager.stateEquation = new Expression();
                                 CausalPackager loneChild = packager.neighbors[0];
                                 char typeChar = packager.element.GetTypeChar();
                                 switch (typeChar) {
@@ -198,7 +198,7 @@ namespace BoGLWeb {
                             }
                         }
                     }
-                    Function stateEquation = this.stateEquation;
+                    Expression stateEquation = this.stateEquation;
                     this.stateEquation = new(GenerateVariableName());
                     return stateEquation;
                 }

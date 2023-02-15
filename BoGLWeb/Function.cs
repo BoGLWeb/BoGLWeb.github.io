@@ -7,32 +7,32 @@ namespace BoGLWeb {
         /// <summary>
         /// Stores differential equations in the form of function equations.
         /// </summary>
-        public class Function {
+        public class Expression {
             /// <summary>
             /// Stores the function type at this level of the parse tree.
             /// </summary>
             private String fn;
 
             /// <summary>
-            /// Stores all <c>Function</c> children.
+            /// Stores all <c>Expression</c> children.
             /// </summary>
-            private readonly List<Function> children;
+            private readonly List<Expression> children;
 
             /// <summary>
-            /// Creates a new <c>Function</c> object.
+            /// Creates a new <c>Expression</c> object.
             /// </summary>
-            public Function() {
+            public Expression() {
                 this.children = new();
                 this.fn = "0";
             }
 
             /// <summary>
-            /// Creates a new <c>Function</c> object.
+            /// Creates a new <c>Expression</c> object.
             /// </summary>
             /// <param name="fn">
-            /// The given <c>Function</c> as a <c>string</c>.
+            /// The given <c>Expression</c> as a <c>string</c>.
             /// </param>
-            public Function(String fn) {
+            public Expression(String fn) {
                 this.children = new();
                 this.fn = "";
                 Formulate(fn, FunctionOperator.ADDITION);
@@ -40,7 +40,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Parses a <c>String</c> into this <c>Function</c>.
+            /// Parses a <c>String</c> into this <c>Expression</c>.
             /// </summary>
             /// <param name="fn">
             /// The <c>String</c> to be parsed.
@@ -103,7 +103,7 @@ namespace BoGLWeb {
             /// </param>
             private void FormulateUnaryOperator(String fn, FunctionOperator fop) {
                 VerifyLength(fn);
-                Function child = new();
+                Expression child = new();
                 switch (fop) {
                     case FunctionOperator.DIFFERENTIAL:
                         if (fn.EndsWith("'")) {
@@ -177,7 +177,7 @@ namespace BoGLWeb {
             /// Splits a binary expression to continue parsing on lower levels.
             /// </summary>
             /// <param name="fn">
-            /// The <c>Function</c> string.
+            /// The <c>Expression</c> string.
             /// </param>
             /// <param name="index">
             /// The nextIndex of the delimiter character.
@@ -189,7 +189,7 @@ namespace BoGLWeb {
             /// The <c>FunctionOperator</c> to be used for the second child.
             /// </param>
             private void SplitBinaryExpression(String fn, int index, FunctionOperator o1, FunctionOperator o2) {
-                Function child1 = new(), child2 = new();
+                Expression child1 = new(), child2 = new();
                 child1.Formulate(fn[0..^index], o1);
                 child2.Formulate(fn[(index + 1)..], o2);
                 AddChild(child1);
@@ -198,17 +198,17 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Adds a child <c>Function</c> to this object.
+            /// Adds a child <c>Expression</c> to this object.
             /// </summary>
             /// <param name="fn">
             /// The new child.
             /// </param>
-            private void AddChild(Function fn) {
+            private void AddChild(Expression fn) {
                 this.children.Add(fn);
             }
 
             /// <summary>
-            /// Assigns this <c>Function</c> an operator depending on the
+            /// Assigns this <c>Expression</c> an operator depending on the
             /// <c>FunctionOperator</c> used.
             /// </summary>
             /// <param name="fop">
@@ -219,10 +219,10 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Asserts a positive length for the Function <c>String</c>.
+            /// Asserts a positive length for the Expression <c>String</c>.
             /// </summary>
             /// <param name="fn">
-            /// The <c>Function</c> as a <c>String</c>.
+            /// The <c>Expression</c> as a <c>String</c>.
             /// </param>
             private static void VerifyLength(String fn) {
                 if (fn.Length == 0) {
@@ -259,26 +259,26 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Simplifies this <c>Function</c>.
+            /// Simplifies this <c>Expression</c>.
             /// </summary>
             /// <param name="simplifyAllLayers">
             /// <c>true</c> if the simplification process should continue 
-            /// throughout the whole <c>Function</c>, else <c>false</c>
+            /// throughout the whole <c>Expression</c>, else <c>false</c>
             /// if the process should be confined to this index.
             /// </param>
             public void Simplify(bool simplifyAllLayers) {
-                Stack<Function> fnStack = new(new[] { this });
+                Stack<Expression> fnStack = new(new[] { this });
                 Stack<bool> checkStack = new(new[] { false });
                 Stack<bool> simplifyChildrenStack = new(new[] { simplifyAllLayers });
                 while (fnStack.Count > 0) {
-                    Function targetFn = fnStack.Pop();
+                    Expression targetFn = fnStack.Pop();
                     bool simplifyChildren = simplifyChildrenStack.Pop();
                     if (checkStack.Pop()) {
                         String fn = targetFn.fn;
                         switch (GetOperatorObject(fn[0])) {
                             case FunctionOperator.ADDITION:
-                                List<Function> aChildren = new(), sChildren = new();
-                                foreach (Function child in targetFn.children) {
+                                List<Expression> aChildren = new(), sChildren = new();
+                                foreach (Expression child in targetFn.children) {
                                     String childFn = child.fn;
                                     switch (GetOperatorObject(childFn[0])) {
                                         case FunctionOperator.ADDITION:
@@ -296,7 +296,7 @@ namespace BoGLWeb {
                                     }
                                 }
                                 if (aChildren.Count == 0) {
-                                    aChildren.Add(new Function());
+                                    aChildren.Add(new Expression());
                                 }
                                 if (aChildren.Count == 1) {
                                     targetFn.AssignValues(aChildren[0].fn, aChildren[0].children);
@@ -304,8 +304,8 @@ namespace BoGLWeb {
                                     targetFn.AssignValues(targetFn.fn, aChildren);
                                 }
                                 if (sChildren.Count > 0) {
-                                    foreach (Function subChild in sChildren) {
-                                        Function child = new();
+                                    foreach (Expression subChild in sChildren) {
+                                        Expression child = new();
                                         child.AssignValues(targetFn.fn, targetFn.children);
                                         targetFn.AssignValues("-", new(new[] { child, subChild }));
                                     }
@@ -325,16 +325,16 @@ namespace BoGLWeb {
                                 }
                                 break;
                             case FunctionOperator.MULTIPLICATION:
-                                List<Function> mChildren = new();
+                                List<Expression> mChildren = new();
                                 bool isZero = false;
-                                foreach (Function child in targetFn.children) {
+                                foreach (Expression child in targetFn.children) {
                                     String childFn = child.fn;
                                     switch (GetOperatorObject(childFn[0])) {
                                         case FunctionOperator.MULTIPLICATION:
                                             mChildren.AddRange(child.children);
                                             break;
                                         case FunctionOperator.PARENTHETICAL:
-                                            Function grandchild = child.children[0];
+                                            Expression grandchild = child.children[0];
                                             String grandchildFn = grandchild.fn;
                                             switch (GetOperatorObject(grandchildFn[0])) {
                                                 case FunctionOperator.ADDITION:
@@ -357,12 +357,12 @@ namespace BoGLWeb {
                                 }
                                 if (isZero) {
                                     mChildren.Clear();
-                                    mChildren.Add(new Function("0"));
+                                    mChildren.Add(new Expression("0"));
                                 }
                                 targetFn.AssignValues(targetFn.fn, mChildren);
                                 break;
                             case FunctionOperator.PARENTHETICAL:
-                                Function pChild = targetFn.children[0];
+                                Expression pChild = targetFn.children[0];
                                 if (pChild.fn[0] == '(' | Char.IsLetterOrDigit(pChild.fn[0])) {
                                     targetFn.AssignValues(pChild.fn, pChild.children);
                                 }
@@ -375,16 +375,16 @@ namespace BoGLWeb {
                                 }
                                 break;
                             case FunctionOperator.NEGATION:
-                                Function nChild = targetFn.children[0];
+                                Expression nChild = targetFn.children[0];
                                 switch (GetOperatorObject(nChild.fn[0])) {
                                     case FunctionOperator.NEGATION:
-                                        Function grandchild = nChild.children[0];
+                                        Expression grandchild = nChild.children[0];
                                         targetFn.AssignValues(grandchild.fn, grandchild.children);
                                         break;
                                     case FunctionOperator.PARENTHETICAL:
-                                        Function pGrandchild = nChild.children[0];
+                                        Expression pGrandchild = nChild.children[0];
                                         if (pGrandchild.fn[0] == '-') {
-                                            Function greatGrandchild = pGrandchild.children[0];
+                                            Expression greatGrandchild = pGrandchild.children[0];
                                             targetFn.AssignValues(greatGrandchild.fn, greatGrandchild.children);
                                         }
                                         break;
@@ -399,7 +399,7 @@ namespace BoGLWeb {
                         checkStack.Push(true);
                         simplifyChildrenStack.Push(simplifyChildren);
                         if (simplifyAllLayers) {
-                            foreach (Function child in targetFn.children) {
+                            foreach (Expression child in targetFn.children) {
                                 fnStack.Push(child);
                                 checkStack.Push(false);
                                 simplifyChildrenStack.Push(simplifyChildren);
@@ -410,25 +410,25 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Assigns specific fields to this <c>Function</c>.
+            /// Assigns specific fields to this <c>Expression</c>.
             /// </summary>
             /// <param name="fn">
-            /// The new <c>Function</c> classification.
+            /// The new <c>Expression</c> classification.
             /// </param>
             /// <param name="children">
-            /// The new list of child <c>Function</c> objects.
+            /// The new list of child <c>Expression</c> objects.
             /// </param>
-            private void AssignValues(String fn, List<Function> children) {
+            private void AssignValues(String fn, List<Expression> children) {
                 this.fn = fn;
                 this.children.Clear();
                 this.children.AddRange(children);
             }
 
             /// <summary>
-            /// Determines whether this <c>Function</c> is a constant.
+            /// Determines whether this <c>Expression</c> is a constant.
             /// </summary>
             /// <returns>
-            /// <c>true</c> if this <c>Function</c> is a integer constant, else 
+            /// <c>true</c> if this <c>Expression</c> is a integer constant, else 
             /// <c>false</c>.
             /// </returns>
             public bool IsIntegerConstant() {
@@ -441,10 +441,10 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Determines whether this <c>Function</c> is a variable.
+            /// Determines whether this <c>Expression</c> is a variable.
             /// </summary>
             /// <returns>
-            /// <c>true</c> if this <c>Function</c> is a variable, else 
+            /// <c>true</c> if this <c>Expression</c> is a variable, else 
             /// <c>false</c>.
             /// </returns>
             public bool IsVariable() {
@@ -461,7 +461,7 @@ namespace BoGLWeb {
 
             /// <summary>
             /// Counts the number of instances of a specified variable
-            /// <c>Function</c> contained in this <c>Function</c>.
+            /// <c>Expression</c> contained in this <c>Expression</c>.
             /// </summary>
             /// <param name="var">
             /// The target variable.
@@ -473,7 +473,7 @@ namespace BoGLWeb {
             /// <returns>
             /// The number of occurrences of the target variable.
             /// </returns>
-            public int CountInstances(Function var, bool includeDifferentials) {
+            public int CountInstances(Expression var, bool includeDifferentials) {
                 if (!var.IsVariable()) {
                     throw new ArgumentException("Input must be a variable.");
                 } else if ((!includeDifferentials) & IsDifferential()) {
@@ -481,14 +481,14 @@ namespace BoGLWeb {
                 }
                 String varFn = var.fn;
                 int count = 0;
-                Stack<Function> thisStack = new();
+                Stack<Expression> thisStack = new();
                 thisStack.Push(this);
                 while (thisStack.Count > 0) {
-                    Function fn = thisStack.Pop();
+                    Expression fn = thisStack.Pop();
                     if (fn.fn.Equals(varFn)) {
                         count++;
                     } else {
-                        foreach (Function child in fn.children) {
+                        foreach (Expression child in fn.children) {
                             if (includeDifferentials | !child.IsDifferential()) {
                                 thisStack.Push(child);
                             }
@@ -499,25 +499,25 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Equates this <c>Function</c> with another specified <c>Function</c>
+            /// Equates this <c>Expression</c> with another specified <c>Expression</c>
             /// and isolates a specified variable. This variable must occur exactly
-            /// once in this <c>Function</c> and nowhere in the input <c>Function</c>.
+            /// once in this <c>Expression</c> and nowhere in the input <c>Expression</c>.
             /// </summary>
             /// <param name="o">
-            /// The equated <c>Function</c>.
+            /// The equated <c>Expression</c>.
             /// </param>
             /// <param name="var">
             /// The target variable.
             /// </param>
             /// <returns>
-            /// The <c>Function</c> equation as solved for the variable.
+            /// The <c>Expression</c> equation as solved for the variable.
             /// </returns>
-            public Function Isolate(Function o, Function var) {
-                Function thisCopy = Copy();
-                Function oCopy = o.Copy();
+            public Expression Isolate(Expression o, Expression var) {
+                Expression thisCopy = Copy();
+                Expression oCopy = o.Copy();
                 foreach (int index in GetListOfPathIndices(var)) {
                     String fn = thisCopy.fn;
-                    Function targetChild = thisCopy.children[index];
+                    Expression targetChild = thisCopy.children[index];
                     switch ((FunctionOperator) fn[0]) {
                         case FunctionOperator.ADDITION:
                             thisCopy.children.RemoveAt(index);
@@ -555,9 +555,9 @@ namespace BoGLWeb {
 
             /// <summary>
             /// Gets the list of path indices leading from the base index
-            /// of this <c>Function</c> to a specified variable. This method
+            /// of this <c>Expression</c> to a specified variable. This method
             /// assumes that the variable occurs at most once in the 
-            /// <c>Function</c> and does not enter differential <c>Function</c> 
+            /// <c>Expression</c> and does not enter differential <c>Expression</c> 
             /// objects.
             /// </summary>
             /// <param name="var">
@@ -566,10 +566,10 @@ namespace BoGLWeb {
             /// <returns>
             /// The list of indices.
             /// </returns>
-            private List<int> GetListOfPathIndices(Function var) {
+            private List<int> GetListOfPathIndices(Expression var) {
                 var.AssertVariable();
                 AssertNotDifferential();
-                Stack<Function> fnStack = new();
+                Stack<Expression> fnStack = new();
                 Stack<bool> checkStack = new();
                 Stack<int> indexStack = new();
                 fnStack.Push(this);
@@ -578,7 +578,7 @@ namespace BoGLWeb {
                 List<int> indices = new() { 0 };
                 String varFn = var.fn;
                 while (fnStack.Count > 0) {
-                    Function fn = fnStack.Pop();
+                    Expression fn = fnStack.Pop();
                     int index = indexStack.Pop();
                     if (checkStack.Pop()) {
                         if (fn.fn.Equals(varFn)) {
@@ -589,7 +589,7 @@ namespace BoGLWeb {
                             indexStack.Push(0);
                             checkStack.Push(false);
                             int nextIndex = 0;
-                            foreach (Function child in fn.children) {
+                            foreach (Expression child in fn.children) {
                                 if (!child.IsDifferential()) {
                                     fnStack.Push(child);
                                     indexStack.Push(nextIndex);
@@ -607,24 +607,24 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Makes a copy of this <c>Function</c>.
+            /// Makes a copy of this <c>Expression</c>.
             /// </summary>
             /// <returns>
             /// The copy.
             /// </returns>
-            public Function Copy() {
-                Function copy = new();
-                Stack<Function> thisStack = new();
-                Stack<Function> copyStack = new();
+            public Expression Copy() {
+                Expression copy = new();
+                Stack<Expression> thisStack = new();
+                Stack<Expression> copyStack = new();
                 thisStack.Push(this);
                 copyStack.Push(copy);
                 while (thisStack.Count > 0) {
-                    Function targetThis = thisStack.Pop();
-                    Function targetCopy = copyStack.Pop();
+                    Expression targetThis = thisStack.Pop();
+                    Expression targetCopy = copyStack.Pop();
                     targetCopy.fn = targetThis.fn;
-                    foreach (Function child in targetThis.children) {
+                    foreach (Expression child in targetThis.children) {
                         thisStack.Push(child);
-                        Function nextCopy = new();
+                        Expression nextCopy = new();
                         copyStack.Push(nextCopy);
                         targetCopy.AddChild(nextCopy);
                     }
@@ -633,28 +633,28 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Substitutes a specified variable in this <c>Function</c>
-            /// with a different <c>Function</c>.
+            /// Substitutes a specified variable in this <c>Expression</c>
+            /// with a different <c>Expression</c>.
             /// </summary>
             /// <param name="var">
             /// The target variable.
             /// </param>
             /// <param name="fn">
-            /// The replacement <c>Function</c>.
+            /// The replacement <c>Expression</c>.
             /// </param>
-            public void Substitute(Function var, Function fn) {
+            public void Substitute(Expression var, Expression fn) {
                 var.AssertVariable();
                 if (!IsDifferential()) {
                     String varFn = var.fn;
-                    Stack<Function> thisStack = new();
+                    Stack<Expression> thisStack = new();
                     thisStack.Push(this);
                     while (thisStack.Count > 0) {
-                        Function target = thisStack.Pop();
+                        Expression target = thisStack.Pop();
                         if (target.fn.Equals(varFn)) {
                             target.AssignValues("(", new() { fn });
                             target.Simplify(false);
                         } else {
-                            foreach (Function child in target.children) {
+                            foreach (Expression child in target.children) {
                                 if (!child.IsDifferential()) {
                                     thisStack.Push(child);
                                 }
@@ -665,19 +665,19 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Determines whether <c>this</c> is a variable <c>Function</c.
+            /// Determines whether <c>this</c> is a variable <c>Expression</c.
             /// </summary>
             /// <exception cref="ArgumentException">
             /// If <c>this</c> is not a variable.
             /// </exception>
             private void AssertVariable() {
                 if (!IsVariable()) {
-                    throw new ArgumentException("Function must be variable.");
+                    throw new ArgumentException("Expression must be variable.");
                 }
             }
 
             /// <summary>
-            /// Determines whether this <c>Function</c> is a differential.
+            /// Determines whether this <c>Expression</c> is a differential.
             /// </summary>
             /// <returns>
             /// <c>true</c> if this is a differential, else <c>false</c>.
@@ -687,76 +687,76 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Asserts that <c>this</c> is not a differential <c>Function</c>.
+            /// Asserts that <c>this</c> is not a differential <c>Expression</c>.
             /// </summary>
             /// <exception cref="ArgumentException">
-            /// If <c>this</c> is a differential <c>Function</c>.
+            /// If <c>this</c> is a differential <c>Expression</c>.
             /// </exception>
             private void AssertNotDifferential() {
                 if (IsDifferential()) {
-                    throw new ArgumentException("Function cannot be a differential.");
+                    throw new ArgumentException("Expression cannot be a differential.");
                 }
             }
 
             /// <summary>
-            /// Simplifies this Function and its first layer of children.
+            /// Simplifies this Expression and its first layer of children.
             /// </summary>
             private void SimplifyChildren() {
-                foreach (Function child in this.children) {
+                foreach (Expression child in this.children) {
                     child.Simplify(false);
                 }
                 Simplify(false);
             }
 
             /// <summary>
-            /// Adds two <c>Function</c> objects.
+            /// Adds two <c>Expression</c> objects.
             /// </summary>
             /// <param name="addend">
-            /// The subtrahend <c>Function</c>.
+            /// The subtrahend <c>Expression</c>.
             /// </param>
             /// <returns>
             /// <c>this + subtrahend</c>
             /// </returns>
-            public Function Add(Function addend) {
-                Function sum = new();
+            public Expression Add(Expression addend) {
+                Expression sum = new();
                 sum.AssignValues("+", new() { Copy(), addend.Copy() });
                 sum.SimplifyChildren();
                 return sum;
             }
 
             /// <summary>
-            /// Adds two <c>Function</c> objects.
+            /// Adds two <c>Expression</c> objects.
             /// </summary>
             /// <param name="subtrahend">
-            /// The subtrahend <c>Function</c>.
+            /// The subtrahend <c>Expression</c>.
             /// </param>
             /// <returns>
             /// <c>this + subtrahend</c>
             /// </returns>
-            public Function Subtract(Function subtrahend) {
-                Function newSub = subtrahend.Copy();
+            public Expression Subtract(Expression subtrahend) {
+                Expression newSub = subtrahend.Copy();
                 int compare = CompareOperators(FunctionOperator.SUBTRACTION, GetOperatorObject(newSub.fn[0]));
                 if (compare >= 0) {
                     InsertParentheticalExpression(newSub);
                 }
-                Function difference = new();
+                Expression difference = new();
                 difference.AssignValues("-", new() {Copy(), newSub});
                 difference.SimplifyChildren();
                 return difference;
             }
 
             /// <summary>
-            /// Multiplies two <c>Function</c> objects.
+            /// Multiplies two <c>Expression</c> objects.
             /// </summary>
             /// <param name="multiplicand">
-            /// The multiplicand <c>Function</c>.
+            /// The multiplicand <c>Expression</c>.
             /// </param>
             /// <returns>
             /// <c>this * multiplicand</c>
             /// </returns>
-            public Function Multiply(Function multiplicand) {
-                Function thisCopy = Copy();
-                Function multCopy = multiplicand.Copy();
+            public Expression Multiply(Expression multiplicand) {
+                Expression thisCopy = Copy();
+                Expression multCopy = multiplicand.Copy();
                 int compareThis = CompareOperators(FunctionOperator.MULTIPLICATION, GetOperatorObject(thisCopy.fn[0]));
                 int compareMult = CompareOperators(FunctionOperator.MULTIPLICATION, GetOperatorObject(multCopy.fn[0]));
                 if (compareThis > 0) {
@@ -765,24 +765,24 @@ namespace BoGLWeb {
                 if (compareMult > 0) {
                     InsertParentheticalExpression(multCopy);
                 }
-                Function product = new();
+                Expression product = new();
                 product.AssignValues("*", new() { thisCopy, multCopy});
                 product.SimplifyChildren();
                 return product;
             }
 
             /// <summary>
-            /// Divides this <c>Function</c> by another specified <c>Function</c>.
+            /// Divides this <c>Expression</c> by another specified <c>Expression</c>.
             /// </summary>
             /// <param name="divisor">
-            /// The divisor <c>Function</c>.
+            /// The divisor <c>Expression</c>.
             /// </param>
             /// <returns>
             /// <c>this / divisor</c>
             /// </returns>
-            public Function Divide(Function divisor) {
-                Function thisCopy = Copy();
-                Function diviCopy = divisor.Copy();
+            public Expression Divide(Expression divisor) {
+                Expression thisCopy = Copy();
+                Expression diviCopy = divisor.Copy();
                 int compareThis = CompareOperators(FunctionOperator.DIVISION, GetOperatorObject(thisCopy.fn[0]));
                 int compareDivi = CompareOperators(FunctionOperator.DIVISION, GetOperatorObject(diviCopy.fn[0]));
                 if (compareThis > 0) {
@@ -791,42 +791,42 @@ namespace BoGLWeb {
                 if (compareDivi > 0) {
                     InsertParentheticalExpression(diviCopy);
                 }
-                Function quotient = new();
+                Expression quotient = new();
                 quotient.AssignValues("/", new() { thisCopy, diviCopy });
                 quotient.SimplifyChildren();
                 return quotient;
             }
 
             /// <summary>
-            /// Negates this <c>Function</c>.
+            /// Negates this <c>Expression</c>.
             /// </summary>
             /// <returns>
             /// <c>-this</c>
             /// </returns>
-            public Function Negate() {
-                Function thisCopy = Copy();
+            public Expression Negate() {
+                Expression thisCopy = Copy();
                 int compareThis = CompareOperators(FunctionOperator.DIVISION, GetOperatorObject(thisCopy.fn[0]));
                 if (compareThis > 0) {
                     InsertParentheticalExpression(thisCopy);
                 }
-                Function negation = new();
+                Expression negation = new();
                 negation.AssignValues("!", new() { thisCopy });
                 negation.SimplifyChildren();
                 return negation;
             }
 
             /// <summary>
-            /// Packages this <c>Function</c> inside a parenthetical
-            /// <c>Function</c>.
+            /// Packages this <c>Expression</c> inside a parenthetical
+            /// <c>Expression</c>.
             /// </summary>
             /// <param name="fn">
-            /// The <c>Function</c> to be packaged.
+            /// The <c>Expression</c> to be packaged.
             /// </param>
-            private static void InsertParentheticalExpression(Function fn) {
+            private static void InsertParentheticalExpression(Expression fn) {
                 String fnStr = fn.fn;
-                List<Function> children = new();
+                List<Expression> children = new();
                 children.AddRange(fn.children);
-                Function replacement = new();
+                Expression replacement = new();
                 replacement.AssignValues(fnStr, children);
                 fn.AssignValues("(", new() { replacement });
             }
@@ -876,7 +876,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the hashCode for this <c>Function</c>.
+            /// Gets the hashCode for this <c>Expression</c>.
             /// </summary>
             /// <returns>
             /// An identifier to be used in hash tables.
@@ -887,21 +887,21 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <c>Function</c> to a printable format that exposes
+            /// Converts this <c>Expression</c> to a printable format that exposes
             /// its parse tree.
             /// </summary>
             /// <returns>The string parse tree.</returns>
             public string ToTree() {
                 //return ToTree("");
                 StringBuilder builder = new();
-                Stack<Function> fnStack = new(new[] { this });
+                Stack<Expression> fnStack = new(new[] { this });
                 Stack<string> indentStack = new(new[] { "" });
                 while (fnStack.Count > 0) {
-                    Function fn = fnStack.Pop();
+                    Expression fn = fnStack.Pop();
                     string indent = indentStack.Pop();
                     builder.Append(indent).Append(fn.fn);
-                    Stack<Function> proxyStack = new();
-                    foreach (Function child in fn.children) {
+                    Stack<Expression> proxyStack = new();
+                    foreach (Expression child in fn.children) {
                         proxyStack.Push(child);
                     }
                     string nextIndent = indent + '\t';
@@ -914,7 +914,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <c>Function</c> to a printable format that exposes
+            /// Converts this <c>Expression</c> to a printable format that exposes
             /// its parse tree.
             /// </summary>
             /// <param name="indent">The indent placed before every item in this
@@ -923,17 +923,17 @@ namespace BoGLWeb {
             private string ToTree(string indent) {
                 string print = indent + this.fn;
                 indent += "\t";
-                foreach (Function child in this.children) {
+                foreach (Expression child in this.children) {
                     print = print + "\n" + child.ToTree(indent);
                 }
                 return print;
             }
 
             /// <summary>
-            /// Converts this <c>Function</c> to a printable format.
+            /// Converts this <c>Expression</c> to a printable format.
             /// </summary>
             /// <returns>
-            /// This <c>Function</c> as a <c>String</c>.
+            /// This <c>Expression</c> as a <c>String</c>.
             /// </returns>
             public override string ToString() {
                 String fn = this.fn;
@@ -943,7 +943,7 @@ namespace BoGLWeb {
                     case FunctionOperator.MULTIPLICATION:
                         StringBuilder builder = new();
                         string opString = op + "", delimiter = "";
-                        foreach (Function child in this.children) {
+                        foreach (Expression child in this.children) {
                             builder.Append(delimiter).Append(child);
                             delimiter = opString;
                         }
@@ -963,7 +963,7 @@ namespace BoGLWeb {
                         fn = "-" + this.children[0];
                         break;
                 }
-                return fn;  // If this statement is reached, this Function
+                return fn;  // If this statement is reached, this Expression
             }               // is either a constant or a variable
 
             /// <summary>

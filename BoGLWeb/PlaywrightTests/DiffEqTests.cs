@@ -17,7 +17,7 @@ namespace BoGLWeb.PlaywrightTests {
         }
 
         /// <summary>
-        /// Tests the <c>Function</c> object as used for differential equation
+        /// Tests the <c>Expression</c> object as used for differential equation
         /// conversion.
         /// </summary>
         [Test]
@@ -27,10 +27,10 @@ namespace BoGLWeb.PlaywrightTests {
             await displayAllFunctionsButton.ClickAsync();
             var allFunctionsText = Page.Locator("text=Available functions: ");
             testFunctions = allFunctionsText.InnerTextAsync().ToString().Split(',');
-            var parseNextFunctionButton = Page.Locator("text=Parse Next Function");
+            var parseNextFunctionButton = Page.Locator("text=Parse Next Expression");
             foreach (String fn in testFunctions) {
                 await parseNextFunctionButton.ClickAsync();
-                await Expect(Page.Locator("text=Parsed test Function: " + fn)).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = timeout });
+                await Expect(Page.Locator("text=Parsed test Expression: " + fn)).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = timeout });
             }
         }
     }

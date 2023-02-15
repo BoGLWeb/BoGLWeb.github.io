@@ -8,7 +8,7 @@
 <Button OnClick="parseNextFunction">Parse Next Function</Button>
 @code {
 	/// The test function object.
-	private Function testFunction = new();
+	private Expression testFunction = new();
 	/// The array of String functions to be parsed.
 	private String[] fnStrs = { 
 		"4+5",
@@ -33,7 +33,7 @@
 		allFunctions = builder.ToString();
 	}
 
-	/// Parses the next Function value in the 
+	/// Parses the next Expression value in the 
 	public void parseNextFunction() {
 		testFunction = new(fnStrs[index++]);
 		if(index == fnStrs.Length) {
