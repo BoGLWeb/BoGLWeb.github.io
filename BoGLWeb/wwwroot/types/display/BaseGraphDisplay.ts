@@ -299,8 +299,36 @@ export class BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    getEdgePosition(sourceEl: GraphElement, targetEl: GraphElement) {
+        let x = targetEl.x - sourceEl.x;
+        let y = targetEl.y - sourceEl.y;
+        let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+        let thetaUR = Math.atan2(30, 30);
+        let thetaUL = Math.PI - thetaUR;
+        let thetaLL = Math.PI + thetaUR;
+        let thetaLR = 2 * Math.PI - thetaUR;
+        let coords = [];
+        // quads 1, 2, 3, and 4
+        if ((theta >= 0 && theta < thetaUR) || (theta >= thetaLR && theta < 2 * Math.PI)) {
+            coords = [30, -30 * Math.tan(theta)]
+        } else if (theta >= thetaUR && theta < thetaUL) {
+            coords = [30 * 1 / Math.tan(theta), -30]
+        } else if (theta >= thetaUL && theta < thetaLL) {
+            coords = [-30, 30 * Math.tan(theta)]
+        } else {
+            coords = [-30 * 1 / Math.tan(theta), 30]
+        }
+        return coords;
+    }
+
     drawPath(d: GraphBond) {
-        return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+        if (this.startedSelectionDrag) {
+            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+        } else {
+            let sourceEnd = this.getEdgePosition(d.source, d.target);
+            let targetEnd = this.getEdgePosition(d.target, d.source);
+            return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
+        }
     }
 
     get drag() {
@@ -479,6 +507,7 @@ export class BaseGraphDisplay {
                 this.dragXOffset = 0;
                 this.dragYOffset = 0;
                 this.startedSelectionDrag = false;
+                this.updateGraph();
                 this.updateMenus();
             }
         }
