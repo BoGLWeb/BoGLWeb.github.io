@@ -100,6 +100,7 @@ export class BaseGraphDisplay {
         if (!this.justScaleTransGraph) {
             let prevSelection = this.getSelection();
             this.setSelection([], []);
+            this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(prevSelection));
         } else {
             this.justScaleTransGraph = false;
