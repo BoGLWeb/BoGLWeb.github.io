@@ -867,8 +867,8 @@ namespace BoGLWeb {
                 JArray? modifiers = obj.Value<JArray>("modifiers");
                 this.modifiers = new();
                 if (modifiers != null) {
-                    foreach (JObject mod in modifiers) {
-                        this.modifiers.Add(mod.Value<int>());
+                    foreach (int mod in modifiers) {
+                        this.modifiers.Add(mod);
                     }
                 }
                 typeIDDictReverse.TryGetValue(this.type, out string? name);
