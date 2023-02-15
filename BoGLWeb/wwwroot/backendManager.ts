@@ -109,8 +109,103 @@ export namespace backendManager {
         }
 
         public exportAsImage() {
+            // window.SVGInjector(document.querySelectorAll('img.hoverImg'));
+            this.convertImages("image.hoverImg", () => { });
+            this.downloadSvg(window.systemDiagramSVG.node(), "sysDiag.png");
+            window.systemDiagram.updateGraph();
+        }
+
+        public copyStylesInline(destinationNode, sourceNode) {
+            var containerElements = ["svg", "g"];
+            for (var cd = 0; cd < destinationNode.childNodes.length; cd++) {
+                var child = destinationNode.childNodes[cd];
+                if (containerElements.indexOf(child.tagName) != -1) {
+                    this.copyStylesInline(child, sourceNode.childNodes[cd]);
+                    continue;
+                }
+                var style = sourceNode.childNodes[cd].currentStyle || window.getComputedStyle(sourceNode.childNodes[cd]);
+                if (style == "undefined" || style == null) continue;
+                for (var st = 0; st < style.length; st++) {
+                    child.style.setProperty(style[st], style.getPropertyValue(style[st]));
+                }
+            }
+        }
+
+        public triggerDownload(imgURI, fileName) {
+            var evt = new MouseEvent("click", {
+                view: window,
+                bubbles: false,
+                cancelable: true
+            });
+            var a = document.createElement("a");
+            a.setAttribute("download", fileName);
+            a.setAttribute("href", imgURI);
+            a.setAttribute("target", '_blank');
+            a.dispatchEvent(evt);
+        }
+
+        public downloadSvg(svg, fileName) {
+            var copy = svg.cloneNode(true);
+            this.copyStylesInline(copy, svg);
+            var canvas = document.createElement("canvas");
+            var bbox = svg.getBBox();
+            canvas.width = bbox.width;
+            canvas.height = bbox.height;
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, bbox.width, bbox.height);
+            var data = (new XMLSerializer()).serializeToString(copy);
+            var DOMURL = window.URL || window.webkitURL || window;
+            var img = new Image();
+            var svgBlob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
             // @ts-ignore
-            window.SVGInjector(document.querySelectorAll('image.hoverImg'));
+            var url = DOMURL.createObjectURL(svgBlob);
+            let backend = this;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0);
+                // @ts-ignore
+                DOMURL.revokeObjectURL(url);
+                // @ts-ignore
+                if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+                    // @ts-ignore
+                    var blob = canvas.msToBlob();
+                    // @ts-ignore
+                    navigator.msSaveOrOpenBlob(blob, fileName);
+                }
+                else {
+                    var imgURI = canvas
+                        .toDataURL("image/png")
+                        .replace("image/png", "image/octet-stream");
+                    // @ts-ignore
+                    backend.triggerDownload(imgURI, fileName);
+                }
+                document.removeChild(canvas);
+            };
+            img.src = url;
+        }
+
+        public convertImages(query, callback) {
+            const images = document.querySelectorAll(query);
+
+            images.forEach(image => {
+                fetch(image.href.baseVal)
+                    .then(res => res.text())
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const svg = parser.parseFromString(data, 'image/svg+xml').querySelector('svg');
+
+                        if (image.id) svg.id = image.id;
+                        // @ts-ignore
+                        if (image.className) svg.classList = image.classList;
+                        svg.setAttribute("height", "50px");
+                        svg.setAttribute("width", "50px");
+                        svg.setAttribute("x", "-25px");
+                        svg.setAttribute("y", "-25px");
+
+                        image.parentNode.replaceChild(svg, image);
+                    })
+                    .then(callback)
+                    .catch(error => console.error(error))
+            });
         }
 
         public zoomCenterGraph(index: string) {

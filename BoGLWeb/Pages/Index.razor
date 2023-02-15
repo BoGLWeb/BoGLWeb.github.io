@@ -487,6 +487,7 @@
     public async void exportAsImage() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("exportAsImage");
+        await module.InvokeVoidAsync("closeMenu", "File");
     }
 
     [JSInvokable]

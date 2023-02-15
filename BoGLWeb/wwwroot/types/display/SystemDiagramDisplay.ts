@@ -142,7 +142,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("x", "-30px")
             .attr("y", "-30px");
 
-        let image = hoverBox.append("img");
+        let image = hoverBox.append("image");
         image.attr("href", function (d) { return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg"; })
             .classed("hoverImg", true)
             .attr("x", "-25px")
