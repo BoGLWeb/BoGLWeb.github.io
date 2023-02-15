@@ -13,7 +13,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
-                //Function function = new("E3");
+                int count = graph.GetDifferentialElements().Count;
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
                 Dictionary<string, Function> associatedFunctions = new();
                 this.equations = new string[packagers.Count];

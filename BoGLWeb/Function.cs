@@ -942,10 +942,10 @@ namespace BoGLWeb {
                     case FunctionOperator.ADDITION:
                     case FunctionOperator.MULTIPLICATION:
                         StringBuilder builder = new();
-                        char delimiter = ' ';
+                        string opString = op + "", delimiter = "";
                         foreach (Function child in this.children) {
                             builder.Append(delimiter).Append(child);
-                            delimiter = op;
+                            delimiter = opString;
                         }
                         fn = builder.ToString();
                         break;

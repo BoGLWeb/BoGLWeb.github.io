@@ -270,8 +270,8 @@
     <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
 </Modal>
     <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
-        @if (stateEquations.Length > 0) {
-            <TextArea Rows="@(Convert.ToUInt32(stateEquations.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquations))" TValue="string" ReadOnly />
+        @if (stateEquationsStored.Length > 0) {
+            <TextArea Rows="@(Convert.ToUInt32(stateEquationsStored.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquationsStored))" TValue="string" ReadOnly />
             <Button @onclick="copyStateEquations"><Icon Type="link" Theme="outline" /> Copy State Equations</Button>
         } else {
             <p>Generate a bond graph to see its state equations here.</p>
@@ -698,11 +698,6 @@
             base.StateHasChanged();
             return;
         }
-
-        // Reset backend bond graphs and prints state equations. TODO: find global variable 
-        // storing equations in Index and replace with StateEquationSet object/methods.
-        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        stateEquations = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
         
         generateProgress = 25.0;
 
@@ -739,6 +734,11 @@
             causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
         generateProgress = 100.0;
+
+        // Reset backend bond graphs and prints state equations. TODO: find global variable
+        // storing equations in Index and replace with StateEquationSet object/methods.
+        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
+        stateEquationsStored = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
@@ -874,7 +874,7 @@
     bool urlModalVisible = false;
     bool stateEquationModalVisible = false;
     string url = "";
-    string[] stateEquations = new string[] { };
+    string[] stateEquationsStored = new string[] { };
 
     //Handles the ok button on the url modal
     private void handleUrlOk() {
@@ -1039,7 +1039,7 @@
 
     private async void copyStateEquations() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquations));
+        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquationsStored));
         await messageService.Success("State equations copied to clipboard!");
     }
 

@@ -138,6 +138,22 @@ namespace BoGLWeb {
         }
 
         /// <summary>
+        /// Gets a list of all Elements that introduce differential expressions into
+        /// the state equations of this Graph.
+        /// </summary>
+        /// <returns></returns>
+        public List<Element> GetDifferentialElements() {
+            List<Element> differentials = new();
+            foreach (KeyValuePair<string, Element> pair in this.elements) {
+                char typeChar = pair.Value.GetTypeChar();
+                if (typeChar == 'I' | typeChar == 'C') {
+                    differentials.Add(pair.Value);
+                }
+            }
+            return differentials;
+        }
+
+        /// <summary>
         /// Gets a list of all <c>Elements</c> in this <c>BondGraph</c>
         /// that have the corresponding IDs
         /// </summary>
@@ -318,7 +334,11 @@ namespace BoGLWeb {
             /// type of <c>Element</c>.</returns>
             public char GetTypeChar() {
                 int length = this.label.Length;
-                return this.label[length > 1 ? length - 2 : 0];
+                if (length == 1) {
+                    return this.label[0];
+                }
+                char ch = this.label[length - 1];
+                return ch == ':' ? this.label[length - 2] : ch;
             }
 
             /// <summary>
