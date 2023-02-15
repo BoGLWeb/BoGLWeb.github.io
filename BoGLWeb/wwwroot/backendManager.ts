@@ -108,6 +108,11 @@ export namespace backendManager {
             this.zoomCenterGraph("1");
         }
 
+        public exportAsImage() {
+            // @ts-ignore
+            window.SVGInjector(document.querySelectorAll('image.hoverImg'));
+        }
+
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
             let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
