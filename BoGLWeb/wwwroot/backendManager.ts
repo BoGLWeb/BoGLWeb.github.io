@@ -126,7 +126,8 @@ export namespace backendManager {
             let serializer = new XMLSerializer();
             let svgStr = serializer.serializeToString(svg);
 
-            img.src = ('data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgStr)))).replace("==", "");
+            /*img.src = ('data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgStr)))).replace("==", "");*/
+            img.src = "data:image/svg+xml;utf8," + svgStr;
 
             var canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
@@ -136,10 +137,36 @@ export namespace backendManager {
             img.onload = () => {
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
                 let image = canvas.toDataURL();
-                let aDownloadLink = document.createElement('a');
+                canvas.toBlob(blob => {
+                    let pickerOptions = {
+                        suggestedName: "systemDiagram.png",
+                        types: [
+                            {
+                                description: 'PNG File',
+                                accept: {
+                                    'image/png': ['.png'],
+                                },
+                            },
+                            {
+                                description: 'SVG File',
+                                accept: {
+                                    'image/svg+xml': ['.svg'],
+                                },
+                            },
+                            {
+                                description: 'JPEG File',
+                                accept: {
+                                    'image/jpeg': ['.jpeg', '.jpg'],
+                                },
+                            }
+                        ],
+                    };
+                    this.saveAsBlob(blob, pickerOptions, new Blob([svgStr]));
+                });
+/*                let aDownloadLink = document.createElement('a');
                 aDownloadLink.download = 'systemDiagram.png';
                 aDownloadLink.href = image;
-                aDownloadLink.click();
+                aDownloadLink.click();*/
             };
         }
 
@@ -166,22 +193,7 @@ export namespace backendManager {
                 .attr("transform", "translate(" + ((bounds.width / scale) / 2) + ", " + ((bounds.height / scale) / 2) + ") scale(1)");
         }
 
-        public copyStylesInline(destinationNode, sourceNode) {
-            var containerElements = ["svg", "g"];
-            for (var cd = 0; cd < destinationNode.childNodes.length; cd++) {
-                var child = destinationNode.childNodes[cd];
-                if (containerElements.indexOf(child.tagName) != -1) {
-                    this.copyStylesInline(child, sourceNode.childNodes[cd]);
-                    continue;
-                }
-                var style = sourceNode.childNodes[cd].currentStyle || window.getComputedStyle(sourceNode.childNodes[cd]);
-                if (style == "undefined" || style == null) continue;
-                for (var st = 0; st < style.length; st++) {
-                    child.style.setProperty(style[st], style.getPropertyValue(style[st]));
-                }
-            }
-        }
-
+        // this will break if additional image types beyond system diagram elements are added to BoGL Web
         public async convertImages(query, callback) {
             const images = document.querySelectorAll(query);
 
@@ -202,7 +214,6 @@ export namespace backendManager {
                         svg.setAttribute("y", "-25px");
 
                         image.parentNode.replaceChild(svg, image);
-                        console.log("Finished fetching ", image.href.baseVal);
                     })
                     .catch(error => console.error(error))
             }
@@ -240,12 +251,12 @@ export namespace backendManager {
             return parseInt(window.tabNum);
         }
 
-        public async saveAsFile(fileName: string, contentStreamReference: any) {
+        public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
 
-            const pickerOptions = {
-                suggestedName: `systemDiagram.bogl`,
+            pickerOptions = pickerOptions ?? {
+                suggestedName: fileName,
                 types: [
                     {
                         description: 'A BoGL File',
@@ -256,18 +267,22 @@ export namespace backendManager {
                 ],
             };
 
+            await this.saveAsBlob(blob, pickerOptions, null);
+        }
+
+        public async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
             const fileHandle = await window.showSaveFilePicker(pickerOptions);
             window.filePath = fileHandle;
             const writableFileStream = await fileHandle.createWritable();
-            await writableFileStream.write(blob);
+            await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
             await writableFileStream.close();
         }
 
-        public async saveFile(fileName: string, contentStreamReference: any, pickerOptions: any) {
+        public async saveFile(fileName: string, contentStreamReference: any) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
 
-            pickerOptions = pickerOptions ?? {
+            const pickerOptions = {
                 suggestedName: fileName,
                 types: [
                     {
