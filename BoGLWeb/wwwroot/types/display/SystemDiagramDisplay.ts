@@ -7,6 +7,7 @@ import { SystemDiagram } from "../graphs/SystemDiagram";
 import { BaseGraphDisplay } from "./BaseGraphDisplay";
 import { MultiElementType } from "../elements/MultiElementType";
 import { GraphElement } from "../elements/GraphElement";
+import { backendManager } from "../../backendManager";
 
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     edgeCircle: SVGSelection;
@@ -576,6 +577,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.deleteSelection();
         } else if (this.checkCtrlCombo(this.V_KEY)) {
             this.pasteSelection();
+        } else if (this.checkCtrlCombo(this.Z_KEY)) {
+            backendManager.getBackendManager().handleUndoRedo(true);
+        } else if (this.checkCtrlCombo(this.Y_KEY)) {
+            backendManager.getBackendManager().handleUndoRedo(false);
         }
     }
 
