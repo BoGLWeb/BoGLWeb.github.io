@@ -109,10 +109,61 @@ export namespace backendManager {
         }
 
         public exportAsImage() {
-            // window.SVGInjector(document.querySelectorAll('img.hoverImg'));
-            this.convertImages("image.hoverImg", () => { });
-            this.downloadSvg(window.systemDiagramSVG.node(), "sysDiag.png");
-            window.systemDiagram.updateGraph();
+            this.convertImages("image.hoverImg", () => {
+                let copy = window.systemDiagramSVG.node().cloneNode(true);
+                this.applyInlineStyles(window.systemDiagramSVG, d3.select(copy));
+                this.svgToCanvas(window.systemDiagramSVG, copy as SVGElement);
+            });
+        }
+
+        public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement) {
+            let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+            let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
+            let w = bounds.width / scale;
+            let h = bounds.height / scale;
+
+            let img = new Image(w, h);
+            let serializer = new XMLSerializer();
+            let svgStr = serializer.serializeToString(svg);
+
+            img.src = ('data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgStr)))).replace("==", "");
+
+            var canvas = document.createElement("canvas");
+            document.body.appendChild(canvas);
+
+            canvas.width = w;
+            canvas.height = h;
+            img.onload = () => {
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                let image = canvas.toDataURL();
+                let aDownloadLink = document.createElement('a');
+                aDownloadLink.download = 'systemDiagram.png';
+                aDownloadLink.href = image;
+                aDownloadLink.click();
+            };
+        }
+
+        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection) {
+            svg.selectAll(".link")
+                .style("fill", "none")
+                .style("stroke", "black")
+                .style("stroke-width", "4px");
+            svg.selectAll(".boglElem")
+                .style("fill", "transparent");
+            svg.selectAll(".outline")
+                .style("stroke", "black");
+            svg.selectAll("text")
+                .style("fill", "black")
+                .style("font-size", "30px")
+                .style("dominant-baseline", "middle")
+                .style("font-family", "Arial");
+            svg.style("background-color", "white");
+            svg.select("circle")
+                .style("display", "none");
+            let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
+            let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+            svg.select("g")
+                .attr("transform", "translate(" + ((bounds.width / scale) / 2) + ", " + ((bounds.height / scale) / 2) + ") scale(1)");
         }
 
         public copyStylesInline(destinationNode, sourceNode) {
@@ -131,63 +182,12 @@ export namespace backendManager {
             }
         }
 
-        public triggerDownload(imgURI, fileName) {
-            var evt = new MouseEvent("click", {
-                view: window,
-                bubbles: false,
-                cancelable: true
-            });
-            var a = document.createElement("a");
-            a.setAttribute("download", fileName);
-            a.setAttribute("href", imgURI);
-            a.setAttribute("target", '_blank');
-            a.dispatchEvent(evt);
-        }
-
-        public downloadSvg(svg, fileName) {
-            var copy = svg.cloneNode(true);
-            this.copyStylesInline(copy, svg);
-            var canvas = document.createElement("canvas");
-            var bbox = svg.getBBox();
-            canvas.width = bbox.width;
-            canvas.height = bbox.height;
-            var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, bbox.width, bbox.height);
-            var data = (new XMLSerializer()).serializeToString(copy);
-            var DOMURL = window.URL || window.webkitURL || window;
-            var img = new Image();
-            var svgBlob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
-            // @ts-ignore
-            var url = DOMURL.createObjectURL(svgBlob);
-            let backend = this;
-            img.onload = function () {
-                ctx.drawImage(img, 0, 0);
-                // @ts-ignore
-                DOMURL.revokeObjectURL(url);
-                // @ts-ignore
-                if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
-                    // @ts-ignore
-                    var blob = canvas.msToBlob();
-                    // @ts-ignore
-                    navigator.msSaveOrOpenBlob(blob, fileName);
-                }
-                else {
-                    var imgURI = canvas
-                        .toDataURL("image/png")
-                        .replace("image/png", "image/octet-stream");
-                    // @ts-ignore
-                    backend.triggerDownload(imgURI, fileName);
-                }
-                document.removeChild(canvas);
-            };
-            img.src = url;
-        }
-
-        public convertImages(query, callback) {
+        public async convertImages(query, callback) {
             const images = document.querySelectorAll(query);
 
-            images.forEach(image => {
-                fetch(image.href.baseVal)
+            for (let i = 0; i < images.length; i++) {
+                let image = images.item(i);
+                await fetch(image.href.baseVal)
                     .then(res => res.text())
                     .then(data => {
                         const parser = new DOMParser();
@@ -202,10 +202,11 @@ export namespace backendManager {
                         svg.setAttribute("y", "-25px");
 
                         image.parentNode.replaceChild(svg, image);
+                        console.log("Finished fetching ", image.href.baseVal);
                     })
-                    .then(callback)
                     .catch(error => console.error(error))
-            });
+            }
+            callback();
         }
 
         public zoomCenterGraph(index: string) {
@@ -262,12 +263,12 @@ export namespace backendManager {
             await writableFileStream.close();
         }
 
-        public async saveFile(fileName: string, contentStreamReference: any) {
+        public async saveFile(fileName: string, contentStreamReference: any, pickerOptions: any) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
 
-            const pickerOptions = {
-                suggestedName: `systemDiagram.bogl`,
+            pickerOptions = pickerOptions ?? {
+                suggestedName: fileName,
                 types: [
                     {
                         description: 'A BoGL File',
