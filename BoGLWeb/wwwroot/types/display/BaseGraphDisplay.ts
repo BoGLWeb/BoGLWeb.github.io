@@ -322,7 +322,7 @@ export class BaseGraphDisplay {
     }
 
     drawPath(d: GraphBond) {
-        if (this.startedSelectionDrag) {
+        if (this.startedSelectionDrag && this instanceof SystemDiagramDisplay) {
             return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
         } else {
             let sourceEnd = this.getEdgePosition(d.source, d.target);
