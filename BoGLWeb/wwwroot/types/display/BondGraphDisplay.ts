@@ -112,6 +112,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
             .text((d) => (<BondGraphElement>d).label)
+            .classed("bondGraphText", true)
             .each((d: BondGraphElement) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")

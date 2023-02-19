@@ -108,12 +108,14 @@ export namespace backendManager {
             this.zoomCenterGraph("1");
         }
 
-        public exportAsImage() {
-            this.convertImages("image.hoverImg", () => {
-                let copy = window.systemDiagramSVG.node().cloneNode(true);
-                this.applyInlineStyles(window.systemDiagramSVG, d3.select(copy));
-                this.svgToCanvas(window.systemDiagramSVG, copy as SVGElement);
-            });
+        public async exportAsImage() {
+            let svg = this.getGraphByIndex(window.tabNum).svg;
+            if (this.getTabNum() == 1) {
+                await this.convertImages("image.hoverImg");
+            }
+            let copy = svg.node().cloneNode(true);
+            this.applyInlineStyles(svg, d3.select(copy));
+            this.svgToCanvas(svg, copy as SVGElement);
         }
 
         public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement) {
@@ -126,7 +128,6 @@ export namespace backendManager {
             let serializer = new XMLSerializer();
             let svgStr = serializer.serializeToString(svg);
 
-            /*img.src = ('data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgStr)))).replace("==", "");*/
             img.src = "data:image/svg+xml;utf8," + svgStr;
 
             var canvas = document.createElement("canvas");
@@ -163,10 +164,6 @@ export namespace backendManager {
                     };
                     this.saveAsBlob(blob, pickerOptions, new Blob([svgStr]));
                 });
-/*                let aDownloadLink = document.createElement('a');
-                aDownloadLink.download = 'systemDiagram.png';
-                aDownloadLink.href = image;
-                aDownloadLink.click();*/
             };
         }
 
@@ -187,6 +184,8 @@ export namespace backendManager {
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");
+            svg.select(".bondGraphText")
+                .style("font-size", "14px");
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             svg.select("g")
@@ -194,7 +193,7 @@ export namespace backendManager {
         }
 
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
-        public async convertImages(query, callback) {
+        public async convertImages(query) {
             const images = document.querySelectorAll(query);
 
             for (let i = 0; i < images.length; i++) {
@@ -217,7 +216,7 @@ export namespace backendManager {
                     })
                     .catch(error => console.error(error))
             }
-            callback();
+/*            callback();*/
         }
 
         public zoomCenterGraph(index: string) {
