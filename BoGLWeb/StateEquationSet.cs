@@ -15,12 +15,13 @@ namespace BoGLWeb {
             public StateEquationSet(BondGraph graph) {
                 int count = graph.GetDifferentialElements().Count;
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
-                Dictionary<string, Expression> associatedFunctions = new();
-                this.equations = new string[packagers.Count];
-                int index = 0;
+                Dictionary<string, Expression> substitutionDictionary = new();
                 foreach (CausalPackager packager in packagers) {
-                    this.equations[index++] = packager.GenerateVariableName() + "=" + packager.GetExpression();
+                    KeyValuePair<string, Expression> pair = packager.GetExpression();
+                    substitutionDictionary.Add(pair.Key, pair.Value);
                 }
+                GetRemainingSubstitutes();
+                this.equations = new string[3];
             }
 
             /// <summary>
@@ -156,7 +157,7 @@ namespace BoGLWeb {
                 /// Forms an incomplete state equation.
                 /// </summary>
                 /// <returns></returns>
-                public Expression GetExpression() {
+                public KeyValuePair<string, Expression> GetExpression() {
                     Stack<CausalPackager> packageStack = new(new[] { this });
                     Stack<bool> checkStack = new(new[] { false });
                     while (packageStack.Count > 0) {
@@ -199,8 +200,9 @@ namespace BoGLWeb {
                         }
                     }
                     Expression stateEquation = this.stateEquation;
-                    this.stateEquation = new(GenerateVariableName());
-                    return stateEquation;
+                    string varName = GenerateVariableName();
+                    this.stateEquation = new(varName);
+                    return new(varName, stateEquation);
                 }
 
                 /// <summary>
@@ -227,6 +229,14 @@ namespace BoGLWeb {
                     }
                     return print.ToString();
                 }
+            }
+
+            /// <summary>
+            /// Updates the list of substitutes in the chat with all 
+            /// </summary>
+            private static void GetRemainingSubstitutes(BondGraph graph, Dictionary<string, Expression> subs) {
+                //foreach () {
+                //}
             }
         }
     }

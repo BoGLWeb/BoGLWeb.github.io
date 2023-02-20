@@ -690,6 +690,9 @@
 
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+            if(GraphValidityHandler.IsInvalid(sysDiagram)) {
+                throw new ArgumentException("The dang thang broke !!!1!");
+            }
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
         } catch (ArgumentException e) {
             errorVisible = true;

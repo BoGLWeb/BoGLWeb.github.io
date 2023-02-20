@@ -831,6 +831,30 @@ namespace BoGLWeb {
                 fn.AssignValues("(", new() { replacement });
             }
 
+            /// <summary>Substitutes all instances of particular variables with other 
+            /// variables. This method makes all substitutions concurrently to keep 
+            /// all reused but redefined variables separate.</summary>
+            /// <param name="vars">The Dictionary of variable substitutions. The key
+            /// value is the string representation of the variable expression to be
+            /// detected in the original Expression, and the value is the replacement
+            /// value.</param>
+            public void SubstituteAllVariables(Dictionary<string, Expression> vars) {
+                Stack<Expression> nextTermStack = new(new[] { this });
+                while (nextTermStack.Count > 0) {
+                    Expression nextTerm = nextTermStack.Pop();
+                    if (nextTerm.children.Count > 0) {
+                        foreach (Expression child in nextTerm.children) {
+                            nextTermStack.Push(child);
+                        }
+                    } else if(nextTerm.IsVariable()) {
+                        Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
+                        if (substitution != null) {
+                            nextTerm.AssignValues("(", new(new[] { substitution.Copy() }));
+                        }
+                    }
+                }
+            }
+
             /// <summary>
             /// Compares two <c>FunctionOperators</c> for precedence in 
             /// the standard order of operations.
