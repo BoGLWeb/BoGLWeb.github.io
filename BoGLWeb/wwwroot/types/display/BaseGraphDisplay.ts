@@ -17,6 +17,8 @@ export class BaseGraphDisplay {
     readonly C_KEY: number = 67;
     readonly X_KEY: number = 88;
     readonly V_KEY: number = 86;
+    readonly Z_KEY: number = 90;
+    readonly Y_KEY: number = 89;
     readonly CTRL_KEY: number = 17;
     readonly ARROW_LEFT: number = 37;
     readonly ARROW_UP: number = 38;
