@@ -20,7 +20,7 @@ namespace BoGLWeb {
                     KeyValuePair<string, Expression> pair = packager.GetExpression();
                     substitutionDictionary.Add(pair.Key, pair.Value);
                 }
-                GetRemainingSubstitutes();
+                //GetRemainingSubstitutes();
                 this.equations = new string[3];
             }
 
