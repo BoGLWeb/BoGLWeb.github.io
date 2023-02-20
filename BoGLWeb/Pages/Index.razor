@@ -105,7 +105,7 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <Collapse Bordered="false">
+        <Collapse Id="elementMenus" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
             </ExpandIconTemplate>
@@ -127,6 +127,25 @@
                 </Panel>
             </ChildContent>
         </Collapse>
+        <div id="diffeqMenu">
+            <h2>Differential Equation @(diffIndex + 1)</h2>
+            <sub>@stateEquationsStored.Length equations total</sub>
+            @if(stateEquationsStored.Length > 0) {
+                string diffEq = stateEquationsStored[diffIndex];
+                <p>x3’ = v1 – v2</p>
+                <p>v1 = p1 / M1</p>
+                <p>v2 = p2 / M2</p>
+                <div id="diffeqAnswer">
+                    <p>@diffEq</p>
+                </div>
+            }
+            <Checkbox Id="highlightCheck">State Equation Highlights</Checkbox>
+            <div id="diffeqButtons">
+                <Button OnClick="@(() => {diffIndex = Math.Max(@diffIndex - 1, 0);})" Disabled="@(diffIndex == 0)">Previous</Button>
+                <Button OnClick="@(() => {diffIndex = Math.Min(@diffIndex + 1, stateEquationsStored.Length - 1);})" Disabled="@(diffIndex == stateEquationsStored.Length - 1)">Next</Button>
+            </div>
+        </div>
+        <div class="resizer"></div>
     </div>
     <div class="card-container">
         <div id="zoomMenu">
@@ -297,6 +316,7 @@
     static bool tabsDisabled = true;
     static bool disableUndo = true;
     static bool disableRedo = true;
+    static int diffIndex = 0;
 
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
@@ -738,7 +758,7 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        stateEquationsStored = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
+        stateEquationsStored = (new string[] {"x3’ = p1 / M1 – p2 / M2​"}).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations()).ToArray();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
