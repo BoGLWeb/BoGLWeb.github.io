@@ -345,7 +345,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-XLmJeifC\/Zjc8lsqcud\/XrK+n1jhZ7QBruO71VSKfOE=",
+      "hash": "sha256-99pJqBdS+RFmwYypHUdXT20jeGQLm6ho6CcjaCe27\/U=",
       "url": "manifest.json"
     },
     {
@@ -3393,7 +3393,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-2phs3AWosjbHB6RLjG1\/InEKFMLNFpPbx7NAgPgi0uU=",
+      "hash": "sha256-D9tZTxGH0zWXKr4lCxKUl+wzDXYee2i8soiF0kk7t2g=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3401,7 +3401,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-eRPm6D6qP1orFhzhX3UN03QM7hZt9EjuPsZt8K9k\/G0=",
+      "hash": "sha256-tvcezmORGIySr3lTH+lskJcrs6wf9O9uRMhziW0Kru4=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5621,5 +5621,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "kabuWCIe"
+  "version": "i+RR8zVJ"
 };

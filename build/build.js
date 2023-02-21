@@ -269,7 +269,7 @@ define("types/graphs/SystemDiagram", ["require", "exports", "types/graphs/BaseGr
     }
     exports.SystemDiagram = SystemDiagram;
 });
-define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds/GraphBond", "types/elements/ElementNamespace", "types/elements/SystemDiagramElement", "types/display/BaseGraphDisplay"], function (require, exports, GraphBond_2, ElementNamespace_1, SystemDiagramElement_1, BaseGraphDisplay_1) {
+define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds/GraphBond", "types/elements/ElementNamespace", "types/elements/SystemDiagramElement", "types/display/BaseGraphDisplay", "backendManager"], function (require, exports, GraphBond_2, ElementNamespace_1, SystemDiagramElement_1, BaseGraphDisplay_1, backendManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SystemDiagramDisplay = void 0;
@@ -797,6 +797,12 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 else if (this.checkCtrlCombo(this.V_KEY)) {
                     this.pasteSelection();
                 }
+                else if (this.checkCtrlCombo(this.Z_KEY)) {
+                    backendManager_1.backendManager.getBackendManager().handleUndoRedo(true);
+                }
+                else if (this.checkCtrlCombo(this.Y_KEY)) {
+                    backendManager_1.backendManager.getBackendManager().handleUndoRedo(false);
+                }
             });
         }
         svgMouseMove() {
@@ -851,6 +857,8 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.C_KEY = 67;
             this.X_KEY = 88;
             this.V_KEY = 86;
+            this.Z_KEY = 90;
+            this.Y_KEY = 89;
             this.CTRL_KEY = 17;
             this.ARROW_LEFT = 37;
             this.ARROW_UP = 38;
@@ -904,6 +912,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             if (!this.justScaleTransGraph) {
                 let prevSelection = this.getSelection();
                 this.setSelection([], []);
+                this.updateGraph();
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects(prevSelection));
             }
             else {
@@ -1093,8 +1102,38 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.mouseDownNode = el;
             this.justDragged = false;
         }
+        getEdgePosition(sourceEl, targetEl) {
+            let x = targetEl.x - sourceEl.x;
+            let y = targetEl.y - sourceEl.y;
+            let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
+            let thetaUR = Math.atan2(30, 30);
+            let thetaUL = Math.PI - thetaUR;
+            let thetaLL = Math.PI + thetaUR;
+            let thetaLR = 2 * Math.PI - thetaUR;
+            let coords = [];
+            if ((theta >= 0 && theta < thetaUR) || (theta >= thetaLR && theta < 2 * Math.PI)) {
+                coords = [30, -30 * Math.tan(theta)];
+            }
+            else if (theta >= thetaUR && theta < thetaUL) {
+                coords = [30 * 1 / Math.tan(theta), -30];
+            }
+            else if (theta >= thetaUL && theta < thetaLL) {
+                coords = [-30, 30 * Math.tan(theta)];
+            }
+            else {
+                coords = [-30 * 1 / Math.tan(theta), 30];
+            }
+            return coords;
+        }
         drawPath(d) {
-            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            if (this.startedSelectionDrag && this instanceof SystemDiagramDisplay_1.SystemDiagramDisplay) {
+                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            }
+            else {
+                let sourceEnd = this.getEdgePosition(d.source, d.target);
+                let targetEnd = this.getEdgePosition(d.target, d.source);
+                return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
+            }
         }
         get drag() {
             let graph = this;
@@ -1243,6 +1282,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                     this.dragXOffset = 0;
                     this.dragYOffset = 0;
                     this.startedSelectionDrag = false;
+                    this.updateGraph();
                     this.updateMenus();
                 }
             }
@@ -1339,11 +1379,6 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 coords = [-height * 1 / Math.tan(theta), height];
             }
             return coords;
-        }
-        drawPath(d) {
-            let sourceEnd = this.getEdgePosition(d.source, d.target);
-            let targetEnd = this.getEdgePosition(d.target, d.source);
-            return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
         }
         renderElements(newElements) {
             let graph = this;
@@ -1470,6 +1505,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     bond.velocity = (_a = edge.velocity) !== null && _a !== void 0 ? _a : 0;
                     edges.push(bond);
                 }
+                window.systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram([], []));
                 DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))), ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
                 let systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram(Array.from(elements.values()), edges));
                 systemDiagram.draggingElement = null;
@@ -1637,7 +1673,11 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
             }
             generateURL() {
                 return JSON.stringify({
-                    elements: window.systemDiagram.elements,
+                    elements: window.systemDiagram.elements.map(e => {
+                        e.x = Math.round(e.x * 10) / 10;
+                        e.y = Math.round(e.y * 10) / 10;
+                        return e;
+                    }),
                     bonds: window.systemDiagram.bonds
                 }, function (key, val) {
                     return val.toFixed ? Number(val.toFixed(3)) : val;
@@ -1914,11 +1954,11 @@ define("types/display/BondGraphBond", ["require", "exports"], function (require,
     }
     exports.SubmenuID = SubmenuID;
 });
-define("main", ["require", "exports", "types/elements/ElementNamespace", "types/display/SystemDiagramDisplay", "backendManager", "types/graphs/SystemDiagram", "types/display/BondGraphBond"], function (require, exports, ElementNamespace_3, SystemDiagramDisplay_3, backendManager_1, SystemDiagram_2, BondGraphBond_2) {
+define("main", ["require", "exports", "types/elements/ElementNamespace", "types/display/SystemDiagramDisplay", "backendManager", "types/graphs/SystemDiagram", "types/display/BondGraphBond"], function (require, exports, ElementNamespace_3, SystemDiagramDisplay_3, backendManager_2, SystemDiagram_2, BondGraphBond_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.populateMenu = void 0;
-    var getBackendManager = backendManager_1.backendManager.getBackendManager;
+    var getBackendManager = backendManager_2.backendManager.getBackendManager;
     function populateMenu() {
         ElementNamespace_3.ElementNamespace.categories.map((c, i) => {
             ElementNamespace_3.ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
@@ -1951,7 +1991,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             sliderImg.id = "sliderImg";
             sliderImg.draggable = false;
             sliderHolder.appendChild(sliderImg);
-            window.backendManager = backendManager_1.backendManager;
+            window.backendManager = backendManager_2.backendManager;
             window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
             window.systemDiagramSVG.classed("graphSVG", true);
             const urlParams = new URLSearchParams(window.location.search);
@@ -1963,7 +2003,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             else {
                 window.systemDiagram = new SystemDiagramDisplay_3.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_2.SystemDiagram([], []));
                 window.systemDiagram.updateGraph();
-                backendManager_1.backendManager.getBackendManager().zoomCenterGraph("1");
+                backendManager_2.backendManager.getBackendManager().zoomCenterGraph("1");
                 window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
             }
             document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => e.focus()));
@@ -1979,11 +2019,11 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             window.causalBGSVG = d3.select("#causalBG").append("svg");
             window.causalBGSVG.classed("graphSVG", true);
             d3.select(window).on("keydown", function () {
-                let graph = backendManager_1.backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+                let graph = backendManager_2.backendManager.getBackendManager().getGraphByIndex(window.tabNum);
                 graph.svgKeyDown.call(graph);
             })
                 .on("keyup", function () {
-                let graph = backendManager_1.backendManager.getBackendManager().getGraphByIndex(window.tabNum);
+                let graph = backendManager_2.backendManager.getBackendManager().getGraphByIndex(window.tabNum);
                 graph.svgKeyUp.call(graph);
             });
             topMenuButtons = document.getElementsByClassName('topMenu');
@@ -2000,6 +2040,9 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                     }
                 }
             });
+            window.onbeforeunload = function (e) {
+                return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
+            };
         });
     }
     var menuIdMap = {
