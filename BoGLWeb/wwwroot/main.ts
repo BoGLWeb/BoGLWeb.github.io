@@ -100,6 +100,10 @@ async function loadPage() {
             }
         }
     });
+
+    window.onbeforeunload = function (e) {
+        return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
+    };
 }
 
 var menuIdMap = {

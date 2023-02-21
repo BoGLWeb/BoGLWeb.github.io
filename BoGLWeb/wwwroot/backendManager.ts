@@ -96,6 +96,8 @@ export namespace backendManager {
                 edges.push(bond);
             }
 
+            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
 
@@ -280,7 +282,11 @@ export namespace backendManager {
 
         public generateURL() {
             return JSON.stringify({
-                elements: window.systemDiagram.elements,
+                elements: window.systemDiagram.elements.map(e => {
+                    e.x = Math.round(e.x * 10) / 10;
+                    e.y = Math.round(e.y * 10) / 10;
+                    return e;
+                }),
                 bonds: window.systemDiagram.bonds
             }, function (key, val) {
                 return val.toFixed ? Number(val.toFixed(3)) : val;
