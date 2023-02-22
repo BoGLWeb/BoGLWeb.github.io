@@ -850,9 +850,11 @@ namespace BoGLWeb {
                         Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
                         if (substitution != null) {
                             nextTerm.AssignValues("(", new(new[] { substitution.Copy() }));
+                            vars.Remove(nextTerm.fn);
                         }
                     }
                 }
+                Simplify(true);
             }
 
             /// <summary>

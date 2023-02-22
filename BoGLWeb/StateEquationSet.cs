@@ -20,7 +20,7 @@ namespace BoGLWeb {
                     KeyValuePair<string, Expression> pair = packager.GetExpression();
                     substitutionDictionary.Add(pair.Key, pair.Value);
                 }
-                //GetRemainingSubstitutes();
+                GetRemainingGeneralizedSubstitutes(graph, substitutionDictionary);
                 this.equations = new string[3];
             }
 
@@ -232,11 +232,24 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Updates the list of substitutes in the chat with all 
+            /// Updates the list of substitutes in the chat with replacements for I, 
+            /// R, and C elements.
             /// </summary>
-            private static void GetRemainingSubstitutes(BondGraph graph, Dictionary<string, Expression> subs) {
-                //foreach () {
-                //}
+            private static void GetRemainingGeneralizedSubstitutes(BondGraph graph, Dictionary<string, Expression> subs) {
+                foreach (KeyValuePair<string, BondGraph.Element> pair in graph.getElements()) {
+                    int ID = pair.Value.GetID();
+                    switch (pair.Value.GetTypeChar()) {
+                        case 'C':
+                            subs.Add("E" + ID, new Expression("Q" + ID + "/C" + ID));
+                            break;
+                        case 'I':
+                            subs.Add("F" + ID, new Expression("P" + ID + "/M" + ID));
+                            break;
+                        case 'R':
+                            subs.Add("E" + ID, new Expression("R" + ID + "*F" + ID));
+                            break;
+                    }
+                }
             }
         }
     }

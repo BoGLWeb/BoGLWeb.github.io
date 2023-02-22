@@ -48,7 +48,7 @@
                         }
                     }
                 }
-                return connectedElements.Count != elements.Count + gravObj;
+                return connectedElements.Count != elements.Count - gravObj;
             }
         }
     }
