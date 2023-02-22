@@ -190,7 +190,7 @@ namespace BoGLWeb {
             /// </param>
             private void SplitBinaryExpression(String fn, int index, FunctionOperator o1, FunctionOperator o2) {
                 Expression child1 = new(), child2 = new();
-                child1.Formulate(fn[0..^index], o1);
+                child1.Formulate(fn[0..index], o1);
                 child2.Formulate(fn[(index + 1)..], o2);
                 AddChild(child1);
                 AddChild(child2);
@@ -448,9 +448,6 @@ namespace BoGLWeb {
             /// <c>false</c>.
             /// </returns>
             public bool IsVariable() {
-                if (!Char.IsDigit(this.fn[0])) {
-                    return false;
-                }
                 foreach (char c in this.fn.ToCharArray()) {
                     if (Char.IsLetter(c)) {
                         return true;
@@ -823,11 +820,10 @@ namespace BoGLWeb {
             /// The <c>Expression</c> to be packaged.
             /// </param>
             private static void InsertParentheticalExpression(Expression fn) {
-                String fnStr = fn.fn;
                 List<Expression> children = new();
                 children.AddRange(fn.children);
                 Expression replacement = new();
-                replacement.AssignValues(fnStr, children);
+                replacement.AssignValues(fn.fn, children);
                 fn.AssignValues("(", new() { replacement });
             }
 
@@ -838,7 +834,9 @@ namespace BoGLWeb {
             /// value is the string representation of the variable expression to be
             /// detected in the original Expression, and the value is the replacement
             /// value.</param>
-            public void SubstituteAllVariables(Dictionary<string, Expression> vars) {
+            /// <param name="used">A HashSet that stores all variables that have been used
+            /// in a substitution.</param>
+            public void SubstituteAllVariables(Dictionary<string, Expression> vars, HashSet<string> used) {
                 Stack<Expression> nextTermStack = new(new[] { this });
                 while (nextTermStack.Count > 0) {
                     Expression nextTerm = nextTermStack.Pop();
@@ -849,8 +847,8 @@ namespace BoGLWeb {
                     } else if(nextTerm.IsVariable()) {
                         Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
                         if (substitution != null) {
+                            used.Add(nextTerm.fn);
                             nextTerm.AssignValues("(", new(new[] { substitution.Copy() }));
-                            vars.Remove(nextTerm.fn);
                         }
                     }
                 }

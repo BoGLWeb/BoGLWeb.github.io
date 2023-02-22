@@ -16,12 +16,27 @@ namespace BoGLWeb {
                 int count = graph.GetDifferentialElements().Count;
                 List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
                 Dictionary<string, Expression> substitutionDictionary = new();
+                HashSet<string> usedSet = new();
                 foreach (CausalPackager packager in packagers) {
                     KeyValuePair<string, Expression> pair = packager.GetExpression();
                     substitutionDictionary.Add(pair.Key, pair.Value);
                 }
                 GetRemainingGeneralizedSubstitutes(graph, substitutionDictionary);
-                this.equations = new string[3];
+                int prevUsedQuantity;
+                do {
+                    prevUsedQuantity = usedSet.Count;
+                    foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
+                        pair.Value.SubstituteAllVariables(substitutionDictionary, usedSet);
+                    }
+                } while (prevUsedQuantity != usedSet.Count);
+                foreach (string key in usedSet) {
+                    substitutionDictionary.Remove(key);
+                }
+                this.equations = new string[count];
+                int index = 0;
+                foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
+                    this.equations[index++] = pair.Key + "=" + pair.Value;
+                }
             }
 
             /// <summary>

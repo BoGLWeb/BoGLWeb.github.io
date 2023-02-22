@@ -867,12 +867,11 @@ namespace BoGLWeb {
                 JArray? modifiers = obj.Value<JArray>("modifiers");
                 this.modifiers = new();
                 if (modifiers != null) {
-                    foreach (JObject mod in modifiers) {
+                    foreach (JObject mod in modifiers.Cast<JObject>()) {
                         this.modifiers.Add(mod.Value<int>());
                     }
                 }
-                typeIDDictReverse.TryGetValue(this.type, out string? name);
-                this.name = name ?? "";
+                this.name = typeIDDictReverse.GetValueOrDefault(this.type) ?? "";
             }
 
             /// <summary>
@@ -1281,7 +1280,7 @@ namespace BoGLWeb {
         /// <summary>
         /// Stores parsed elements and edgesBySource for a system diagram.
         /// </summary>
-        public class Packager {
+        public class Wrapper {
             // Stores a subset of elements belonging to a particular system diagram
             private readonly Dictionary<int, Element> elements;
             // Stores a subset of edgesBySource belonging to a particular system diagram by source ID.
@@ -1290,12 +1289,12 @@ namespace BoGLWeb {
             private readonly Dictionary<int, List<Edge>> edgesByTarget;
 
             /// <summary>
-            /// Creates a new Packager.
+            /// Creates a new Wrapper.
             /// </summary>
             /// <param name="newObjects">An array of JSON objects
             /// containing the elements and edgesBySource for this 
             /// system diagram.</param>
-            public Packager(string[] newObjects) {
+            public Wrapper(string[] newObjects) {
                 this.elements = new();
                 this.edgesBySource = new();
                 this.edgesByTarget = new();
@@ -1323,7 +1322,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of elements in this Packager.
+            /// Gets the Dictionary of elements in this Wrapper.
             /// </summary>
             /// <returns>this.elements</returns>
             public Dictionary<int, Element> GetElements() {
@@ -1331,7 +1330,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// Gets the Dictionary of edgesBySource in this Wrapper.
             /// </summary>
             /// <returns>this.edgesBySource</returns>
             public Dictionary<int, List<Edge>> GetSourceEdges() {
@@ -1339,7 +1338,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// Gets the Dictionary of edgesBySource in this Wrapper.
             /// </summary>
             /// <returns>this.edgesBySource</returns>
             public Dictionary<int, List<Edge>> GetTargetEdges() {
