@@ -1,6 +1,8 @@
 ﻿namespace BoGLWeb {
     namespace DifferentialEquationHelper {
         public class GraphValidityHandler {
+            private static int SYSTEM_MT_GRAVITY = 5;
+
             /// <summary>
             /// Determines whether a system diagram is valid.
             /// </summary>
@@ -20,7 +22,7 @@
                     elements.Add(usableID, element);
                     edgesBySource.Add(usableID, new());
                     edgesByTarget.Add(usableID, new());
-                    if (element.getName().EndsWith("Gravity")) {
+                    if (element.getType() == SYSTEM_MT_GRAVITY) {
                         gravObj++;
                     } else {
                         prevNonGrav = usableID;

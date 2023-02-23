@@ -26,8 +26,11 @@ namespace BoGLWeb {
                 do {
                     prevUsedQuantity = usedSet.Count;
                     foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
-                        pair.Value.SubstituteAllVariables(substitutionDictionary, usedSet);
+                        foreach (string item in pair.Value.SubstituteAllVariables(substitutionDictionary)) {
+                            usedSet.Add(item);
+                        }
                     }
+                    Console.WriteLine(prevUsedQuantity);
                 } while (prevUsedQuantity != usedSet.Count);
                 foreach (string key in usedSet) {
                     substitutionDictionary.Remove(key);
@@ -104,9 +107,14 @@ namespace BoGLWeb {
                 private static CausalPackager GeneratePackager(BondGraph.Element element, bool isEffort, Dictionary<int, List<BondGraph.Bond>> bondsBySource, Dictionary<int, List<BondGraph.Bond>> bondsByTarget) {
                     CausalPackager returnValue = new(element, true, isEffort);
                     Stack<CausalPackager> packagerStack = new(new[] { returnValue });
+                    HashSet<int> used = new();
                     while (packagerStack.Count > 0) {
                         CausalPackager packager = packagerStack.Pop();
                         int elementID = packager.element.GetID();
+                        if (used.Contains(elementID)) {
+                            throw new Exception("State equations cannot be derived in looped causality.");
+                        }
+                        used.Add(elementID);
                         List<BondGraph.Bond>? bondsToTarget = bondsBySource.GetValueOrDefault(elementID);
                         if (bondsToTarget != null) {
                             foreach (BondGraph.Bond bond in bondsToTarget) {

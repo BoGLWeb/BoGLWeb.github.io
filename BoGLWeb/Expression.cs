@@ -336,13 +336,10 @@ namespace BoGLWeb {
                                         case FunctionOperator.PARENTHETICAL:
                                             Expression grandchild = child.children[0];
                                             String grandchildFn = grandchild.fn;
-                                            switch (GetOperatorObject(grandchildFn[0])) {
-                                                case FunctionOperator.ADDITION:
-                                                case FunctionOperator.SUBTRACTION:
-                                                    break;
-                                                default:
-                                                    mChildren.AddRange(grandchild.children);
-                                                    break;
+                                            if (GetOperatorObject(grandchildFn[0]) == FunctionOperator.MULTIPLICATION) {
+                                                mChildren.AddRange(grandchild.children);
+                                            } else {
+                                                mChildren.Add(grandchild);
                                             }
                                             break;
                                         case FunctionOperator.ONE: 
@@ -358,6 +355,9 @@ namespace BoGLWeb {
                                 if (isZero) {
                                     mChildren.Clear();
                                     mChildren.Add(new Expression("0"));
+                                }
+                                if (mChildren.Count == 0) {
+                                    mChildren.Add(new Expression("1"));
                                 }
                                 targetFn.AssignValues(targetFn.fn, mChildren);
                                 break;
@@ -478,8 +478,7 @@ namespace BoGLWeb {
                 }
                 String varFn = var.fn;
                 int count = 0;
-                Stack<Expression> thisStack = new();
-                thisStack.Push(this);
+                Stack<Expression> thisStack = new(new[] { this });
                 while (thisStack.Count > 0) {
                     Expression fn = thisStack.Pop();
                     if (fn.fn.Equals(varFn)) {
@@ -566,12 +565,9 @@ namespace BoGLWeb {
             private List<int> GetListOfPathIndices(Expression var) {
                 var.AssertVariable();
                 AssertNotDifferential();
-                Stack<Expression> fnStack = new();
-                Stack<bool> checkStack = new();
-                Stack<int> indexStack = new();
-                fnStack.Push(this);
-                checkStack.Push(true);
-                indexStack.Push(0);
+                Stack<Expression> fnStack = new(new[] { this });
+                Stack<bool> checkStack = new(new[] { true });
+                Stack<int> indexStack = new(new[] { 0 });
                 List<int> indices = new() { 0 };
                 String varFn = var.fn;
                 while (fnStack.Count > 0) {
@@ -611,10 +607,8 @@ namespace BoGLWeb {
             /// </returns>
             public Expression Copy() {
                 Expression copy = new();
-                Stack<Expression> thisStack = new();
-                Stack<Expression> copyStack = new();
-                thisStack.Push(this);
-                copyStack.Push(copy);
+                Stack<Expression> thisStack = new(new[] { this });
+                Stack<Expression> copyStack = new(new[] { copy });
                 while (thisStack.Count > 0) {
                     Expression targetThis = thisStack.Pop();
                     Expression targetCopy = copyStack.Pop();
@@ -643,8 +637,7 @@ namespace BoGLWeb {
                 var.AssertVariable();
                 if (!IsDifferential()) {
                     String varFn = var.fn;
-                    Stack<Expression> thisStack = new();
-                    thisStack.Push(this);
+                    Stack<Expression> thisStack = new(new[] { this });
                     while (thisStack.Count > 0) {
                         Expression target = thisStack.Pop();
                         if (target.fn.Equals(varFn)) {
@@ -836,7 +829,8 @@ namespace BoGLWeb {
             /// value.</param>
             /// <param name="used">A HashSet that stores all variables that have been used
             /// in a substitution.</param>
-            public void SubstituteAllVariables(Dictionary<string, Expression> vars, HashSet<string> used) {
+            public HashSet<string> SubstituteAllVariables(Dictionary<string, Expression> vars) {
+                HashSet<string> used = new();
                 Stack<Expression> nextTermStack = new(new[] { this });
                 while (nextTermStack.Count > 0) {
                     Expression nextTerm = nextTermStack.Pop();
@@ -848,11 +842,12 @@ namespace BoGLWeb {
                         Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
                         if (substitution != null) {
                             used.Add(nextTerm.fn);
-                            nextTerm.AssignValues("(", new(new[] { substitution.Copy() }));
+                            nextTerm.AssignValues("(", new(new[] { substitution }));
                         }
                     }
                 }
                 Simplify(true);
+                return used;
             }
 
             /// <summary>
@@ -924,10 +919,7 @@ namespace BoGLWeb {
                     Expression fn = fnStack.Pop();
                     string indent = indentStack.Pop();
                     builder.Append(indent).Append(fn.fn);
-                    Stack<Expression> proxyStack = new();
-                    foreach (Expression child in fn.children) {
-                        proxyStack.Push(child);
-                    }
+                    Stack<Expression> proxyStack = new(fn.children);
                     string nextIndent = indent + '\t';
                     while (proxyStack.Count > 0) {
                         fnStack.Push(proxyStack.Pop());

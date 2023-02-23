@@ -690,8 +690,12 @@
 
         try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-            //if(GraphValidityHandler.IsInvalid(sysDiagram)) throw new ArgumentException("The dang thang broke !!!1!");
+            if(GraphValidityHandler.IsInvalid(sysDiagram)) {
+                throw new ArgumentException("System diagram is disconnected.");
+            }
+            Console.WriteLine("System diagram is connected.");
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+            stateEquationsStored = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
         } catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Generating Bond Graph";
@@ -739,7 +743,6 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        stateEquationsStored = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
