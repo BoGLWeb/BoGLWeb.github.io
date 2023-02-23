@@ -733,7 +733,7 @@
         generatingBondGraph = false;
         tabsDisabled = false;
         base.StateHasChanged();
-        await messageService.Success("Bond Graphs Successfully Generated!");
+        await messageService.Success("Bond Graphs Successfully Generated.");
     }
 
     /// <summary>
@@ -800,8 +800,11 @@
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
-            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-           return; 
+            errorVisible = true;
+            errorTitle = "Error Saving .bogl File";
+            errorMessage = "Your system diagram must contain at least one element to be able to save. Please add elements to the Canvas and try saving again.";
+            base.StateHasChanged();
+            return;
         }
         var fileName = "SystemDiagram.bogl";
 
