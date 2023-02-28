@@ -516,7 +516,7 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
     height: fit-content;
     position: absolute;
     right: 15px;
-    width: 120px
+    width: 138px
 }
 
 #modifierMenu > .ant-collapse {
@@ -679,7 +679,7 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    max-height: calc(100vh - 540px);
+    max-height: calc(100vh - 564px);
     min-height: 100px;
     height: 30vh;
 }
@@ -839,4 +839,11 @@ hr:not([size]) {
     right: 0;
     top: 0;
     width: 5px;
+}
+
+.settingButton {
+    background-color: transparent !important;
+    border: transparent !important;
+    box-shadow: none !important;
+    padding: 0 5px;
 }

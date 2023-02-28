@@ -171,13 +171,30 @@
                             <ChildContent>
                                 <Panel Header="Modifers" Key="1" Id="modifierPanel">
                                     <div id="modifierCheckboxWrapper">
-                                        <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                        <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                        <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                        <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                        <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                        <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                        <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                        @{
+                                            RenderFragment settingsIcon = @<Button Class="settingButton" Size="small"><Icon Type="setting" Theme="fill" Style="color: #5A5A5A"/></Button>;
+                                        }
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">
+                                            <div style="display: flex; align-items: center;">@("Mass")@if (checkValues[0]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">
+                                            <div style="display: flex; align-items: center;">@("Inertia")@if (checkValues[1]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">
+                                            <div style="display: flex; align-items: center;">@("Stiffness")@if (checkValues[2]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">
+                                            <div style="display: flex; align-items: center;">@("Friction")@if (checkValues[3]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">
+                                            <div style="display: flex; align-items: center;">@("Damping")@if (checkValues[4]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">
+                                            <div style="display: flex; align-items: center;">@("Parallel")@if (checkValues[5]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">
+                                            <div style="display: flex; align-items: center;">@("Tooth Wear")@if (checkValues[6]) { @settingsIcon }</div>
+                                        </Checkbox>
                                     </div>
                                     <hr/>
                                     <div>
@@ -189,28 +206,28 @@
                                                     <br/>Velocity
                                                 </Button>
                                             </div>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 26px">
                                                 <div class="arrowButton topArrow">⮢</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 26px">
                                                 <div class="arrowButton topArrow">⮣</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: 1px">
                                                 <div class="arrowButton sideTopArrow">⮥</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: 1px">
                                                 <div class="arrowButton">⮧</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 12px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 21px">
                                                 <div class="arrowButton bottomArrow">⮡</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 22px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 21px">
                                                 <div class="arrowButton bottomArrow">⮠</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: 1px">
                                                 <div class="arrowButton">⮦</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: 1px">
                                                 <div class="arrowButton sideTopArrow">⮤</div>
                                             </Button>
                                         </div>
@@ -288,14 +305,25 @@
         <Input DefaultValue="@url" TValue="string" ReadOnly />
     <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
 </Modal>
-    <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
-        @if (stateEquationsStored.Length > 0) {
-            <TextArea Rows="@(Convert.ToUInt32(stateEquationsStored.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquationsStored))" TValue="string" ReadOnly />
-            <Button @onclick="copyStateEquations"><Icon Type="link" Theme="outline" /> Copy State Equations</Button>
-        } else {
-            <p>Generate a bond graph to see its state equations here.</p>
-        }
-    </Modal>
+    @{
+        RenderFragment footer = @<Template>
+            <Button OnClick="@closeLabelValue" Type="primary">Save</Button>
+            <Button OnClick="@closeLabelValue">Cancel</Button>
+            </Template>
+        ;
+        List<string> unitsList = new List<string> { "kg", "gram", "slug" };
+    }
+<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Label: </div>
+        <Input Style="width: 400px" Placeholder="Label" required="true" DefaultValue="@("M1")" Type="text" />
+    </div><br/>
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Mass: </div>
+        <Input Style="width: 270px; margin-right: 10px;" Placeholder="Value" required="true" DefaultValue="@(4)" Type="number" />
+        <Select DataSource="@unitsList" DefaultValue="@("kg")" Style="width:120px"/>
+    </div>
+</Modal>
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
@@ -892,7 +920,7 @@
     }
 
     bool urlModalVisible = false;
-    bool stateEquationModalVisible = false;
+    bool labelValueModalVisible = false;
     string url = "";
     string[] stateEquationsStored = new string[] { };
 
@@ -902,8 +930,8 @@
         base.StateHasChanged();
     }
 
-    private void closeStateEquations() {
-        stateEquationModalVisible = false;
+    private void closeLabelValue() {
+        labelValueModalVisible = false;
         base.StateHasChanged();
     }
 
@@ -912,7 +940,7 @@
         Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).ToString());
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        stateEquationModalVisible = true;
+        labelValueModalVisible = true;
         base.StateHasChanged();
     }
 
