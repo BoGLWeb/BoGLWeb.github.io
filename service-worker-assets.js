@@ -189,6 +189,10 @@
       "url": "images\/elements\/damper.svg"
     },
     {
+      "hash": "sha256-5qSoKT\/PNF43r+hZF0cc9srJBA\/Ev3Rd7hB2yT8YfQc=",
+      "url": "images\/elements\/elec_ground.svg"
+    },
+    {
       "hash": "sha256-d8TWFSDie7ha2m40ZTOn8nl\/Zc2Y8h1PDe9O4\/eCsRk=",
       "url": "images\/elements\/flywheel.svg"
     },
@@ -209,10 +213,6 @@
       "url": "images\/elements\/gravity.svg"
     },
     {
-      "hash": "sha256-5qSoKT\/PNF43r+hZF0cc9srJBA\/Ev3Rd7hB2yT8YfQc=",
-      "url": "images\/elements\/ground.svg"
-    },
-    {
       "hash": "sha256-5SwMXhbMPJ6rD\/hdzgb9ZwLlbjsutWWoBuEYSgSDz\/Q=",
       "url": "images\/elements\/inductor.svg"
     },
@@ -231,6 +231,10 @@
     {
       "hash": "sha256-XUKVyjC6LBLOlQ8q5g\/47fHHHuDJPJT\/5t+FMSy4uiM=",
       "url": "images\/elements\/mass.svg"
+    },
+    {
+      "hash": "sha256-YqLebNlSU6TbMwMZxrCoenUmLD9aUQvgu1xjmB5x3a0=",
+      "url": "images\/elements\/mech_ground.svg"
     },
     {
       "hash": "sha256-7Vwo89J\/0hEWEAEq7PqOuY7Ay0i4omH2SlhGwzpicpY=",
@@ -345,7 +349,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-Oaklk9yOs7QKR72XfvQ+gS\/ZA6lltUXABM3liRzEaps=",
+      "hash": "sha256-SwhwIOeBnC6NGDsidPK4Qwklu4u4755Ek4DqfVMRdHg=",
       "url": "manifest.json"
     },
     {
@@ -5621,5 +5625,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "dnk3T6cS"
+  "version": "LsHCVq+9"
 };
