@@ -59,8 +59,6 @@ async function loadPage() {
         window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
     }
 
-    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
-
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
         window.systemDiagram.draggingElement = null;
@@ -104,6 +102,8 @@ async function loadPage() {
     window.onbeforeunload = function (e) {
         return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
     };
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
 }
 
 var menuIdMap = {
