@@ -245,8 +245,7 @@ namespace BoGLWeb {
         //Parsing
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
-            string errorMessage =
-                "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
+            string errorMessage = "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -867,8 +866,8 @@ namespace BoGLWeb {
                 JArray? modifiers = obj.Value<JArray>("modifiers");
                 this.modifiers = new();
                 if (modifiers != null) {
-                    foreach (JObject mod in modifiers) {
-                        this.modifiers.Add(mod.Value<int>());
+                    foreach (int mod in modifiers) {
+                        this.modifiers.Add(mod);
                     }
                 }
                 typeIDDictReverse.TryGetValue(this.type, out string? name);

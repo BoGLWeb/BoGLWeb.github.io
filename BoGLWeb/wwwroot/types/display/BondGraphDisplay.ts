@@ -98,12 +98,6 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         return coords;
     }
 
-    drawPath(d: GraphBond) {
-        let sourceEnd = this.getEdgePosition(d.source, d.target);
-        let targetEnd = this.getEdgePosition(d.target, d.source);
-        return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
-    }
-
     renderElements(newElements: GraphElementSelection) {
         let graph = this;
         newElements.classed("boglElem", true)

@@ -733,7 +733,7 @@
         generatingBondGraph = false;
         tabsDisabled = false;
         base.StateHasChanged();
-        await messageService.Success("Bond Graphs Successfully Generated!");
+        await messageService.Success("Bond Graphs Successfully Generated.");
     }
 
     /// <summary>
@@ -800,8 +800,11 @@
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
-            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-           return; 
+            errorVisible = true;
+            errorTitle = "Error Saving .bogl File";
+            errorMessage = "Your system diagram must contain at least one element to be able to save. Please add elements to the Canvas and try saving again.";
+            base.StateHasChanged();
+            return;
         }
         var fileName = "SystemDiagram.bogl";
 
@@ -911,6 +914,9 @@
         Regex urlShort6 = new Regex("},{{");
         Regex urlShort7 = new Regex("},");
         Regex urlShort8 = new Regex(",");
+        Regex urlShort9 = new Regex("hdh");
+        Regex urlShort10 = new Regex("h\\[");
+        Regex urlShort11 = new Regex("\\]h");
 
         jsonStr = urlShort4.Replace(jsonStr, "a");
         jsonStr = urlShort6.Replace(jsonStr, "b");
@@ -920,6 +926,9 @@
         jsonStr = urlShort1.Replace(jsonStr, "f");
         jsonStr = urlShort7.Replace(jsonStr, "g");
         jsonStr = urlShort8.Replace(jsonStr, "h");
+        jsonStr = urlShort9.Replace(jsonStr, "i");
+        jsonStr = urlShort10.Replace(jsonStr, "j");
+        jsonStr = urlShort11.Replace(jsonStr, "k");
 
 
     //Add url to modal
@@ -939,7 +948,13 @@
         Regex urlShort6 = new Regex("b");
         Regex urlShort7 = new Regex("g");
         Regex urlShort8 = new Regex("h");
+        Regex urlShort9 = new Regex("i");
+        Regex urlShort10 = new Regex("j");
+        Regex urlShort11 = new Regex("k");
 
+        compressedUrl = urlShort9.Replace(compressedUrl, "hdh");
+        compressedUrl = urlShort10.Replace(compressedUrl, "h[");
+        compressedUrl = urlShort11.Replace(compressedUrl, "]h");
         compressedUrl = urlShort1.Replace(compressedUrl, "{[{");
         compressedUrl = urlShort2.Replace(compressedUrl, "[]");
         compressedUrl = urlShort3.Replace(compressedUrl, "},{");
@@ -1001,7 +1016,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
     }
