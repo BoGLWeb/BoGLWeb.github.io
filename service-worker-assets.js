@@ -345,7 +345,7 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-Nc7Gvfcuy+vFXVne2tyvDA9w8dS2N3mL+Ic6bqmfljs=",
+      "hash": "sha256-Bb2G+EqP1hNFP1OZtLwNfKGUH8aSsVLcWelmG9nDg9E=",
       "url": "index.html"
     },
     {
@@ -3397,7 +3397,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-gFYOUtJdeQH00kPdMd8ip0wCT66JISDxXMexkWRjmTQ=",
+      "hash": "sha256-LgQSwHediCHtF7\/mGquslrEilVTtcj0y2orXkKKFayw=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3405,7 +3405,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-B9UmZObpgOzSb6DpUg1BZ7ig0OsmQjHntPEb2mKfxUI=",
+      "hash": "sha256-hvVqiqnjukrptuo0ahuP4ncwHdBEJle7llRLUMsdqeQ=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5625,5 +5625,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "LsHCVq+9"
+  "version": "X6b0PNGk"
 };

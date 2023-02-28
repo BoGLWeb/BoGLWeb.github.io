@@ -2006,7 +2006,6 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                 backendManager_2.backendManager.getBackendManager().zoomCenterGraph("1");
                 window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
             }
-            document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => e.focus()));
             document.addEventListener("mouseup", function () {
                 document.body.style.cursor = "auto";
                 window.systemDiagram.draggingElement = null;
@@ -2043,6 +2042,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             window.onbeforeunload = function (e) {
                 return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
             };
+            document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => e.focus()));
         });
     }
     var menuIdMap = {
