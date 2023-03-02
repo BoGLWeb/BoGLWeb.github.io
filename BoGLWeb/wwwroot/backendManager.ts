@@ -128,11 +128,7 @@ export namespace backendManager {
         }
 
         public async openFile() {
-            let fileHandle;
-            [fileHandle] = await window.showOpenFilePicker();
-            const file = await fileHandle.getFile();
-            const contents = await file.text();
-            return contents;
+            await this.openFileCompatible();
         }
 
         public getTabNum(): number {
@@ -149,6 +145,20 @@ export namespace backendManager {
             a.click();
             window.URL.revokeObjectURL(urlToBlob);
             a.remove();
+        }
+
+        public async openFileCompatible() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = async _ => {
+                let files = Array.from(input.files);
+                let text = await files[0].text();
+                let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+                if (systemDiagramText != null) {
+                    this.loadSystemDiagram(systemDiagramText);
+                }
+            };
+            input.click();
         }
 
         public async saveAsFile(fileName: string, contentStreamReference: any) {
