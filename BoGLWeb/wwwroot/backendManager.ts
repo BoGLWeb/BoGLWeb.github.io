@@ -150,6 +150,7 @@ export namespace backendManager {
         public async openFileCompatible() {
             let input = document.createElement('input');
             input.type = 'file';
+            input.accept = ".bogl";
             input.onchange = async _ => {
                 let files = Array.from(input.files);
                 let text = await files[0].text();
