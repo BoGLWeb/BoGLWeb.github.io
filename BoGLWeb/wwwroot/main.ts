@@ -35,20 +35,6 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
-    if (!document.fonts.check("12px Segoe UI")) {
-        let elements = document.getElementsByClassName('topMenu');
-        for (let i = 0; i < elements.length; i++) {
-            elements.item(i).classList.add("segoeUIBold");
-        }
-
-        elements = document.getElementsByClassName('sliderLabel');
-        for (let i = 0; i < elements.length; i++) {
-            elements.item(i).classList.add("segoeUIBold");
-        }
-
-        document.getElementsByTagName("html").item(0).classList.add("segoeUI");
-        document.getElementsByTagName("body").item(0).classList.add("segoeUI");
-    }
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 
@@ -72,8 +58,6 @@ async function loadPage() {
         backendManager.getBackendManager().zoomCenterGraph("1");
         window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
     }
-
-    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
 
     document.addEventListener("mouseup", function () {
         document.body.style.cursor = "auto";
@@ -118,6 +102,8 @@ async function loadPage() {
     window.onbeforeunload = function (e) {
         return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
     };
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
 }
 
 var menuIdMap = {

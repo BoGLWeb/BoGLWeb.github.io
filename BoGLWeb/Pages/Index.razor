@@ -264,8 +264,10 @@
     </div>
 </Modal>
 <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
-    <Input DefaultValue="@url" TValue="string" ReadOnly/>
-    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+    <div style="display: flex">
+        <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
+        <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
+    </div>
 </Modal>
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
