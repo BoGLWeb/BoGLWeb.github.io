@@ -1534,15 +1534,38 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
             }
             openFile() {
                 return __awaiter(this, void 0, void 0, function* () {
-                    let fileHandle;
-                    [fileHandle] = yield window.showOpenFilePicker();
-                    const file = yield fileHandle.getFile();
-                    const contents = yield file.text();
-                    return contents;
+                    yield this.openFileCompatible();
                 });
             }
             getTabNum() {
                 return parseInt(window.tabNum);
+            }
+            saveFileNoPicker(fileName, blob) {
+                const urlToBlob = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.setProperty('display', 'none');
+                document.body.appendChild(a);
+                a.href = urlToBlob;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(urlToBlob);
+                a.remove();
+            }
+            openFileCompatible() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = ".bogl";
+                    input.onchange = (_) => __awaiter(this, void 0, void 0, function* () {
+                        let files = Array.from(input.files);
+                        let text = yield files[0].text();
+                        let systemDiagramText = yield DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+                        if (systemDiagramText != null) {
+                            this.loadSystemDiagram(systemDiagramText);
+                        }
+                    });
+                    input.click();
+                });
             }
             saveAsFile(fileName, contentStreamReference) {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -1559,11 +1582,16 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                             },
                         ],
                     };
-                    const fileHandle = yield window.showSaveFilePicker(pickerOptions);
-                    window.filePath = fileHandle;
-                    const writableFileStream = yield fileHandle.createWritable();
-                    yield writableFileStream.write(blob);
-                    yield writableFileStream.close();
+                    if (window.showSaveFilePicker) {
+                        const fileHandle = yield window.showSaveFilePicker(pickerOptions);
+                        window.filePath = fileHandle;
+                        const writableFileStream = yield fileHandle.createWritable();
+                        yield writableFileStream.write(blob);
+                        yield writableFileStream.close();
+                    }
+                    else {
+                        this.saveFileNoPicker("systemDiagram.bogl", blob);
+                    }
                 });
             }
             saveFile(fileName, contentStreamReference) {
@@ -1582,11 +1610,16 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         ],
                     };
                     if (window.filePath == null) {
-                        window.filePath = yield window.showSaveFilePicker(pickerOptions);
+                        if (window.showSaveFilePicker) {
+                            window.filePath = yield window.showSaveFilePicker(pickerOptions);
+                            const writableFileStream = yield window.filePath.createWritable();
+                            yield writableFileStream.write(blob);
+                            yield writableFileStream.close();
+                        }
+                        else {
+                            this.saveFileNoPicker("systemDiagram.bogl", blob);
+                        }
                     }
-                    const writableFileStream = yield window.filePath.createWritable();
-                    yield writableFileStream.write(blob);
-                    yield writableFileStream.close();
                 });
             }
             cut() {
@@ -1976,6 +2009,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                 image.src = "images/elements/" + e.image + ".svg";
                 image.draggable = false;
                 image.classList.add("elemImage");
+                image.title = e.name;
                 box.appendChild(image);
             });
         });
