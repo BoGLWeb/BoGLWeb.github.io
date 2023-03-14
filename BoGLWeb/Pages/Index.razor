@@ -263,7 +263,10 @@
         <p>@errorMessage</p>
     </div>
 </Modal>
-<Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
+    @{
+        RenderFragment footer = @<Button OnClick="@handleUrlOk">Close</Button>;
+    }
+<Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible">
     <div style="display: flex">
         <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
