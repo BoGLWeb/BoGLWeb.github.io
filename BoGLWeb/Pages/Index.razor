@@ -755,32 +755,34 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
-    private string errorMessage = "";
-    private string errorTitle = "";
+    private static string errorMessage = "";
+    private static string errorTitle = "";
 
     //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        object file;
         try {
-            file = await module.InvokeAsync<object>("openFile");
+            await module.InvokeAsync<object>("openFile");
         } catch (Exception e) {
             return;
         }
+    }
+
+    [JSInvokable]
+    public static string openSystemDiagram(string file) {
         SystemDiagram sysDiagram;
         try {
-            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file);
+            return sysDiagram.convertToJson();
         }
         catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
-            base.StateHasChanged();
-            return;
+            app.StateHasChanged();
+            return null;
         }
-
-        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     //Turns a string into a Stream
@@ -853,7 +855,7 @@
         base.StateHasChanged();
     }
 
-    bool errorVisible = false;
+    static bool errorVisible = false;
 
     //Handles the ok button on the error modal
     private void handleErrorOk() {

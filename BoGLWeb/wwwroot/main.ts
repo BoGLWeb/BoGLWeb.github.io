@@ -27,6 +27,7 @@ export function populateMenu() {
             image.src = "images/elements/" + e.image + ".svg";
             image.draggable = false;
             image.classList.add("elemImage");
+            image.title = e.name;
             box.appendChild(image);
         });
     });
