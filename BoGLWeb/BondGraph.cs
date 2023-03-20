@@ -338,6 +338,9 @@ namespace BoGLWeb {
                     return this.label[0];
                 }
                 char ch = this.label[length - 1];
+                if (ch == '1' | label.Contains("TF")) {
+                    return 'T';
+                }
                 return ch == ':' ? this.label[length - 2] : ch;
             }
 

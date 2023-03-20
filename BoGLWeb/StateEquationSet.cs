@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -31,7 +32,7 @@ namespace BoGLWeb {
                         }
                     }
                     Console.WriteLine(prevUsedQuantity);
-                } while (prevUsedQuantity != usedSet.Count);
+                } while (prevUsedQuantity < usedSet.Count);
                 foreach (string key in usedSet) {
                     substitutionDictionary.Remove(key);
                 }
@@ -207,6 +208,15 @@ namespace BoGLWeb {
                                             loneChild.stateEquation = new(loneChild.GenerateVariableName());
                                         }
                                         break;
+                                    case 'T':
+                                        Expression expr = new("T" + packager.element.GetID());
+                                        if (isEffort == isSource) {
+                                            packager.stateEquation = loneChild.stateEquation.Multiply(expr);
+                                        } else {
+                                            packager.stateEquation = loneChild.stateEquation.Divide(expr);
+                                        }
+                                        loneChild.stateEquation = new(loneChild.GenerateVariableName());
+                                        break;
                                     default:
                                         packager.stateEquation = loneChild.stateEquation;
                                         loneChild.stateEquation = new(loneChild.GenerateVariableName());
@@ -266,7 +276,7 @@ namespace BoGLWeb {
                             subs.Add("E" + ID, new Expression("Q" + ID + "/C" + ID));
                             break;
                         case 'I':
-                            subs.Add("F" + ID, new Expression("P" + ID + "/M" + ID));
+                            subs.Add("F" + ID, new Expression("P" + ID + "/I" + ID));
                             break;
                         case 'R':
                             subs.Add("E" + ID, new Expression("R" + ID + "*F" + ID));
