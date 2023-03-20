@@ -412,6 +412,17 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Simplifies by printing, substituting, and re-parsing the entire equation.
+            /// Is computationally onsiderably slower than general simplification, but
+            /// can consider extra cases not covered by regular simplification (e.g.
+            /// eliminating instances of "+-").
+            /// </summary>
+            public void SimplifyRawText() {
+                Expression expr = new(ToString().Replace("+-", "-"));
+                AssignValues(expr.fn, expr.children);
+            }
+
+            /// <summary>
             /// Assigns specific fields to this <c>Expression</c>.
             /// </summary>
             /// <param name="fn">
