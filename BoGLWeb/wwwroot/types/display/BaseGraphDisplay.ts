@@ -58,6 +58,8 @@ export class BaseGraphDisplay {
     dragXOffset: number = 0;
     dragYOffset: number = 0;
     startedSelectionDrag: boolean = false;
+    initWidth: number = 0;
+    initHeight: number = 0;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];

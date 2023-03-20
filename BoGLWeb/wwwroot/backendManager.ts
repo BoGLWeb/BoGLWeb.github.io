@@ -1,6 +1,7 @@
 ﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
 import { GraphBondID } from "./types/bonds/GraphBondID";
+import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
@@ -106,6 +107,9 @@ export namespace backendManager {
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
             this.zoomCenterGraph("1");
+            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            systemDiagram.initWidth = bounds.width;
+            systemDiagram.initHeight = bounds.height;
         }
 
         public async exportAsImage() {
@@ -114,7 +118,7 @@ export namespace backendManager {
                 await this.convertImages("image.hoverImg");
             }
             let copy = svg.node().cloneNode(true);
-            this.applyInlineStyles(svg, d3.select(copy));
+            this.applyInlineStyles(svg, d3.select(copy), this.getGraphByIndex(window.tabNum));
             this.svgToCanvas(svg, copy as SVGElement);
         }
 
@@ -137,7 +141,6 @@ export namespace backendManager {
             canvas.height = h;
             img.onload = () => {
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-                let image = canvas.toDataURL();
                 canvas.toBlob(blob => {
                     let pickerOptions = {
                         suggestedName: "systemDiagram.png",
@@ -167,7 +170,7 @@ export namespace backendManager {
             };
         }
 
-        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection) {
+        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
             svg.selectAll(".link")
                 .style("fill", "none")
                 .style("stroke", "black")
@@ -189,7 +192,9 @@ export namespace backendManager {
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             svg.select("g")
-                .attr("transform", "translate(" + ((bounds.width / scale) / 2) + ", " + ((bounds.height / scale) / 2) + ") scale(1)");
+                .attr("transform", "translate(" + ((graph.initWidth / scale) / 2) + ", " + ((graph.initHeight / scale) / 2) + ") scale(1)");
+            console.log((bounds.width / scale) / 2, (bounds.height / scale) / 2, graph.initXPos, graph.initYPos, graph.svgX, graph.svgY);
+/*                .attr("transform", "translate(" + ((bounds.width / scale) / 2) + ", " + ((bounds.height / scale) / 2) + ") scale(1)");*/
         }
 
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
