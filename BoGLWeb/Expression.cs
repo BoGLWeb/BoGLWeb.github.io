@@ -338,12 +338,14 @@ namespace BoGLWeb {
                                             String grandchildFn = grandchild.fn;
                                             if (GetOperatorObject(grandchildFn[0]) == FunctionOperator.MULTIPLICATION) {
                                                 mChildren.AddRange(grandchild.children);
+                                            } else if ("+-".Contains(grandchildFn)) { // Remake 'if' statement
+                                                mChildren.Add(child);
                                             } else {
                                                 mChildren.Add(grandchild);
                                             }
                                             break;
                                         case FunctionOperator.ONE: 
-                                            break; // does nothing
+                                            break; // does nothing - should escape default
                                         case FunctionOperator.ZERO: 
                                             isZero = true;
                                             break; // whole expression becomes zero
