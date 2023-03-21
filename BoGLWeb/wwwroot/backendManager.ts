@@ -190,11 +190,23 @@ export namespace backendManager {
             svg.select(".bondGraphText")
                 .style("font-size", "14px");
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            for (let e of graph.elements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+            }
+
+            console.log((maxX - minX) / 2 - maxX, (maxY - minY) / 2 - maxY);
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             svg.select("g")
-                .attr("transform", "translate(" + ((graph.initWidth / scale) / 2) + ", " + ((graph.initHeight / scale) / 2) + ") scale(1)");
+                .attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX) + ", " + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY) + ") scale(1)");
+            /*                .attr("transform", "translate(" + ((graph.initWidth / scale) / 2) + ", " + ((graph.initHeight / scale) / 2) + ") scale(1)");*/
             console.log((bounds.width / scale) / 2, (bounds.height / scale) / 2, graph.initXPos, graph.initYPos, graph.svgX, graph.svgY);
-/*                .attr("transform", "translate(" + ((bounds.width / scale) / 2) + ", " + ((bounds.height / scale) / 2) + ") scale(1)");*/
         }
 
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
