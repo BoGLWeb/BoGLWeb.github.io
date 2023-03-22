@@ -2,7 +2,7 @@
   "name": "BoGLWeb",
   "short_name": "BoGLWeb",
   "manifest_version": 3,
-  "version": "1.2",
+  "version": "1.5",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

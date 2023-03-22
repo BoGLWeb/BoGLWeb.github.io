@@ -264,8 +264,10 @@
     </div>
 </Modal>
 <Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
-    <Input DefaultValue="@url" TValue="string" ReadOnly/>
-    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+    <div style="display: flex">
+        <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
+        <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
+    </div>
 </Modal>
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
@@ -739,7 +741,7 @@
         generatingBondGraph = false;
         tabsDisabled = false;
         base.StateHasChanged();
-        await messageService.Success("Bond Graphs Successfully Generated!");
+        await messageService.Success("Bond Graphs Successfully Generated.");
     }
 
     /// <summary>
@@ -759,32 +761,34 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
-    private string errorMessage = "";
-    private string errorTitle = "";
+    private static string errorMessage = "";
+    private static string errorTitle = "";
 
     //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        object file;
         try {
-            file = await module.InvokeAsync<object>("openFile");
+            await module.InvokeAsync<object>("openFile");
         } catch (Exception e) {
             return;
         }
+    }
+
+    [JSInvokable]
+    public static string openSystemDiagram(string file) {
         SystemDiagram sysDiagram;
         try {
-            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file);
+            return sysDiagram.convertToJson();
         }
         catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
-            base.StateHasChanged();
-            return;
+            app.StateHasChanged();
+            return null;
         }
-
-        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     //Turns a string into a Stream
@@ -806,8 +810,11 @@
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
-            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-           return; 
+            errorVisible = true;
+            errorTitle = "Error Saving .bogl File";
+            errorMessage = "Your system diagram must contain at least one element to be able to save. Please add elements to the Canvas and try saving again.";
+            base.StateHasChanged();
+            return;
         }
         var fileName = "SystemDiagram.bogl";
 
@@ -854,7 +861,7 @@
         base.StateHasChanged();
     }
 
-    bool errorVisible = false;
+    static bool errorVisible = false;
 
     //Handles the ok button on the error modal
     private void handleErrorOk() {

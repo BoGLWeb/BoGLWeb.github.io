@@ -13,12 +13,8 @@
     src: url(Symbola.ttf);
 }
 
-html.segoeUI, body.segoeUI {
+html, body {
     font-family: "SegoeUI" !important
-}
-
-html:not(.segoeUI), body:not(.segoeUI) {
-    font-family: "Segoe UI" !important
 }
 
 h1:focus {
@@ -330,8 +326,8 @@ path.link.hidden {
     opacity: 40% !important
 }
 
-.topMenu:not(.segoeUIBold) {
-    font-weight: 700;
+.topMenu {
+    font-family: "SegoeUIBold" !important
 }
 
 circle {
@@ -466,8 +462,8 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 
 #modifierMenu {
     height: fit-content;
-    position: absolute;
-    right: 15px;
+    position: fixed;
+    margin-left: calc(100% - 378px);
     width: 120px
 }
 
@@ -641,13 +637,10 @@ hr:not([size]) {
     border: solid 1px #d6d6d6
 }
 
-.segoeUIBold {
-    font-family: "SegoeUIBold" !important
-}
-
 .sliderLabel {
     color: #a9a9a9;
     font-size: 15px;
+    font-family: "SegoeUIBold" !important
 }
 
 .sliderLabel:not(.segoeUIBold) {

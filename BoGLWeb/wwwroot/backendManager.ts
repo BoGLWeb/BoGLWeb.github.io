@@ -264,15 +264,38 @@ export namespace backendManager {
         }
 
         public async openFile() {
-            let fileHandle;
-            [fileHandle] = await window.showOpenFilePicker();
-            const file = await fileHandle.getFile();
-            const contents = await file.text();
-            return contents;
+            await this.openFileCompatible();
         }
 
         public getTabNum(): number {
             return parseInt(window.tabNum);
+        }
+
+        public saveFileNoPicker(fileName, blob) {
+            const urlToBlob = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.setProperty('display', 'none');
+            document.body.appendChild(a);
+            a.href = urlToBlob;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(urlToBlob);
+            a.remove();
+        }
+
+        public async openFileCompatible() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = ".bogl";
+            input.onchange = async _ => {
+                let files = Array.from(input.files);
+                let text = await files[0].text();
+                let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+                if (systemDiagramText != null) {
+                    this.loadSystemDiagram(systemDiagramText);
+                }
+            };
+            input.click();
         }
 
         public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
@@ -319,12 +342,15 @@ export namespace backendManager {
             };
 
             if (window.filePath == null) {
-                window.filePath = await window.showSaveFilePicker(pickerOptions);
+                if (window.showSaveFilePicker) {
+                    window.filePath = await window.showSaveFilePicker(pickerOptions);
+                    const writableFileStream = await window.filePath.createWritable();
+                    await writableFileStream.write(blob);
+                    await writableFileStream.close();
+                } else {
+                    this.saveFileNoPicker("systemDiagram.bogl", blob);
+                }
             }
-
-            const writableFileStream = await window.filePath.createWritable();
-            await writableFileStream.write(blob);
-            await writableFileStream.close();
         }
 
         public cut() {

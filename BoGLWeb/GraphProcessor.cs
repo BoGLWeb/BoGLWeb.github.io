@@ -89,8 +89,9 @@ namespace BoGLWeb {
 
             if (!noGood) {
                 //TODO Find a better way to display this error message
-                Console.WriteLine("Velocity directions are an issue. If this continues, please delete velocity directions and try again. Thanks!");
-                throw new ArgumentException("Velocity directions are an issue. If this continues, please delete velocity directions and try again. Thanks!");
+                const string message = "There was an issue with the velocity directions in your System Diagram. Please correct them and select generate again.";
+                Console.WriteLine(message);
+                throw new ArgumentException(message);
             } else {
                 this.bondgraphBeforeSimplification();
                 this.bondgraphSimplified();
@@ -266,8 +267,9 @@ namespace BoGLWeb {
 
             //now from the list of finalgraph, eliminate duplicate solutions
             if (this.indiceswithoutINVD.Count == 0) {
-                Console.WriteLine("Sorry, we have encountered an error with respect to Causality assignment");
-                throw new ArgumentException("Sorry, we have encountered an error with respect to Causality assignment");
+                const string message = "An error has occurred with respect to Causality assignment. Please check that your System Diagram is correct and then select generate again.";
+                Console.WriteLine(message);
+                throw new ArgumentException(message);
             }
             //need to add exception here if the program is unable to added 
             else {
