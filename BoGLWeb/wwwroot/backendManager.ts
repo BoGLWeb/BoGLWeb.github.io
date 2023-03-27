@@ -216,7 +216,8 @@ export namespace backendManager {
             svg.selectAll(".boglElem")
                 .style("fill", "transparent");
             svg.selectAll(".outline")
-                .style("stroke", "black");
+                .style("stroke", "black")
+                .style("fill", "white");
             svg.selectAll("text")
                 .style("fill", "black")
                 .style("font-size", "30px")
