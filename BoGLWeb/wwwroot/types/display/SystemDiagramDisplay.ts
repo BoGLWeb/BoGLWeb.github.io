@@ -29,7 +29,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
-    copiedBonds: GraphBond[] = [];
+    copiedEdges: GraphBond[] = [];
     ctrlPressed: boolean = false;
     elements: SystemDiagramElement[];
 
@@ -482,7 +482,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     copySelection() {
         this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
-        this.copiedBonds = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
+        this.copiedEdges = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
             .map(b => b.copy(this.copiedElements[this.selectedElements.findIndex(a => a.id == b.source.id)], this.copiedElements[this.selectedElements.findIndex(a => a.id == b.target.id)]));
         DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
     }
@@ -523,10 +523,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let selectedElements = this.selectedElements;
         let selectedBonds = this.selectedBonds;
         this.elements = this.elements.concat(this.copiedElements);
-        this.bonds = this.bonds.concat(this.copiedBonds);
-        this.setSelection(this.copiedElements, this.copiedBonds);
+        this.bonds = this.bonds.concat(this.copiedEdges);
+        this.setSelection(this.copiedElements, this.copiedEdges);
         this.updateGraph();
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedEdges).map(e => JSON.stringify(e)),
             ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
         this.copySelection();
         this.updateMenus();
