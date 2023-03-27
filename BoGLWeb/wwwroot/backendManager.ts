@@ -229,7 +229,7 @@ export namespace backendManager {
                 .style("font-size", "14px")
                 .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
             oldSVG.select(".dragline").remove();
-            if ((oldSVG.select("#bondGroup").node() as HTMLElement).children.length == 0) {
+            if (graph.bonds.length == 0) {
                 oldSVG.select("#bondGroup").remove();
             }
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
