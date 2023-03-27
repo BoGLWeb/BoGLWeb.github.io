@@ -178,9 +178,10 @@ export namespace backendManager {
             canvas.height = h;
             img.onload = () => {
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
                 canvas.toBlob(blob => {
                     let pickerOptions = {
-                        suggestedName: "systemDiagram.png",
+                        suggestedName: filenames[this.getTabNum() - 1],
                         types: [
                             {
                                 description: 'PNG File',
@@ -355,7 +356,7 @@ export namespace backendManager {
                 await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
                 await writableFileStream.close();
             } else {
-                this.saveFileNoPicker("systemDiagram.png", blob);
+                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
             }
         }
 
