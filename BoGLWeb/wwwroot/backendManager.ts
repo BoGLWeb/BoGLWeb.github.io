@@ -173,12 +173,10 @@ export namespace backendManager {
 
             var canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
-            img.onerror = () => alert("Error");
 
             canvas.width = w;
             canvas.height = h;
             img.onload = () => {
-                console.log("Image loaded");
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
                 canvas.toBlob(blob => {
                     let pickerOptions = {
@@ -228,7 +226,7 @@ export namespace backendManager {
                 .style("display", "none");
             svg.selectAll(".bondGraphText")
                 .style("font-size", "14px")
-                .style("font-family", "Segoe UI");
+                .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
             oldSVG.select(".dragline").remove();
             if ((oldSVG.select("#bondGroup").node() as HTMLElement).children.length == 0) {
                 oldSVG.select("#bondGroup").remove();
