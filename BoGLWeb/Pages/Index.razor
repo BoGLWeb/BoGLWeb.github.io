@@ -26,7 +26,7 @@
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
         <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-        <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
+        <MenuItem Key="setting:5" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
         <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
@@ -487,6 +487,12 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elIDs, edgeIDs, velID, prevVelVals, isUndo);
         app?.StateHasChanged();
+    }
+
+    public async void exportAsImage() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("exportAsImage");
+        await module.InvokeVoidAsync("closeMenu", "File");
     }
 
     [JSInvokable]

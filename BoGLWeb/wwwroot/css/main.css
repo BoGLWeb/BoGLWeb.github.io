@@ -5,6 +5,7 @@
 
 @font-face {
     font-family: SegoeUIBold;
+    font-style: normal !important;
     src: url(SegoeUIBold.woff);
 }
 
@@ -14,7 +15,8 @@
 }
 
 html, body {
-    font-family: "SegoeUI" !important
+    font-family: unset;
+    font: normal 14px "Segoe UI", "SegoeUI" !important;
 }
 
 h1:focus {
@@ -327,7 +329,7 @@ path.link.hidden {
 }
 
 .topMenu {
-    font-family: "SegoeUIBold" !important
+    font: bold 14px "Segoe UI", "SegoeUIBold" !important;
 }
 
 circle {
@@ -640,7 +642,7 @@ hr:not([size]) {
 .sliderLabel {
     color: #a9a9a9;
     font-size: 15px;
-    font-family: "SegoeUIBold" !important
+    font: bold 14px "Segoe UI", "SegoeUIBold" !important;
 }
 
 .sliderLabel:not(.segoeUIBold) {

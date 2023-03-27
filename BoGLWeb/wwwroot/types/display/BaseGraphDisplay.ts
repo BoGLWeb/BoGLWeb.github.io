@@ -58,6 +58,8 @@ export class BaseGraphDisplay {
     dragXOffset: number = 0;
     dragYOffset: number = 0;
     startedSelectionDrag: boolean = false;
+    initWidth: number = 0;
+    initHeight: number = 0;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
@@ -75,7 +77,9 @@ export class BaseGraphDisplay {
             .attr("d", "M0,0L0,0");
 
         // svg elements and bonds
-        this.bondSelection = svgG.append("g").selectAll("g");
+        let bondElements = svgG.append("g");
+        bondElements.attr("id", "bondGroup");
+        this.bondSelection = bondElements.selectAll("g");
         this.elementSelection = svgG.append("g").selectAll("g");
 
         svg.call(this.dragSvg()).on("dblclick.zoom", null);

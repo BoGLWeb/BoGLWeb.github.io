@@ -1,6 +1,5 @@
 ﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { BondGraphBond } from "../bonds/BondGraphBond";
-import { GraphBond } from "../bonds/GraphBond";
 import { BondGraphElement } from "../elements/BondGraphElement";
 import { GraphElement } from "../elements/GraphElement";
 import { BondGraph } from "../graphs/BondGraph";
@@ -22,7 +21,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .style("top", "-10000000px");
 
         // define arrow markers for graph links
-        this.defs = svg.append("svg:defs");
+        this.defs = this.svgG.append("svg:defs");
 
         this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10, false)
             .append("path")
@@ -112,6 +111,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
             .text((d) => (<BondGraphElement>d).label)
+            .classed("bondGraphText", true)
             .each((d: BondGraphElement) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
@@ -124,12 +124,12 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     pathExtraRendering(paths: BGBondSelection) {
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
-                return 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')';
+                return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
             }
         })
             .style('marker-start', (d: BondGraphBond) => {
                 if(d.hasDirection){
-                    return (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')' : "");
+                    return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
                 }
             })
             .style('stroke-width', 2);
