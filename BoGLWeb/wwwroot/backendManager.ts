@@ -125,6 +125,10 @@ export namespace backendManager {
             this.svgToCanvas(svg, copy as SVGElement, graph);
         }
 
+        public markerToString(marker: string) {
+            return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
+        }
+
         public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
@@ -137,21 +141,21 @@ export namespace backendManager {
             // bond graph with directed edges
             // This is necessary because the marker-start and marker-end CSS properties are messing up string serialization,
             // so we put in placeholders then replace them after string serialization
-            if (this.getTabNum() > 2) {
+            if (this.getTabNum() > 1) {
                 svg.id = "currentSVG";
                 document.body.appendChild(svg);
                 let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
                 for (let i = 0; i < paths[0].length; i++) {
-                    let path = paths[0][i];
-                    let hasMarkerEnd = (path as HTMLElement).style?.markerEnd;
-                    let hasMarkerStart = (path as HTMLElement).style?.markerStart;
+                    let path = paths[0][i] as HTMLElement;
+                    let hasMarkerEnd = path.style?.markerEnd;
+                    let hasMarkerStart = path.style?.markerStart;
                     if (hasMarkerEnd) {
-                        markers["~~~" + i] = (path as HTMLElement).style.markerEnd.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#"));
+                        markers["~~~" + i] = this.markerToString(path.style.markerEnd);
                     }
                     if (hasMarkerStart) {
-                        markers["@@@" + i] = (path as HTMLElement).style.markerStart.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#"));
+                        markers["@@@" + i] = this.markerToString(path.style.markerStart);
                     }
-                    path.setAttribute("style", (hasMarkerEnd ? "marker-end: ~~~" + i + "; " : "") + (hasMarkerStart ? "marker-start: @@@" + i + "; " : "") + "stroke-width: 4px; fill: none; stroke: black;");
+                    path.setAttribute("style", (hasMarkerEnd ? "marker-end: ~~~" + i + "; " : "") + (hasMarkerStart ? "marker-start: @@@" + i + "; " : "") + "stroke-width: 2px; fill: none; stroke: black;");
                 }
                 svg.id = "";
             }
