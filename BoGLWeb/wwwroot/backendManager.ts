@@ -225,9 +225,22 @@ export namespace backendManager {
                 .style("fill", "black")
                 .style("font-size", "30px")
                 .style("font-family", "Arial")
-                .style("fill-opacity", "1");
-            svg.selectAll("topVelocity")
+                .style("fill-opacity", "1")
                 .attr("dy", "0.25em");
+            svg.selectAll(".velocity_5_edge")
+                .attr("dx", "0em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_4_edge")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_6_edge, .velocity_7_edge, .velocity_6_element, .velocity_5_element")
+                .attr("dx", "-0.75em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_7_element, .velocity_8_element, .velocity_1_edge, .velocity_8_edge")
+                .attr("dx", "-0.75em");
+            svg.selectAll(".velocity_1_element")
+                .attr("dx", "-0.25em");
+            svg.selectAll(".dragline")
+                .style("display", "none");
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");

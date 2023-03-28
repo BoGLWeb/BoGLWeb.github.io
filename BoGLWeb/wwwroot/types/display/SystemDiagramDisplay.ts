@@ -183,6 +183,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                             }
                             this.classList.add("velocityArrow");
                             this.classList.add(velocityClass);
+                            this.classList.add("velocity_" + d.velocity + "_element");
                         }
                     })
                     .attr("x", (d: SystemDiagramElement) => {
@@ -242,7 +243,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     yOffset = -7 * mult;
                     xOffset = -3;
                 } else if (v == 4) {
-                    velocityClass = "rightVelocity";
+                    velocityClass = "rightVelocityMath";
                     yOffset = 7 * mult;
                     xOffset = 0;
                 } else if (v == 5) {
@@ -263,7 +264,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     xOffset = 0;
                 }
 
-                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass + " velocity_" + v + "_edge", true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
             }
