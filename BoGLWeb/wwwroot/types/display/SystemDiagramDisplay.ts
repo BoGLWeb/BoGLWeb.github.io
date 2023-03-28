@@ -29,7 +29,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     justClickedEdge: boolean = false;
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
-    copiedBonds: GraphBond[] = [];
+    copiedEdges: GraphBond[] = [];
     ctrlPressed: boolean = false;
     elements: SystemDiagramElement[];
 
@@ -116,6 +116,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "80px")
             .attr("x", "-40px")
             .attr("y", "-40px")
+            .classed("edgeHover", true)
             .on("mousemove", function (e) {
                 graph.moveSelectionRect();
                 graph.moveCircle.call(graph, e);
@@ -182,6 +183,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                             }
                             this.classList.add("velocityArrow");
                             this.classList.add(velocityClass);
+                            this.classList.add("velocity_" + d.velocity + "_element");
                         }
                     })
                     .attr("x", (d: SystemDiagramElement) => {
@@ -241,7 +243,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     yOffset = -7 * mult;
                     xOffset = -3;
                 } else if (v == 4) {
-                    velocityClass = "rightVelocity";
+                    velocityClass = "rightVelocityMath";
                     yOffset = 7 * mult;
                     xOffset = 0;
                 } else if (v == 5) {
@@ -262,7 +264,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     xOffset = 0;
                 }
 
-                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass + " velocity_" + v + "_edge", true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
             }
@@ -482,7 +484,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     copySelection() {
         this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
-        this.copiedBonds = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
+        this.copiedEdges = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
             .map(b => b.copy(this.copiedElements[this.selectedElements.findIndex(a => a.id == b.source.id)], this.copiedElements[this.selectedElements.findIndex(a => a.id == b.target.id)]));
         DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
     }
@@ -523,10 +525,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let selectedElements = this.selectedElements;
         let selectedBonds = this.selectedBonds;
         this.elements = this.elements.concat(this.copiedElements);
-        this.bonds = this.bonds.concat(this.copiedBonds);
-        this.setSelection(this.copiedElements, this.copiedBonds);
+        this.bonds = this.bonds.concat(this.copiedEdges);
+        this.setSelection(this.copiedElements, this.copiedEdges);
         this.updateGraph();
-        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)),
+        DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedEdges).map(e => JSON.stringify(e)),
             ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
         this.copySelection();
         this.updateMenus();
