@@ -135,6 +135,9 @@ export namespace backendManager {
             let isBondGraph = graph instanceof BondGraphDisplay;
             let w = bounds.width / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
             let h = bounds.height / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+            svg.setAttribute("viewbox", "0 0 " + w + " " + h);
+            svg.setAttribute("width", w + "px");
+            svg.setAttribute("height", h + "px");
 
             let markers = {};
 
@@ -203,6 +206,7 @@ export namespace backendManager {
                             }
                         ],
                     };
+
                     this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
                 });
             };
@@ -214,15 +218,15 @@ export namespace backendManager {
                 .style("stroke", "black")
                 .style("stroke-width", "4px");
             svg.selectAll(".boglElem")
-                .style("fill", "transparent");
+                .style("fill-opacity", "0");
             svg.selectAll(".outline")
-                .style("stroke", "black")
-                .style("fill", "white");
+                .style("stroke", "black");
             svg.selectAll("text")
                 .style("fill", "black")
                 .style("font-size", "30px")
                 .style("dominant-baseline", "middle")
-                .style("font-family", "Arial");
+                .style("font-family", "Arial")
+                .style("fill-opacity", "1");
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");
@@ -233,6 +237,7 @@ export namespace backendManager {
             if (graph.bonds.length == 0) {
                 oldSVG.select("#bondGroup").remove();
             }
+            svg.selectAll("edgeHover").remove()
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let minX = Infinity;
             let minY = Infinity;

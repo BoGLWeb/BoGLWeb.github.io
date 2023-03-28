@@ -116,6 +116,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "80px")
             .attr("x", "-40px")
             .attr("y", "-40px")
+            .classed("edgeHover", true)
             .on("mousemove", function (e) {
                 graph.moveSelectionRect();
                 graph.moveCircle.call(graph, e);
