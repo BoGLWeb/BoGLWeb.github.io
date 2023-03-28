@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using NUnit.Framework;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,10 @@ using System.Text;
 namespace BoGLWeb {
     namespace DifferentialEquationHelper {
         public class StateEquationSet {
+            // Stores the initial equations in <c>String</c> form.
+            private readonly string[] initialEquations;
             // Stores the state equations in <c>String</c> form.
-            private readonly string[] equations;
+            private readonly string[] finalDifferentialStateEquations;
 
             /// <summary>
             /// Creates a new <c>StateEquationSet</c>.
@@ -15,7 +18,14 @@ namespace BoGLWeb {
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
                 int count = graph.GetDifferentialElements().Count;
-                List<CausalPackager> packagers = CausalPackager.GenerateList(graph);
+                BondGraph.BondGraphWrapper wrapper = new(graph);
+                List<FunctionEquation> initialEquations = GetInitialEquations(wrapper);
+                this.initialEquations = new string[initialEquations.Count];
+                int initialIndex = 0;
+                foreach (FunctionEquation equation in initialEquations) {
+                    this.initialEquations[initialIndex++] = equation.ToString();
+                }
+                List<CausalPackager> packagers = CausalPackager.GenerateList(wrapper);
                 Dictionary<string, Expression> substitutionDictionary = new();
                 HashSet<string> usedSet = new();
                 foreach (CausalPackager packager in packagers) {
@@ -31,24 +41,31 @@ namespace BoGLWeb {
                             usedSet.Add(item);
                         }
                     }
-                    Console.WriteLine(prevUsedQuantity);
                 } while (prevUsedQuantity < usedSet.Count);
                 foreach (string key in usedSet) {
                     substitutionDictionary.Remove(key);
                 }
-                this.equations = new string[count];
+                this.finalDifferentialStateEquations = new string[count];
                 int index = 0;
                 foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
-                    this.equations[index++] = pair.Key + "=" + pair.Value;
+                    this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value;
                 }
             }
 
             /// <summary>
-            /// Gets the set of state equations from this <c>StateEquationSet</c>.
+            /// Gets the set of initial equations for this bond graph.
             /// </summary>
-            /// <returns><c>this.equations</c></returns>
-            public string[] GetStringEquations() {
-                return this.equations;
+            /// <returns><c>this.initialEquations</c></returns>
+            public string[] GetInitialEquations() {
+                return this.initialEquations;
+            }
+
+            /// <summary>
+            /// Gets the set of state finalDifferentialStateEquations from this <c>StateEquationSet</c>.
+            /// </summary>
+            /// <returns><c>this.finalDifferentialStateEquations</c></returns>
+            public string[] GetFinalEquations() {
+                return this.finalDifferentialStateEquations;
             }
 
             /// <summary>
@@ -56,7 +73,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>This <c>StateEquationSet</c> as a <c>string</c>.</returns>
             public override string ToString() {
-                return '[' + string.Join(", ", this.equations) + ']';
+                return '[' + string.Join(", ", this.initialEquations) + "][" + string.Join(", ", this.finalDifferentialStateEquations) + ']';
             }
 
             /// <summary>
@@ -113,7 +130,7 @@ namespace BoGLWeb {
                         CausalPackager packager = packagerStack.Pop();
                         int elementID = packager.element.GetID();
                         if (used.Contains(elementID)) {
-                            throw new Exception("State equations cannot be derived in looped causality.");
+                            throw new Exception("State finalDifferentialStateEquations cannot be derived in looped causality.");
                         }
                         used.Add(elementID);
                         List<BondGraph.Bond>? bondsToTarget = bondsBySource.GetValueOrDefault(elementID);
@@ -143,36 +160,15 @@ namespace BoGLWeb {
                 /// <summary>
                 /// Creates a new <c>CausalPackager</c> from a <c>BondGraph</c>.
                 /// </summary>
-                /// <param name="graph">The model bond graph.</param>
-                public static List<CausalPackager> GenerateList(BondGraph graph) {
-                    Dictionary<string, BondGraph.Element> elements = graph.getElements();
-                    Dictionary<int, List<BondGraph.Bond>> bondsBySource = new();
-                    Dictionary<int, List<BondGraph.Bond>> bondsByTarget = new();
-                    foreach (BondGraph.Bond bond in graph.getBonds()) {
-                        int source = bond.getSource().GetID();
-                        List<BondGraph.Bond>? sourceBondsByElement = bondsBySource.GetValueOrDefault(source);
-                        if (sourceBondsByElement == null) {
-                            bondsBySource.Add(source, new List<BondGraph.Bond> { bond });
-                        } else {
-                            sourceBondsByElement.Add(bond);
-                        }
-                        int target = bond.getSink().GetID();
-                        List<BondGraph.Bond>? targetBondsByElement = bondsByTarget.GetValueOrDefault(target);
-                        if (targetBondsByElement == null) {
-                            bondsByTarget.Add(target, new List<BondGraph.Bond> { bond });
-                        } else {
-                            targetBondsByElement.Add(bond);
-                        }
-                    }
-                    //Console.WriteLine(string.Join(", ", bondsBySource.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
-                    //Console.WriteLine(string.Join(", ", bondsByTarget.Select(pair => pair.Key + " [" + string.Join(", ", pair.Value) + "]")));
+                /// <param name="wrapper">The model bond graph wrapper.</param>
+                public static List<CausalPackager> GenerateList(BondGraph.BondGraphWrapper wrapper) {
                     List<CausalPackager> packagerList = new();
-                    foreach (KeyValuePair<string, BondGraph.Element> pair in elements) {
+                    foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
                         char indicator = pair.Value.GetTypeChar();
                         if ("IRC".Contains(indicator)) {
-                            packagerList.Add(GeneratePackager(pair.Value, indicator == 'I', bondsBySource, bondsByTarget));
+                            packagerList.Add(GeneratePackager(pair.Value, indicator == 'I', 
+                                wrapper.GetBondsBySource(), wrapper.GetBondsByTarget()));
                         }
-                        Console.WriteLine(pair.Value);
                     }
                     return packagerList;
                 }
@@ -262,6 +258,73 @@ namespace BoGLWeb {
                     }
                     return print.ToString();
                 }
+            }
+
+            /// <summary>
+            /// Loads the initial equations for this <c>StateEquationSet</c>.
+            /// </summary>
+            /// <param name="wrapper">The wrapper containing the information
+            /// for the target bond graph.</param>
+            private static List<FunctionEquation> GetInitialEquations(BondGraph.BondGraphWrapper wrapper) {
+                Dictionary<int, List<BondGraph.Bond>> bbs = wrapper.GetBondsBySource();
+                Dictionary<int, List<BondGraph.Bond>> bbt = wrapper.GetBondsByTarget();
+                List<FunctionEquation> equations = new();
+                foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
+                    char typeChar = pair.Value.GetTypeChar();
+                    switch (typeChar) {
+                        case '0':
+                        case '1':
+                            bool isOneJunc = typeChar == '1';
+                            String zeroSum = "F", equal = "E";
+                            if (isOneJunc) {
+                                zeroSum = "E";
+                                equal = "F";
+                            }
+                            Expression negSum = new("0"), posSum = new("0");
+                            int inwardCausalBondCount = 0, outwardCausalBondCount = 0;
+                            BondGraph.Bond? inwardCausalBond = null, outwardCausalBond = null;
+                            foreach (BondGraph.Bond bond in bbs.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
+                                posSum = posSum.Add(new(zeroSum + bond.GetID()));
+                                if (bond.GetCausalDirection()) {
+                                    outwardCausalBondCount++;
+                                    outwardCausalBond = bond;
+                                } else {
+                                    if (inwardCausalBondCount == 1) {
+                                        throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
+                                    }
+                                    inwardCausalBondCount = 1;
+                                    inwardCausalBond = bond;
+                                }
+                            }
+                            foreach (BondGraph.Bond bond in bbt.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
+                                negSum = negSum.Add(new(zeroSum + bond.GetID()));
+                                if (bond.GetCausalDirection()) {
+                                    inwardCausalBondCount++;
+                                    inwardCausalBond = bond;
+                                } else {
+                                    if (outwardCausalBondCount == 1) {
+                                        throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
+                                    }
+                                    outwardCausalBondCount = 1;
+                                    outwardCausalBond = bond;
+                                }
+                            }
+                            equations.Add(new(posSum, negSum));
+                            BondGraph.Bond? equalBond = (inwardCausalBondCount == 1) ? inwardCausalBond : outwardCausalBond;
+                            int equalID = equalBond?.GetID() ?? 0;
+                            Expression firstExp = new(equal + equalID);
+                            foreach (BondGraph.Bond bond in bbs.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
+                                int bondID = bond.GetID();
+                                if (bondID != equalID) {
+                                    equations.Add(new(firstExp, new(equal + bondID)));
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return equations;
             }
 
             /// <summary>

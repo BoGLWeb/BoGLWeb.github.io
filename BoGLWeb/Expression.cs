@@ -5,7 +5,7 @@ using System.Text;
 namespace BoGLWeb {
     namespace DifferentialEquationHelper {
         /// <summary>
-        /// Stores differential equations in the form of function equations.
+        /// Stores differential finalDifferentialStateEquations in the form of function finalDifferentialStateEquations.
         /// </summary>
         public class Expression {
             /// <summary>

@@ -270,8 +270,8 @@
     <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
 </Modal>
     <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
-        @if (stateEquationsStored.Length > 0) {
-            <TextArea Rows="@(Convert.ToUInt32(stateEquationsStored.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquationsStored))" TValue="string" ReadOnly />
+        @if (stateEquationsFinal.Length > 0) {
+            <TextArea Rows="@(Convert.ToUInt32(stateEquationsFinal.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquationsFinal))" TValue="string" ReadOnly />
             <Button @onclick="copyStateEquations"><Icon Type="link" Theme="outline" /> Copy State Equations</Button>
         } else {
             <p>Generate a bond graph to see its state equations here.</p>
@@ -319,7 +319,6 @@
     [JSInvokable]
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
-        Console.WriteLine(cc);
         switch(cc?.GetType().Name) {
             case nameof(CanvasChange.AddSelection):
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
@@ -393,7 +392,7 @@
 
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
-        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
+        //Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -401,7 +400,7 @@
 
     [JSInvokable]
     public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
-        Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
+        //Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
         // Need to add unselected deleted edges
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
         UpdateBackendWithInitialStackChange(1);
@@ -411,9 +410,9 @@
     [JSInvokable]
     public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
         if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
-            Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
-            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
-            + String.Join(", ", removeEdgeFromSelection) + "]");
+            //Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            //+ String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            //+ String.Join(", ", removeEdgeFromSelection) + "]");
             EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
             UpdateBackendWithInitialStackChange(tabID);
         }
@@ -422,7 +421,7 @@
 
     [JSInvokable]
     public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
-        Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
+        //Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -430,7 +429,7 @@
 
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
-        Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        //Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
         UpdateBackendWithInitialStackChange(tabID);
         app?.StateHasChanged();
@@ -438,8 +437,8 @@
 
     [JSInvokable]
     public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
-        Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
-            + ", [" + String.Join(", ", prevVelVals) + "]");
+        //Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+        //    + ", [" + String.Join(", ", prevVelVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -606,7 +605,7 @@
 
     //Check if a modifier has changed
     private async void CheckChange(bool b, int i) {
-        Console.WriteLine("Changing check value", b, i);
+        //Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
@@ -635,7 +634,7 @@
 
     //Called when the page is loaded
     protected override async Task OnInitializedAsync() {
-        Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
+        //Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
 
         //Loads rulesets
         allRulesLoaded = false;
@@ -695,7 +694,9 @@
             }
             Console.WriteLine("System diagram is connected.");
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
-            stateEquationsStored = new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations();
+            StateEquationSet set = new(causal[0]);
+            stateEquationsInitial = set.GetInitialEquations();
+            stateEquationsFinal = set.GetFinalEquations();
         } catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Generating Bond Graph";
@@ -703,7 +704,7 @@
             base.StateHasChanged();
             return;
         }
-        
+
         generateProgress = 25.0;
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
@@ -820,7 +821,7 @@
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
             await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-           return; 
+            return; 
         }
         var fileName = "SystemDiagram.bogl";
 
@@ -835,9 +836,9 @@
         await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-        Console.WriteLine("System Diagram from Json");
+        //Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        Console.WriteLine("BoGL String");
+        //Console.WriteLine("BoGL String");
         Stream fileStream;
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
@@ -878,7 +879,8 @@
     bool urlModalVisible = false;
     bool stateEquationModalVisible = false;
     string url = "";
-    string[] stateEquationsStored = new string[] { };
+    string[] stateEquationsInitial = new string[] { };
+    string[] stateEquationsFinal = new string[] { };
 
     //Handles the ok button on the url modal
     private void handleUrlOk() {
@@ -893,7 +895,8 @@
 
     private async void showStateEquations() {
         // Get information from backend - '4' is the index of the causal bond graph tab
-        Console.WriteLine(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).ToString());
+        Console.WriteLine('[' + string.Join(", ", stateEquationsInitial) + ']');
+        Console.WriteLine('[' + string.Join(", ", stateEquationsFinal) + ']');
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
         stateEquationModalVisible = true;
@@ -1043,7 +1046,7 @@
 
     private async void copyStateEquations() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquationsStored));
+        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquationsFinal));
         await messageService.Success("State equations copied to clipboard!");
     }
 
