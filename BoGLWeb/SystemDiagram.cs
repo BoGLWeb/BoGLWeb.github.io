@@ -169,15 +169,19 @@ namespace BoGLWeb {
             //Find all ids which need to be squished
             Console.WriteLine(systemDiagram.getElements());
             for (int i = 0; i < elementIds.Count; i++) {
+                Element newElement;
                 if (elementIds[i] != i) {
                     //We found id which needs to be squished
                     squishMap.Add(elementIds[i], i);
                     Element oldElement = systemDiagram.getElement(i);
-                    updatedElements.Add(i, new Element(oldElement.getType(), oldElement.getName(), oldElement.getX(), oldElement.getY(), i));
+                    newElement = new Element(oldElement.getType(), oldElement.getName(), oldElement.getX(), oldElement.getY(), i);
+                    newElement.modifiers = oldElement.getModifiers();
+                    newElement.setVelocity(oldElement.getVelocity());
                 } else {
                     squishMap.Add(i, i);
-                    updatedElements.Add(i, systemDiagram.getElement(i));
+                    newElement = systemDiagram.getElement(i);
                 }
+                updatedElements.Add(i, newElement);
             }
 
             foreach (KeyValuePair<int, int> kvPair in squishMap) {
@@ -714,7 +718,9 @@ namespace BoGLWeb {
                 sb.Append(e.getY());
                 sb.Append('\n');
                 sb.Append("modifiers {\n");
+                Console.WriteLine("BOIS: " + String.Join(", ", e.getModifiers().Select(x => x.ToString())));
                 foreach (int mod in e.getModifiers()) {
+                    Console.WriteLine("MOD STUFF: " + mod.ToString() + ", " + modifierIDDictReverse[mod]);
                     sb.Append(modifierIDDictReverse[mod]);
                     sb.Append('\n');
                 }
@@ -813,7 +819,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected double y;
             [JsonProperty]
-            protected List<int> modifiers;
+            public List<int> modifiers;
             [JsonProperty]
             protected int velocity;
 
@@ -879,6 +885,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
+                Console.WriteLine("ADDING THE FELLA: " + name);
                 this.modifiers.Add(modifierIDDict.GetValueOrDefault(name));
             }
 
@@ -887,6 +894,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="modID">The ID of the new modifier</param>
             public void addModifier(int modID) {
+                Console.WriteLine("ADDING FELLA BY ID: " + modID.ToString());
                 this.modifiers.Add(modID);
             }
 
