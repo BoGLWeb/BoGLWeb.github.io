@@ -718,9 +718,7 @@ namespace BoGLWeb {
                 sb.Append(e.getY());
                 sb.Append('\n');
                 sb.Append("modifiers {\n");
-                Console.WriteLine("BOIS: " + String.Join(", ", e.getModifiers().Select(x => x.ToString())));
                 foreach (int mod in e.getModifiers()) {
-                    Console.WriteLine("MOD STUFF: " + mod.ToString() + ", " + modifierIDDictReverse[mod]);
                     sb.Append(modifierIDDictReverse[mod]);
                     sb.Append('\n');
                 }
@@ -885,7 +883,6 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="name">The name of the modifier to add</param>
             public void addModifier(string name) {
-                Console.WriteLine("ADDING THE FELLA: " + name);
                 this.modifiers.Add(modifierIDDict.GetValueOrDefault(name));
             }
 
@@ -894,7 +891,6 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="modID">The ID of the new modifier</param>
             public void addModifier(int modID) {
-                Console.WriteLine("ADDING FELLA BY ID: " + modID.ToString());
                 this.modifiers.Add(modID);
             }
 
