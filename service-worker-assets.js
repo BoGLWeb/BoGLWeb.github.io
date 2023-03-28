@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-03x8cUW8F\/buud7fR+c\/Qtw2F2UMC2b8bGzTm4EgRck=",
+      "hash": "sha256-6CAhKyf+mXuTPDapBKXd+mQdA9uNOltPJvvBpo69KCQ=",
       "url": "css\/main.css"
     },
     {
@@ -189,7 +189,7 @@
       "url": "images\/elements\/damper.svg"
     },
     {
-      "hash": "sha256-5qSoKT\/PNF43r+hZF0cc9srJBA\/Ev3Rd7hB2yT8YfQc=",
+      "hash": "sha256-tCoSHFi06XUJAElmF9UHOj\/mjw49lV3pHaiXOA164iE=",
       "url": "images\/elements\/elec_ground.svg"
     },
     {
@@ -349,7 +349,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-SwhwIOeBnC6NGDsidPK4Qwklu4u4755Ek4DqfVMRdHg=",
+      "hash": "sha256-EHzwbAX3peSNO1J9KJ4+OHG4eMUdxaxhRW94DBsLX0M=",
       "url": "manifest.json"
     },
     {
@@ -3361,7 +3361,7 @@
       "url": "sample-data\/weather.json"
     },
     {
-      "hash": "sha256-3zn5CpSmsh8Wr2+IPKXdN2UtgZpRdneMWvsIJScd1ac=",
+      "hash": "sha256-VIWYMaqtVzJSG2DQZVOd9uUI0FqzQWjs8pjBArDwS0w=",
       "url": "tsconfig.json"
     },
     {
@@ -3397,7 +3397,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-q9ynARvSFCaABznamxmsJk7nKUviUK5aHQhc7SERHiQ=",
+      "hash": "sha256-zQoT90OSU4T66QVIn4VZ1xXK6GQLueCZhqr7KL8LjWQ=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3405,7 +3405,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-AMmd6s\/LJUD6wvfDiKvoB62WhvrbAdXiH5GvMJhHSZA=",
+      "hash": "sha256-vTXxmrmQGtirQSVu9BTWrOD76HRc9dX1xUM6hTEJW3c=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5625,5 +5625,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "LC5gMAFZ"
+  "version": "lf1QMsaO"
 };

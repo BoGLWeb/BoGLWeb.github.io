@@ -69,19 +69,6 @@ define("types/bonds/GraphBondID", ["require", "exports"], function (require, exp
     }
     exports.GraphBondID = GraphBondID;
 });
-define("types/elements/BondGraphElement", ["require", "exports", "types/elements/GraphElement"], function (require, exports, GraphElement_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.BondGraphElement = void 0;
-    class BondGraphElement extends GraphElement_1.GraphElement {
-        constructor(id, label, x, y) {
-            super(id, x, y);
-            this.labelSize = null;
-            this.label = label;
-        }
-    }
-    exports.BondGraphElement = BondGraphElement;
-});
 define("types/graphs/BaseGraph", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -93,19 +80,6 @@ define("types/graphs/BaseGraph", ["require", "exports"], function (require, expo
         }
     }
     exports.BaseGraph = BaseGraph;
-});
-define("types/graphs/BondGraph", ["require", "exports", "types/graphs/BaseGraph"], function (require, exports, BaseGraph_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.BondGraph = void 0;
-    class BondGraph extends BaseGraph_1.BaseGraph {
-        constructor(nodes, edges) {
-            super(nodes, edges);
-            this.nodes = nodes;
-            this.edges = edges;
-        }
-    }
-    exports.BondGraph = BondGraph;
 });
 define("types/elements/Category", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -150,11 +124,11 @@ define("types/elements/Modifier", ["require", "exports"], function (require, exp
     }
     exports.Modifier = Modifier;
 });
-define("types/elements/SystemDiagramElement", ["require", "exports", "types/elements/GraphElement"], function (require, exports, GraphElement_2) {
+define("types/elements/SystemDiagramElement", ["require", "exports", "types/elements/GraphElement"], function (require, exports, GraphElement_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SystemDiagramElement = void 0;
-    class SystemDiagramElement extends GraphElement_2.GraphElement {
+    class SystemDiagramElement extends GraphElement_1.GraphElement {
         constructor(id, type, x, y, velocity, modifiers) {
             super(id, x, y);
             this.modifiers = modifiers;
@@ -257,11 +231,11 @@ define("types/elements/ElementNamespace", ["require", "exports", "types/elements
         ElementNamespace.isCompatible = isCompatible;
     })(ElementNamespace = exports.ElementNamespace || (exports.ElementNamespace = {}));
 });
-define("types/graphs/SystemDiagram", ["require", "exports", "types/graphs/BaseGraph"], function (require, exports, BaseGraph_2) {
+define("types/graphs/SystemDiagram", ["require", "exports", "types/graphs/BaseGraph"], function (require, exports, BaseGraph_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SystemDiagram = void 0;
-    class SystemDiagram extends BaseGraph_2.BaseGraph {
+    class SystemDiagram extends BaseGraph_1.BaseGraph {
         constructor(nodes, edges) {
             super(nodes, edges);
             this.nodes = nodes;
@@ -292,7 +266,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             this.justClickedEdge = false;
             this.selectedElements = [];
             this.copiedElements = [];
-            this.copiedBonds = [];
+            this.copiedEdges = [];
             this.ctrlPressed = false;
             this.highestElemId = systemDiagram.nodes.length + 1;
             this.edgeCircle = this.svgG.append("circle");
@@ -370,6 +344,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 .attr("height", "80px")
                 .attr("x", "-40px")
                 .attr("y", "-40px")
+                .classed("edgeHover", true)
                 .on("mousemove", function (e) {
                 graph.moveSelectionRect();
                 graph.moveCircle.call(graph, e);
@@ -433,6 +408,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                             }
                             this.classList.add("velocityArrow");
                             this.classList.add(velocityClass);
+                            this.classList.add("velocity_" + d.velocity + "_element");
                         }
                     })
                         .attr("x", (d) => {
@@ -484,7 +460,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                         xOffset = -3;
                     }
                     else if (v == 4) {
-                        velocityClass = "rightVelocity";
+                        velocityClass = "rightVelocityMath";
                         yOffset = 7 * mult;
                         xOffset = 0;
                     }
@@ -508,7 +484,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                         yOffset = -7 * mult;
                         xOffset = 0;
                     }
-                    d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass, true)
+                    d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass + " velocity_" + v + "_edge", true)
                         .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y", (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
                 }
             });
@@ -707,7 +683,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
         }
         copySelection() {
             this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
-            this.copiedBonds = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
+            this.copiedEdges = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
                 .map(b => b.copy(this.copiedElements[this.selectedElements.findIndex(a => a.id == b.source.id)], this.copiedElements[this.selectedElements.findIndex(a => a.id == b.target.id)]));
             DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
         }
@@ -746,10 +722,10 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             let selectedElements = this.selectedElements;
             let selectedBonds = this.selectedBonds;
             this.elements = this.elements.concat(this.copiedElements);
-            this.bonds = this.bonds.concat(this.copiedBonds);
-            this.setSelection(this.copiedElements, this.copiedBonds);
+            this.bonds = this.bonds.concat(this.copiedEdges);
+            this.setSelection(this.copiedElements, this.copiedEdges);
             this.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedBonds).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(this.copiedElements).concat(this.copiedEdges).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
             this.copySelection();
             this.updateMenus();
         }
@@ -842,7 +818,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
     }
     exports.SystemDiagramDisplay = SystemDiagramDisplay;
 });
-define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/GraphBond", "types/elements/GraphElement", "types/display/SystemDiagramDisplay"], function (require, exports, GraphBond_3, GraphElement_3, SystemDiagramDisplay_1) {
+define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/GraphBond", "types/elements/GraphElement", "types/display/SystemDiagramDisplay"], function (require, exports, GraphBond_3, GraphElement_2, SystemDiagramDisplay_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BaseGraphDisplay = void 0;
@@ -883,6 +859,8 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.dragXOffset = 0;
             this.dragYOffset = 0;
             this.startedSelectionDrag = false;
+            this.initWidth = 0;
+            this.initHeight = 0;
             this.elements = baseGraph.nodes || [];
             this.bonds = baseGraph.edges || [];
             svg.selectAll('*').remove();
@@ -892,7 +870,9 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.dragBond = this.svgG.append("svg:path");
             this.dragBond.attr("class", "link dragline hidden")
                 .attr("d", "M0,0L0,0");
-            this.bondSelection = svgG.append("g").selectAll("g");
+            let bondElements = svgG.append("g");
+            bondElements.attr("id", "bondGroup");
+            this.bondSelection = bondElements.selectAll("g");
             this.elementSelection = svgG.append("g").selectAll("g");
             svg.call(this.dragSvg()).on("dblclick.zoom", null);
             let graph = this;
@@ -1016,7 +996,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                     }
                 }
                 else {
-                    this.setSelection(newSelection.filter(e => e instanceof GraphElement_3.GraphElement), newSelection.filter(e => e instanceof GraphBond_3.GraphBond));
+                    this.setSelection(newSelection.filter(e => e instanceof GraphElement_2.GraphElement), newSelection.filter(e => e instanceof GraphBond_3.GraphBond));
                     addList = newSelection;
                 }
                 d3.select("body").style("cursor", "auto");
@@ -1064,7 +1044,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
         }
         addToSelection(e, undoRedo = true) {
-            if (e instanceof GraphElement_3.GraphElement) {
+            if (e instanceof GraphElement_2.GraphElement) {
                 this.selectedElements.push(e);
             }
             else {
@@ -1075,7 +1055,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             }
         }
         selectionContains(e) {
-            if (e instanceof GraphElement_3.GraphElement) {
+            if (e instanceof GraphElement_2.GraphElement) {
                 return this.selectedElements.includes(e);
             }
             else {
@@ -1083,7 +1063,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             }
         }
         removeFromSelection(e, undoRedo = true) {
-            if (e instanceof GraphElement_3.GraphElement) {
+            if (e instanceof GraphElement_2.GraphElement) {
                 this.selectedElements = this.selectedElements.filter(d => d != e);
             }
             else {
@@ -1162,7 +1142,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
         }
         listToIDObjects(eList) {
-            let elements = eList.filter(e => e instanceof GraphElement_3.GraphElement).map(e => e.id);
+            let elements = eList.filter(e => e instanceof GraphElement_2.GraphElement).map(e => e.id);
             let bonds = eList.filter(e => e instanceof GraphBond_3.GraphBond).map(e => JSON.stringify({ source: e.source.id, target: e.target.id }));
             return [elements, bonds];
         }
@@ -1300,6 +1280,32 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
     }
     exports.BaseGraphDisplay = BaseGraphDisplay;
 });
+define("types/elements/BondGraphElement", ["require", "exports", "types/elements/GraphElement"], function (require, exports, GraphElement_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BondGraphElement = void 0;
+    class BondGraphElement extends GraphElement_3.GraphElement {
+        constructor(id, label, x, y) {
+            super(id, x, y);
+            this.labelSize = null;
+            this.label = label;
+        }
+    }
+    exports.BondGraphElement = BondGraphElement;
+});
+define("types/graphs/BondGraph", ["require", "exports", "types/graphs/BaseGraph"], function (require, exports, BaseGraph_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BondGraph = void 0;
+    class BondGraph extends BaseGraph_2.BaseGraph {
+        constructor(nodes, edges) {
+            super(nodes, edges);
+            this.nodes = nodes;
+            this.edges = edges;
+        }
+    }
+    exports.BondGraph = BondGraph;
+});
 define("types/display/BondGraphDisplay", ["require", "exports", "types/display/BaseGraphDisplay"], function (require, exports, BaseGraphDisplay_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1313,7 +1319,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             this.testSVG.style("position", "absolute")
                 .style("left", "-10000000px")
                 .style("top", "-10000000px");
-            this.defs = svg.append("svg:defs");
+            this.defs = this.svgG.append("svg:defs");
             this.makeBaseMarker("causal_stroke_" + id, 1, 5, 10, 10, false)
                 .append("path")
                 .attr("d", "M1,10L1,-10");
@@ -1344,7 +1350,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 .attr("refY", refY)
                 .attr("markerWidth", w)
                 .attr("markerHeight", h)
-                .attr("orient", "auto-start-reverse")
+                .attr("orient", "auto")
                 .style("stroke", isSelected ? "rgb(6, 82, 255)" : "#333");
             return marker;
         }
@@ -1393,6 +1399,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             let text = newElements.append("text");
             text.attr("text-anchor", "middle")
                 .text((d) => d.label)
+                .classed("bondGraphText", true)
                 .each((d) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
@@ -1404,12 +1411,12 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
         pathExtraRendering(paths) {
             paths.style('marker-end', (d) => {
                 if (d.hasDirection) {
-                    return 'url(#' + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')';
+                    return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
                 }
             })
                 .style('marker-start', (d) => {
                 if (d.hasDirection) {
-                    return (d.causalStroke && d.causalStrokeDirection ? 'url(#causal_stroke_' + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + ')' : "");
+                    return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
                 }
             })
                 .style('stroke-width', 2);
@@ -1424,6 +1431,9 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
     var backendManager;
     (function (backendManager) {
         class BackendManager {
+            constructor() {
+                this.imageBuffer = 15;
+            }
             parseAndDisplayBondGraph(id, jsonString, svg) {
                 let bg = JSON.parse(jsonString);
                 let minX = Infinity;
@@ -1512,6 +1522,181 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 window.systemDiagram = systemDiagram;
                 systemDiagram.updateGraph();
                 this.zoomCenterGraph("1");
+                let bounds = systemDiagram.svg.select("g").node().getBoundingClientRect();
+                systemDiagram.initWidth = bounds.width;
+                systemDiagram.initHeight = bounds.height;
+            }
+            exportAsImage() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let graph = this.getGraphByIndex(window.tabNum);
+                    let svg = graph.svg;
+                    if (this.getTabNum() == 1) {
+                        yield this.convertImages("image.hoverImg");
+                    }
+                    let copy = svg.node().cloneNode(true);
+                    this.applyInlineStyles(svg, d3.select(copy), graph);
+                    this.svgToCanvas(svg, copy, graph);
+                });
+            }
+            markerToString(marker) {
+                return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
+            }
+            svgToCanvas(oldSVG, svg, graph) {
+                var _a, _b;
+                let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+                let bounds = oldSVG.select("g").node().getBoundingClientRect();
+                let isBondGraph = graph instanceof BondGraphDisplay_1.BondGraphDisplay;
+                let w = bounds.width / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+                let h = bounds.height / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+                svg.setAttribute("viewbox", "0 0 " + w + " " + h);
+                svg.setAttribute("width", w + "px");
+                svg.setAttribute("height", h + "px");
+                let markers = {};
+                if (this.getTabNum() > 1) {
+                    svg.id = "currentSVG";
+                    document.body.appendChild(svg);
+                    let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
+                    for (let i = 0; i < paths[0].length; i++) {
+                        let path = paths[0][i];
+                        let hasMarkerEnd = (_a = path.style) === null || _a === void 0 ? void 0 : _a.markerEnd;
+                        let hasMarkerStart = (_b = path.style) === null || _b === void 0 ? void 0 : _b.markerStart;
+                        if (hasMarkerEnd) {
+                            markers["~~~" + i] = this.markerToString(path.style.markerEnd);
+                        }
+                        if (hasMarkerStart) {
+                            markers["@@@" + i] = this.markerToString(path.style.markerStart);
+                        }
+                        path.setAttribute("style", (hasMarkerEnd ? "marker-end: ~~~" + i + "; " : "") + (hasMarkerStart ? "marker-start: @@@" + i + "; " : "") + "stroke-width: 2px; fill: none; stroke: black;");
+                    }
+                    svg.id = "";
+                }
+                let img = new Image(w, h);
+                let serializer = new XMLSerializer();
+                let svgStr = serializer.serializeToString(svg);
+                d3.select("#currentSVG").remove();
+                for (const i in markers) {
+                    svgStr = svgStr.replaceAll(i, markers[i]);
+                }
+                img.src = "data:image/svg+xml;utf8," + svgStr;
+                var canvas = document.createElement("canvas");
+                document.body.appendChild(canvas);
+                canvas.width = w;
+                canvas.height = h;
+                img.onload = () => {
+                    canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                    let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
+                    canvas.toBlob(blob => {
+                        let pickerOptions = {
+                            suggestedName: filenames[this.getTabNum() - 1],
+                            types: [
+                                {
+                                    description: 'PNG File',
+                                    accept: {
+                                        'image/png': ['.png'],
+                                    },
+                                },
+                                {
+                                    description: 'SVG File',
+                                    accept: {
+                                        'image/svg+xml': ['.svg'],
+                                    },
+                                },
+                                {
+                                    description: 'JPEG File',
+                                    accept: {
+                                        'image/jpeg': ['.jpeg', '.jpg'],
+                                    },
+                                }
+                            ],
+                        };
+                        this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
+                        graph.updateGraph();
+                    });
+                };
+            }
+            applyInlineStyles(oldSVG, svg, graph) {
+                svg.selectAll(".link")
+                    .style("fill", "none")
+                    .style("stroke", "black")
+                    .style("stroke-width", "4px");
+                svg.selectAll(".boglElem")
+                    .style("fill-opacity", "0");
+                svg.selectAll(".outline")
+                    .style("stroke", "black");
+                svg.selectAll("text")
+                    .style("fill", "black")
+                    .style("font-size", "30px")
+                    .style("font-family", "Arial")
+                    .style("fill-opacity", "1")
+                    .attr("dy", "0.25em");
+                svg.selectAll(".velocity_5_edge")
+                    .attr("dx", "0em")
+                    .attr("dy", "0.5em");
+                svg.selectAll(".velocity_4_edge")
+                    .attr("dy", "0.5em");
+                svg.selectAll(".velocity_6_edge, .velocity_7_edge, .velocity_6_element, .velocity_5_element")
+                    .attr("dx", "-0.75em")
+                    .attr("dy", "0.5em");
+                svg.selectAll(".velocity_7_element, .velocity_8_element, .velocity_1_edge, .velocity_8_edge")
+                    .attr("dx", "-0.75em");
+                svg.selectAll(".velocity_1_element")
+                    .attr("dx", "-0.25em");
+                svg.selectAll(".dragline")
+                    .style("display", "none");
+                svg.style("background-color", "white");
+                svg.select("circle")
+                    .style("display", "none");
+                svg.selectAll(".bondGraphText")
+                    .style("font-size", "14px")
+                    .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
+                oldSVG.select(".dragline").remove();
+                if (graph.bonds.length == 0) {
+                    oldSVG.select("#bondGroup").remove();
+                }
+                svg.selectAll("edgeHover").remove();
+                let bounds = oldSVG.select("g").node().getBoundingClientRect();
+                let minX = Infinity;
+                let minY = Infinity;
+                let maxX = -Infinity;
+                let maxY = -Infinity;
+                for (let e of graph.elements) {
+                    if (e.x < minX)
+                        minX = e.x;
+                    if (e.y < minY)
+                        minY = e.y;
+                    if (e.x > maxX)
+                        maxX = e.x;
+                    if (e.y > maxY)
+                        maxY = e.y;
+                }
+                let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+                let isBondGraph = graph instanceof BondGraphDisplay_1.BondGraphDisplay;
+                svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + (isBondGraph ? this.imageBuffer : 0)) + ", "
+                    + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + (isBondGraph ? this.imageBuffer : 0)) + ") scale(1)");
+            }
+            convertImages(query) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const images = document.querySelectorAll(query);
+                    for (let i = 0; i < images.length; i++) {
+                        let image = images.item(i);
+                        yield fetch(image.href.baseVal)
+                            .then(res => res.text())
+                            .then(data => {
+                            const parser = new DOMParser();
+                            const svg = parser.parseFromString(data, 'image/svg+xml').querySelector('svg');
+                            if (image.id)
+                                svg.id = image.id;
+                            if (image.className)
+                                svg.classList = image.classList;
+                            svg.setAttribute("height", "50px");
+                            svg.setAttribute("width", "50px");
+                            svg.setAttribute("x", "-25px");
+                            svg.setAttribute("y", "-25px");
+                            image.parentNode.replaceChild(svg, image);
+                        })
+                            .catch(error => console.error(error));
+                    }
+                });
             }
             zoomCenterGraph(index) {
                 let graph = this.getGraphByIndex(index);
@@ -1567,12 +1752,12 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     input.click();
                 });
             }
-            saveAsFile(fileName, contentStreamReference) {
+            saveAsFile(fileName, contentStreamReference, pickerOptions) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const arrayBuffer = yield contentStreamReference.arrayBuffer();
                     const blob = new Blob([arrayBuffer]);
-                    const pickerOptions = {
-                        suggestedName: `systemDiagram.bogl`,
+                    pickerOptions = pickerOptions !== null && pickerOptions !== void 0 ? pickerOptions : {
+                        suggestedName: fileName,
                         types: [
                             {
                                 description: 'A BoGL File',
@@ -1582,15 +1767,20 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                             },
                         ],
                     };
+                    yield this.saveAsBlob(blob, pickerOptions, null);
+                });
+            }
+            saveAsBlob(blob, pickerOptions, svgBlob) {
+                return __awaiter(this, void 0, void 0, function* () {
                     if (window.showSaveFilePicker) {
                         const fileHandle = yield window.showSaveFilePicker(pickerOptions);
                         window.filePath = fileHandle;
                         const writableFileStream = yield fileHandle.createWritable();
-                        yield writableFileStream.write(blob);
+                        yield writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
                         yield writableFileStream.close();
                     }
                     else {
-                        this.saveFileNoPicker("systemDiagram.bogl", blob);
+                        this.saveFileNoPicker(pickerOptions.suggestedName, blob);
                     }
                 });
             }
@@ -1599,7 +1789,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     const arrayBuffer = yield contentStreamReference.arrayBuffer();
                     const blob = new Blob([arrayBuffer]);
                     const pickerOptions = {
-                        suggestedName: `systemDiagram.bogl`,
+                        suggestedName: fileName,
                         types: [
                             {
                                 description: 'A BoGL File',
