@@ -136,7 +136,7 @@ define("types/elements/SystemDiagramElement", ["require", "exports", "types/elem
             this.type = type;
         }
         copy(id, offset = 0) {
-            return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, this.modifiers);
+            return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, [...this.modifiers]);
         }
     }
     exports.SystemDiagramElement = SystemDiagramElement;
