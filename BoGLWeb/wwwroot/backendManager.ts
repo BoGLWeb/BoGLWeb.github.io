@@ -208,6 +208,7 @@ export namespace backendManager {
                     };
 
                     this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
+                    graph.updateGraph();
                 });
             };
         }
