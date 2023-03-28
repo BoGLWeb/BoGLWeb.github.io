@@ -135,6 +135,9 @@ export namespace backendManager {
             let isBondGraph = graph instanceof BondGraphDisplay;
             let w = bounds.width / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
             let h = bounds.height / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+            svg.setAttribute("viewbox", "0 0 " + w + " " + h);
+            svg.setAttribute("width", w + "px");
+            svg.setAttribute("height", h + "px");
 
             let markers = {};
 
@@ -203,7 +206,9 @@ export namespace backendManager {
                             }
                         ],
                     };
+
                     this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
+                    graph.updateGraph();
                 });
             };
         }
@@ -214,15 +219,29 @@ export namespace backendManager {
                 .style("stroke", "black")
                 .style("stroke-width", "4px");
             svg.selectAll(".boglElem")
-                .style("fill", "transparent");
+                .style("fill-opacity", "0");
             svg.selectAll(".outline")
-                .style("stroke", "black")
-                .style("fill", "white");
+                .style("stroke", "black");
             svg.selectAll("text")
                 .style("fill", "black")
                 .style("font-size", "30px")
-                .style("dominant-baseline", "middle")
-                .style("font-family", "Arial");
+                .style("font-family", "Arial")
+                .style("fill-opacity", "1")
+                .attr("dy", "0.25em");
+            svg.selectAll(".velocity_5_edge")
+                .attr("dx", "0em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_4_edge")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_6_edge, .velocity_7_edge, .velocity_6_element, .velocity_5_element")
+                .attr("dx", "-0.75em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_7_element, .velocity_8_element, .velocity_1_edge, .velocity_8_edge")
+                .attr("dx", "-0.75em");
+            svg.selectAll(".velocity_1_element")
+                .attr("dx", "-0.25em");
+            svg.selectAll(".dragline")
+                .style("display", "none");
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");
@@ -233,6 +252,7 @@ export namespace backendManager {
             if (graph.bonds.length == 0) {
                 oldSVG.select("#bondGroup").remove();
             }
+            svg.selectAll("edgeHover").remove()
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let minX = Infinity;
             let minY = Infinity;

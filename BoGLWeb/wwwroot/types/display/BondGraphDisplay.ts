@@ -59,7 +59,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("refY", refY)
             .attr("markerWidth", w)
             .attr("markerHeight", h)
-            .attr("orient", "auto-start-reverse")
+            .attr("orient", "auto")
             .style("stroke", isSelected ? "rgb(6, 82, 255)" : "#333");
         return marker;
     }
