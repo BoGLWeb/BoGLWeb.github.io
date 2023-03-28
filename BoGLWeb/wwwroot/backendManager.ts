@@ -224,9 +224,10 @@ export namespace backendManager {
             svg.selectAll("text")
                 .style("fill", "black")
                 .style("font-size", "30px")
-                .style("dominant-baseline", "middle")
                 .style("font-family", "Arial")
                 .style("fill-opacity", "1");
+            svg.selectAll("topVelocity")
+                .attr("dy", "0.25em");
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");
