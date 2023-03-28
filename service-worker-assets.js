@@ -349,7 +349,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-EHzwbAX3peSNO1J9KJ4+OHG4eMUdxaxhRW94DBsLX0M=",
+      "hash": "sha256-XlqB\/5nJZt5ftBmcQ\/8Ah5r1IpbCdAiNvSYQGWvqaLM=",
       "url": "manifest.json"
     },
     {
@@ -5625,5 +5625,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "lf1QMsaO"
+  "version": "xKZdoWzV"
 };
