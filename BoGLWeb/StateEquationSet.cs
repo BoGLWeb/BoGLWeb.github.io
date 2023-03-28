@@ -354,6 +354,7 @@ namespace BoGLWeb {
             /// <param name="wrapper">The <c>BondGraphWrapper</c> containing information on 
             /// connections between the </param>
             /// <returns>The <c>Dictionary</c> mapping.</returns>
+            // Note that any replacement mappings determined by the user should occur here.
             public static Dictionary<string, string> GetDomainVariables(BondGraph.BondGraphWrapper wrapper) {
                 Dictionary<string, string> vars = new();
                 //
