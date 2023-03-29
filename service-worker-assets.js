@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-6CAhKyf+mXuTPDapBKXd+mQdA9uNOltPJvvBpo69KCQ=",
+      "hash": "sha256-Tp5iKDZces6i9bFywpxmJMWvcDz\/wL5atH4Zv+HbZGs=",
       "url": "css\/main.css"
     },
     {
@@ -5625,5 +5625,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "xKZdoWzV"
+  "version": "DArFKNm3"
 };
