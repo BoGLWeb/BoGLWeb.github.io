@@ -463,16 +463,18 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 }
 
 #modifierMenu {
+    display: table;
     height: fit-content;
-    position: fixed;
-    margin-left: calc(100% - 378px);
+    position: absolute;
+    right: 15px;
     width: 120px
 }
 
 #modifierMenu > .ant-collapse {
     height: 100%;
     overflow: clip !important;
-    padding-bottom: 0
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 #modifierCheckboxWrapper > .ant-checkbox-wrapper {
