@@ -856,3 +856,7 @@ hr:not([size]) {
     position: absolute;
     bottom: 20px;
 }
+
+#latexTest {
+    margin-top: 20px;
+}

@@ -143,7 +143,7 @@ async function loadPage() {
         throwOnError: false
     });
     const parser = new DOMParser();
-    document.getElementById("latexTest").appendChild(parser.parseFromString(html, "application/xml").children[0]);
+    document.getElementById("latexTest").appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
 }
 
 var menuIdMap = {
