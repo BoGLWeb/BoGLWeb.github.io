@@ -5,6 +5,7 @@
 
 @font-face {
     font-family: SegoeUIBold;
+    font-style: normal !important;
     src: url(SegoeUIBold.woff);
 }
 
@@ -13,12 +14,9 @@
     src: url(Symbola.ttf);
 }
 
-html.segoeUI, body.segoeUI {
-    font-family: "SegoeUI" !important
-}
-
-html:not(.segoeUI), body:not(.segoeUI) {
-    font-family: "Segoe UI" !important
+html, body {
+    font-family: unset;
+    font: normal 14px "Segoe UI", "SegoeUI" !important;
 }
 
 h1:focus {
@@ -378,8 +376,8 @@ h2 {
     opacity: 40% !important
 }
 
-.topMenu:not(.segoeUIBold) {
-    font-weight: 700;
+.topMenu {
+    font: bold 14px "Segoe UI", "SegoeUIBold" !important;
 }
 
 circle {
@@ -514,9 +512,9 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 
 #modifierMenu {
     height: fit-content;
-    position: absolute;
-    right: 15px;
-    width: 138px
+    position: fixed;
+    margin-left: calc(100% - 378px);
+    width: 120px
 }
 
 #modifierMenu > .ant-collapse {
@@ -689,13 +687,10 @@ hr:not([size]) {
     border: solid 1px #d6d6d6
 }
 
-.segoeUIBold {
-    font-family: "SegoeUIBold" !important
-}
-
 .sliderLabel {
     color: #a9a9a9;
     font-size: 15px;
+    font: bold 14px "Segoe UI", "SegoeUIBold" !important;
 }
 
 .sliderLabel:not(.segoeUIBold) {

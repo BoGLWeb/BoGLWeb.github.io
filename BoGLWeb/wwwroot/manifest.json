@@ -1,8 +1,8 @@
 {
-  "name": "BoGLWeb",
-  "short_name": "BoGLWeb",
+  "name": "BoGL Web",
+  "short_name": "BoGL Web",
   "manifest_version": 3,
-  "version": "1.2",
+  "version": "1.7",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

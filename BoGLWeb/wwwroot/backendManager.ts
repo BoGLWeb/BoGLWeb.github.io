@@ -1,6 +1,7 @@
 ﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
 import { GraphBondID } from "./types/bonds/GraphBondID";
+import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
 import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
@@ -12,6 +13,8 @@ import { SVGSelection } from "./type_libraries/d3-selection";
 
 export namespace backendManager {
     export class BackendManager {
+
+        imageBuffer = 15;
 
         public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
@@ -96,6 +99,8 @@ export namespace backendManager {
                 edges.push(bond);
             }
 
+            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
 
@@ -104,6 +109,191 @@ export namespace backendManager {
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
             this.zoomCenterGraph("1");
+            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            systemDiagram.initWidth = bounds.width;
+            systemDiagram.initHeight = bounds.height;
+        }
+
+        public async exportAsImage() {
+            let graph = this.getGraphByIndex(window.tabNum);
+            let svg = graph.svg;
+            if (this.getTabNum() == 1) {
+                await this.convertImages("image.hoverImg");
+            }
+            let copy = svg.node().cloneNode(true);
+            this.applyInlineStyles(svg, d3.select(copy), graph);
+            this.svgToCanvas(svg, copy as SVGElement, graph);
+        }
+
+        public markerToString(marker: string) {
+            return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
+        }
+
+        public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
+            let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+            let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
+            let isBondGraph = graph instanceof BondGraphDisplay;
+            let w = bounds.width / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+            let h = bounds.height / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+            svg.setAttribute("viewbox", "0 0 " + w + " " + h);
+            svg.setAttribute("width", w + "px");
+            svg.setAttribute("height", h + "px");
+
+            let markers = {};
+
+            // bond graph with directed edges
+            // This is necessary because the marker-start and marker-end CSS properties are messing up string serialization,
+            // so we put in placeholders then replace them after string serialization
+            if (this.getTabNum() > 1) {
+                svg.id = "currentSVG";
+                document.body.appendChild(svg);
+                let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
+                for (let i = 0; i < paths[0].length; i++) {
+                    let path = paths[0][i] as HTMLElement;
+                    let hasMarkerEnd = path.style?.markerEnd;
+                    let hasMarkerStart = path.style?.markerStart;
+                    if (hasMarkerEnd) {
+                        markers["~~~" + i] = this.markerToString(path.style.markerEnd);
+                    }
+                    if (hasMarkerStart) {
+                        markers["@@@" + i] = this.markerToString(path.style.markerStart);
+                    }
+                    path.setAttribute("style", (hasMarkerEnd ? "marker-end: ~~~" + i + "; " : "") + (hasMarkerStart ? "marker-start: @@@" + i + "; " : "") + "stroke-width: 2px; fill: none; stroke: black;");
+                }
+                svg.id = "";
+            }
+
+            let img = new Image(w, h);
+            let serializer = new XMLSerializer();
+            let svgStr = serializer.serializeToString(svg);
+            d3.select("#currentSVG").remove();
+
+            for (const i in markers) {
+                svgStr = svgStr.replaceAll(i, markers[i]);
+            }
+
+            img.src = "data:image/svg+xml;utf8," + svgStr;
+
+            var canvas = document.createElement("canvas");
+            document.body.appendChild(canvas);
+
+            canvas.width = w;
+            canvas.height = h;
+            img.onload = () => {
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
+                canvas.toBlob(blob => {
+                    let pickerOptions = {
+                        suggestedName: filenames[this.getTabNum() - 1],
+                        types: [
+                            {
+                                description: 'PNG File',
+                                accept: {
+                                    'image/png': ['.png'],
+                                },
+                            },
+                            {
+                                description: 'SVG File',
+                                accept: {
+                                    'image/svg+xml': ['.svg'],
+                                },
+                            },
+                            {
+                                description: 'JPEG File',
+                                accept: {
+                                    'image/jpeg': ['.jpeg', '.jpg'],
+                                },
+                            }
+                        ],
+                    };
+
+                    this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
+                    graph.updateGraph();
+                });
+            };
+        }
+
+        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
+            svg.selectAll(".link")
+                .style("fill", "none")
+                .style("stroke", "black")
+                .style("stroke-width", "4px");
+            svg.selectAll(".boglElem")
+                .style("fill-opacity", "0");
+            svg.selectAll(".outline")
+                .style("stroke", "black");
+            svg.selectAll("text")
+                .style("fill", "black")
+                .style("font-size", "30px")
+                .style("font-family", "Arial")
+                .style("fill-opacity", "1")
+                .attr("dy", "0.25em");
+            svg.selectAll(".velocity_5_edge")
+                .attr("dx", "0em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_4_edge")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_6_edge, .velocity_7_edge, .velocity_6_element, .velocity_5_element")
+                .attr("dx", "-0.75em")
+                .attr("dy", "0.5em");
+            svg.selectAll(".velocity_7_element, .velocity_8_element, .velocity_1_edge, .velocity_8_edge")
+                .attr("dx", "-0.75em");
+            svg.selectAll(".velocity_1_element")
+                .attr("dx", "-0.25em");
+            svg.selectAll(".dragline")
+                .style("display", "none");
+            svg.style("background-color", "white");
+            svg.select("circle")
+                .style("display", "none");
+            svg.selectAll(".bondGraphText")
+                .style("font-size", "14px")
+                .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
+            oldSVG.select(".dragline").remove();
+            if (graph.bonds.length == 0) {
+                oldSVG.select("#bondGroup").remove();
+            }
+            svg.selectAll("edgeHover").remove()
+            let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            for (let e of graph.elements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+            }
+            let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
+            let isBondGraph = graph instanceof BondGraphDisplay;
+            svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + (isBondGraph ? this.imageBuffer : 0)) + ", "
+                + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + (isBondGraph ? this.imageBuffer : 0)) + ") scale(1)");
+        }
+
+        // this will break if additional image types beyond system diagram elements are added to BoGL Web
+        public async convertImages(query) {
+            const images = document.querySelectorAll(query);
+
+            for (let i = 0; i < images.length; i++) {
+                let image = images.item(i);
+                await fetch(image.href.baseVal)
+                    .then(res => res.text())
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const svg = parser.parseFromString(data, 'image/svg+xml').querySelector('svg');
+
+                        if (image.id) svg.id = image.id;
+                        // @ts-ignore
+                        if (image.className) svg.classList = image.classList;
+                        svg.setAttribute("height", "50px");
+                        svg.setAttribute("width", "50px");
+                        svg.setAttribute("x", "-25px");
+                        svg.setAttribute("y", "-25px");
+
+                        image.parentNode.replaceChild(svg, image);
+                    })
+                    .catch(error => console.error(error))
+            }
         }
 
         public zoomCenterGraph(index: string) {
@@ -126,23 +316,46 @@ export namespace backendManager {
         }
 
         public async openFile() {
-            let fileHandle;
-            [fileHandle] = await window.showOpenFilePicker();
-            const file = await fileHandle.getFile();
-            const contents = await file.text();
-            return contents;
+            await this.openFileCompatible();
         }
 
         public getTabNum(): number {
             return parseInt(window.tabNum);
         }
 
-        public async saveAsFile(fileName: string, contentStreamReference: any) {
+        public saveFileNoPicker(fileName, blob) {
+            const urlToBlob = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.setProperty('display', 'none');
+            document.body.appendChild(a);
+            a.href = urlToBlob;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(urlToBlob);
+            a.remove();
+        }
+
+        public async openFileCompatible() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = ".bogl";
+            input.onchange = async _ => {
+                let files = Array.from(input.files);
+                let text = await files[0].text();
+                let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+                if (systemDiagramText != null) {
+                    this.loadSystemDiagram(systemDiagramText);
+                }
+            };
+            input.click();
+        }
+
+        public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
 
-            const pickerOptions = {
-                suggestedName: `systemDiagram.bogl`,
+            pickerOptions = pickerOptions ?? {
+                suggestedName: fileName,
                 types: [
                     {
                         description: 'A BoGL File',
@@ -153,11 +366,19 @@ export namespace backendManager {
                 ],
             };
 
-            const fileHandle = await window.showSaveFilePicker(pickerOptions);
-            window.filePath = fileHandle;
-            const writableFileStream = await fileHandle.createWritable();
-            await writableFileStream.write(blob);
-            await writableFileStream.close();
+            await this.saveAsBlob(blob, pickerOptions, null);
+        }
+
+        public async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
+            if (window.showSaveFilePicker) {
+                const fileHandle = await window.showSaveFilePicker(pickerOptions);
+                window.filePath = fileHandle;
+                const writableFileStream = await fileHandle.createWritable();
+                await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
+                await writableFileStream.close();
+            } else {
+                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
+            }
         }
 
         public async saveFile(fileName: string, contentStreamReference: any) {
@@ -165,7 +386,7 @@ export namespace backendManager {
             const blob = new Blob([arrayBuffer]);
 
             const pickerOptions = {
-                suggestedName: `systemDiagram.bogl`,
+                suggestedName: fileName,
                 types: [
                     {
                         description: 'A BoGL File',
@@ -177,12 +398,15 @@ export namespace backendManager {
             };
 
             if (window.filePath == null) {
-                window.filePath = await window.showSaveFilePicker(pickerOptions);
+                if (window.showSaveFilePicker) {
+                    window.filePath = await window.showSaveFilePicker(pickerOptions);
+                    const writableFileStream = await window.filePath.createWritable();
+                    await writableFileStream.write(blob);
+                    await writableFileStream.close();
+                } else {
+                    this.saveFileNoPicker("systemDiagram.bogl", blob);
+                }
             }
-
-            const writableFileStream = await window.filePath.createWritable();
-            await writableFileStream.write(blob);
-            await writableFileStream.close();
         }
 
         public cut() {
@@ -287,7 +511,11 @@ export namespace backendManager {
 
         public generateURL() {
             return JSON.stringify({
-                elements: window.systemDiagram.elements,
+                elements: window.systemDiagram.elements.map(e => {
+                    e.x = Math.round(e.x * 10) / 10;
+                    e.y = Math.round(e.y * 10) / 10;
+                    return e;
+                }),
                 bonds: window.systemDiagram.bonds
             }, function (key, val) {
                 return val.toFixed ? Number(val.toFixed(3)) : val;

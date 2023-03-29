@@ -169,15 +169,19 @@ namespace BoGLWeb {
             //Find all ids which need to be squished
             Console.WriteLine(systemDiagram.getElements());
             for (int i = 0; i < elementIds.Count; i++) {
+                Element newElement;
                 if (elementIds[i] != i) {
                     //We found id which needs to be squished
                     squishMap.Add(elementIds[i], i);
                     Element oldElement = systemDiagram.getElement(i);
-                    updatedElements.Add(i, new Element(oldElement.getType(), oldElement.getName(), oldElement.getX(), oldElement.getY(), i));
+                    newElement = new Element(oldElement.getType(), oldElement.getName(), oldElement.getX(), oldElement.getY(), i);
+                    newElement.modifiers = oldElement.getModifiers();
+                    newElement.setVelocity(oldElement.getVelocity());
                 } else {
                     squishMap.Add(i, i);
-                    updatedElements.Add(i, systemDiagram.getElement(i));
+                    newElement = systemDiagram.getElement(i);
                 }
+                updatedElements.Add(i, newElement);
             }
 
             foreach (KeyValuePair<int, int> kvPair in squishMap) {
@@ -245,8 +249,7 @@ namespace BoGLWeb {
         //Parsing
         //TODO Think about refactoring to use only one queue
         public static SystemDiagram generateSystemDiagramFromXML(string xml) {
-            string errorMessage =
-                "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
+            string errorMessage = "You have attempted to load an invalid .bogl file. Please ensure that you have the correct file and try again. File must have been saved using BoGL Web or BoGL Desktop to be valid.";
             List<string> tokens = tokenize(xml);
 
             //TODO Check if any of these are -1 because then we have an error
@@ -814,7 +817,7 @@ namespace BoGLWeb {
             [JsonProperty]
             protected double y;
             [JsonProperty]
-            protected List<int> modifiers;
+            public List<int> modifiers;
             [JsonProperty]
             protected int velocity;
 
@@ -867,8 +870,8 @@ namespace BoGLWeb {
                 JArray? modifiers = obj.Value<JArray>("modifiers");
                 this.modifiers = new();
                 if (modifiers != null) {
-                    foreach (JObject mod in modifiers) {
-                        this.modifiers.Add(mod.Value<int>());
+                    foreach (int mod in modifiers) {
+                        this.modifiers.Add(mod);
                     }
                 }
                 typeIDDictReverse.TryGetValue(this.type, out string? name);

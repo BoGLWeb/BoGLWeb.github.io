@@ -27,9 +27,8 @@
         <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
         <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-        <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
-        <MenuItem Key="setting:6" OnClick="showStateEquations">View State Equations</MenuItem>
-        <MenuItem Key="setting:7" OnClick="generateUrl">Generate URL</MenuItem>
+        <MenuItem Key="setting:5" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
+        <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
@@ -301,9 +300,14 @@
         <p>@errorMessage</p>
     </div>
 </Modal>
-<Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
-        <Input DefaultValue="@url" TValue="string" ReadOnly />
-    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+    @{
+        RenderFragment footer = @<Button OnClick="@handleUrlOk">Close</Button>;
+    }
+<Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible">
+    <div style="display: flex">
+        <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
+        <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
+    </div>
 </Modal>
     @{
         RenderFragment footer = @<Template>
@@ -542,6 +546,12 @@
         app?.StateHasChanged();
     }
 
+    public async void exportAsImage() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("exportAsImage");
+        await module.InvokeVoidAsync("closeMenu", "File");
+    }
+
     [JSInvokable]
     public static async Task<bool> showDeleteConfirmationModal(bool multiElementsSelected) {
         if (!deleteManyChecked) {
@@ -746,7 +756,7 @@
             base.StateHasChanged();
             return;
         }
-        
+
         generateProgress = 25.0;
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
@@ -796,7 +806,7 @@
         generatingBondGraph = false;
         tabsDisabled = false;
         base.StateHasChanged();
-        await messageService.Success("Bond Graphs Successfully Generated!");
+        await messageService.Success("Bond Graphs Successfully Generated.");
     }
 
     /// <summary>
@@ -816,32 +826,34 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
-    private string errorMessage = "";
-    private string errorTitle = "";
+    private static string errorMessage = "";
+    private static string errorTitle = "";
 
     //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        object file;
         try {
-            file = await module.InvokeAsync<object>("openFile");
+            await module.InvokeAsync<object>("openFile");
         } catch (Exception e) {
             return;
         }
+    }
+
+    [JSInvokable]
+    public static string openSystemDiagram(string file) {
         SystemDiagram sysDiagram;
         try {
-            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file);
+            return sysDiagram.convertToJson();
         }
         catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
-            base.StateHasChanged();
-            return;
+            app.StateHasChanged();
+            return null;
         }
-
-        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     //Turns a string into a Stream
@@ -863,8 +875,11 @@
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
-            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-           return; 
+            errorVisible = true;
+            errorTitle = "Error Saving .bogl File";
+            errorMessage = "Your system diagram must contain at least one element to be able to save. Please add elements to the Canvas and try saving again.";
+            base.StateHasChanged();
+            return;
         }
         var fileName = "SystemDiagram.bogl";
 
@@ -911,7 +926,7 @@
         base.StateHasChanged();
     }
 
-    bool errorVisible = false;
+    static bool errorVisible = false;
 
     //Handles the ok button on the error modal
     private void handleErrorOk() {
@@ -990,6 +1005,9 @@
         Regex urlShort6 = new Regex("},{{");
         Regex urlShort7 = new Regex("},");
         Regex urlShort8 = new Regex(",");
+        Regex urlShort9 = new Regex("hdh");
+        Regex urlShort10 = new Regex("h\\[");
+        Regex urlShort11 = new Regex("\\]h");
 
         jsonStr = urlShort4.Replace(jsonStr, "a");
         jsonStr = urlShort6.Replace(jsonStr, "b");
@@ -999,6 +1017,9 @@
         jsonStr = urlShort1.Replace(jsonStr, "f");
         jsonStr = urlShort7.Replace(jsonStr, "g");
         jsonStr = urlShort8.Replace(jsonStr, "h");
+        jsonStr = urlShort9.Replace(jsonStr, "i");
+        jsonStr = urlShort10.Replace(jsonStr, "j");
+        jsonStr = urlShort11.Replace(jsonStr, "k");
 
 
     //Add url to modal
@@ -1018,7 +1039,13 @@
         Regex urlShort6 = new Regex("b");
         Regex urlShort7 = new Regex("g");
         Regex urlShort8 = new Regex("h");
+        Regex urlShort9 = new Regex("i");
+        Regex urlShort10 = new Regex("j");
+        Regex urlShort11 = new Regex("k");
 
+        compressedUrl = urlShort9.Replace(compressedUrl, "hdh");
+        compressedUrl = urlShort10.Replace(compressedUrl, "h[");
+        compressedUrl = urlShort11.Replace(compressedUrl, "]h");
         compressedUrl = urlShort1.Replace(compressedUrl, "{[{");
         compressedUrl = urlShort2.Replace(compressedUrl, "[]");
         compressedUrl = urlShort3.Replace(compressedUrl, "},{");
@@ -1080,7 +1107,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
     }

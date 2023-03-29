@@ -13,6 +13,6 @@ export class SystemDiagramElement extends GraphElement {
     }
 
     copy(id, offset = 0) {
-        return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, this.modifiers);
+        return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, [...this.modifiers]);
     }
 }
