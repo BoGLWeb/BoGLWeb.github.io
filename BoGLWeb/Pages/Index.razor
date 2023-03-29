@@ -205,28 +205,28 @@
                                                     <br/>Velocity
                                                 </Button>
                                             </div>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 26px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(1) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(1); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; left: 17px">
                                                 <div class="arrowButton topArrow">⮢</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 26px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(2) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(2); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -30px; right: 17px">
                                                 <div class="arrowButton topArrow">⮣</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: 1px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(3) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(3); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; right: -8px">
                                                 <div class="arrowButton sideTopArrow">⮥</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: 1px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(4) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(4); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; right: -8px">
                                                 <div class="arrowButton">⮧</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 21px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(5) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(5); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; right: 12px">
                                                 <div class="arrowButton bottomArrow">⮡</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 21px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(6) ? "selectedVelocity " : "") + "longArrow")" OnClick="b => { ChangeVelocity(6); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 62px; left: 22px">
                                                 <div class="arrowButton bottomArrow">⮠</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: 1px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(7) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(7); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: 34px; left: -8px">
                                                 <div class="arrowButton">⮦</div>
                                             </Button>
-                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: 1px">
+                                            <Button Disabled="@velocityDisabled" Class="@((selectedVelocity.Contains(8) ? "selectedVelocity " : "") + "tallArrow")" OnClick="b => { ChangeVelocity(8); }" Type="@ButtonType.Text" Size="@ButtonSize.Large" Style="top: -4px; left: -8px">
                                                 <div class="arrowButton sideTopArrow">⮤</div>
                                             </Button>
                                         </div>
@@ -301,23 +301,23 @@
     </div>
 </Modal>
     @{
-        RenderFragment footer = @<Button OnClick="@handleUrlOk">Close</Button>;
+        RenderFragment urlFooter = @<Button OnClick="@handleUrlOk">Close</Button>;
     }
-<Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible">
+    <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible">
     <div style="display: flex">
         <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
     </div>
 </Modal>
-    @{
+@*    @{
         RenderFragment footer = @<Template>
             <Button OnClick="@closeLabelValue" Type="primary">Save</Button>
             <Button OnClick="@closeLabelValue">Cancel</Button>
             </Template>
         ;
         List<string> unitsList = new List<string> { "kg", "gram", "slug" };
-    }
-<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
+    }*@
+@*<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
     <div style="display: flex; align-items: center;">
         <div style="margin-right: 10px;">Label: </div>
         <Input Style="width: 400px" Placeholder="Label" required="true" DefaultValue="@("M1")" Type="text" />
@@ -327,7 +327,7 @@
         <Input Style="width: 270px; margin-right: 10px;" Placeholder="Value" required="true" DefaultValue="@(4)" Type="number" />
         <Select DataSource="@unitsList" DefaultValue="@("kg")" Style="width:120px"/>
     </div>
-</Modal>
+</Modal>*@
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
