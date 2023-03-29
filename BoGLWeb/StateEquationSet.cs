@@ -19,10 +19,10 @@ namespace BoGLWeb {
             public StateEquationSet(BondGraph graph) {
                 int count = graph.GetDifferentialElements().Count;
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
-                List<FunctionEquation> initialEquations = GetInitialEquations(graphWrapper);
+                List<Equation> initialEquations = GetInitialEquations(graphWrapper);
                 this.initialEquations = new string[initialEquations.Count];
                 int initialIndex = 0;
-                foreach (FunctionEquation equation in initialEquations) {
+                foreach (Equation equation in initialEquations) {
                     this.initialEquations[initialIndex++] = equation.ToString();
                 }
                 List<CausalGraphWrapper> wrappers = CausalGraphWrapper.GenerateList(graphWrapper);
@@ -265,10 +265,10 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="wrapper">The graphWrapper containing the information
             /// for the target bond graph.</param>
-            private static List<FunctionEquation> GetInitialEquations(BondGraph.BondGraphWrapper wrapper) {
+            private static List<Equation> GetInitialEquations(BondGraph.BondGraphWrapper wrapper) {
                 Dictionary<int, List<BondGraph.Bond>> bbs = wrapper.GetBondsBySource();
                 Dictionary<int, List<BondGraph.Bond>> bbt = wrapper.GetBondsByTarget();
-                List<FunctionEquation> equations = new();
+                List<Equation> equations = new();
                 foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
                     char typeChar = pair.Value.GetTypeChar();
                     switch (typeChar) {
@@ -354,7 +354,7 @@ namespace BoGLWeb {
             /// <param name="wrapper">The <c>BondGraphWrapper</c> containing information on 
             /// connections between the </param>
             /// <returns>The <c>Dictionary</c> mapping.</returns>
-            // Note that any replacement mappings determined by the user should occur here.
+            // Note that any replacement mappings determined by the user should be applied here.
             public static Dictionary<string, string> GetDomainVariables(BondGraph.BondGraphWrapper wrapper) {
                 Dictionary<string, string> vars = new();
                 //

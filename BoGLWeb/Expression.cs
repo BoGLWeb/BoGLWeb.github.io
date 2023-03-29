@@ -943,22 +943,6 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Converts this <c>Expression</c> to a printable format that exposes
-            /// its parse tree.
-            /// </summary>
-            /// <param name="indent">The indent placed before every item in this
-            /// list, exposing its displacement in the tree from the parent.</param>
-            /// <returns></returns>
-            private string ToTree(string indent) {
-                string print = indent + this.fn;
-                indent += "\t";
-                foreach (Expression child in this.children) {
-                    print = print + "\n" + child.ToTree(indent);
-                }
-                return print;
-            }
-
-            /// <summary>
             /// Converts this <c>Expression</c> to a printable format.
             /// </summary>
             /// <returns>
