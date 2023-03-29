@@ -193,9 +193,7 @@ h2 {
 #diffeqButtons {
     display: flex;
     justify-content: center;
-    position: absolute;
-    bottom: 20px;
-    left: calc(50% - 80px);
+    margin-top: 10px;
 }
 
 #diffeqButtons button:nth-child(2) {
@@ -841,4 +839,20 @@ hr:not([size]) {
     border: transparent !important;
     box-shadow: none !important;
     padding: 0 5px;
+}
+
+#blankMenu {
+    background-color: #D6EEFF;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin-left: 5px;
+    margin-top: 5px;
+    display: none;
+}
+
+#diffeqOptions {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 20px;
 }

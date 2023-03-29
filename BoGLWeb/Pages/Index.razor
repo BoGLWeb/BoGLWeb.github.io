@@ -104,6 +104,7 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
+        <div id="blankMenu"></div>
         <Collapse Id="elementMenus" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
@@ -138,10 +139,13 @@
                     <p>@diffEq</p>
                 </div>
             }
-            <Checkbox Id="highlightCheck">State Equation Highlights</Checkbox>
-            <div id="diffeqButtons">
-                <Button OnClick="@(() => {diffIndex = Math.Max(@diffIndex - 1, 0);})" Disabled="@(diffIndex == 0)">Previous</Button>
-                <Button OnClick="@(() => {diffIndex = Math.Min(@diffIndex + 1, stateEquationsStored.Length - 1);})" Disabled="@(diffIndex == stateEquationsStored.Length - 1)">Next</Button>
+            <div id="latexTest"></div>
+            <div id="diffeqOptions">
+                <Checkbox Id="highlightCheck">State Equation Highlights</Checkbox>
+                <div id="diffeqButtons">
+                    <Button OnClick="@(() => {diffIndex = Math.Max(@diffIndex - 1, 0);})" Disabled="@(diffIndex == 0)">Previous</Button>
+                    <Button OnClick="@(() => {diffIndex = Math.Min(@diffIndex + 1, stateEquationsStored.Length - 1);})" Disabled="@(diffIndex == stateEquationsStored.Length - 1)">Next</Button>
+                </div>
             </div>
         </div>
         <div class="resizer"></div>

@@ -491,9 +491,15 @@ export namespace backendManager {
             if (key == "4") {
                 document.getElementById("diffeqMenu").style.display = "flex";
                 document.getElementById("elementMenus").style.display = "none";
-            } else {
+                document.getElementById("blankMenu").style.display = "none";
+            } else if (key == "1") {
                 document.getElementById("diffeqMenu").style.display = "none";
                 document.getElementById("elementMenus").style.display = "block";
+                document.getElementById("blankMenu").style.display = "none";
+            } else {
+                document.getElementById("diffeqMenu").style.display = "none";
+                document.getElementById("elementMenus").style.display = "none";
+                document.getElementById("blankMenu").style.display = "block";
             }
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
