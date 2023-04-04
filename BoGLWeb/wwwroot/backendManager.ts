@@ -323,10 +323,6 @@ export namespace backendManager {
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
-        public async openFile() {
-            await this.openFileCompatible();
-        }
-
         public getTabNum(): number {
             return parseInt(window.tabNum);
         }
@@ -341,21 +337,6 @@ export namespace backendManager {
             a.click();
             window.URL.revokeObjectURL(urlToBlob);
             a.remove();
-        }
-
-        public async openFileCompatible() {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = ".bogl";
-            input.onchange = async _ => {
-                let files = Array.from(input.files);
-                let text = await files[0].text();
-                let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
-                if (systemDiagramText != null) {
-                    this.loadSystemDiagram(systemDiagramText);
-                }
-            };
-            input.click();
         }
 
         public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
