@@ -137,13 +137,17 @@ export class BaseGraphDisplay {
         return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
     }
 
+    selectAll() {
+        let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
+        this.setSelection(this.elements, this.bonds);
+        this.updateGraph();
+        DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
+        this.updateMenus();
+    }
+
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
-            let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
-            this.setSelection(this.elements, this.bonds);
-            this.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
-            this.updateMenus();
+            this.selectAll();
         }
     }
 
