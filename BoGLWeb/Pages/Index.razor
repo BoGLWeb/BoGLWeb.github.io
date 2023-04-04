@@ -23,7 +23,12 @@
     <SubMenu title="File" Class="topMenu" Key="File">
         <span id="fileMenu"></span>
         <!-- <MenuItem Key="setting:1">New</MenuItem> -->
-        <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
+        <MenuItem Key="setting:2" OnClick="openBoGLFile">
+            <label for="fileUpload" class="customFileUpload">
+                Open
+            </label>
+            <input id="fileUpload" type="file" accept=".bogl" />
+        </MenuItem>
         <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
         <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
         <MenuItem Key="setting:5" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
@@ -769,15 +774,9 @@
     private static string errorMessage = "";
     private static string errorTitle = "";
 
-    //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        try {
-            await module.InvokeAsync<object>("openFile");
-        } catch (Exception e) {
-            return;
-        }
     }
 
     [JSInvokable]

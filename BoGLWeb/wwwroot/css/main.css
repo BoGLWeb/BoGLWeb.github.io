@@ -780,3 +780,15 @@ hr:not([size]) {
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
     display: none !important;
 }
+
+input[type="file"] {
+    position: fixed;
+    right: 100%;
+    bottom: 100%;
+}
+
+.customFileUpload {
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+}
