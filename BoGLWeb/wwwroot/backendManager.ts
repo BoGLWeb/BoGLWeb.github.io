@@ -414,6 +414,11 @@ export namespace backendManager {
         public delete(needsConfirmation = true) {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
+
+        public clear() {
+            this.getSystemDiagramDisplay().selectAll();
+            this.getSystemDiagramDisplay().deleteSelection(false);
+        }
         
         public areMultipleElementsSelected() {
             return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;

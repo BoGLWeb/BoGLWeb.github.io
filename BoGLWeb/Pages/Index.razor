@@ -22,17 +22,16 @@
     </li>
     <SubMenu title="File" Class="topMenu" Key="File">
         <span id="fileMenu"></span>
-        <!-- <MenuItem Key="setting:1">New</MenuItem> -->
-        <MenuItem Key="setting:2" OnClick="openBoGLFile">
+        <MenuItem Key="setting:1" OnClick="openBoGLFile">
             <label for="fileUpload" class="customFileUpload">
                 Open
             </label>
             <input id="fileUpload" type="file" accept=".bogl" />
         </MenuItem>
-        <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
-        <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-        <MenuItem Key="setting:5" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
-        <MenuItem Key="setting:6" OnClick="generateUrl">Generate URL</MenuItem>
+        <MenuItem Key="setting:2" OnClick="save">Save</MenuItem>
+        <MenuItem Key="setting:3" OnClick="saveAs">Save As</MenuItem>
+        <MenuItem Key="setting:4" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
+        <MenuItem Key="setting:5" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
@@ -42,6 +41,7 @@
         <MenuItem Key="setting:4" OnClick="Undo">Undo</MenuItem>
         <MenuItem Key="setting:5" OnClick="Redo">Redo</MenuItem>
         <MenuItem Key="setting:6" OnClick="Delete">Delete</MenuItem>
+        <MenuItem Key="setting:7" OnClick="Clear">Clear System Diagram</MenuItem>
     </SubMenu>
     <SubMenu title="Help" Class="topMenu" Key="Help">
         <span id="helpMenu"></span>
@@ -82,6 +82,7 @@
             RenderFragment UndoSvg = @<img class="menuIcon" src="images/menuBar/undo.png" title="Undo"/>;
             RenderFragment RedoSvg = @<img class="menuIcon" src="images/menuBar/redo.png" title="Redo"/>;
             RenderFragment TrashSvg = @<img class="menuIcon" src="images/menuBar/trash.png" title="Trash"/>;
+            RenderFragment ClearSvg = @<img class="menuIcon" src="images/menuBar/clear.png" title="Clear System Diagram"/>;
         }
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
@@ -103,6 +104,9 @@
         </Button>
         <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
+        </Button>
+        <Button Disabled='currTab != "1"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="ClearSvg"/>
         </Button>
     </li>
 </Menu>
@@ -389,6 +393,12 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("delete");
+    }
+
+    public async void Clear() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("clear");
     }
 
     [JSInvokable]
