@@ -463,8 +463,7 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 }
 
 #modifierMenu {
-    display: table;
-    height: fit-content;
+    display: block;
     position: absolute;
     right: 15px;
     width: 120px
