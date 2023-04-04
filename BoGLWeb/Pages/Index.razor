@@ -674,6 +674,7 @@
 
     //Generates the series of bond graphs and displays them to the screen
     private async Task generateButtonClicked() {
+        double initZoom = zoomValue;
         generateProgress = 0.0;
         generatingBondGraph = true;
         base.StateHasChanged();
@@ -743,6 +744,7 @@
         causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => { return new Option { label = "Option " + (i + 1), value = i }; }).ToList();
         generatingBondGraph = false;
         tabsDisabled = false;
+        zoomValue = initZoom;
         base.StateHasChanged();
         await messageService.Success("Bond Graphs Successfully Generated.");
     }
