@@ -2,3 +2,4 @@
 declare var DotNet: {
     invokeMethodAsync: any;
 };
+declare var katex: any;

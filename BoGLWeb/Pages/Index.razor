@@ -104,8 +104,8 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <div id="blankMenu"></div>
-        <Collapse Id="elementMenus" Bordered="false">
+        <div id="blankMenu" style="@("display: " + (currTab == "2" || currTab == "3" ? "block" : "none"))"></div>
+        <Collapse Id="elementMenus" style="@("display: " + (currTab == "1" ? "block" : "none"))" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
             </ExpandIconTemplate>
@@ -127,25 +127,38 @@
                 </Panel>
             </ChildContent>
         </Collapse>
-        <div id="diffeqMenu">
+        <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
+            <Button OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
             <h2>Differential Equation @(diffIndex + 1)</h2>
             <sub>@stateEquationsStored.Length equations total</sub>
+            <Select Id="equationSelect"
+                    TItem="Option"
+                    TItemValue="int"
+                    DataSource="@equationSwitchOptions"
+                    @bind-Value="@selectedEquation"
+                    DefaultValue="@(0)"
+                    ValueName="@nameof(Option.value)"
+                    LabelName="@nameof(Option.label)"
+                    Style="width:160px; margin-bottom: 15px"
+                    OnSelectedItemChanged="ChangeEquationOption">
+            </Select>
             @if(stateEquationsStored.Length > 0) {
                 string diffEq = stateEquationsStored[diffIndex];
                 <p>x3’ = v1 – v2</p>
                 <p>v1 = p1 / M1</p>
                 <p>v2 = p2 / M2</p>
-                <div id="diffeqAnswer">
-                    <p>@diffEq</p>
-                </div>
+                <hr id="diffeqHR" />
+                <p>@diffEq</p>
             }
             <div id="latexTest"></div>
-            <div id="diffeqOptions">
-                <Checkbox Id="highlightCheck">State Equation Highlights</Checkbox>
-                <div id="diffeqButtons">
-                    <Button OnClick="@(() => {diffIndex = Math.Max(@diffIndex - 1, 0);})" Disabled="@(diffIndex == 0)">Previous</Button>
-                    <Button OnClick="@(() => {diffIndex = Math.Min(@diffIndex + 1, stateEquationsStored.Length - 1);})" Disabled="@(diffIndex == stateEquationsStored.Length - 1)">Next</Button>
-                </div>
+        </div>
+        <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
+            <Button OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
+            <h2>State Variables</h2>
+            <div style="display: flex; flex-direction: column">
+                @foreach (var v in @equationOptions) {
+                    <span>@v</span>
+                }
             </div>
         </div>
         <div class="resizer"></div>
@@ -342,8 +355,6 @@
 
     public static Index? app;
 
-    private int tabNum;
-
     public class Option {
         public string label { get; set; }
         public int value { get; set; }
@@ -357,12 +368,16 @@
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    static List<string> equationOptions = new List<string> { "x'", "p", "m" };
+    List<Option> equationSwitchOptions = Enumerable.Range(0, equationOptions.Count).ToList().Select(i => { return new Option { label = "Equation for " + equationOptions[i], value = i }; }).ToList();
+    int selectedEquation;
     static double zoomValue = 100;
     static List<int> selectedVelocity = new List<int> { };
     static bool velocityDisabled = true;
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
+    static bool showEquations = false;
 
     public Index() {
         app = this;
@@ -685,9 +700,14 @@
         }
     }
 
+    private async void ChangeEquationOption(Option selection) {
+        diffIndex = selection.value;
+    }
+
     private async void ChangeCausalOption(Option selection) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        showEquations = false;
     }
 
     private readonly List<string> ruleNames = new();

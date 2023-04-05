@@ -138,7 +138,6 @@ async function loadPage() {
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
 
-    // @ts-ignore
     let html = katex.renderToString("\\mathrm{ d }_{ \\mathrm{ ij } } \\mathrm{ \\mathrm{= } } \\sqrt{\\sum_{ \\mathrm{ k = 1 } }^ { \\mathrm{ p }} \\left(\\mathrm{ x } ^\\mathrm{ k }\\left(\\mathrm{ i }\\right) \\mathrm{-}\\ \\mathrm{ x } ^\\mathrm{ k } \\left(\\mathrm{ j }\\right) \\right) ^\\mathrm{ 2 }}", {
         throwOnError: false
     });

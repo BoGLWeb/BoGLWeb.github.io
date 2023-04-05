@@ -110,15 +110,24 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
-            .text((d) => (<BondGraphElement>d).label)
-            .classed("bondGraphText", true)
-            .each((d: BondGraphElement) => {
-                let testText = this.testSVG.append("text");
-                testText.attr("text-anchor", "middle")
-                    .text(() => d.label);
-                let bb = testText.node().getBBox();
-                d.labelSize = { width: bb.width, height: bb.height };
-            });
+            .attr("id", e => "BG_test_" + e.id + "_" + this.id)
+            .classed("bondGraphText", true);
+        let tspan1 = text.append("tspan")
+            .text((d) => "I:M")// (<BondGraphElement>d).label)
+            .classed("bondGraphText", true);
+        let tspan2 = text.append("tspan");
+        tspan2.attr("text-anchor", "middle")
+            .text((d) => "1")// (<BondGraphElement>d).label)
+            .style('font-size', '10px')
+            .style('baseline-shift', 'sub')
+            .classed("bondGraphText", true);
+        newElements.each((d: BondGraphElement) => {
+            let testText = this.testSVG.append("text");
+            testText.attr("text-anchor", "middle")
+                .text(() => "I:M1");// d.label);
+            let bb = testText.node().getBBox();
+            d.labelSize = { width: bb.width, height: bb.height };
+        });
     }
 
     pathExtraRendering(paths: BGBondSelection) {
@@ -127,11 +136,11 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
             }
         })
-        .style('marker-start', (d: BondGraphBond) => {
-            if(d.hasDirection){
-                return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
-            }
-        })
-        .style('stroke-width', 2);
+            .style('marker-start', (d: BondGraphBond) => {
+                if(d.hasDirection){
+                    return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
+                }
+            })
+            .style('stroke-width', 2);
     }
 }
