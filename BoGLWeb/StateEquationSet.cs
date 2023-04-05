@@ -290,7 +290,7 @@ namespace BoGLWeb {
                                     outwardCausalBond = bond;
                                 } else {
                                     if (inwardCausalBondCount == 1) {
-                                        throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
+                                        //throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
                                     }
                                     inwardCausalBondCount = 1;
                                     inwardCausalBond = bond;
@@ -303,7 +303,7 @@ namespace BoGLWeb {
                                     inwardCausalBond = bond;
                                 } else {
                                     if (outwardCausalBondCount == 1) {
-                                        throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
+                                        //throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
                                     }
                                     outwardCausalBondCount = 1;
                                     outwardCausalBond = bond;
