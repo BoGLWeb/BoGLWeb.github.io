@@ -9,7 +9,7 @@
 @using BoGLWeb.Json
 @using Newtonsoft.Json
 
-<PageTitle>BoGLWeb</PageTitle>
+<PageTitle>BoGL Web</PageTitle>
 
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
@@ -23,13 +23,16 @@
     </li>
     <SubMenu title="File" Class="topMenu" Key="File">
         <span id="fileMenu"></span>
-        <!-- <MenuItem Key="setting:1">New</MenuItem> -->
-        <MenuItem Key="setting:2" OnClick="openBoGLFile">Open</MenuItem>
-        <MenuItem Key="setting:3" OnClick="save">Save</MenuItem>
-        <MenuItem Key="setting:4" OnClick="saveAs">Save As</MenuItem>
-        <!-- <MenuItem Key="setting:5">Export as Image</MenuItem> -->
-        <MenuItem Key="setting:6" OnClick="showStateEquations">View State Equations</MenuItem>
-        <MenuItem Key="setting:7" OnClick="generateUrl">Generate URL</MenuItem>
+        <MenuItem Key="setting:1" OnClick="openBoGLFile">
+            <label for="fileUpload" class="customFileUpload">
+                Open
+            </label>
+            <input id="fileUpload" type="file" accept=".bogl" />
+        </MenuItem>
+        <MenuItem Key="setting:2" OnClick="save">Save</MenuItem>
+        <MenuItem Key="setting:3" OnClick="saveAs">Save As</MenuItem>
+        <MenuItem Key="setting:4" OnClick="exportAsImage">Export Current Tab as Image</MenuItem>
+        <MenuItem Key="setting:5" OnClick="generateUrl">Generate URL</MenuItem>
     </SubMenu>
     <SubMenu title="Edit" Class="topMenu" Key="Edit">
         <span id="editMenu"></span>
@@ -39,6 +42,7 @@
         <MenuItem Key="setting:4" OnClick="Undo">Undo</MenuItem>
         <MenuItem Key="setting:5" OnClick="Redo">Redo</MenuItem>
         <MenuItem Key="setting:6" OnClick="Delete">Delete</MenuItem>
+        <MenuItem Key="setting:7" OnClick="Clear">Clear System Diagram</MenuItem>
     </SubMenu>
     <SubMenu title="Help" Class="topMenu" Key="Help">
         <span id="helpMenu"></span>
@@ -79,6 +83,7 @@
             RenderFragment UndoSvg = @<img class="menuIcon" src="images/menuBar/undo.png" title="Undo"/>;
             RenderFragment RedoSvg = @<img class="menuIcon" src="images/menuBar/redo.png" title="Redo"/>;
             RenderFragment TrashSvg = @<img class="menuIcon" src="images/menuBar/trash.png" title="Trash"/>;
+            RenderFragment ClearSvg = @<img class="menuIcon" src="images/menuBar/clear.png" title="Clear System Diagram"/>;
         }
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
@@ -100,6 +105,9 @@
         </Button>
         <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
+        </Button>
+        <Button Disabled='currTab != "1"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+            <Icon Component="ClearSvg"/>
         </Button>
     </li>
 </Menu>
@@ -265,9 +273,14 @@
         <p>@errorMessage</p>
     </div>
 </Modal>
-<Modal Title="Share SystemDiagram URL" Visible="@urlModalVisible" OnOk="@handleUrlOk" OnCancel="@handleUrlOk">
-        <Input DefaultValue="@url" TValue="string" ReadOnly />
-    <Button @onclick="copyUrl"><Icon Type="link" Theme="outline"/> Copy Link</Button>
+    @{
+        RenderFragment footer = @<Button OnClick="@handleUrlOk">Close</Button>;
+    }
+<Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible">
+    <div style="display: flex">
+        <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
+        <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
+    </div>
 </Modal>
     <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
         @if (stateEquationsFinal.Length > 0) {
@@ -390,6 +403,12 @@
         await module.InvokeVoidAsync("delete");
     }
 
+    public async void Clear() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "Edit");
+        await module.InvokeVoidAsync("clear");
+    }
+
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
         //Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
@@ -491,6 +510,12 @@
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elIDs, edgeIDs, velID, prevVelVals, isUndo);
         app?.StateHasChanged();
+    }
+
+    public async void exportAsImage() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("exportAsImage");
+        await module.InvokeVoidAsync("closeMenu", "File");
     }
 
     [JSInvokable]
@@ -672,6 +697,7 @@
 
     //Generates the series of bond graphs and displays them to the screen
     private async Task generateButtonClicked() {
+        double initZoom = zoomValue;
         generateProgress = 0.0;
         generatingBondGraph = true;
         base.StateHasChanged();
@@ -752,8 +778,9 @@
         causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => { return new Option { label = "Option " + (i + 1), value = i }; }).ToList();
         generatingBondGraph = false;
         tabsDisabled = false;
+        zoomValue = initZoom;
         base.StateHasChanged();
-        await messageService.Success("Bond Graphs Successfully Generated!");
+        await messageService.Success("Bond Graphs Successfully Generated.");
     }
 
     /// <summary>
@@ -773,32 +800,28 @@
         await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
-    private string errorMessage = "";
-    private string errorTitle = "";
+    private static string errorMessage = "";
+    private static string errorTitle = "";
 
-    //Opens a .bogl file
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        object file;
-        try {
-            file = await module.InvokeAsync<object>("openFile");
-        } catch (Exception e) {
-            return;
-        }
+    }
+
+    [JSInvokable]
+    public static string openSystemDiagram(string file) {
         SystemDiagram sysDiagram;
         try {
-            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file.ToString());
+            sysDiagram = SystemDiagram.generateSystemDiagramFromXML(file);
+            return sysDiagram.convertToJson();
         }
         catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Loading .bogl File";
             errorMessage = e.Message;
-            base.StateHasChanged();
-            return;
+            app.StateHasChanged();
+            return null;
         }
-
-        await module.InvokeVoidAsync("loadSystemDiagram", sysDiagram.convertToJson());
     }
 
     //Turns a string into a Stream
@@ -820,8 +843,11 @@
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
         } catch (ArgumentOutOfRangeException e) {
-            await messageService.Error("Your system diagram must contain at least one element to be able to save!");
-            return; 
+            errorVisible = true;
+            errorTitle = "Error Saving .bogl File";
+            errorMessage = "Your system diagram must contain at least one element to be able to save. Please add elements to the Canvas and try saving again.";
+            base.StateHasChanged();
+            return;
         }
         var fileName = "SystemDiagram.bogl";
 
@@ -868,7 +894,7 @@
         base.StateHasChanged();
     }
 
-    bool errorVisible = false;
+    static bool errorVisible = false;
 
     //Handles the ok button on the error modal
     private void handleErrorOk() {
@@ -949,6 +975,9 @@
         Regex urlShort6 = new Regex("},{{");
         Regex urlShort7 = new Regex("},");
         Regex urlShort8 = new Regex(",");
+        Regex urlShort9 = new Regex("hdh");
+        Regex urlShort10 = new Regex("h\\[");
+        Regex urlShort11 = new Regex("\\]h");
 
         jsonStr = urlShort4.Replace(jsonStr, "a");
         jsonStr = urlShort6.Replace(jsonStr, "b");
@@ -958,6 +987,9 @@
         jsonStr = urlShort1.Replace(jsonStr, "f");
         jsonStr = urlShort7.Replace(jsonStr, "g");
         jsonStr = urlShort8.Replace(jsonStr, "h");
+        jsonStr = urlShort9.Replace(jsonStr, "i");
+        jsonStr = urlShort10.Replace(jsonStr, "j");
+        jsonStr = urlShort11.Replace(jsonStr, "k");
 
 
     //Add url to modal
@@ -977,7 +1009,13 @@
         Regex urlShort6 = new Regex("b");
         Regex urlShort7 = new Regex("g");
         Regex urlShort8 = new Regex("h");
+        Regex urlShort9 = new Regex("i");
+        Regex urlShort10 = new Regex("j");
+        Regex urlShort11 = new Regex("k");
 
+        compressedUrl = urlShort9.Replace(compressedUrl, "hdh");
+        compressedUrl = urlShort10.Replace(compressedUrl, "h[");
+        compressedUrl = urlShort11.Replace(compressedUrl, "]h");
         compressedUrl = urlShort1.Replace(compressedUrl, "{[{");
         compressedUrl = urlShort2.Replace(compressedUrl, "[]");
         compressedUrl = urlShort3.Replace(compressedUrl, "},{");
@@ -1039,7 +1077,7 @@
         }
         builtEdgeString = builtEdgeString.Remove(builtEdgeString.Length - 1);
 
-        compressedUrl = builtElementString + "\"edgesBySource\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
+        compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
     }
