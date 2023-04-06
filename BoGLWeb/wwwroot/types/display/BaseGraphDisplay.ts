@@ -91,7 +91,7 @@ export class BaseGraphDisplay {
     }
 
     svgMouseMove() { }
-    pathExtraRendering(path: BGBondSelection) { }
+    pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
 
     getSelection() {
@@ -197,7 +197,7 @@ export class BaseGraphDisplay {
                     }
                 }
             }
-            for (const bond of this.bondSelection[0]) {
+            for (const bond of (this.bondSelection.selectAll("path") as any)) {
                 if (bond && this.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
                     newSelection.push(bond.__data__);
                 }
@@ -438,10 +438,12 @@ export class BaseGraphDisplay {
         });
 
         let paths = this.bondSelection;
+        paths.selectAll('path').remove();
+        paths.selectAll('text').remove();
 
         // add new bondSelection
-        paths.enter()
-            .append("path")
+        paths.enter().append("g");
+        let pathObjects = paths.append("path")
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
@@ -449,11 +451,11 @@ export class BaseGraphDisplay {
             });
 
         // update existing bondSelection
-        paths.classed(this.selectedClass, function (d) {
+        paths.selectAll("path").classed(this.selectedClass, function (d: GraphBond) {
             return graph.selectedBonds.includes(d);
         }).attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); });
 
-        this.pathExtraRendering(paths);
+        this.pathExtraRendering(pathObjects, paths);
 
         // remove old links
         paths.exit().remove();

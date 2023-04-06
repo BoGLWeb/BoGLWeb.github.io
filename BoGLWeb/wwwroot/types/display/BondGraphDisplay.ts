@@ -110,18 +110,27 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
-            .text((d) => (<BondGraphElement>d).label)
-            .classed("bondGraphText", true)
-            .each((d: BondGraphElement) => {
-                let testText = this.testSVG.append("text");
-                testText.attr("text-anchor", "middle")
-                    .text(() => d.label);
-                let bb = testText.node().getBBox();
-                d.labelSize = { width: bb.width, height: bb.height };
-            });
+            .attr("id", e => "BG_test_" + e.id + "_" + this.id)
+            .classed("bondGraphText", true);
+        let tspan1 = text.append("tspan")
+            .text((d) => "I:M")// (<BondGraphElement>d).label)
+            .classed("bondGraphText", true);
+        let tspan2 = text.append("tspan");
+        tspan2.attr("text-anchor", "middle")
+            .text((d) => "1")// (<BondGraphElement>d).label)
+            .style('font-size', '10px')
+            .style('baseline-shift', 'sub')
+            .classed("bondGraphText", true);
+        newElements.each((d: BondGraphElement) => {
+            let testText = this.testSVG.append("text");
+            testText.attr("text-anchor", "middle")
+                .text(() => "I:M1");// d.label);
+            let bb = testText.node().getBBox();
+            d.labelSize = { width: bb.width, height: bb.height };
+        });
     }
 
-    pathExtraRendering(paths: BGBondSelection) {
+    pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
                 return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -133,5 +142,29 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 }
             })
             .style('stroke-width', 2);
+        let buffer = 15;
+
+        // Need offset based on angle of line
+        pathGroup.append("text")
+            .text("long text long text")
+            .attr("x", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.x + d.target.x) / 2 + Math.sin(angle) * buffer;
+            })
+            .attr("y", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.y + d.target.y) / 2 + Math.cos(angle) * buffer;
+            });
+        pathGroup.append("text")
+            .text("sneaky boi sneaky boi")
+            .attr("x", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.x + d.target.x) / 2 - Math.sin(angle) * buffer;
+            })
+            .attr("y", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.y + d.target.y) / 2 - Math.cos(angle) * buffer;
+            })
+            .attr("text-anchor", "end");
     }
 }

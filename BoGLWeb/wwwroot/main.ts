@@ -105,6 +105,44 @@ async function loadPage() {
     };
 
     document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
+
+
+    const ele = document.getElementById('graphMenu');
+    let x = 0;
+    let w = 0;
+
+    const mouseDownHandler = function (e) {
+        x = e.clientX;
+
+        const styles = window.getComputedStyle(ele);
+        w = parseInt(styles.width, 10);
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+    };
+
+    const mouseMoveHandler = function (e) {
+        const dx = e.clientX - x;
+        ele.style.flex = "0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px";
+        console.log("0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px");
+    };
+
+    const mouseUpHandler = function () {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+    };
+
+    const resizers = ele.querySelectorAll('.resizer');
+
+    [].forEach.call(resizers, function (resizer) {
+        resizer.addEventListener('mousedown', mouseDownHandler);
+    });
+
+    let html = katex.renderToString("\\mathrm{ d }_{ \\mathrm{ ij } } \\mathrm{ \\mathrm{= } } \\sqrt{\\sum_{ \\mathrm{ k = 1 } }^ { \\mathrm{ p }} \\left(\\mathrm{ x } ^\\mathrm{ k }\\left(\\mathrm{ i }\\right) \\mathrm{-}\\ \\mathrm{ x } ^\\mathrm{ k } \\left(\\mathrm{ j }\\right) \\right) ^\\mathrm{ 2 }}", {
+        throwOnError: false
+    });
+    const parser = new DOMParser();
+    document.getElementById("latexTest").appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
 }
 
 var menuIdMap = {

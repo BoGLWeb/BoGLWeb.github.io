@@ -113,7 +113,8 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <Collapse Bordered="false">
+        <div id="blankMenu" style="@("display: " + (currTab == "2" || currTab == "3" ? "block" : "none"))"></div>
+        <Collapse Id="elementMenus" style="@("display: " + (currTab == "1" ? "block" : "none"))" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
             </ExpandIconTemplate>
@@ -135,6 +136,41 @@
                 </Panel>
             </ChildContent>
         </Collapse>
+        <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
+            <Button OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
+            <h2>Differential Equation @(diffIndex + 1)</h2>
+            <sub>@stateEquationsStored.Length equations total</sub>
+            <Select Id="equationSelect"
+                    TItem="Option"
+                    TItemValue="int"
+                    DataSource="@equationSwitchOptions"
+                    @bind-Value="@selectedEquation"
+                    DefaultValue="@(0)"
+                    ValueName="@nameof(Option.value)"
+                    LabelName="@nameof(Option.label)"
+                    Style="width:160px; margin-bottom: 15px"
+                    OnSelectedItemChanged="ChangeEquationOption">
+            </Select>
+            @if(stateEquationsStored.Length > 0) {
+                string diffEq = stateEquationsStored[diffIndex];
+                <p>x3’ = v1 – v2</p>
+                <p>v1 = p1 / M1</p>
+                <p>v2 = p2 / M2</p>
+                <hr id="diffeqHR" />
+                <p>@diffEq</p>
+            }
+            <div id="latexTest"></div>
+        </div>
+        <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
+            <Button OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
+            <h2>State Variables</h2>
+            <div style="display: flex; flex-direction: column">
+                @foreach (var v in @equationOptions) {
+                    <span>@v</span>
+                }
+            </div>
+        </div>
+        <div class="resizer"></div>
     </div>
     <div class="card-container">
         <div id="zoomMenu">
@@ -160,13 +196,30 @@
                             <ChildContent>
                                 <Panel Header="Modifers" Key="1" Id="modifierPanel">
                                     <div id="modifierCheckboxWrapper">
-                                        <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                        <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                        <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                        <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                        <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                        <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                        <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                        @{
+                                            RenderFragment settingsIcon = @<Button Class="settingButton" Size="small"><Icon Type="setting" Theme="fill" Style="color: #5A5A5A"/></Button>;
+                                        }
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">
+                                            <div style="display: flex; align-items: center;">@("Mass")@if (checkValues[0]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">
+                                            <div style="display: flex; align-items: center;">@("Inertia")@if (checkValues[1]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">
+                                            <div style="display: flex; align-items: center;">@("Stiffness")@if (checkValues[2]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">
+                                            <div style="display: flex; align-items: center;">@("Friction")@if (checkValues[3]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">
+                                            <div style="display: flex; align-items: center;">@("Damping")@if (checkValues[4]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">
+                                            <div style="display: flex; align-items: center;">@("Parallel")@if (checkValues[5]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">
+                                            <div style="display: flex; align-items: center;">@("Tooth Wear")@if (checkValues[6]) { @settingsIcon }</div>
+                                        </Checkbox>
                                     </div>
                                     <hr/>
                                     <div>
@@ -274,22 +327,33 @@
     </div>
 </Modal>
     @{
-        RenderFragment footer = @<Button OnClick="@handleUrlOk">Close</Button>;
+        RenderFragment urlFooter = @<Button OnClick="@handleUrlOk">Close</Button>;
     }
-<Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible">
+    <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible">
     <div style="display: flex">
         <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
     </div>
 </Modal>
-    <Modal Title="State Equations" Footer="null" Visible="@stateEquationModalVisible" OnCancel="@closeStateEquations">
-        @if (stateEquationsFinal.Length > 0) {
-            <TextArea Rows="@(Convert.ToUInt32(stateEquationsFinal.Length))" MaxRows="15" DefaultValue="@(string.Join('\n', stateEquationsFinal))" TValue="string" ReadOnly />
-            <Button @onclick="copyStateEquations"><Icon Type="link" Theme="outline" /> Copy State Equations</Button>
-        } else {
-            <p>Generate a bond graph to see its state equations here.</p>
-        }
-    </Modal>
+@*    @{
+        RenderFragment footer = @<Template>
+            <Button OnClick="@closeLabelValue" Type="primary">Save</Button>
+            <Button OnClick="@closeLabelValue">Cancel</Button>
+            </Template>
+        ;
+        List<string> unitsList = new List<string> { "kg", "gram", "slug" };
+    }*@
+@*<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Label: </div>
+        <Input Style="width: 400px" Placeholder="Label" required="true" DefaultValue="@("M1")" Type="text" />
+    </div><br/>
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Mass: </div>
+        <Input Style="width: 270px; margin-right: 10px;" Placeholder="Value" required="true" DefaultValue="@(4)" Type="number" />
+        <Select DataSource="@unitsList" DefaultValue="@("kg")" Style="width:120px"/>
+    </div>
+</Modal>*@
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
@@ -300,8 +364,6 @@
 
     public static Index? app;
 
-    private int tabNum;
-
     public class Option {
         public string label { get; set; }
         public int value { get; set; }
@@ -310,16 +372,21 @@
     static bool tabsDisabled = true;
     static bool disableUndo = true;
     static bool disableRedo = true;
+    static int diffIndex = 0;
 
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    static List<string> equationOptions = new List<string> { "x'", "p", "m" };
+    List<Option> equationSwitchOptions = Enumerable.Range(0, equationOptions.Count).ToList().Select(i => { return new Option { label = "Equation for " + equationOptions[i], value = i }; }).ToList();
+    int selectedEquation;
     static double zoomValue = 100;
     static List<int> selectedVelocity = new List<int> { };
     static bool velocityDisabled = true;
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
+    static bool showEquations = false;
 
     public Index() {
         app = this;
@@ -647,9 +714,14 @@
         }
     }
 
+    private async void ChangeEquationOption(Option selection) {
+        diffIndex = selection.value;
+    }
+
     private async void ChangeCausalOption(Option selection) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        showEquations = false;
     }
 
     private readonly List<string> ruleNames = new();
@@ -771,6 +843,7 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
+        stateEquationsStored = (new string[] {"x3’ = p1 / M1 – p2 / M2​"}).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations()).ToArray();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
@@ -904,7 +977,7 @@
     }
 
     bool urlModalVisible = false;
-    bool stateEquationModalVisible = false;
+    bool labelValueModalVisible = false;
     string url = "";
     string[] stateEquationsInitial = new string[] { };
     string[] stateEquationsFinal = new string[] { };
@@ -915,8 +988,8 @@
         base.StateHasChanged();
     }
 
-    private void closeStateEquations() {
-        stateEquationModalVisible = false;
+    private void closeLabelValue() {
+        labelValueModalVisible = false;
         base.StateHasChanged();
     }
 
@@ -926,7 +999,7 @@
         Console.WriteLine('[' + string.Join(", ", stateEquationsFinal) + ']');
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
-        stateEquationModalVisible = true;
+        labelValueModalVisible = true;
         base.StateHasChanged();
     }
 
