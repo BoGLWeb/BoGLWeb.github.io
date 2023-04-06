@@ -130,7 +130,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         });
     }
 
-    pathExtraRendering(paths: BGBondSelection) {
+    pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
                 return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -142,5 +142,29 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 }
             })
             .style('stroke-width', 2);
+        let buffer = 15;
+
+        // Need offset based on angle of line
+        pathGroup.append("text")
+            .text("long text long text")
+            .attr("x", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.x + d.target.x) / 2 + Math.sin(angle) * buffer;
+            })
+            .attr("y", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.y + d.target.y) / 2 + Math.cos(angle) * buffer;
+            });
+        pathGroup.append("text")
+            .text("sneaky boi sneaky boi")
+            .attr("x", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.x + d.target.x) / 2 - Math.sin(angle) * buffer;
+            })
+            .attr("y", d => {
+                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+                return (d.source.y + d.target.y) / 2 - Math.cos(angle) * buffer;
+            })
+            .attr("text-anchor", "end");
     }
 }
