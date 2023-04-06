@@ -5,7 +5,7 @@ using System.Text;
 namespace BoGLWeb {
     namespace DifferentialEquationHelper {
         /// <summary>
-        /// Stores differential equations in the form of function equations.
+        /// Stores differential finalDifferentialStateEquations in the form of function finalDifferentialStateEquations.
         /// </summary>
         public class Expression {
             /// <summary>
@@ -190,7 +190,7 @@ namespace BoGLWeb {
             /// </param>
             private void SplitBinaryExpression(String fn, int index, FunctionOperator o1, FunctionOperator o2) {
                 Expression child1 = new(), child2 = new();
-                child1.Formulate(fn[0..^index], o1);
+                child1.Formulate(fn[0..index], o1);
                 child2.Formulate(fn[(index + 1)..], o2);
                 AddChild(child1);
                 AddChild(child2);
@@ -336,17 +336,16 @@ namespace BoGLWeb {
                                         case FunctionOperator.PARENTHETICAL:
                                             Expression grandchild = child.children[0];
                                             String grandchildFn = grandchild.fn;
-                                            switch (GetOperatorObject(grandchildFn[0])) {
-                                                case FunctionOperator.ADDITION:
-                                                case FunctionOperator.SUBTRACTION:
-                                                    break;
-                                                default:
-                                                    mChildren.AddRange(grandchild.children);
-                                                    break;
+                                            if (GetOperatorObject(grandchildFn[0]) == FunctionOperator.MULTIPLICATION) {
+                                                mChildren.AddRange(grandchild.children);
+                                            } else if ("+-".Contains(grandchildFn)) { // Remake 'if' statement
+                                                mChildren.Add(child);
+                                            } else {
+                                                mChildren.Add(grandchild);
                                             }
                                             break;
                                         case FunctionOperator.ONE: 
-                                            break; // does nothing
+                                            break; // does nothing - should escape default
                                         case FunctionOperator.ZERO: 
                                             isZero = true;
                                             break; // whole expression becomes zero
@@ -358,6 +357,9 @@ namespace BoGLWeb {
                                 if (isZero) {
                                     mChildren.Clear();
                                     mChildren.Add(new Expression("0"));
+                                }
+                                if (mChildren.Count == 0) {
+                                    mChildren.Add(new Expression("1"));
                                 }
                                 targetFn.AssignValues(targetFn.fn, mChildren);
                                 break;
@@ -410,6 +412,17 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Simplifies by printing, substituting, and re-parsing the entire equation.
+            /// Is computationally onsiderably slower than general simplification, but
+            /// can consider extra cases not covered by regular simplification (e.g.
+            /// eliminating instances of "+-").
+            /// </summary>
+            public void SimplifyRawText() {
+                Expression expr = new(ToString().Replace("+-", "-"));
+                AssignValues(expr.fn, expr.children);
+            }
+
+            /// <summary>
             /// Assigns specific fields to this <c>Expression</c>.
             /// </summary>
             /// <param name="fn">
@@ -448,9 +461,6 @@ namespace BoGLWeb {
             /// <c>false</c>.
             /// </returns>
             public bool IsVariable() {
-                if (!Char.IsDigit(this.fn[0])) {
-                    return false;
-                }
                 foreach (char c in this.fn.ToCharArray()) {
                     if (Char.IsLetter(c)) {
                         return true;
@@ -481,8 +491,7 @@ namespace BoGLWeb {
                 }
                 String varFn = var.fn;
                 int count = 0;
-                Stack<Expression> thisStack = new();
-                thisStack.Push(this);
+                Stack<Expression> thisStack = new(new[] { this });
                 while (thisStack.Count > 0) {
                     Expression fn = thisStack.Pop();
                     if (fn.fn.Equals(varFn)) {
@@ -569,12 +578,9 @@ namespace BoGLWeb {
             private List<int> GetListOfPathIndices(Expression var) {
                 var.AssertVariable();
                 AssertNotDifferential();
-                Stack<Expression> fnStack = new();
-                Stack<bool> checkStack = new();
-                Stack<int> indexStack = new();
-                fnStack.Push(this);
-                checkStack.Push(true);
-                indexStack.Push(0);
+                Stack<Expression> fnStack = new(new[] { this });
+                Stack<bool> checkStack = new(new[] { true });
+                Stack<int> indexStack = new(new[] { 0 });
                 List<int> indices = new() { 0 };
                 String varFn = var.fn;
                 while (fnStack.Count > 0) {
@@ -614,10 +620,8 @@ namespace BoGLWeb {
             /// </returns>
             public Expression Copy() {
                 Expression copy = new();
-                Stack<Expression> thisStack = new();
-                Stack<Expression> copyStack = new();
-                thisStack.Push(this);
-                copyStack.Push(copy);
+                Stack<Expression> thisStack = new(new[] { this });
+                Stack<Expression> copyStack = new(new[] { copy });
                 while (thisStack.Count > 0) {
                     Expression targetThis = thisStack.Pop();
                     Expression targetCopy = copyStack.Pop();
@@ -646,8 +650,7 @@ namespace BoGLWeb {
                 var.AssertVariable();
                 if (!IsDifferential()) {
                     String varFn = var.fn;
-                    Stack<Expression> thisStack = new();
-                    thisStack.Push(this);
+                    Stack<Expression> thisStack = new(new[] { this });
                     while (thisStack.Count > 0) {
                         Expression target = thisStack.Pop();
                         if (target.fn.Equals(varFn)) {
@@ -823,12 +826,41 @@ namespace BoGLWeb {
             /// The <c>Expression</c> to be packaged.
             /// </param>
             private static void InsertParentheticalExpression(Expression fn) {
-                String fnStr = fn.fn;
                 List<Expression> children = new();
                 children.AddRange(fn.children);
                 Expression replacement = new();
-                replacement.AssignValues(fnStr, children);
+                replacement.AssignValues(fn.fn, children);
                 fn.AssignValues("(", new() { replacement });
+            }
+
+            /// <summary>Substitutes all instances of particular variables with other 
+            /// variables. This method makes all substitutions concurrently to keep 
+            /// all reused but redefined variables separate.</summary>
+            /// <param name="vars">The Dictionary of variable substitutions. The key
+            /// value is the string representation of the variable expression to be
+            /// detected in the original Expression, and the value is the replacement
+            /// value.</param>
+            /// <param name="used">A HashSet that stores all variables that have been used
+            /// in a substitution.</param>
+            public HashSet<string> SubstituteAllVariables(Dictionary<string, Expression> vars) {
+                HashSet<string> used = new();
+                Stack<Expression> nextTermStack = new(new[] { this });
+                while (nextTermStack.Count > 0) {
+                    Expression nextTerm = nextTermStack.Pop();
+                    if (nextTerm.children.Count > 0) {
+                        foreach (Expression child in nextTerm.children) {
+                            nextTermStack.Push(child);
+                        }
+                    } else if(nextTerm.IsVariable()) {
+                        Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
+                        if (substitution != null) {
+                            used.Add(nextTerm.fn);
+                            nextTerm.AssignValues("(", new(new[] { substitution }));
+                        }
+                    }
+                }
+                Simplify(true);
+                return used;
             }
 
             /// <summary>
@@ -900,10 +932,7 @@ namespace BoGLWeb {
                     Expression fn = fnStack.Pop();
                     string indent = indentStack.Pop();
                     builder.Append(indent).Append(fn.fn);
-                    Stack<Expression> proxyStack = new();
-                    foreach (Expression child in fn.children) {
-                        proxyStack.Push(child);
-                    }
+                    Stack<Expression> proxyStack = new(fn.children);
                     string nextIndent = indent + '\t';
                     while (proxyStack.Count > 0) {
                         fnStack.Push(proxyStack.Pop());
@@ -911,22 +940,6 @@ namespace BoGLWeb {
                     }
                 }
                 return builder.ToString();
-            }
-
-            /// <summary>
-            /// Converts this <c>Expression</c> to a printable format that exposes
-            /// its parse tree.
-            /// </summary>
-            /// <param name="indent">The indent placed before every item in this
-            /// list, exposing its displacement in the tree from the parent.</param>
-            /// <returns></returns>
-            private string ToTree(string indent) {
-                string print = indent + this.fn;
-                indent += "\t";
-                foreach (Expression child in this.children) {
-                    print = print + "\n" + child.ToTree(indent);
-                }
-                return print;
             }
 
             /// <summary>
@@ -965,6 +978,44 @@ namespace BoGLWeb {
                 }
                 return fn;  // If this statement is reached, this Expression
             }               // is either a constant or a variable
+
+            /// <summary>
+            /// Converts this <c>Expression</c> to a LaTeX string.
+            /// </summary>
+            /// <returns>This <c>Expression</c> as a <c>String</c> following
+            /// standard LaTeX syntax.</returns>
+            public string ToLatexString() {
+                String fn = this.fn;
+                char op = fn[0];
+                switch ((FunctionOperator) op) {
+                    case FunctionOperator.ADDITION:
+                    case FunctionOperator.MULTIPLICATION:
+                        StringBuilder builder = new();
+                        string opString = op + "", delimiter = "";
+                        foreach (Expression child in this.children) {
+                            builder.Append(delimiter).Append(child.ToLatexString());
+                            delimiter = opString;
+                        }
+                        fn = builder.ToString();
+                        break;
+                    case FunctionOperator.SUBTRACTION:
+                        fn = "" + this.children[0].ToLatexString() + '-' + this.children[1].ToLatexString();
+                        break;
+                    case FunctionOperator.DIVISION:
+                        fn = "\\frac{" + this.children[0].ToLatexString() + "}{" + this.children[1].ToLatexString() + "}";
+                        break;
+                    case FunctionOperator.PARENTHETICAL:
+                        fn = "(" + this.children[0].ToLatexString() + ')';
+                        break;
+                    case FunctionOperator.DIFFERENTIAL:
+                        fn = this.children[0].fn + "'";
+                        break;
+                    case FunctionOperator.NEGATION:
+                        fn = "-" + this.children[0].ToLatexString();
+                        break;
+                }
+                return fn;
+            }
 
             /// <summary>
             /// Stores each <c>FunctionOperator</c> with its associated ASCII code.

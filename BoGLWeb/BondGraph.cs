@@ -139,7 +139,7 @@ namespace BoGLWeb {
 
         /// <summary>
         /// Gets a list of all Elements that introduce differential expressions into
-        /// the state equations of this Graph.
+        /// the state finalDifferentialStateEquations of this Graph.
         /// </summary>
         /// <returns></returns>
         public List<Element> GetDifferentialElements() {
@@ -338,6 +338,9 @@ namespace BoGLWeb {
                     return this.label[0];
                 }
                 char ch = this.label[length - 1];
+                if (ch == '1' | label.Contains("TF")) {
+                    return 'T';
+                }
                 return ch == ':' ? this.label[length - 2] : ch;
             }
 
@@ -384,6 +387,8 @@ namespace BoGLWeb {
             /// <summary>
             /// Creates a Bond between two elements
             /// </summary>
+            /// <param name="sourceID">The ID of the source element</param>
+            /// <param name="targetID">The ID of the target element</param>
             /// <param name="source">The source element</param>
             /// <param name="sink">The sink element</param>
             /// <param name="label">Labels for the bond</param>
@@ -391,7 +396,7 @@ namespace BoGLWeb {
             /// <param name="causalStrokeDirection">The position of the causal stroke. True means the causal stroke is at the source. False means the causal stroke is at the sink.</param>
             /// <param name="flow">The flow value for the bond</param>
             /// <param name="effort">The effor value for the bond</param>
-            
+
             public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, bool hasDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
@@ -522,6 +527,68 @@ namespace BoGLWeb {
             /// <returns>This <c>Bond</c> as a string.</returns>
             public override string ToString() {
                 return "(" + this.source + " " + this.sink + ")";
+            }
+        }
+
+        public class BondGraphWrapper {
+            private readonly Dictionary<string, BondGraph.Element> elements;
+            private readonly Dictionary<int, List<BondGraph.Bond>> bondsBySource;
+            private readonly Dictionary<int, List<BondGraph.Bond>> bondsByTarget;
+
+            /// <summary>
+            /// Creates a new <c>BondGraphWrapper</c>. This class rewrites a bond 
+            /// graph as a graph object where all bonds incident to a given element
+            /// can be accessed in O(1).
+            /// </summary>
+            /// <param name="graph">The bond graph used to model this object.</param>
+            public BondGraphWrapper(BondGraph graph) {
+                this.elements = graph.getElements();
+                this.bondsBySource = new();
+                this.bondsByTarget = new();
+                foreach (BondGraph.Bond bond in graph.getBonds()) {
+                    int source = bond.getSource().GetID();
+                    List<BondGraph.Bond>? sourceBondsByElement = this.bondsBySource.GetValueOrDefault(source);
+                    if (sourceBondsByElement == null) {
+                        this.bondsBySource.Add(source, new List<BondGraph.Bond> { bond });
+                    } else {
+                        sourceBondsByElement.Add(bond);
+                    }
+                    int target = bond.getSink().GetID();
+                    List<BondGraph.Bond>? targetBondsByElement = this.bondsByTarget.GetValueOrDefault(target);
+                    if (targetBondsByElement == null) {
+                        this.bondsByTarget.Add(target, new List<BondGraph.Bond> { bond });
+                    } else {
+                        targetBondsByElement.Add(bond);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the set of elements in this BondGraph.
+            /// </summary>
+            /// <returns><c>this.elements</c></returns>
+            public Dictionary<string, BondGraph.Element> GetElements() {
+                return this.elements;
+            }
+
+            /// <summary>
+            /// Gets the set of all connections to any given bond such that
+            /// the key (element ID) is the source ID for all bonds listed in
+            /// the value.
+            /// </summary>
+            /// <returns>this.bondsBySource</returns>
+            public Dictionary<int, List<BondGraph.Bond>> GetBondsBySource() {
+                return this.bondsBySource;
+            }
+
+            /// <summary>
+            /// Gets the set of all connections to any given bond such that
+            /// the key (element ID) is the target ID for all bonds listed in
+            /// the value.
+            /// </summary>
+            /// <returns>this.bondsByTarget</returns>
+            public Dictionary<int, List<BondGraph.Bond>> GetBondsByTarget() {
+                return this.bondsByTarget;
             }
         }
     }
