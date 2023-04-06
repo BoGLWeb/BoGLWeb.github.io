@@ -1,4 +1,4 @@
-﻿import { BondGraphBond } from "./types/bonds/BondGraphBond";
+﻿ import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
 import { GraphBondID } from "./types/bonds/GraphBondID";
 import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
@@ -214,6 +214,12 @@ export namespace backendManager {
         }
 
         public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
+            svg.append("style").text(`
+                @font-face {
+                    font-family: Symbola;
+                    src: url(data:application/octet-stream;base64,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);
+                }
+            `);
             svg.selectAll(".link")
                 .style("fill", "none")
                 .style("stroke", "black")
@@ -228,6 +234,8 @@ export namespace backendManager {
                 .style("font-family", "Arial")
                 .style("fill-opacity", "1")
                 .attr("dy", "0.25em");
+            svg.selectAll(".velocityArrow")
+                .attr("style", "fill: black; font-size: 30px; font-family: Symbola !important; fill-opacity: 1;");
             svg.selectAll(".velocity_5_edge")
                 .attr("dx", "0em")
                 .attr("dy", "0.5em");
@@ -315,10 +323,6 @@ export namespace backendManager {
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
-        public async openFile() {
-            await this.openFileCompatible();
-        }
-
         public getTabNum(): number {
             return parseInt(window.tabNum);
         }
@@ -333,21 +337,6 @@ export namespace backendManager {
             a.click();
             window.URL.revokeObjectURL(urlToBlob);
             a.remove();
-        }
-
-        public async openFileCompatible() {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = ".bogl";
-            input.onchange = async _ => {
-                let files = Array.from(input.files);
-                let text = await files[0].text();
-                let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
-                if (systemDiagramText != null) {
-                    this.loadSystemDiagram(systemDiagramText);
-                }
-            };
-            input.click();
         }
 
         public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
@@ -424,6 +413,11 @@ export namespace backendManager {
 
         public delete(needsConfirmation = true) {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+        }
+
+        public clear() {
+            this.getSystemDiagramDisplay().selectAll();
+            this.getSystemDiagramDisplay().deleteSelection(false);
         }
         
         public areMultipleElementsSelected() {

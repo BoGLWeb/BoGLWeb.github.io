@@ -11,7 +11,7 @@
 
 @font-face {
     font-family: Symbola;
-    src: url(Symbola.ttf);
+    src: url(Symbola_arrows.ttf);
 }
 
 html, body {
@@ -513,16 +513,17 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 }
 
 #modifierMenu {
-    height: fit-content;
-    position: fixed;
-    margin-left: calc(100% - 378px);
+    display: block;
+    position: absolute;
+    right: 15px;
     width: 120px
 }
 
 #modifierMenu > .ant-collapse {
     height: 100%;
     overflow: clip !important;
-    padding-bottom: 0
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 #modifierCheckboxWrapper > .ant-checkbox-wrapper {
@@ -872,4 +873,16 @@ hr {
 #diffeqHR {
     width: 80%;
     margin-bottom: 10px;
+}
+
+input[type="file"] {
+    position: fixed;
+    right: 100%;
+    bottom: 100%;
+}
+
+.customFileUpload {
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
 }
