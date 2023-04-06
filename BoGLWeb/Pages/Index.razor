@@ -387,6 +387,7 @@
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
     static bool showEquations = false;
+    string[] stateEquationsStored = new string[] { };
 
     public Index() {
         app = this;
@@ -843,7 +844,7 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        stateEquationsStored = (new string[] {"x3’ = p1 / M1 – p2 / M2​"}).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetStringEquations()).ToArray();
+        stateEquationsStored = (new string[] {"x3’ = p1 / M1 – p2 / M2​"}).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
