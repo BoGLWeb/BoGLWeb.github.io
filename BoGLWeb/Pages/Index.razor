@@ -723,6 +723,7 @@
             StateEquationSet set = new(causal[0]);
             stateEquationsInitial = set.GetInitialEquations();
             stateEquationsFinal = set.GetFinalEquations();
+            Console.WriteLine(string.Join(", ", stateEquationsFinal));
         } catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Generating Bond Graph";

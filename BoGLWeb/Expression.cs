@@ -980,6 +980,44 @@ namespace BoGLWeb {
             }               // is either a constant or a variable
 
             /// <summary>
+            /// Converts this <c>Expression</c> to a LaTeX string.
+            /// </summary>
+            /// <returns>This <c>Expression</c> as a <c>String</c> following
+            /// standard LaTeX syntax.</returns>
+            public string ToLatexString() {
+                String fn = this.fn;
+                char op = fn[0];
+                switch ((FunctionOperator) op) {
+                    case FunctionOperator.ADDITION:
+                    case FunctionOperator.MULTIPLICATION:
+                        StringBuilder builder = new();
+                        string opString = op + "", delimiter = "";
+                        foreach (Expression child in this.children) {
+                            builder.Append(delimiter).Append(child.ToLatexString());
+                            delimiter = opString;
+                        }
+                        fn = builder.ToString();
+                        break;
+                    case FunctionOperator.SUBTRACTION:
+                        fn = "" + this.children[0].ToLatexString() + '-' + this.children[1].ToLatexString();
+                        break;
+                    case FunctionOperator.DIVISION:
+                        fn = "\\frac{" + this.children[0].ToLatexString() + "}{" + this.children[1].ToLatexString() + "}";
+                        break;
+                    case FunctionOperator.PARENTHETICAL:
+                        fn = "(" + this.children[0].ToLatexString() + ')';
+                        break;
+                    case FunctionOperator.DIFFERENTIAL:
+                        fn = this.children[0].fn + "'";
+                        break;
+                    case FunctionOperator.NEGATION:
+                        fn = "-" + this.children[0].ToLatexString();
+                        break;
+                }
+                return fn;
+            }
+
+            /// <summary>
             /// Stores each <c>FunctionOperator</c> with its associated ASCII code.
             /// </summary>
             private enum FunctionOperator {

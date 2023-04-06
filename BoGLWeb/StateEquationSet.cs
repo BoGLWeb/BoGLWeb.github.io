@@ -19,12 +19,13 @@ namespace BoGLWeb {
             public StateEquationSet(BondGraph graph) {
                 int count = graph.GetDifferentialElements().Count;
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
-                List<Equation> initialEquations = GetInitialEquations(graphWrapper);
-                this.initialEquations = new string[initialEquations.Count];
-                int initialIndex = 0;
-                foreach (Equation equation in initialEquations) {
-                    this.initialEquations[initialIndex++] = equation.ToString();
-                }
+                //List<Equation> initialEquations = GetInitialEquations(graphWrapper);
+                //this.initialEquations = new string[initialEquations.Count];
+                //int initialIndex = 0;
+                //foreach (Equation equation in initialEquations) {
+                //    this.initialEquations[initialIndex++] = equation.ToString();
+                //}
+                this.initialEquations = new string[0];
                 List<CausalGraphWrapper> wrappers = CausalGraphWrapper.GenerateList(graphWrapper);
                 Dictionary<string, Expression> substitutionDictionary = new();
                 HashSet<string> usedSet = new();
@@ -48,7 +49,7 @@ namespace BoGLWeb {
                 this.finalDifferentialStateEquations = new string[count];
                 int index = 0;
                 foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
-                    this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value;
+                    this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value.ToLatexString();
                 }
             }
 
