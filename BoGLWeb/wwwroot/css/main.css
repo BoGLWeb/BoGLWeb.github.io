@@ -11,7 +11,7 @@
 
 @font-face {
     font-family: Symbola;
-    src: url(Symbola.ttf);
+    src: url(Symbola_arrows.ttf);
 }
 
 html, body {
@@ -463,8 +463,7 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 }
 
 #modifierMenu {
-    display: table;
-    height: fit-content;
+    display: block;
     position: absolute;
     right: 15px;
     width: 120px
@@ -779,4 +778,16 @@ hr:not([size]) {
 
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
     display: none !important;
+}
+
+input[type="file"] {
+    position: fixed;
+    right: 100%;
+    bottom: 100%;
+}
+
+.customFileUpload {
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
 }

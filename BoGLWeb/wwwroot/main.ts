@@ -142,11 +142,37 @@ function findAllParentMenus(menuId: number) {
     return [];
 }
 
+let hasAssignedInputClick = false;
+
+async function loadSystemDiagram(text: string) {
+    let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+    if (systemDiagramText != null) {
+        getBackendManager().loadSystemDiagram(systemDiagramText);
+    }
+}
+
 function menuClickAction(menuTitle: Node, k: number) {
     menuTitle.addEventListener("click", (e) => {
         e.stopPropagation();
         let parents = findAllParentMenus(k);
         waitForMenuClickingDone(() => {
+            if (k == 0 && !hasAssignedInputClick) {
+                hasAssignedInputClick = true;
+                let input = document.getElementById("fileUpload") as HTMLInputElement;
+                input.onchange = async () => {
+                    let files = Array.from(input.files);
+                    if (files[0].text) {
+                        let text = await files[0].text();
+                        loadSystemDiagram(text);
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = event => {
+                            loadSystemDiagram(event.target.result as string);
+                        };
+                        reader.readAsText(files[0]);
+                    }
+                }
+            }
             let el = document.getElementById(menuIdMap[k]);
             if (el) {
                 el = el.parentElement?.parentElement;
