@@ -1,5 +1,6 @@
 ﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { BondGraphBond } from "../bonds/BondGraphBond";
+import { GraphBond } from "../bonds/GraphBond";
 import { BondGraphElement } from "../elements/BondGraphElement";
 import { GraphElement } from "../elements/GraphElement";
 import { BondGraph } from "../graphs/BondGraph";
@@ -130,6 +131,10 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         });
     }
 
+    getLabelAngle(d: GraphBond) {
+        return Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+    }
+
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
@@ -142,29 +147,27 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 }
             })
             .style('stroke-width', 2);
-        let buffer = 15;
+        let buffer = 30;
+        pathGroup.selectAll("circle").remove()
 
         // Need offset based on angle of line
         pathGroup.append("text")
-            .text("long text long text")
+            .text("label1")
             .attr("x", d => {
-                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
-                return (d.source.x + d.target.x) / 2 + Math.sin(angle) * buffer;
+                return (d.source.x + d.target.x) / 2 - Math.sin(this.getLabelAngle(d)) * buffer;
             })
             .attr("y", d => {
-                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
-                return (d.source.y + d.target.y) / 2 + Math.cos(angle) * buffer;
-            });
+                return (d.source.y + d.target.y) / 2 + Math.cos(this.getLabelAngle(d)) * buffer;
+            })
+            .attr("text-anchor", d => this.getLabelAngle(d) > 0 ? "end" : "start");
         pathGroup.append("text")
-            .text("sneaky boi sneaky boi")
+            .text("label2")
             .attr("x", d => {
-                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
-                return (d.source.x + d.target.x) / 2 - Math.sin(angle) * buffer;
+                return (d.source.x + d.target.x) / 2 + Math.sin(this.getLabelAngle(d)) * buffer;
             })
             .attr("y", d => {
-                let angle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
-                return (d.source.y + d.target.y) / 2 - Math.cos(angle) * buffer;
+                return (d.source.y + d.target.y) / 2 - Math.cos(this.getLabelAngle(d)) * buffer;
             })
-            .attr("text-anchor", "end");
+            .attr("text-anchor", d => this.getLabelAngle(d) < 0 ? "end" : "start");
     }
 }
