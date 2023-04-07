@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-Tp5iKDZces6i9bFywpxmJMWvcDz\/wL5atH4Zv+HbZGs=",
+      "hash": "sha256-Z6lzDHZ\/BMvs9SXFGOrQlA\/g6IQlX+HFTw7kZ64yW1I=",
       "url": "css\/main.css"
     },
     {
@@ -21,8 +21,8 @@
       "url": "css\/SegoeUIBold.woff"
     },
     {
-      "hash": "sha256-SgoOOY9q5EkW7XWNfAYWn2dZdfa1gEvaIz6ymM7\/XaA=",
-      "url": "css\/Symbola.ttf"
+      "hash": "sha256-e1kGa9EgxdlBz7YtMJuw3Nhyvz+\/J45NGsB64V6TPlQ=",
+      "url": "css\/Symbola_arrows.ttf"
     },
     {
       "hash": "sha256-vMFcT9cUBeFIoUV3RGsQAdzMsVo+QhVjy7JcngwjnNs=",
@@ -293,6 +293,10 @@
       "url": "images\/logo.png"
     },
     {
+      "hash": "sha256-utdSTaDQWTOi+FyG8M1uDI0XXIQtA6uC0aV2zoCoJhw=",
+      "url": "images\/menuBar\/clear.png"
+    },
+    {
       "hash": "sha256-OCJH5V83Rm+vwzyGq79j3Df6NW6tVhctL1muAUQ7Ziw=",
       "url": "images\/menuBar\/copy.png"
     },
@@ -349,7 +353,7 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-XlqB\/5nJZt5ftBmcQ\/8Ah5r1IpbCdAiNvSYQGWvqaLM=",
+      "hash": "sha256-DmedP72AwCJvQ1jXp2HODE9KP9tNfw8dilvLjCYvIzk=",
       "url": "manifest.json"
     },
     {
@@ -3397,7 +3401,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-zQoT90OSU4T66QVIn4VZ1xXK6GQLueCZhqr7KL8LjWQ=",
+      "hash": "sha256-oL79LCiLo3g2sn\/fhvg97WXFD49VceW3nCc55vTkLO8=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3405,7 +3409,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-vTXxmrmQGtirQSVu9BTWrOD76HRc9dX1xUM6hTEJW3c=",
+      "hash": "sha256-oaAYASCyIZoky4bEZk6v68VVxwNenrZ64YAlGrvVx1I=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5625,5 +5629,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "DArFKNm3"
+  "version": "uJLAVFVD"
 };

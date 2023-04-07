@@ -919,13 +919,16 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
         checkCtrlCombo(a) {
             return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
         }
+        selectAll() {
+            let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
+            this.setSelection(this.elements, this.bonds);
+            this.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
+            this.updateMenus();
+        }
         svgKeyUp() {
             if (this.checkCtrlCombo(this.A_KEY)) {
-                let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
-                this.setSelection(this.elements, this.bonds);
-                this.updateGraph();
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(removeFromSelection), [], []);
-                this.updateMenus();
+                this.selectAll();
             }
         }
         pathMouseDown(bond) {
@@ -1615,6 +1618,12 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 };
             }
             applyInlineStyles(oldSVG, svg, graph) {
+                svg.append("style").text(`
+                @font-face {
+                    font-family: Symbola;
+                    src: url(data:application/octet-stream;base64,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);
+                }
+            `);
                 svg.selectAll(".link")
                     .style("fill", "none")
                     .style("stroke", "black")
@@ -1629,6 +1638,8 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     .style("font-family", "Arial")
                     .style("fill-opacity", "1")
                     .attr("dy", "0.25em");
+                svg.selectAll(".velocityArrow")
+                    .attr("style", "fill: black; font-size: 30px; font-family: Symbola !important; fill-opacity: 1;");
                 svg.selectAll(".velocity_5_edge")
                     .attr("dx", "0em")
                     .attr("dy", "0.5em");
@@ -1717,11 +1728,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 graph.changeScale(xTrans, yTrans, scale);
                 graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
             }
-            openFile() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    yield this.openFileCompatible();
-                });
-            }
             getTabNum() {
                 return parseInt(window.tabNum);
             }
@@ -1735,22 +1741,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 a.click();
                 window.URL.revokeObjectURL(urlToBlob);
                 a.remove();
-            }
-            openFileCompatible() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = ".bogl";
-                    input.onchange = (_) => __awaiter(this, void 0, void 0, function* () {
-                        let files = Array.from(input.files);
-                        let text = yield files[0].text();
-                        let systemDiagramText = yield DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
-                        if (systemDiagramText != null) {
-                            this.loadSystemDiagram(systemDiagramText);
-                        }
-                    });
-                    input.click();
-                });
             }
             saveAsFile(fileName, contentStreamReference, pickerOptions) {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -1824,6 +1814,10 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
             }
             delete(needsConfirmation = true) {
                 this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            }
+            clear() {
+                this.getSystemDiagramDisplay().selectAll();
+                this.getSystemDiagramDisplay().deleteSelection(false);
             }
             areMultipleElementsSelected() {
                 return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
@@ -2298,12 +2292,39 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
         }
         return [];
     }
+    let hasAssignedInputClick = false;
+    function loadSystemDiagram(text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let systemDiagramText = yield DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+            if (systemDiagramText != null) {
+                getBackendManager().loadSystemDiagram(systemDiagramText);
+            }
+        });
+    }
     function menuClickAction(menuTitle, k) {
         menuTitle.addEventListener("click", (e) => {
             e.stopPropagation();
             let parents = findAllParentMenus(k);
             waitForMenuClickingDone(() => {
                 var _a;
+                if (k == 0 && !hasAssignedInputClick) {
+                    hasAssignedInputClick = true;
+                    let input = document.getElementById("fileUpload");
+                    input.onchange = () => __awaiter(this, void 0, void 0, function* () {
+                        let files = Array.from(input.files);
+                        if (files[0].text) {
+                            let text = yield files[0].text();
+                            loadSystemDiagram(text);
+                        }
+                        else {
+                            const reader = new FileReader();
+                            reader.onload = event => {
+                                loadSystemDiagram(event.target.result);
+                            };
+                            reader.readAsText(files[0]);
+                        }
+                    });
+                }
                 let el = document.getElementById(menuIdMap[k]);
                 if (el) {
                     el = (_a = el.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement;
