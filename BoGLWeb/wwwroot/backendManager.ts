@@ -28,7 +28,7 @@ export namespace backendManager {
                 if (e.y < minY) minY = e.y;
                 if (e.x > maxX) maxX = e.x;
                 if (e.y > maxY) maxY = e.y;
-                return new BondGraphElement(i, e.label, e.x, e.y);
+                return new BondGraphElement(i, e.ID, e.label, e.x, e.y);
             }) as BondGraphElement[];
 
             elements.forEach(e => {

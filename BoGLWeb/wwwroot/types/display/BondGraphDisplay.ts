@@ -113,9 +113,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         text.attr("text-anchor", "middle")
             .classed("bondGraphText", true);
         text.append("tspan")
-            .text((d) => (<BondGraphElement>d).label.split("_")[0]);
+            .text((d: BondGraphElement) => d.label);
         text.append("tspan")
-            .text((d) => (<BondGraphElement>d).label.split("_")[1])
+            .text((d: BondGraphElement) => ["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
             .style('font-size', '10px')
             .style('baseline-shift', 'sub');
         newElements.each((d: BondGraphElement) => {
@@ -123,9 +123,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             testText.attr("text-anchor", "middle")
                 .classed("bondGraphText", true);
             testText.append("tspan")
-                .text(d.label.split("_")[0]);
+                .text(d.label);
             testText.append("tspan")
-                .text(d.label.split("_")[1])
+                .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
                 .style('font-size', '10px')
                 .style('baseline-shift', 'sub');
 

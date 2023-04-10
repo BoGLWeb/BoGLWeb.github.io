@@ -84,6 +84,26 @@ namespace BoGLWeb {
             });
         }
 
+        public static IDictionary<string, string> bondGraphLabels = new Dictionary<string, string>() {
+            { "_Mass", "I:m" },
+            { "_Spring", "C:K" },
+            { "_Stiffness", "C:K" },
+            { "_Torque_Input", "Se:τ" },
+            { "_Damper", "R:b" },
+            { "_Resistor", "R:R" },
+            { "_Force", "Se:F" },
+            { "_Capacitor", "C:C" },
+            { "_Velocity", "Sf:v" },
+            { "_Inductor", "I:L" },
+            { "_Rack&Pinion TF", "TF:K" },
+            { "_Flywheel", "I:J" },
+            { "_Voltage", "Se:V" },
+            { "_Current", "Sf:i" }
+            /*{ "gear", "TF:K" }, //->
+            { "gearadded", "TF:K" },
+            { "Motor", "Gy:K" } // Not sure what label we should be looking for here*/
+        };
+
         /// <summary>
         /// Returns the Bond Graph that can be constructed from a designGraph
         /// </summary>
@@ -101,12 +121,19 @@ namespace BoGLWeb {
             //Construct an Element for each node
             foreach(node node in graph.nodes) {
                 StringBuilder sb = new();
+                string label = "";
                 foreach (string l in node.localLabels) {
-                    sb.Append(l);
-                    sb.Append(" ");
+                    string strippedLabel = l.Replace("_Added", "");
+                    if (bondGraphLabels.ContainsKey(strippedLabel)) {
+                        bondGraphLabels.TryGetValue(strippedLabel, out label);
+                        break;
+                    } else if (l == "0" || l == "1") {
+                        label = l;
+                        break;
+                    }
                 }
 
-                bondGraph.addElement(node.name, new Element(node.name, sb.ToString().TrimEnd(), 0));
+                bondGraph.addElement(node.name, new Element(node.name, label, 0));
             }
 
             //Construct each arc
@@ -201,6 +228,7 @@ namespace BoGLWeb {
             /// Tracks the undo/redo and general IDs for this <c>Element</c>.
             /// </summary>
             private static int universalID = 0;
+            [JsonProperty]
             private int? ID;
 
             /// <summary>
