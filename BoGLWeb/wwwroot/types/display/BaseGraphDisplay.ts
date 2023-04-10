@@ -197,9 +197,9 @@ export class BaseGraphDisplay {
                     }
                 }
             }
-            for (const bond of (this.bondSelection.selectAll("path") as any)) {
-                if (bond && this.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
-                    newSelection.push(bond.__data__);
+            for (const bond of this.bondSelection.selectAll("path")) {
+                if (bond[0] && this.checkOverlap(selectionBounds, bond[0].getBoundingClientRect())) {
+                    newSelection.push(bond[0].__data__);
                 }
             }
 

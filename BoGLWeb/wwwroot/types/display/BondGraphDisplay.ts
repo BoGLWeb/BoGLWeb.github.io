@@ -147,7 +147,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 }
             })
             .style('stroke-width', 2);
-        let buffer = 30;
+        let buffer = 15;
         pathGroup.selectAll("circle").remove()
 
         // Need offset based on angle of line
@@ -159,7 +159,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("y", d => {
                 return (d.source.y + d.target.y) / 2 + Math.cos(this.getLabelAngle(d)) * buffer;
             })
-            .attr("text-anchor", d => this.getLabelAngle(d) > 0 ? "end" : "start");
+            .style("text-anchor", d => this.getLabelAngle(d) > 0 ? "end" : "start")
+            .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
         pathGroup.append("text")
             .text("label2")
             .attr("x", d => {
@@ -168,6 +169,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("y", d => {
                 return (d.source.y + d.target.y) / 2 - Math.cos(this.getLabelAngle(d)) * buffer;
             })
-            .attr("text-anchor", d => this.getLabelAngle(d) < 0 ? "end" : "start");
+            .style("text-anchor", d => this.getLabelAngle(d) < 0 ? "end" : "start")
+            .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
     }
 }
