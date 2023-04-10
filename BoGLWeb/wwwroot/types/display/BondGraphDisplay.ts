@@ -152,7 +152,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
         // Need offset based on angle of line
         pathGroup.append("text")
-            .text("label1")
+            .text(d => (((this.getLabelAngle(d) + (2 * Math.PI)) % Math.PI) < (Math.PI / 4) ? "f" : "e"))
             .attr("x", d => {
                 return (d.source.x + d.target.x) / 2 - Math.sin(this.getLabelAngle(d)) * buffer;
             })
@@ -162,7 +162,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .style("text-anchor", d => this.getLabelAngle(d) > 0 ? "end" : "start")
             .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
         pathGroup.append("text")
-            .text("label2")
+            .text(d => (((this.getLabelAngle(d) + (2 * Math.PI)) % Math.PI) < (Math.PI / 4) ? "e" : "f"))
             .attr("x", d => {
                 return (d.source.x + d.target.x) / 2 + Math.sin(this.getLabelAngle(d)) * buffer;
             })
