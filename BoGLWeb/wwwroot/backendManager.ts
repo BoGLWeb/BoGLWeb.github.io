@@ -37,7 +37,7 @@ export namespace backendManager {
             });
 
             let bonds = JSON.parse(bg.bonds).map(b => {
-                return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.velocity);
+                return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.velocity);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 

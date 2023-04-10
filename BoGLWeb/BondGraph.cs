@@ -381,6 +381,7 @@ namespace BoGLWeb {
             /// Tracks the undo/redo and general IDs for this <c>Bond</c>.
             /// </summary>
             private static int universalID = 0;
+            [JsonProperty]
             private int? ID;
 
             //The arrow will always point at the sink
