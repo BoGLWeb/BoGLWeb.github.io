@@ -556,7 +556,7 @@ export namespace backendManager {
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements onto the canvas to construct system diagrams</p>'
                 }, {
                     element: document.querySelector('.card-container'),
-                    intro: '<p><b>Constructing a System Diagram</b></p><p>Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge. You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).' +
+                    intro: '<p><b>Constructing a System Diagram</b></p><p>Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge. You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected). All elements should have a connection to another element except for the gravity element.' +
                         '<br><br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
                         '</p>'
                 },
