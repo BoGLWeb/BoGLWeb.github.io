@@ -137,12 +137,6 @@ async function loadPage() {
     [].forEach.call(resizers, function (resizer) {
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
-
-    let html = katex.renderToString("\\mathrm{ d }_{ \\mathrm{ ij } } \\mathrm{ \\mathrm{= } } \\sqrt{\\sum_{ \\mathrm{ k = 1 } }^ { \\mathrm{ p }} \\left(\\mathrm{ x } ^\\mathrm{ k }\\left(\\mathrm{ i }\\right) \\mathrm{-}\\ \\mathrm{ x } ^\\mathrm{ k } \\left(\\mathrm{ j }\\right) \\right) ^\\mathrm{ 2 }}", {
-        throwOnError: false
-    });
-    const parser = new DOMParser();
-    document.getElementById("latexTest").appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
 }
 
 var menuIdMap = {

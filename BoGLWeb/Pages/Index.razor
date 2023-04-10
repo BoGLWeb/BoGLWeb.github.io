@@ -152,12 +152,12 @@
                     OnSelectedItemChanged="ChangeEquationOption">
             </Select>
             @if(stateEquationsStored.Length > 0) {
-                string diffEq = stateEquationsStored[diffIndex];
                 <p>x3’ = v1 – v2</p>
                 <p>v1 = p1 / M1</p>
                 <p>v2 = p2 / M2</p>
                 <hr id="diffeqHR" />
-                <p>@diffEq</p>
+                <p id="finalEquation"></p>
+                renderEquations(new string[] { "finalEquation" }, new string[] { stateEquationsStored[diffIndex] });
             }
             <div id="latexTest"></div>
         </div>
@@ -599,6 +599,11 @@
                 return true;
             }
         }
+    }
+
+    public async void renderEquations(string[] ids, string[] eqStrings) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("renderEquations", ids, eqStrings);
     }
 
     [JSInvokable]

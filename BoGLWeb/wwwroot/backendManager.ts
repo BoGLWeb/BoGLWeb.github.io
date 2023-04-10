@@ -468,6 +468,18 @@ export namespace backendManager {
             }
         }
 
+        public renderEquations(ids: string[], eqStrings: string[]) {
+            for (let i = 0; i < ids.length; i++) {
+                let html = katex.renderToString(eqStrings[i], {
+                    throwOnError: false
+                });
+                const parser = new DOMParser();
+                let parent = document.getElementById(ids[i]);
+                parent.innerHTML = "";
+                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
+            }
+        }
+
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
