@@ -556,7 +556,7 @@ export namespace backendManager {
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements onto the canvas to construct system diagrams</p>'
                 }, {
                     element: document.querySelector('.card-container'),
-                    intro: '<p><b>Constructing a System Diagram</b></p><p>Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge.  You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected).' +
+                    intro: '<p><b>Constructing a System Diagram</b></p><p>Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge. You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected). All elements should have a connection to another element except for the gravity element.' +
                         '<br><br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
                         '</p>'
                 },
@@ -565,7 +565,7 @@ export namespace backendManager {
                     intro: '<p><b>The Modifier Menu</b></p><p>Use this menu to add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down the control key and clicking elements you want to select, or drag the cursor across the canvas with the left mouse button to create a selection region. All elements that are completely or partially inside the region will be selected.</p>'
                 }, {
                     element: document.querySelector('#zoomMenu'),
-                    intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom slider, or your scroll wheel.' +
+                    intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom slider, or your scroll wheel. You can also pan around the canvas by holding right click.' +
                         '<br><br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
                         '</p>'
                 }, {
@@ -582,7 +582,7 @@ export namespace backendManager {
                         '<li>Create a new system diagram</li>' +
                         '<li>Open a previously saved .bogl file from your computer</li>' +
                         '<li>Save a .bogl file representing the System Diagram to your computer</li>' +
-                        '<li>Generate a URL that that can be used to chare your System Diagram</li>' +
+                        '<li>Generate a URL that that can be used to share your System Diagram</li>' +
                         '</ul></p>'
                 }, {
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(3)'),

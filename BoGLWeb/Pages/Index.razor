@@ -710,6 +710,7 @@
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
         } catch (ArgumentException e) {
             errorVisible = true;
+            generatingBondGraph = false;
             errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
