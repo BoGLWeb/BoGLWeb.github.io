@@ -15,7 +15,7 @@ export class BondGraphBond extends GraphBond {
         this.causalStroke = causalStroke;
         this.causalStrokeDirection = causalStrokeDirection;
         this.hasDirection = hasDirection;
-        this.effortLabel = "e_" + this.id;
-        this.flowLabel = "f_" + this.id;
+        this.effortLabel = "e";
+        this.flowLabel = "f";
     }
 }
