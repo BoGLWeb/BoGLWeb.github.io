@@ -582,7 +582,7 @@ export namespace backendManager {
                         '<li>Create a new system diagram</li>' +
                         '<li>Open a previously saved .bogl file from your computer</li>' +
                         '<li>Save a .bogl file representing the System Diagram to your computer</li>' +
-                        '<li>Generate a URL that that can be used to chare your System Diagram</li>' +
+                        '<li>Generate a URL that that can be used to share your System Diagram</li>' +
                         '</ul></p>'
                 }, {
                     element: document.querySelector('.ant-menu-horizontal > :nth-child(3)'),
