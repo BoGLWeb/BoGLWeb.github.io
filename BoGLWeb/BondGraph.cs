@@ -2,6 +2,7 @@
 using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -361,15 +362,7 @@ namespace BoGLWeb {
             /// <returns>A single character from the label that designates the 
             /// type of <c>Element</c>.</returns>
             public char GetTypeChar() {
-                int length = this.label.Length;
-                if (length == 1) {
-                    return this.label[0];
-                }
-                char ch = this.label[length - 1];
-                if (ch == '1' | label.Contains("TF")) {
-                    return 'T';
-                }
-                return ch == ':' ? this.label[length - 2] : ch;
+                return this.label[0] == 'S' ? this.label[1] : this.label[0];
             }
 
             /// <summary>
