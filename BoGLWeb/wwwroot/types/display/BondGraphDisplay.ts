@@ -170,7 +170,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style("text-anchor", d => this.getAngle(d) > 0 ? "end" : "start")
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label1.append("tspan")
-                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.effortLabel : d.flowLabel);
+                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.effortLabel : d.flowLabel)
+                .classed("bondGraphText", true);
             label1.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => d.id)
@@ -186,7 +187,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style("text-anchor", d => this.getAngle(d) < 0 ? "end" : "start")
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label2.append("tspan")
-                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.flowLabel : d.effortLabel);
+                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.flowLabel : d.effortLabel)
+                .classed("bondGraphText", true);
             label2.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => d.id)

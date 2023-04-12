@@ -147,7 +147,7 @@ export namespace backendManager {
             if (this.getTabNum() > 1) {
                 svg.id = "currentSVG";
                 document.body.appendChild(svg);
-                let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
+                let paths = d3.selectAll("#currentSVG > g > #bondGroup > g > .link");
                 for (let i = 0; i < paths[0].length; i++) {
                     let path = paths[0][i] as HTMLElement;
                     let hasMarkerEnd = path.style?.markerEnd;
@@ -166,6 +166,7 @@ export namespace backendManager {
             let img = new Image(w, h);
             let serializer = new XMLSerializer();
             let svgStr = serializer.serializeToString(svg);
+            console.log(svgStr);
             d3.select("#currentSVG").remove();
 
             for (const i in markers) {
@@ -179,6 +180,7 @@ export namespace backendManager {
 
             canvas.width = w;
             canvas.height = h;
+            img.onerror = () => alert("Error");
             img.onload = () => {
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
                 let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
