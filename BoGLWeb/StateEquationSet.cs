@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 
@@ -164,11 +165,22 @@ namespace BoGLWeb {
                 /// <param name="wrapper">The model bond graph graphWrapper.</param>
                 public static List<CausalGraphWrapper> GenerateList(BondGraph.BondGraphWrapper wrapper) {
                     List<CausalGraphWrapper> wrapperList = new();
+                    Dictionary<int, List<BondGraph.Bond>> sourceMap = wrapper.GetBondsBySource();
+                    Dictionary<int, List<BondGraph.Bond>> targetMap = wrapper.GetBondsByTarget();
                     foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
                         char indicator = pair.Value.GetTypeChar();
+                        bool isEffort = true;
+                        List<BondGraph.Bond>? sourceList = sourceMap.GetValueOrDefault(pair.Value.GetID());
+                        if (sourceList != null) {
+                            isEffort = sourceList[0].GetCausalDirection();
+                        } else {
+                            List<BondGraph.Bond>? targetList = targetMap.GetValueOrDefault(pair.Value.GetID());
+                            if (targetList != null) {
+                                isEffort = !targetList[0].GetCausalDirection();
+                            }
+                        } // Note that isEffort will experience exactly one of the two rewrites above.
                         if ("IRC".Contains(indicator)) {
-                            wrapperList.Add(GenerateWrapper(pair.Value, indicator == 'I', 
-                                wrapper.GetBondsBySource(), wrapper.GetBondsByTarget()));
+                            wrapperList.Add(GenerateWrapper(pair.Value, isEffort, sourceMap, targetMap));
                         }
                     }
                     return wrapperList;
@@ -335,15 +347,30 @@ namespace BoGLWeb {
             private static void GetRemainingGeneralizedSubstitutes(BondGraph graph, Dictionary<string, Expression> subs) {
                 foreach (KeyValuePair<string, BondGraph.Element> pair in graph.getElements()) {
                     int ID = pair.Value.GetID();
-                    switch (pair.Value.GetTypeChar()) {
+                    char type = pair.Value.GetTypeChar();
+                    string flowVar = "F" + ID, effortVar = "E" + ID;
+                    string cVar = "C" + ID, rVar = "R" + ID, iVar = "I" + ID;
+                    if (subs.ContainsKey(effortVar)) {
+                        type = char.ToLower(type);
+                    }
+                    switch (type) {
                         case 'C':
-                            subs.Add("E" + ID, new Expression("Q" + ID + "/C" + ID));
+                            subs.Add(effortVar, new("Q" + ID + "/" + cVar));
+                            break;
+                        case 'c':
+                            subs.Add(flowVar, new(effortVar + "'*" + cVar));
                             break;
                         case 'I':
-                            subs.Add("F" + ID, new Expression("P" + ID + "/I" + ID));
+                            subs.Add(effortVar, new(flowVar + "'*" + iVar));
+                            break;
+                        case 'i':
+                            subs.Add(flowVar, new("P" + ID + "/" + iVar));
                             break;
                         case 'R':
-                            subs.Add("E" + ID, new Expression("R" + ID + "*F" + ID));
+                            subs.Add(effortVar, new(flowVar + "*" + rVar));
+                            break;
+                        case 'r':
+                            subs.Add(flowVar, new(effortVar + "/" + rVar));
                             break;
                     }
                 }

@@ -798,10 +798,10 @@
             }
             Console.WriteLine("System diagram is connected.");
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
-            StateEquationSet set = new(causal[0]);
-            stateEquationsInitial = set.GetInitialEquations();
-            stateEquationsFinal = set.GetFinalEquations();
-            Console.WriteLine(string.Join(", ", stateEquationsFinal));
+            //StateEquationSet set = new(causal[0]);
+            //stateEquationsInitial = set.GetInitialEquations();
+            //stateEquationsFinal = set.GetFinalEquations();
+            //Console.WriteLine(string.Join(", ", stateEquationsFinal));
         } catch (ArgumentException e) {
             errorVisible = true;
             errorTitle = "Error Generating Bond Graph";
