@@ -132,9 +132,8 @@ export namespace backendManager {
         public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
-            let isBondGraph = graph instanceof BondGraphDisplay;
-            let w = bounds.width / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
-            let h = bounds.height / scale + (isBondGraph ? this.imageBuffer * 2 : 0);
+            let w = bounds.width / scale + this.imageBuffer * 2;
+            let h = bounds.height / scale + this.imageBuffer * 2;
             svg.setAttribute("viewbox", "0 0 " + w + " " + h);
             svg.setAttribute("width", w + "px");
             svg.setAttribute("height", h + "px");
@@ -277,8 +276,8 @@ export namespace backendManager {
             }
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             let isBondGraph = graph instanceof BondGraphDisplay;
-            svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + (isBondGraph ? this.imageBuffer : 0)) + ", "
-                + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + (isBondGraph ? this.imageBuffer : 0)) + ") scale(1)");
+            svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + this.imageBuffer) + ", "
+                + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + this.imageBuffer) + ") scale(1)");
         }
 
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
