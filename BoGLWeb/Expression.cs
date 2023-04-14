@@ -5,7 +5,7 @@ using System.Text;
 namespace BoGLWeb {
     namespace DifferentialEquationHelper {
         /// <summary>
-        /// Stores differential finalDifferentialStateEquations in the form of function finalDifferentialStateEquations.
+        /// Stores differential equations in the form of function equations.
         /// </summary>
         public class Expression {
             /// <summary>
@@ -108,7 +108,7 @@ namespace BoGLWeb {
                 switch (fop) {
                     case FunctionOperator.DIFFERENTIAL:
                         if (fn.EndsWith("'")) {
-                            child.FormulateConstant(fn[..^1], FunctionOperator.VARIABLE);
+                            child.FormulateUnaryOperator(fn[..^1], FunctionOperator.PARENTHETICAL);
                             updateValues = true;
                         } else {
                             FormulateUnaryOperator(fn, FunctionOperator.PARENTHETICAL);
@@ -349,9 +349,9 @@ namespace BoGLWeb {
                                                 mChildren.Add(grandchild);
                                             }
                                             break;
-                                        case FunctionOperator.ONE: 
+                                        case FunctionOperator.ONE:
                                             break; // does nothing - should escape default
-                                        case FunctionOperator.ZERO: 
+                                        case FunctionOperator.ZERO:
                                             isZero = true;
                                             break; // whole expression becomes zero
                                         default:
@@ -652,20 +652,16 @@ namespace BoGLWeb {
             /// </param>
             public void Substitute(Expression var, Expression fn) {
                 var.AssertVariable();
-                if (!IsDifferential()) {
-                    String varFn = var.fn;
-                    Stack<Expression> thisStack = new(new[] { this });
-                    while (thisStack.Count > 0) {
-                        Expression target = thisStack.Pop();
-                        if (target.fn.Equals(varFn)) {
-                            target.AssignValues("(", new() { fn });
-                            target.Simplify(false);
-                        } else {
-                            foreach (Expression child in target.children) {
-                                if (!child.IsDifferential()) {
-                                    thisStack.Push(child);
-                                }
-                            }
+                String varFn = var.fn;
+                Stack<Expression> thisStack = new(new[] { this });
+                while (thisStack.Count > 0) {
+                    Expression target = thisStack.Pop();
+                    if (target.fn.Equals(varFn)) {
+                        target.AssignValues("(", new() { fn });
+                        target.Simplify(false);
+                    } else {
+                        foreach (Expression child in target.children) {
+                            thisStack.Push(child);
                         }
                     }
                 }
@@ -868,6 +864,37 @@ namespace BoGLWeb {
             }
 
             /// <summary>
+            /// Simplifies all differential expressions to their respective
+            /// variables.
+            /// </summary>
+            /// <param name="var">The target variable that should be 
+            /// represented as a derivative.</param>
+            public void CollapseDifferentials(string var) {
+                foreach (char c in var.ToCharArray()) {
+                    if (!Char.IsLetterOrDigit(c)) {
+                        return;
+                    }
+                }
+                Stack<Expression> stack = new(new[] { this });
+                while (stack.Count > 0) {
+                    Expression cursor = stack.Pop();
+                    bool isDifferential = cursor.fn[0] == '\'';
+                    if (cursor.fn.Equals(var)) {
+                        cursor.AssignValues("'", new(new[] { cursor.Copy() }));
+                    } else if (isDifferential || cursor.children.Count > 0) {
+                        if (isDifferential) {
+                            Expression child = cursor.children[0];
+                            cursor.AssignValues(child.fn, child.children);
+                        }
+                        foreach (Expression child in cursor.children) {
+                            stack.Push(child);
+                        }
+                    }
+                    Console.WriteLine(this);
+                }
+            }
+
+            /// <summary>
             /// Compares two <c>FunctionOperators</c> for precedence in 
             /// the standard order of operations.
             /// </summary>
@@ -975,7 +1002,7 @@ namespace BoGLWeb {
                         fn = "(" + this.children[0] + ')';
                         break;
                     case FunctionOperator.DIFFERENTIAL:
-                        fn = this.children[0].fn + "'";
+                        fn = this.children[0] + "'";
                         break;
                     case FunctionOperator.NEGATION:
                         fn = "-" + this.children[0];
@@ -1020,7 +1047,7 @@ namespace BoGLWeb {
                         fn = "(" + this.children[0].ToLatexString() + ')';
                         break;
                     case FunctionOperator.DIFFERENTIAL:
-                        fn = this.children[0].fn + "'";
+                        fn = this.children[0].ToLatexString() + "'";
                         break;
                     case FunctionOperator.NEGATION:
                         fn = "-" + this.children[0].ToLatexString();

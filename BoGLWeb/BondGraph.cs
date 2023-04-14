@@ -101,8 +101,8 @@ namespace BoGLWeb {
             { "_Voltage", "Se:V" },
             { "_Current", "Sf:i" },
             { "gear", "TF:K" },
-            { "gearadded", "TF:K" },
-            { "Motor", "Gy:K" }
+            { "_Lever", "TF:K" },
+            { "Motor", "GY:K" }
         };
 
         /// <summary>
