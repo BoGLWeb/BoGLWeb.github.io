@@ -515,7 +515,7 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 #modifierMenu {
     display: block;
     position: absolute;
-    right: 15px;
+    right: 10px;
     width: 120px
 }
 
@@ -625,7 +625,7 @@ hr:not([size]) {
 }
 
 #generateButton {
-    bottom: 20px;
+    bottom: 10px;
     position: absolute;
     right: 20px
 }
@@ -638,10 +638,14 @@ hr:not([size]) {
 }
 
 #generateProgress {
-    bottom: 20px;
-    left: 434px;
+    bottom: 10px;
+    left: 200px;
     position: absolute;
-    width: calc(100% - 530px)
+    width: calc(100% - 300px)
+}
+
+.ant-tabs-tabpane[tabindex="0"] {
+    position: relative;
 }
 
 #causalSelect {
@@ -654,7 +658,8 @@ hr:not([size]) {
     bottom: 50px;
     position: absolute;
     right: 15px;
-    width: 70px
+    width: 70px;
+    z-index: 9999;
 }
 
 #zoomMenu > div {
@@ -808,8 +813,8 @@ hr:not([size]) {
 }
 
 #ruleLoadProgressText, #generateProgressText {
-    bottom: 20px;
-    left: 255px;
+    bottom: 10px;
+    left: 20px;
     margin: 0;
     position: absolute
 }

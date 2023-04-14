@@ -190,7 +190,7 @@
         </div>
         <span class="@(tabsDisabled ? "tabsDisabled" : "tabsEnabled")">
             <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
-                <TabPane Key="1" Tab="System" ForceRender=true>
+                <TabPane Key="1" Tab="System" Style="position: relative" ForceRender=true>
                     <div id="modifierMenu">
                         <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
                             <ChildContent>
