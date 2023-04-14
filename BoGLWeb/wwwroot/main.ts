@@ -105,6 +105,10 @@ async function loadPage() {
     };
 
     document.querySelectorAll('.ant-checkbox-wrapper').forEach(e => e.addEventListener("mouseenter", () => (e.children[0].children[0] as HTMLElement).focus()));
+
+    if (innerHeight < 635) {
+        (document.querySelector("#zoomMenu > div > div > div") as HTMLElement).click();
+    }
 }
 
 var menuIdMap = {
