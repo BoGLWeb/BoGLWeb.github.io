@@ -604,7 +604,8 @@ hr:not([size]) {
     bottom: 50px;
     position: absolute;
     right: 15px;
-    width: 70px
+    width: 70px;
+    z-index: 9999;
 }
 
 #zoomMenu > div {
