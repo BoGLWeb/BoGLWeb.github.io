@@ -99,10 +99,10 @@ namespace BoGLWeb {
             { "_Rack&Pinion TF", "TF:K" },
             { "_Flywheel", "I:J" },
             { "_Voltage", "Se:V" },
-            { "_Current", "Sf:i" }
-            /*{ "gear", "TF:K" }, //->
+            { "_Current", "Sf:i" },
+            { "gear", "TF:K" },
             { "gearadded", "TF:K" },
-            { "Motor", "Gy:K" } // Not sure what label we should be looking for here*/
+            { "Motor", "Gy:K" }
         };
 
         /// <summary>
@@ -124,6 +124,7 @@ namespace BoGLWeb {
                 StringBuilder sb = new();
                 string label = "";
                 foreach (string l in node.localLabels) {
+                    label += l + " ";
                     string strippedLabel = l.Replace("_Added", "");
                     if (bondGraphLabels.ContainsKey(strippedLabel)) {
                         bondGraphLabels.TryGetValue(strippedLabel, out label);
