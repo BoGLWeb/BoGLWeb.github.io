@@ -350,12 +350,13 @@ namespace BoGLWeb {
                     char type = pair.Value.GetTypeChar();
                     string flowVar = "F" + ID, effortVar = "E" + ID;
                     string cVar = "C" + ID, rVar = "R" + ID, iVar = "I" + ID;
+                    string qVar = "Q" + ID, pVar = "P" + ID;
                     if (subs.ContainsKey(effortVar)) {
                         type = char.ToLower(type);
                     }
                     switch (type) {
                         case 'C':
-                            subs.Add(effortVar, new("Q" + ID + "/" + cVar));
+                            subs.Add(effortVar, new(qVar + "/" + cVar));
                             break;
                         case 'c':
                             subs.Add(flowVar, new(effortVar + "'*" + cVar));
@@ -364,7 +365,7 @@ namespace BoGLWeb {
                             subs.Add(effortVar, new(flowVar + "'*" + iVar));
                             break;
                         case 'i':
-                            subs.Add(flowVar, new("P" + ID + "/" + iVar));
+                            subs.Add(flowVar, new(pVar + "/" + iVar));
                             break;
                         case 'R':
                             subs.Add(effortVar, new(flowVar + "*" + rVar));

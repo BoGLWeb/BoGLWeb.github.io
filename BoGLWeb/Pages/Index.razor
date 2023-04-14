@@ -791,7 +791,8 @@
         BondGraph item2;
         List<BondGraph> causal;
 
-        try {
+        try
+        {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
             if(GraphValidityHandler.IsInvalid(sysDiagram)) {
                 throw new ArgumentException("System diagram is disconnected.");
@@ -849,7 +850,7 @@
         // Reset backend bond graphs and prints state equations. TODO: find global variable
         // storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
+        //stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
         equationOptions = stateEquationsStored.Select(e => e.Substring(0, e.IndexOf("="))).ToArray();
         equationSwitchOptions = Enumerable.Range(0, equationOptions.Length).ToList().Select(i => { 
             return new Option { label = "Equation for " + equationOptions[i], value = i }; 

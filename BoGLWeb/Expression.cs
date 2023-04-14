@@ -104,34 +104,38 @@ namespace BoGLWeb {
             private void FormulateUnaryOperator(String fn, FunctionOperator fop) {
                 VerifyLength(fn);
                 Expression child = new();
+                bool updateValues = false;
                 switch (fop) {
                     case FunctionOperator.DIFFERENTIAL:
                         if (fn.EndsWith("'")) {
                             child.FormulateConstant(fn[..^1], FunctionOperator.VARIABLE);
+                            updateValues = true;
                         } else {
-                            child.FormulateUnaryOperator(fn, FunctionOperator.PARENTHETICAL);
+                            FormulateUnaryOperator(fn, FunctionOperator.PARENTHETICAL);
                         }
                         break;
                     case FunctionOperator.PARENTHETICAL:
                         if (fn.StartsWith("(") & fn.EndsWith(")")) {
                             child.FormulateBinaryOperator(fn[1..^1], FunctionOperator.ADDITION);
+                            updateValues = true;
                         } else {
-                            child.FormulateConstant(fn, FunctionOperator.INTEGER_CONSTANT);
+                            FormulateConstant(fn, FunctionOperator.INTEGER_CONSTANT);
                         }
                         break;
                     case FunctionOperator.NEGATION:
                         if (fn.StartsWith("-")) {
                             child.FormulateConstant(fn[1..], FunctionOperator.NEGATION);
+                            updateValues = true;
                         } else {
-                            child.FormulateUnaryOperator(fn, FunctionOperator.DIFFERENTIAL);
+                            FormulateUnaryOperator(fn, FunctionOperator.DIFFERENTIAL);
                         }
                         break;
                     default:
                         throw new ArgumentException("Must be unary operator.");
                 }
-                this.fn = child.fn;
-                this.children.Clear();
-                this.children.AddRange(child.children);
+                if (updateValues) {
+                    AssignValues("" + (char) fop, new(new[] { child }));
+                }
             }
 
             /// <summary>
@@ -192,19 +196,9 @@ namespace BoGLWeb {
                 Expression child1 = new(), child2 = new();
                 child1.Formulate(fn[0..index], o1);
                 child2.Formulate(fn[(index + 1)..], o2);
-                AddChild(child1);
-                AddChild(child2);
+                this.children.Add(child1);
+                this.children.Add(child2);
                 AssignOperator(o1);
-            }
-
-            /// <summary>
-            /// Adds a child <c>Expression</c> to this object.
-            /// </summary>
-            /// <param name="fn">
-            /// The new child.
-            /// </param>
-            private void AddChild(Expression fn) {
-                this.children.Add(fn);
             }
 
             /// <summary>
@@ -320,8 +314,19 @@ namespace BoGLWeb {
                                 } else if (targetFn.children[0].fn.Equals("0")) {
                                     targetFn.AssignValues("!", new(new[] { targetFn.children[1] }));
                                 } else if (targetFn.children[1].fn.Equals("!")) {
-                                    targetFn.children[1] = targetFn.children[1].children[0];
-                                    targetFn.fn = "+";
+                                    targetFn.AssignValues("+", new(new[] { 
+                                        targetFn.children[0],
+                                        targetFn.children[1].children[0]
+                                    }));
+                                }
+                                for (int i = 0; i < targetFn.children.Count; i++) {
+                                    Expression child = targetFn.children[i];
+                                    if (child.fn[0] == '(') {
+                                        Expression grandchild = child.children[0];
+                                        if (!"+-".Contains(grandchild.fn)) {
+                                            child.AssignValues(grandchild.fn, grandchild.children);
+                                        }
+                                    }
                                 }
                                 break;
                             case FunctionOperator.MULTIPLICATION:
@@ -385,9 +390,8 @@ namespace BoGLWeb {
                                         break;
                                     case FunctionOperator.PARENTHETICAL:
                                         Expression pGrandchild = nChild.children[0];
-                                        if (pGrandchild.fn[0] == '-') {
-                                            Expression greatGrandchild = pGrandchild.children[0];
-                                            targetFn.AssignValues(greatGrandchild.fn, greatGrandchild.children);
+                                        if (! "+-".Contains(pGrandchild.fn[0])) {
+                                            nChild.AssignValues(pGrandchild.fn, pGrandchild.children);
                                         }
                                         break;
                                     case FunctionOperator.ZERO:
@@ -630,7 +634,7 @@ namespace BoGLWeb {
                         thisStack.Push(child);
                         Expression nextCopy = new();
                         copyStack.Push(nextCopy);
-                        targetCopy.AddChild(nextCopy);
+                        targetCopy.children.Add(nextCopy);
                     }
                 }
                 return copy;
@@ -924,14 +928,15 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>The string parse tree.</returns>
             public string ToTree() {
-                //return ToTree("");
                 StringBuilder builder = new();
                 Stack<Expression> fnStack = new(new[] { this });
                 Stack<string> indentStack = new(new[] { "" });
+                string newLine = "";
                 while (fnStack.Count > 0) {
                     Expression fn = fnStack.Pop();
                     string indent = indentStack.Pop();
-                    builder.Append(indent).Append(fn.fn);
+                    builder.Append(newLine).Append(indent).Append(fn.fn);
+                    newLine = "\n";
                     Stack<Expression> proxyStack = new(fn.children);
                     string nextIndent = indent + '\t';
                     while (proxyStack.Count > 0) {
@@ -1002,7 +1007,14 @@ namespace BoGLWeb {
                         fn = "" + this.children[0].ToLatexString() + '-' + this.children[1].ToLatexString();
                         break;
                     case FunctionOperator.DIVISION:
-                        fn = "\\frac{" + this.children[0].ToLatexString() + "}{" + this.children[1].ToLatexString() + "}";
+                        Expression numerator = this.children[0], denominator = this.children[1];
+                        if (numerator.fn.Equals("(")) {
+                            numerator = numerator.children[0];
+                        }
+                        if (denominator.fn.Equals("(")) {
+                            denominator = denominator.children[0];
+                        }
+                        fn = "\\frac{" + numerator.ToLatexString() + "}{" + denominator.ToLatexString() + "}";
                         break;
                     case FunctionOperator.PARENTHETICAL:
                         fn = "(" + this.children[0].ToLatexString() + ')';
