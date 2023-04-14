@@ -138,6 +138,8 @@ export namespace backendManager {
             svg.setAttribute("viewbox", "0 0 " + w + " " + h);
             svg.setAttribute("width", w + "px");
             svg.setAttribute("height", h + "px");
+            w *= 5;
+            h *= 5;
 
             let markers = {};
 
@@ -175,6 +177,7 @@ export namespace backendManager {
             img.src = "data:image/svg+xml;utf8," + svgStr;
 
             var canvas = document.createElement("canvas");
+
             document.body.appendChild(canvas);
 
             canvas.width = w;
