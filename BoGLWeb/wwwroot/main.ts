@@ -36,6 +36,8 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
+    // @ts-ignore
+    delete window.jQuery;
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 
@@ -134,7 +136,18 @@ async function loadPage() {
     [].forEach.call(resizers, function (resizer) {
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
+
+    let examples = ["basic-two-mass-system", "basic-two-mass-system1", "basic-two-mass-system2", "masses_on_a_spring", "moving_masses", "spring_&_damper", "rack_pinion", "motor-gear-pair", "lrc_circuit"];
+
+    for (let i in examples) {
+        fetch("https://boglweb.github.io/rules-and-examples/examples/" + examples[i] + ".bogl");
+    }
+
     document.querySelectorAll('.ant-checkbox-wrapper').forEach(e => e.addEventListener("mouseenter", () => (e.children[0].children[0] as HTMLElement).focus()));
+
+    if (innerHeight < 635) {
+        (document.querySelector("#zoomMenu > div > div > div") as HTMLElement).click();
+    }
 }
 
 var menuIdMap = {
