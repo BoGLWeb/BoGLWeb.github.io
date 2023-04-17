@@ -176,7 +176,6 @@ export namespace backendManager {
             img.src = "data:image/svg+xml;utf8," + svgStr;
 
             var canvas = document.createElement("canvas");
-
             document.body.appendChild(canvas);
 
             canvas.width = w;
