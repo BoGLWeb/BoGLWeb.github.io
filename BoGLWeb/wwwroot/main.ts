@@ -104,9 +104,6 @@ async function loadPage() {
         return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
     };
 
-    document.querySelectorAll('input[type="checkbox"]').forEach(e => e.addEventListener("click", () => (e as HTMLElement).focus()));
-
-
     const ele = document.getElementById('graphMenu');
     let x = 0;
     let w = 0;
@@ -137,6 +134,7 @@ async function loadPage() {
     [].forEach.call(resizers, function (resizer) {
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
+    document.querySelectorAll('.ant-checkbox-wrapper').forEach(e => e.addEventListener("mouseenter", () => (e.children[0].children[0] as HTMLElement).focus()));
 }
 
 var menuIdMap = {

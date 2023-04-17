@@ -891,3 +891,7 @@ input[type="file"] {
     cursor: pointer;
     width: 100%;
 }
+
+input:focus {
+    color: red;
+}
