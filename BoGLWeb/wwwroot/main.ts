@@ -106,6 +106,12 @@ async function loadPage() {
         return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
     };
 
+    let examples = ["basic-two-mass-system", "basic-two-mass-system1", "basic-two-mass-system2", "masses_on_a_spring", "moving_masses", "spring_&_damper", "rack_pinion", "motor-gear-pair", "lrc_circuit"];
+
+    for (let i in examples) {
+        fetch("https://boglweb.github.io/rules-and-examples/examples/" + examples[i] + ".bogl");
+    }
+
     document.querySelectorAll('.ant-checkbox-wrapper').forEach(e => e.addEventListener("mouseenter", () => (e.children[0].children[0] as HTMLElement).focus()));
 
     if (innerHeight < 635) {
