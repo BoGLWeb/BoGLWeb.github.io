@@ -604,7 +604,8 @@ hr:not([size]) {
     bottom: 50px;
     position: absolute;
     right: 15px;
-    width: 70px
+    width: 70px;
+    z-index: 9999;
 }
 
 #zoomMenu > div {
@@ -790,4 +791,13 @@ input[type="file"] {
     display: inline-block;
     cursor: pointer;
     width: 100%;
+}
+
+.introjs-tooltiptext {
+    padding: 0px 20px !important;
+}
+
+.wideTooltip {
+    min-width: 630px !important;
+    max-width: 630px !important;
 }
