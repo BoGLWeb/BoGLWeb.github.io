@@ -569,7 +569,7 @@ export namespace backendManager {
                     intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom slider, or your scroll wheel. You can also pan around the canvas by holding right click.' +
                         '<br><br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
                         '</p>',
-                    position: 'left'
+                    position: 'top'
                 }, {
                     element: document.querySelector('#generateButton'),
                     intro: '<p><b>The Generate Button</b></p><p>The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.</p>'
