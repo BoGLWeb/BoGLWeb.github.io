@@ -217,7 +217,7 @@ namespace BoGLWeb {
 
         public class Element {
             [JsonProperty]
-            protected readonly string label;
+            public readonly string label;
             [JsonProperty]
             protected readonly double value;
             private readonly string name;
@@ -232,6 +232,8 @@ namespace BoGLWeb {
             private static int universalID = 0;
             [JsonProperty]
             private int? ID;
+            public string? domain;
+            public bool visited = false;
 
             /// <summary>
             /// Returns a string representing the element. The string includes label, value, name, x, and y coordinates of the element
@@ -406,9 +408,9 @@ namespace BoGLWeb {
             [JsonProperty]
             private int? ID;
             [JsonProperty]
-            private string flowLabel = "f";
+            public string flowLabel = "f";
             [JsonProperty]
-            private string effortLabel = "e";
+            public string effortLabel = "e";
 
             //The arrow will always point at the sink
             /// <summary>
@@ -558,9 +560,34 @@ namespace BoGLWeb {
         }
 
         public class BondGraphWrapper {
-            private readonly Dictionary<string, BondGraph.Element> elements;
-            private readonly Dictionary<int, List<BondGraph.Bond>> bondsBySource;
-            private readonly Dictionary<int, List<BondGraph.Bond>> bondsByTarget;
+            private readonly Dictionary<string, Element> elements;
+            private readonly Dictionary<int, List<Bond>> bondsBySource;
+            private readonly Dictionary<int, List<Bond>> bondsByTarget;
+            private static List<string> translationLabels = new List<string>() { "F", "v" };
+            private static List<string> rotLabels = new List<string>() { "𝜏", "ω" };
+            private static List<string> elecLabels = new List<string>() { "V", "i" };
+            private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
+                {"v", translationLabels },
+                {"F", translationLabels },
+                {"b", translationLabels },
+                {"m", translationLabels },
+                {"k", translationLabels },
+                {"ω", rotLabels },
+                {"𝜏", rotLabels },
+                {"D", rotLabels },
+                {"I", rotLabels },
+                {"κ", rotLabels },
+                {"i", elecLabels },
+                {"V", elecLabels },
+                {"R", elecLabels },
+                {"L", elecLabels },
+                {"C", elecLabels }
+            };
+            private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
+                {"F", new List<string>() { "L'", "θ'" } },
+                {"𝜏", new List<string>() { "p'", "x'" } },
+                {"V", new List<string>() { "ϕ'", "q'" } }
+            };
 
             /// <summary>
             /// Creates a new <c>BondGraphWrapper</c>. This class rewrites a bond 
@@ -572,18 +599,18 @@ namespace BoGLWeb {
                 this.elements = graph.getElements();
                 this.bondsBySource = new();
                 this.bondsByTarget = new();
-                foreach (BondGraph.Bond bond in graph.getBonds()) {
+                foreach (Bond bond in graph.getBonds()) {
                     int source = bond.getSource().GetID();
-                    List<BondGraph.Bond>? sourceBondsByElement = this.bondsBySource.GetValueOrDefault(source);
+                    List<Bond>? sourceBondsByElement = this.bondsBySource.GetValueOrDefault(source);
                     if (sourceBondsByElement == null) {
-                        this.bondsBySource.Add(source, new List<BondGraph.Bond> { bond });
+                        this.bondsBySource.Add(source, new List<Bond> { bond });
                     } else {
                         sourceBondsByElement.Add(bond);
                     }
                     int target = bond.getSink().GetID();
-                    List<BondGraph.Bond>? targetBondsByElement = this.bondsByTarget.GetValueOrDefault(target);
+                    List<Bond>? targetBondsByElement = this.bondsByTarget.GetValueOrDefault(target);
                     if (targetBondsByElement == null) {
-                        this.bondsByTarget.Add(target, new List<BondGraph.Bond> { bond });
+                        this.bondsByTarget.Add(target, new List<Bond> { bond });
                     } else {
                         targetBondsByElement.Add(bond);
                     }
@@ -594,7 +621,7 @@ namespace BoGLWeb {
             /// Gets the set of elements in this BondGraph.
             /// </summary>
             /// <returns><c>this.elements</c></returns>
-            public Dictionary<string, BondGraph.Element> GetElements() {
+            public Dictionary<string, Element> GetElements() {
                 return this.elements;
             }
 
@@ -604,7 +631,7 @@ namespace BoGLWeb {
             /// the value.
             /// </summary>
             /// <returns>this.bondsBySource</returns>
-            public Dictionary<int, List<BondGraph.Bond>> GetBondsBySource() {
+            public Dictionary<int, List<Bond>> GetBondsBySource() {
                 return this.bondsBySource;
             }
 
@@ -614,8 +641,57 @@ namespace BoGLWeb {
             /// the value.
             /// </summary>
             /// <returns>this.bondsByTarget</returns>
-            public Dictionary<int, List<BondGraph.Bond>> GetBondsByTarget() {
+            public Dictionary<int, List<Bond>> GetBondsByTarget() {
                 return this.bondsByTarget;
+            }
+
+            public void AssignBondLabels() {
+            /*                    iterate through all elements in bond graph:
+                                    verify that element is leaf node
+                                    do depth first search that stops at gyrator elements
+                                    flip visited boolean on nodes and set domain on bonds (set domain on 0 and 1 junctions and transformers and add them to list)*/
+                Queue<Element> queue = new Queue<Element>();
+                List<Element> futureLeaves = this.elements.Values.ToList().FindAll(e => GetBondsByTarget()[e.GetID()].Count == 1);
+                List<Element> zeroList = new();
+                List<Element> oneList = new();
+                List<Element> transformerList = new();
+                Console.WriteLine("IN LABEL ASSIGNMENT");
+                while (futureLeaves.Count > 0) {
+                    Console.WriteLine("WE HAVE ONE AT LEAST");
+                    Element startEl = futureLeaves[0];
+                    futureLeaves.RemoveAt(0);
+                    queue.Enqueue(startEl);
+                    List<string> labels = domainLabelDict[startEl.label.Last().ToString()];
+                    string effortLabel = labels[0];
+                    string flowLabel = labels[1];
+
+                    while (queue.Count > 0) {
+                        Console.WriteLine("WE QUEUING");
+                        Element el = queue.Dequeue();
+                        if (el.visited) continue;
+                        el.visited = true;
+                        List<Element> neighbors = this.bondsBySource[el.GetID()].Select(b => b.getSource()).ToList();
+                        if (el.label[0] != 'G') {
+                            neighbors.ForEach(o => queue.Enqueue(o));
+                            this.bondsBySource[el.GetID()].ForEach(b => {
+                                b.effortLabel = effortLabel;
+                                b.flowLabel = flowLabel;
+                            });
+                            if (el.label[0] == '0') {
+                                el.domain = effortLabel;
+                                zeroList.Add(el);
+                            } else if (el.label[0] == '1') {
+                                el.domain = effortLabel;
+                                oneList.Add(el);
+                            } else if (el.label.Substring(0, 2) == "TF") {
+                                el.domain = effortLabel;
+                                transformerList.Add(el);
+                            }
+                        }
+                    }
+
+                    futureLeaves = futureLeaves.FindAll(e => !e.visited);
+                }
             }
         }
     }
