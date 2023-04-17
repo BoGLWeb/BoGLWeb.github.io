@@ -18,7 +18,6 @@ namespace BoGLWeb {
             /// </summary>
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
-                int count = graph.GetDifferentialElements().Count;
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
                 Console.WriteLine("MAKING STATE EQUATION SET");
                 graphWrapper.AssignBondLabels();
@@ -49,9 +48,10 @@ namespace BoGLWeb {
                 foreach (string key in usedSet) {
                     substitutionDictionary.Remove(key);
                 }
-                this.finalDifferentialStateEquations = new string[count];
+                this.finalDifferentialStateEquations = new string[substitutionDictionary.Count];
                 int index = 0;
                 foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
+                    pair.Value.CollapseDifferentials((pair.Key[0] == 'E' ? 'P' : 'Q') + pair.Key[1..]);
                     this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value.ToLatexString();
                 }
             }
