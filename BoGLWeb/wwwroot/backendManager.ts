@@ -551,7 +551,7 @@ export namespace backendManager {
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
                         'This application is used to construct system diagrams and generate bond graphs from those diagrams</p>'
                 }, {
-                    element: document.querySelector('.card-container'),
+                    element: document.querySelector('.graphSVG'),
                     intro: '<p><b>The Canvas</b></p><p>The highlighted space is the Canvas where you can construct, move, and rearrange your system diagrams.</p>'
                 }, {
                     element: document.querySelector('#graphMenu'),
