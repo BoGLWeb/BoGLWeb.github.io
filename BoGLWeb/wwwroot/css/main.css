@@ -800,3 +800,8 @@ input:focus {
 .introjs-tooltiptext {
     padding: 0px 20px !important;
 }
+
+.wideTooltip {
+    min-width: 630px !important;
+    max-width: 630px !important;
+}
