@@ -405,6 +405,10 @@ namespace BoGLWeb {
             private static int universalID = 0;
             [JsonProperty]
             private int? ID;
+            [JsonProperty]
+            private string flowLabel = "f";
+            [JsonProperty]
+            private string effortLabel = "e";
 
             //The arrow will always point at the sink
             /// <summary>

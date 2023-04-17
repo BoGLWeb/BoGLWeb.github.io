@@ -184,13 +184,13 @@
                     </Panel>
                 </ChildContent>
                 <ExpandIconTemplate>
-                    <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                    <Icon Type="down-circle" Rotate="@(context ? 0 : 180)" Style="margin-top: 0; margin-right: 2px"/>
                 </ExpandIconTemplate>
             </Collapse>
         </div>
         <span class="@(tabsDisabled ? "tabsDisabled" : "tabsEnabled")">
             <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
-                <TabPane Key="1" Tab="System" ForceRender=true>
+                <TabPane Key="1" Tab="System" Style="position: relative" ForceRender=true>
                     <div id="modifierMenu">
                         <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
                             <ChildContent>
@@ -805,6 +805,7 @@
             //Console.WriteLine(string.Join(", ", stateEquationsFinal));
         } catch (ArgumentException e) {
             errorVisible = true;
+            generatingBondGraph = false;
             errorTitle = "Error Generating Bond Graph";
             errorMessage = e.Message;
             base.StateHasChanged();
