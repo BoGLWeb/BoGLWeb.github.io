@@ -546,30 +546,30 @@ export namespace backendManager {
             this.closeMenu("Help");
             window.introJs().setOptions({
                 showStepNumbers: false,
-                hideNext: true,
+                scrollToElement: false,
                 steps: [{
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
                         'This application is used to construct system diagrams and generate bond graphs from those diagrams</p>'
                 }, {
-                    element: document.querySelector('.card-container'),
+                    element: document.querySelector('.graphSVG'),
                     intro: '<p><b>The Canvas</b></p><p>The highlighted space is the Canvas where you can construct, move, and rearrange your system diagrams.</p>'
                 }, {
                     element: document.querySelector('#graphMenu'),
                     intro: '<p><b>The Element Palette</b></p><p>This is the element palette. After expanding the menus, you can select and drag elements onto the canvas to construct system diagrams</p>'
                 }, {
-                    element: document.querySelector('.card-container'),
-                    intro: '<p><b>Constructing a System Diagram</b></p><p>Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge. You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected). All elements should have a connection to another element except for the gravity element.' +
-                        '<br><br><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="100%">' +
-                        '</p>'
+                    intro: '<p><b>Constructing a System Diagram</b></p><div style="display: flex; align-items: center"><p style="margin-right: 10px; margin-bottom: 0px; text-align: right">Select and drag an element to add it to the Canvas, and then select near its black border to start creating an edge. You can then select near a second element to finish making the edge. If you see a green circle, your edge is valid, if you see a red X when you try to make an edge, it means the edge you are trying to make is invalid (the two elements do not make sense to be connected). All elements should have a connection to another element except for the gravity element. </p><img src="images/tutorial/EdgeCreationGif-Edited.gif" width="60%"></div>',
+                    tooltipClass: 'wideTooltip'
                 },
                 {
                     element: document.querySelector('#modifierMenu'),
-                    intro: '<p><b>The Modifier Menu</b></p><p>Use this menu to add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down the control key and clicking elements you want to select, or drag the cursor across the canvas with the left mouse button to create a selection region. All elements that are completely or partially inside the region will be selected.</p>'
+                    intro: '<p><b>The Modifier Menu</b></p><p>Use this menu to add modifiers to the selected element. Some modifiers require multiple elements to be selected. You can do this by holding down the control key and clicking elements you want to select, or drag the cursor across the canvas with the left mouse button to create a selection region. All elements that are completely or partially inside the region will be selected.</p>',
+                    position: 'left'
                 }, {
                     element: document.querySelector('#zoomMenu'),
                     intro: '<p><b>The Zoom Menu</b></p><p>This menu allows you to zoom in and out of the canvas. You can use the zoom slider, or your scroll wheel. You can also pan around the canvas by holding right click.' +
                         '<br><br><img src="images/tutorial/ZoomGif-Edited.gif" width="100%">' +
-                        '</p>'
+                        '</p>',
+                    position: 'top'
                 }, {
                     element: document.querySelector('#generateButton'),
                     intro: '<p><b>The Generate Button</b></p><p>The generate button allows you to turn your system diagram into a bond graph. While the bond graph is generating you will see a loading bar which signifies that BoGL Web is processing your System Diagram. This can take a few seconds.</p>'
