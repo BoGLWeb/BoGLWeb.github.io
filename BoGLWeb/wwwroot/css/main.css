@@ -631,10 +631,10 @@ hr:not([size]) {
 }
 
 #ruleLoadProgress {
-    bottom: 20px;
-    left: 395px;
+    bottom: 10px;
+    left: 165px;
     position: absolute;
-    width: calc(100% - 490px)
+    width: calc(100% - 265px)
 }
 
 #generateProgress {
