@@ -36,6 +36,8 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
+    // @ts-ignore
+    delete window.jQuery;
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
     let sliderImg: any = document.createElement("img"); 

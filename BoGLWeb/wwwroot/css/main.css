@@ -796,3 +796,7 @@ input[type="file"] {
 input:focus {
     color: red;
 }
+
+.introjs-tooltiptext {
+    padding: 0px 20px !important;
+}

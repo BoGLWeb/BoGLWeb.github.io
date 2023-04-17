@@ -546,7 +546,7 @@ export namespace backendManager {
             this.closeMenu("Help");
             window.introJs().setOptions({
                 showStepNumbers: false,
-                hideNext: true,
+                scrollToElement: false,
                 steps: [{
                     intro: '<p><b>Welcome To BoGL Web</b></p><p>' +
                         'This application is used to construct system diagrams and generate bond graphs from those diagrams</p>'
