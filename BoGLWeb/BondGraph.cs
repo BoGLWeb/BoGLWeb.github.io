@@ -217,7 +217,7 @@ namespace BoGLWeb {
 
         public class Element {
             [JsonProperty]
-            public readonly string label;
+            public string label;
             [JsonProperty]
             protected readonly double value;
             private readonly string name;
@@ -571,7 +571,7 @@ namespace BoGLWeb {
                 {"F", translationLabels },
                 {"b", translationLabels },
                 {"m", translationLabels },
-                {"k", translationLabels },
+                {"K", translationLabels },
                 {"ω", rotLabels },
                 {"𝜏", rotLabels },
                 {"D", rotLabels },
@@ -584,8 +584,8 @@ namespace BoGLWeb {
                 {"C", elecLabels }
             };
             private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
-                {"F", new List<string>() { "L'", "θ'" } },
-                {"𝜏", new List<string>() { "p'", "x'" } },
+                {"F", new List<string>() { "p'", "x'" } },
+                {"𝜏", new List<string>() { "L'", "θ'" } },
                 {"V", new List<string>() { "ϕ'", "q'" } }
             };
 
@@ -646,51 +646,76 @@ namespace BoGLWeb {
             }
 
             public void AssignBondLabels() {
-            /*                    iterate through all elements in bond graph:
-                                    verify that element is leaf node
-                                    do depth first search that stops at gyrator elements
-                                    flip visited boolean on nodes and set domain on bonds (set domain on 0 and 1 junctions and transformers and add them to list)*/
+            /* iterate through all elements in bond graph:
+                verify that element is leaf node
+                do depth first search that stops at gyrator elements
+                flip visited boolean on nodes and set domain on bonds (set domain on 0 and 1 junctions and transformers and add them to list)*/
                 Queue<Element> queue = new Queue<Element>();
-                List<Element> futureLeaves = this.elements.Values.ToList().FindAll(e => GetBondsByTarget()[e.GetID()].Count == 1);
-                List<Element> zeroList = new();
-                List<Element> oneList = new();
-                List<Element> transformerList = new();
+                List<Element> futureLeaves = this.elements.Values.ToList().FindAll(e => {
+                    int targetCount = GetBondsByTarget().ContainsKey(e.GetID()) ? GetBondsByTarget()[e.GetID()].Count : 0;
+                    int sourceCount = GetBondsBySource().ContainsKey(e.GetID()) ? GetBondsBySource()[e.GetID()].Count : 0;
+                    return (targetCount + sourceCount) == 1;
+                });
+                Console.WriteLine("FUTURE LEAVES " + string.Join(", ", futureLeaves.Select(e => e.label).ToArray()));
                 Console.WriteLine("IN LABEL ASSIGNMENT");
                 while (futureLeaves.Count > 0) {
                     Console.WriteLine("WE HAVE ONE AT LEAST");
                     Element startEl = futureLeaves[0];
                     futureLeaves.RemoveAt(0);
                     queue.Enqueue(startEl);
-                    List<string> labels = domainLabelDict[startEl.label.Last().ToString()];
+                    // we have a 1 junction being a leaf node here
+                    List<string> labels = domainLabelDict.ContainsKey(startEl.label.Last().ToString()) ? domainLabelDict[startEl.label.Last().ToString()] : new() { "e", "f" };
                     string effortLabel = labels[0];
                     string flowLabel = labels[1];
 
                     while (queue.Count > 0) {
-                        Console.WriteLine("WE QUEUING");
                         Element el = queue.Dequeue();
+                        Console.WriteLine("ELEMENT " + el.label + ", " + effortLabel + " " + flowLabel);
                         if (el.visited) continue;
                         el.visited = true;
-                        List<Element> neighbors = this.bondsBySource[el.GetID()].Select(b => b.getSource()).ToList();
+                        el.domain = effortLabel;
+                        List<Element> sourceBonds = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].Select(b => b.getSource()).ToList() : new();
+                        List<Element> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].Select(b => b.getSource()).ToList() : new();
+                        List<Element> neighbors = sourceBonds.Concat(targetBonds).ToList();
                         if (el.label[0] != 'G') {
+                            Console.WriteLine("NOT G: " + string.Join(", ", neighbors.Select(e => e.label)));
                             neighbors.ForEach(o => queue.Enqueue(o));
-                            this.bondsBySource[el.GetID()].ForEach(b => {
-                                b.effortLabel = effortLabel;
-                                b.flowLabel = flowLabel;
-                            });
+                            if (this.bondsBySource.ContainsKey(el.GetID())) {
+                                this.bondsBySource[el.GetID()].ForEach(b => {
+                                    b.effortLabel = effortLabel;
+                                    b.flowLabel = flowLabel;
+                                });
+                            }
+                            if (this.bondsByTarget.ContainsKey(el.GetID())) {
+                                this.bondsByTarget[el.GetID()].ForEach(b => {
+                                    b.effortLabel = effortLabel;
+                                    b.flowLabel = flowLabel;
+                                });
+                            }
                             if (el.label[0] == '0') {
-                                el.domain = effortLabel;
-                                zeroList.Add(el);
+                                el.label += " " + effortLabel;
                             } else if (el.label[0] == '1') {
-                                el.domain = effortLabel;
-                                oneList.Add(el);
-                            } else if (el.label.Substring(0, 2) == "TF") {
-                                el.domain = effortLabel;
-                                transformerList.Add(el);
+                                el.label += " " + flowLabel;
                             }
                         }
                     }
 
                     futureLeaves = futureLeaves.FindAll(e => !e.visited);
+                }
+
+                List<Element> iAndCElements = this.elements.Values.ToList().FindAll(e => e.label[0] == 'I' || e.label[0] == 'C' );
+                foreach (Element el in iAndCElements) {
+                    List<Bond> neighbors = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].ToList() : new();
+                    List<Bond> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].ToList() : new();
+                    neighbors.AddRange(targetBonds);
+                    List<string> labels = stateLabelDict[el.domain];
+                    neighbors.ForEach(n => {
+                        if (el.label[0].Equals('I')) {
+                            n.effortLabel = labels[0];
+                        } else {
+                            n.flowLabel = labels[1];
+                        }
+                    });
                 }
             }
         }

@@ -837,6 +837,8 @@
 
         causalOptions.Clear();
         foreach (BondGraph g in causal) {
+            BondGraph.BondGraphWrapper wrapper = new(g);
+            wrapper.AssignBondLabels();
             BondGraphEmbedder causalEmbedder = new(g);
 
             while (!causalEmbedder.isOptimized()) {

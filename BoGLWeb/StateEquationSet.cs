@@ -19,8 +19,6 @@ namespace BoGLWeb {
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
-                Console.WriteLine("MAKING STATE EQUATION SET");
-                graphWrapper.AssignBondLabels();
                 //List<Equation> initialEquations = GetInitialEquations(graphWrapper);
                 //this.initialEquations = new string[initialEquations.Count];
                 //int initialIndex = 0;

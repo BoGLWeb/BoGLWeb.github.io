@@ -651,7 +651,7 @@ hr:not([size]) {
 #causalSelect {
     position: absolute;
     right: 10px;
-    top: 77px
+    top: 10px
 }
 
 #zoomMenu {
