@@ -155,7 +155,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             })
             .style('stroke-width', 2);
         let buffer = 15;
-        pathGroup.selectAll("circle").remove()
+        pathGroup.selectAll("circle").remove();
 
         // Need offset based on angle of line
 
@@ -167,7 +167,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .attr("y", d => {
                     return (d.source.y + d.target.y) / 2 + Math.cos(this.getAngle(d)) * buffer;
                 })
-                .style("text-anchor", d => this.getAngle(d) > 0 ? "end" : "start")
+                .style("text-anchor", (d: BondGraphBond) => this.getAngle(d) > 0 ? "end" : "start")
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label1.append("tspan")
                 .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.effortLabel : d.flowLabel)
