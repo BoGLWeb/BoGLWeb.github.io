@@ -33,14 +33,14 @@ namespace BoGLWeb {
             modifierIDDict = idBuilder.ToImmutable();
 
             ImmutableDictionary<int, string>.Builder
-                idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
-            idBuilderReverse.Add(0, "MASS");
-            idBuilderReverse.Add(1, "INERTIA");
-            idBuilderReverse.Add(2, "STIFFNESS");
-            idBuilderReverse.Add(3, "FRICTION");
-            idBuilderReverse.Add(4, "DAMPING");
-            idBuilderReverse.Add(5, "PARALLEL");
-            idBuilderReverse.Add(6, "TOOTH_WEAR");
+            idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            idBuilderReverse.Add(0, "Include_Mass");
+            idBuilderReverse.Add(1, "Include_Inertia");
+            idBuilderReverse.Add(2, "Include_Stiffness");
+            idBuilderReverse.Add(3, "Include_Friction");
+            idBuilderReverse.Add(4, "Include_Damping");
+            idBuilderReverse.Add(5, "PAR");
+            idBuilderReverse.Add(6, "Include_Tooth_Wear");
 
             modifierIDDictReverse = idBuilderReverse.ToImmutable();
 
@@ -976,7 +976,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A list</returns>
             public List<string> getLabelList() {
-                List<string> strings = this.modifiers.Select(modifier => modifier.ToString()).ToList();
+                List<string> strings = this.modifiers.Select(modifier => modifierIDDictReverse[modifier].ToString()).ToList();
 
                 if (this.velocity == 0) {
                     return strings;
