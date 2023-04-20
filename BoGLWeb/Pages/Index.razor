@@ -325,7 +325,7 @@
     </div>
 </Modal>
     @{
-        RenderFragment urlFooter = @<Button OnClick="@handleUrlOk">Close</Button>;
+        RenderFragment urlFooter = @<Button OnClick="@closeUrlModal">Close</Button>;
     }
     <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible">
     <div style="display: flex">
