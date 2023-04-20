@@ -168,7 +168,7 @@ path.link.hidden {
 sub {
     font-style: italic;
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     margin-top: 5px;
 }
 
@@ -574,7 +574,7 @@ hr:not([size]) {
     width: 60px
 }
 
-.bogl_button {
+.bogl_button, .bogl_button_large {
     background-color: #ABDCFF;
     border: 1.5px solid #ABDCFF;
     border-radius: 5px;
@@ -585,11 +585,17 @@ hr:not([size]) {
     padding: 4px 5px
 }
 
-.bogl_button:hover:not(:disabled) {
+.bogl_button_large {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 20px 0px 10px 0px;
+}
+
+.bogl_button:hover:not(:disabled), .bogl_button_large:hover {
     background-color: #BEE6FD !important
 }
 
-.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled) {
+.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled), .bogl_button_large:focus, .bogl_button_large:active {
     background-color: #ABDCFF !important
 }
 

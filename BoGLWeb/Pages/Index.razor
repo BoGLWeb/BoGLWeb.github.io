@@ -137,7 +137,7 @@
             </ChildContent>
         </Collapse>
         <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
-            <Button OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
+            <Button Class="bogl_button_large" OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
             <h2>Differential Equation @(diffIndex + 1)</h2>
             <sub>@stateEquationsStored.Length equations total</sub>
             <Select Id="equationSelect"
@@ -152,9 +152,7 @@
                     OnSelectedItemChanged="ChangeEquationOption">
             </Select>
             @if(stateEquationsStored.Length > 0) {
-                <p>x3’ = v1 – v2</p>
-                <p>v1 = p1 / M1</p>
-                <p>v2 = p2 / M2</p>
+                <p>Intermediate steps<br />coming soon!</p>
                 <hr id="diffeqHR" />
                 <p id="finalEquation"></p>
                 renderEquations(new string[] { "finalEquation" }, new string[] { stateEquationsStored[diffIndex] });
@@ -162,7 +160,7 @@
             <div id="latexTest"></div>
         </div>
         <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
-            <Button OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
+            <Button Class="bogl_button_large" OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
             <h2>State Variables</h2>
             <div style="display: flex; flex-direction: column">
                 @foreach (var v in @equationOptions) {
