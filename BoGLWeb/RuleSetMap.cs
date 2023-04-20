@@ -2,6 +2,8 @@
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using BoGLWeb.BaseClasses;
+using OneOf.Types;
+using System.Collections.Immutable;
 
 namespace BoGLWeb {
     public sealed class RuleSetMap {
@@ -11,10 +13,33 @@ namespace BoGLWeb {
 
         //Class variables
         private readonly Dictionary<string, ruleSet> ruleSetMap;
+        private readonly ImmutableHashSet<string> modifiedRules;
         private int numLoaded;
 
         private RuleSetMap() {
             this.ruleSetMap = new Dictionary<string, ruleSet>();
+            
+            //Setup set of rules which need to be modified
+            this.modifiedRules = ImmutableHashSet.Create("BondGraphRuleset",
+                "SimplificationRuleset",
+                "DirRuleset",
+                "newDirectionRuleSet_2",
+                "DirRuleset3",
+                "Simplification2",
+                "NewCausalityMethodRuleset",
+                "NewCausalityMethodRuleset_2",
+                "NewCausalityMethodRuleset_3",
+                "INVDMarkerRules",
+                "INVDMarkerRules_2",
+                "CalibrationNewRuleset",
+                "CalibrationNewRuleset_2",
+                "RFlagCleanRuleset",
+                "ICFixTotalRuleset",
+                "TransformerFlipRuleset",
+                "TransformerFlipRuleset2",
+                "Clean23Ruleset",
+                "BeforeBG-VerifyDirRuleSet");
+            
             this.numLoaded = 0;
         }
 
@@ -108,6 +133,14 @@ namespace BoGLWeb {
         /// <param name="name">The name of the ruleset</param>
         /// <returns>A ruleset</returns>
         public ruleSet getRuleSet(string name) {
+            if (!this.modifiedRules.Contains(name)) {
+                return this.ruleSetMap[name];
+            }
+
+            foreach (grammarRule rule in this.ruleSetMap[name].rules) {
+                rule.TransformNodePositions = false;
+                rule.Rotate = false;
+            }
             return this.ruleSetMap[name];
         }
 
