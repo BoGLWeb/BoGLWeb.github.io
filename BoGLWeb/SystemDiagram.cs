@@ -16,6 +16,7 @@ namespace BoGLWeb {
     public class SystemDiagram {
         private static readonly ImmutableDictionary<string, int> modifierIDDict;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
+        private static readonly ImmutableDictionary<int, string> modifierIDDictReverseGraph;
         private static readonly ImmutableDictionary<string, int> typeIDDict;
         private static readonly ImmutableDictionary<int, string> typeIDDictReverse;
 
@@ -32,8 +33,7 @@ namespace BoGLWeb {
 
             modifierIDDict = idBuilder.ToImmutable();
 
-            ImmutableDictionary<int, string>.Builder
-                idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            ImmutableDictionary<int, string>.Builder idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
             idBuilderReverse.Add(0, "MASS");
             idBuilderReverse.Add(1, "INERTIA");
             idBuilderReverse.Add(2, "STIFFNESS");
@@ -43,6 +43,17 @@ namespace BoGLWeb {
             idBuilderReverse.Add(6, "TOOTH_WEAR");
 
             modifierIDDictReverse = idBuilderReverse.ToImmutable();
+
+            ImmutableDictionary<int, string>.Builder modGraphReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            modGraphReverse.Add(0, "Include_Mass");
+            modGraphReverse.Add(1, "Include_Inertia");
+            modGraphReverse.Add(2, "Include_Stiffness");
+            modGraphReverse.Add(3, "Include_Friction");
+            modGraphReverse.Add(4, "Include_Friction");
+            modGraphReverse.Add(5, "PAR");
+            modGraphReverse.Add(6, "Include_Tooth_Wear"); // Pretty sure tooth wear isn't taken into account anywhere?
+
+            modifierIDDictReverseGraph = modGraphReverse.ToImmutable();
 
             ImmutableDictionary<string, int>.Builder typeBuilder = ImmutableDictionary.CreateBuilder<string, int>();
             typeBuilder.Add("System_MT_Mass", 0);
@@ -975,7 +986,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A list</returns>
             public List<string> getLabelList() {
-                List<string> strings = this.modifiers.Select(modifier => modifier.ToString()).ToList();
+                List<string> strings = this.modifiers.Select(modifier => modifierIDDictReverseGraph[modifier].ToString()).ToList();
 
                 if (this.velocity == 0) {
                     return strings;
