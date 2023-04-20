@@ -5,8 +5,8 @@ namespace BoGLWeb {
         private const double cRep = 10000.0;
         private const double cSpring = 15.0;
         private const double kL = 100.0;
-        private const int maxIters = 1000;
-        private const double epsilon = 5.0;
+        private const int maxIters = 500;
+        private const double epsilon = 10.0;
 
         private double maxForceChange = double.MaxValue;
         private double iters = 1;
