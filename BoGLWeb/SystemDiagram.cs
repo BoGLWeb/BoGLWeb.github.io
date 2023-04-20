@@ -49,9 +49,9 @@ namespace BoGLWeb {
             modGraphReverse.Add(1, "Include_Inertia");
             modGraphReverse.Add(2, "Include_Stiffness");
             modGraphReverse.Add(3, "Include_Friction");
-            modGraphReverse.Add(4, "Include_Damping");
+            modGraphReverse.Add(4, "Include_Friction");
             modGraphReverse.Add(5, "PAR");
-            modGraphReverse.Add(6, "Include_Tooth_Wear");
+            modGraphReverse.Add(6, "Include_Tooth_Wear"); // Pretty sure tooth wear isn't taken into account anywhere?
 
             modifierIDDictReverseGraph = modGraphReverse.ToImmutable();
 
