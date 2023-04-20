@@ -708,14 +708,16 @@ namespace BoGLWeb {
                     List<Bond> neighbors = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].ToList() : new();
                     List<Bond> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].ToList() : new();
                     neighbors.AddRange(targetBonds);
-                    List<string> labels = stateLabelDict[el.domain];
-                    neighbors.ForEach(n => {
-                        if (el.label[0].Equals('I')) {
-                            n.effortLabel = labels[0];
-                        } else {
-                            n.flowLabel = labels[1];
-                        }
-                    });
+                    if (el.domain != "e") {
+                        List<string> labels = stateLabelDict[el.domain];
+                        neighbors.ForEach(n => {
+                            if (el.label[0].Equals('I')) {
+                                n.effortLabel = labels[0];
+                            } else {
+                                n.flowLabel = labels[1];
+                            }
+                        });
+                    }
                 }
             }
         }

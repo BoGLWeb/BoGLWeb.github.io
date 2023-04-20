@@ -327,7 +327,7 @@
     @{
         RenderFragment urlFooter = @<Button OnClick="@closeUrlModal">Close</Button>;
     }
-    <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible">
+    <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible" OnCancel="@closeUrlModal">
     <div style="display: flex">
         <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
