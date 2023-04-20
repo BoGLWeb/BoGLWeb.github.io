@@ -51,6 +51,32 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .attr("d", "M10,10L2,15");
         arrowAndFlat.append("path")
             .attr("d", "M10,5L10,15");
+
+        this.bonds.forEach((b: BondGraphBond) => {
+            console.log(b.effortLabel, b.flowLabel);
+            let testText = this.testSVG.append("text");
+            testText.attr("text-anchor", "middle")
+                .classed("bondGraphText", true);
+            let l1 = testText.append("tspan")
+                .text(b.effortLabel);
+            let l2 = testText.append("tspan")
+                .text(b.id)
+                .style('font-size', '10px')
+                .style('baseline-shift', 'sub');
+
+            let bb = testText.node().getBBox();
+            b.effortLabelSize = { width: bb.width, height: bb.height };
+
+            l1.text(b.flowLabel);
+            l2.text(b.id);
+
+            bb = testText.node().getBBox();
+            b.flowLabelSize = { width: bb.width, height: bb.height };
+            testText.remove();
+        });
+
+        console.log(this.bonds.map((b: BondGraphBond) => b.effortLabelSize));
+        console.log(this.bonds.map((b: BondGraphBond) => b.flowLabelSize));
     }
 
     makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
@@ -184,7 +210,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .attr("y", d => {
                     return (d.source.y + d.target.y) / 2 - Math.cos(this.getAngle(d)) * buffer;
                 })
-                .style("text-anchor", d => this.getAngle(d) < 0 ? "end" : "start")
+                .style("text-anchor", d => {
+                    return this.getAngle(d) < 0 ? "end" : "start"
+                })
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label2.append("tspan")
                 .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.flowLabel : d.effortLabel)
