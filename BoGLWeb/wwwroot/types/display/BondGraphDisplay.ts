@@ -11,6 +11,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     testSVG: SVGSelection;
     defs: SVGSelection;
     id: number;
+    buffer: number = 15;
 
     constructor(id: number, svg: SVGSelection, bondGraph: BondGraph) {
         super(svg, bondGraph);
@@ -65,18 +66,18 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style('baseline-shift', 'sub');
 
             let bb = testText.node().getBBox();
-            b.effortLabelSize = { width: bb.width, height: bb.height };
+            b.effortLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
 
             l1.text(b.flowLabel);
             l2.text(b.id);
 
             bb = testText.node().getBBox();
-            b.flowLabelSize = { width: bb.width, height: bb.height };
+            b.flowLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
             testText.remove();
         });
 
-        console.log(this.bonds.map((b: BondGraphBond) => b.effortLabelSize));
-        console.log(this.bonds.map((b: BondGraphBond) => b.flowLabelSize));
+        console.log(this.bonds.map((b: BondGraphBond) => b.effortLabelAngle));
+        console.log(this.bonds.map((b: BondGraphBond) => b.flowLabelAngle));
     }
 
     makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
@@ -168,6 +169,19 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         return (this.getAngle(d) + (2 * Math.PI)) % (2 * Math.PI);
     }
 
+    isEffortLabel(d, label1) {
+        return (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? label1 : !label1;
+    }
+
+    getTextAnchor(d, label1) {
+        let absAngle = Math.abs(this.getAngle(d));
+        let threshAngle = this.isEffortLabel(d, label1) ? d.effortLabelAngle : d.flowLabelAngle;
+        if (absAngle < threshAngle || absAngle > (Math.PI - threshAngle)) {
+            return "middle";
+        }
+        return (label1 && this.getAngle(d) > 0) || (!label1 && this.getAngle(d) < 0) ? "end" : "start";
+    }
+
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
@@ -175,28 +189,25 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             }
         })
             .style('marker-start', (d: BondGraphBond) => {
-                if(d.hasDirection){
+                if(d.hasDirection) {
                     return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
                 }
             })
             .style('stroke-width', 2);
-        let buffer = 15;
         pathGroup.selectAll("circle").remove();
-
-        // Need offset based on angle of line
 
         if (this.id == 2) {
             let label1 = pathGroup.append("text")
                 .attr("x", d => {
-                    return (d.source.x + d.target.x) / 2 - Math.sin(this.getAngle(d)) * buffer;
+                    return (d.source.x + d.target.x) / 2 - Math.sin(this.getAngle(d)) * this.buffer;
                 })
                 .attr("y", d => {
-                    return (d.source.y + d.target.y) / 2 + Math.cos(this.getAngle(d)) * buffer;
+                    return (d.source.y + d.target.y) / 2 + Math.cos(this.getAngle(d)) * this.buffer;
                 })
-                .style("text-anchor", d => this.getAngle(d) > 0 ? "end" : "start")
+                .style("text-anchor", (d: BondGraphBond) => this.getTextAnchor(d, true))
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label1.append("tspan")
-                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.effortLabel : d.flowLabel)
+                .text((d: BondGraphBond) => this.isEffortLabel(d, true) ? d.effortLabel : d.flowLabel)
                 .classed("bondGraphText", true);
             label1.append("tspan")
                 .attr("text-anchor", "middle")
@@ -205,15 +216,15 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style('baseline-shift', 'sub');
             let label2 = pathGroup.append("text")
                 .attr("x", d => {
-                    return (d.source.x + d.target.x) / 2 + Math.sin(this.getAngle(d)) * buffer;
+                    return (d.source.x + d.target.x) / 2 + Math.sin(this.getAngle(d)) * this.buffer;
                 })
                 .attr("y", d => {
-                    return (d.source.y + d.target.y) / 2 - Math.cos(this.getAngle(d)) * buffer;
+                    return (d.source.y + d.target.y) / 2 - Math.cos(this.getAngle(d)) * this.buffer;
                 })
-                .style("text-anchor", d => this.getAngle(d) < 0 ? "end" : "start")
+                .style("text-anchor", (d: BondGraphBond) => this.getTextAnchor(d, false))
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label2.append("tspan")
-                .text((d: BondGraphBond) => (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? d.flowLabel : d.effortLabel)
+                .text((d: BondGraphBond) => this.isEffortLabel(d, false) ? d.effortLabel : d.flowLabel)
                 .classed("bondGraphText", true);
             label2.append("tspan")
                 .attr("text-anchor", "middle")
