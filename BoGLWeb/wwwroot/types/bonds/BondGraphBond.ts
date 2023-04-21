@@ -7,8 +7,8 @@ export class BondGraphBond extends GraphBond {
     hasDirection: boolean;
     effortLabel: string;
     flowLabel: string;
-    effortLabelSize: { width: number, height: number } = null;
-    flowLabelSize: { width: number, height: number } = null;
+    effortLabelAngle: number;
+    flowLabelAngle: number;
     id: number = 0;
 
     constructor(id: number, source: GraphElement, target: GraphElement, causalStroke: boolean, causalStrokeDirection: boolean, hasDirection: boolean, effortLabel: string, flowLabel: string, velocity: number = 0) {

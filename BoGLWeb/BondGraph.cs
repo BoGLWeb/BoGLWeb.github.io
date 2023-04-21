@@ -104,7 +104,11 @@ namespace BoGLWeb {
             { "_Current", "Sf:i" },
             { "gear", "TF:K" },
             { "_Lever", "TF:K" },
-            { "Motor", "GY:K" }
+            { "Motor", "GY:K" },
+            { "_ResistanceMotor", "R:R" },
+            { "_InductanceMotor", "I:L" },
+            { "_RotaryInertiaMotor", "I:J" },
+            { "_GearMesh", "TF:R" }
         };
 
         /// <summary>
