@@ -87,16 +87,18 @@ namespace BoGLWeb {
 
         public static IDictionary<string, string> bondGraphLabels = new Dictionary<string, string>() {
             { "_Mass", "I:m" },
+            { "_Inertia", "I:J" },
             { "_Spring", "C:K" },
             { "_Stiffness", "C:K" },
             { "_Torque_Input", "Se:τ" },
             { "_Damper", "R:b" },
+            { "_Friction", "R:b" },
             { "_Resistor", "R:R" },
             { "_Force", "Se:F" },
             { "_Capacitor", "C:C" },
             { "_Velocity", "Sf:v" },
             { "_Inductor", "I:L" },
-            { "_Rack&Pinion TF", "TF:K" },
+            { "_Rack&Pinion", "TF:r" },
             { "_Flywheel", "I:J" },
             { "_Voltage", "Se:V" },
             { "_Current", "Sf:i" },
@@ -564,7 +566,7 @@ namespace BoGLWeb {
             private readonly Dictionary<int, List<Bond>> bondsBySource;
             private readonly Dictionary<int, List<Bond>> bondsByTarget;
             private static List<string> translationLabels = new List<string>() { "F", "v" };
-            private static List<string> rotLabels = new List<string>() { "𝜏", "ω" };
+            private static List<string> rotLabels = new List<string>() { "τ", "ω" };
             private static List<string> elecLabels = new List<string>() { "V", "i" };
             private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
                 {"v", translationLabels },
@@ -573,7 +575,7 @@ namespace BoGLWeb {
                 {"m", translationLabels },
                 {"K", translationLabels },
                 {"ω", rotLabels },
-                {"𝜏", rotLabels },
+                {"τ", rotLabels },
                 {"D", rotLabels },
                 {"I", rotLabels },
                 {"κ", rotLabels },
@@ -585,7 +587,7 @@ namespace BoGLWeb {
             };
             private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
                 {"F", new List<string>() { "p'", "x'" } },
-                {"𝜏", new List<string>() { "L'", "θ'" } },
+                {"τ", new List<string>() { "L'", "θ'" } },
                 {"V", new List<string>() { "ϕ'", "q'" } }
             };
 
@@ -656,29 +658,25 @@ namespace BoGLWeb {
                     int sourceCount = GetBondsBySource().ContainsKey(e.GetID()) ? GetBondsBySource()[e.GetID()].Count : 0;
                     return (targetCount + sourceCount) == 1;
                 });
-                Console.WriteLine("FUTURE LEAVES " + string.Join(", ", futureLeaves.Select(e => e.label).ToArray()));
-                Console.WriteLine("IN LABEL ASSIGNMENT");
                 while (futureLeaves.Count > 0) {
-                    Console.WriteLine("WE HAVE ONE AT LEAST");
                     Element startEl = futureLeaves[0];
                     futureLeaves.RemoveAt(0);
                     queue.Enqueue(startEl);
                     // we have a 1 junction being a leaf node here
-                    List<string> labels = domainLabelDict.ContainsKey(startEl.label.Last().ToString()) ? domainLabelDict[startEl.label.Last().ToString()] : new() { "e", "f" };
+                    string domainCheck = startEl.label.Last().ToString();
+                    List<string> labels = domainLabelDict.ContainsKey(domainCheck) ? domainLabelDict[domainCheck] : new() { "e", "f" };
                     string effortLabel = labels[0];
                     string flowLabel = labels[1];
 
                     while (queue.Count > 0) {
                         Element el = queue.Dequeue();
-                        Console.WriteLine("ELEMENT " + el.label + ", " + effortLabel + " " + flowLabel);
                         if (el.visited) continue;
                         el.visited = true;
                         el.domain = effortLabel;
-                        List<Element> sourceBonds = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].Select(b => b.getSource()).ToList() : new();
+                        List<Element> sourceBonds = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].Select(b => b.getSink()).ToList() : new();
                         List<Element> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].Select(b => b.getSource()).ToList() : new();
                         List<Element> neighbors = sourceBonds.Concat(targetBonds).ToList();
-                        if (el.label[0] != 'G') {
-                            Console.WriteLine("NOT G: " + string.Join(", ", neighbors.Select(e => e.label)));
+                        if (el.label[0] != 'G' && el.label[0] != 'T') {
                             neighbors.ForEach(o => queue.Enqueue(o));
                             if (this.bondsBySource.ContainsKey(el.GetID())) {
                                 this.bondsBySource[el.GetID()].ForEach(b => {
