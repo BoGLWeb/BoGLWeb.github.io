@@ -108,7 +108,7 @@ namespace BoGLWeb {
             { "_ResistanceMotor", "R:R" },
             { "_InductanceMotor", "I:L" },
             { "_RotaryInertiaMotor", "I:J" },
-            { "_GearMesh -> TF:R" }
+            { "_GearMesh", "TF:R" }
         };
 
         /// <summary>
