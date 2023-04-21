@@ -61,6 +61,22 @@
             }
 
             /// <summary>
+            /// Gets the dependent expression for this equation.
+            /// </summary>
+            /// <returns><c>this.f1</c></returns>
+            public Expression GetDependent() {
+                return this.f1;
+            }
+
+            /// <summary>
+            /// Gets the independent expression for this equation.
+            /// </summary>
+            /// <returns><c>this.f2</c></returns>
+            public Expression GetIndependent() {
+                return this.f2;
+            }
+
+            /// <summary>
             /// Gets the hashCode for this <c>Equation</c>.
             /// </summary>
             /// <returns>

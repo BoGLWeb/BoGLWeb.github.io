@@ -98,17 +98,18 @@ namespace BoGLWeb {
             { "_Capacitor", "C:C" },
             { "_Velocity", "Sf:v" },
             { "_Inductor", "I:L" },
-            { "_Rack&Pinion", "TF:r" },
+            { "_Rack&Pinion", "TF:R" },
             { "_Flywheel", "I:J" },
             { "_Voltage", "Se:V" },
             { "_Current", "Sf:i" },
-            { "gear", "TF:K" },
-            { "_Lever", "TF:K" },
-            { "Motor", "GY:K" },
             { "_ResistanceMotor", "R:R" },
             { "_InductanceMotor", "I:L" },
             { "_RotaryInertiaMotor", "I:J" },
             { "_GearMesh", "TF:R" }
+            { "gear", "TF:R" },
+            { "_Lever", "TF:D" },
+            { "_Transformer", "TF:T" },
+            { "Motor", "GY:K" }
         };
 
         /// <summary>
@@ -565,13 +566,26 @@ namespace BoGLWeb {
             }
         }
 
+        /// <summary>
+        /// This class rewrites a bond graph as a graph object where all bonds 
+        /// incident to a given element can be accessed in <c>O(1)</c>.
+        /// </summary>
         public class BondGraphWrapper {
             private readonly Dictionary<string, Element> elements;
             private readonly Dictionary<int, List<Bond>> bondsBySource;
             private readonly Dictionary<int, List<Bond>> bondsByTarget;
-            private static List<string> translationLabels = new List<string>() { "F", "v" };
-            private static List<string> rotLabels = new List<string>() { "τ", "ω" };
-            private static List<string> elecLabels = new List<string>() { "V", "i" };
+            private readonly int EFFORT_INDEX = 0, 
+                FLOW_INDEX = 1, 
+                R_INDEX = 2, 
+                C_INDEX = 3,
+                I_INDEX = 4,
+                TF_INDEX = 5,
+                GY_INDEX = 6,
+                P_INDEX = 7,
+                Q_INDEX = 8;
+            private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
+            private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
+            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "I", "T", "r", "ϕ", "q" };
             private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
                 {"v", translationLabels },
                 {"F", translationLabels },
@@ -596,9 +610,7 @@ namespace BoGLWeb {
             };
 
             /// <summary>
-            /// Creates a new <c>BondGraphWrapper</c>. This class rewrites a bond 
-            /// graph as a graph object where all bonds incident to a given element
-            /// can be accessed in O(1).
+            /// Creates a new <c>BondGraphWrapper</c>. 
             /// </summary>
             /// <param name="graph">The bond graph used to model this object.</param>
             public BondGraphWrapper(BondGraph graph) {
@@ -669,8 +681,8 @@ namespace BoGLWeb {
                     // we have a 1 junction being a leaf node here
                     string domainCheck = startEl.label.Last().ToString();
                     List<string> labels = domainLabelDict.ContainsKey(domainCheck) ? domainLabelDict[domainCheck] : new() { "e", "f" };
-                    string effortLabel = labels[0];
-                    string flowLabel = labels[1];
+                    string effortLabel = labels[EFFORT_INDEX];
+                    string flowLabel = labels[FLOW_INDEX];
 
                     while (queue.Count > 0) {
                         Element el = queue.Dequeue();
@@ -721,6 +733,43 @@ namespace BoGLWeb {
                         });
                     }
                 }
+            }
+
+            /// <summary>
+            /// Gets the domain-specific replacement variable for a particular element.
+            /// </summary>
+            /// <param name="label">The element label.</param>
+            /// <param name="c">The character denoting the desired coefficient.</param>
+            /// <returns>The character belonging at the beginning of the replacement
+            /// variable.</returns>
+            public char GetDomainVar(string label, char c) {
+                int index = 0;
+                while (label[index] != ' ' && label[index] != ':') {
+                    index++;
+                }
+                index++;
+                return (domainLabelDict.GetValueOrDefault("" + label[index]) ?? new())[GetReplacementIndex(c)][0];
+            }
+
+            /// <summary>
+            /// Gets the replacement index.
+            /// </summary>
+            /// <param name="c">The character representing the index in the 
+            /// variable list.</param>
+            /// <returns>The replacement index.</returns>
+            public int GetReplacementIndex(char c) {
+                return c switch {
+                    'E' => EFFORT_INDEX,
+                    'F' => FLOW_INDEX,
+                    'R' => R_INDEX,
+                    'C' => C_INDEX,
+                    'I' => I_INDEX,
+                    'T' => TF_INDEX,
+                    'G' => GY_INDEX,
+                    'P' => P_INDEX,
+                    'Q' => Q_INDEX,
+                    _ => throw new Exception("Invalid substitution index character " + c + ".")
+                };
             }
         }
     }

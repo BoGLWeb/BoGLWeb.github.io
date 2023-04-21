@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.Playwright;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.IO.Pipes;
@@ -48,9 +49,15 @@ namespace BoGLWeb {
                 }
                 this.finalDifferentialStateEquations = new string[substitutionDictionary.Count];
                 int index = 0;
+                Dictionary<string, Expression> finalSubstitutions = GetDomainVariables(graphWrapper);
                 foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
                     pair.Value.CollapseDifferentials((pair.Key[0] == 'E' ? 'P' : 'Q') + pair.Key[1..]);
-                    this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value.ToLatexString();
+                    pair.Value.Simplify(true);
+                    //this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value.ToLatexString();
+                    string key = pair.Key.StartsWith("E") ? "P" : "Q";
+                    Equation equation = new(new(key + pair.Key[1..] + "'"), pair.Value);
+                    equation.SubstituteAllVariables(finalSubstitutions);
+                    this.finalDifferentialStateEquations[index++] = equation.GetDependent() + "=" + equation.GetIndependent().ToLatexString();
                 }
             }
 
@@ -306,9 +313,6 @@ namespace BoGLWeb {
                                     outwardCausalBondCount++;
                                     outwardCausalBond = bond;
                                 } else {
-                                    if (inwardCausalBondCount == 1) {
-                                        //throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
-                                    }
                                     inwardCausalBondCount = 1;
                                     inwardCausalBond = bond;
                                 }
@@ -319,9 +323,6 @@ namespace BoGLWeb {
                                     inwardCausalBondCount++;
                                     inwardCausalBond = bond;
                                 } else {
-                                    if (outwardCausalBondCount == 1) {
-                                        //throw new Exception("Junction causality not assigned correctly at element " + pair.Value.GetID() + ".");
-                                    }
                                     outwardCausalBondCount = 1;
                                     outwardCausalBond = bond;
                                 }
@@ -391,9 +392,27 @@ namespace BoGLWeb {
             /// connections between the </param>
             /// <returns>The <c>Dictionary</c> mapping.</returns>
             // Note that any replacement mappings determined by the user should be applied here.
-            public static Dictionary<string, string> GetDomainVariables(BondGraph.BondGraphWrapper wrapper) {
-                Dictionary<string, string> vars = new();
-                //
+            public static Dictionary<string, Expression> GetDomainVariables(BondGraph.BondGraphWrapper wrapper) {
+                Dictionary<string, Expression> vars = new();
+                foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
+                    int ID = pair.Value.GetID();
+                    string label = pair.Value.label;
+                    char typeChar = char.ToUpper(pair.Value.GetTypeChar());
+                    if (!"01".Contains(typeChar)) {
+                        char domainVar = wrapper.GetDomainVar(label, typeChar);
+                        vars.Add("" + typeChar + ID, new("" + domainVar + ID));
+                        if (typeChar == 'I') {
+                            vars.Add("P" + ID, new("" + wrapper.GetDomainVar(label, 'P') + ID));
+                        } else if (typeChar == 'C') {
+                            vars.Add("Q" + ID, new("" + wrapper.GetDomainVar(label, 'Q') + ID));
+                            if (domainVar == 'K') {
+                                vars["" + typeChar + ID] = new("1/K" + ID);
+                            } else if (domainVar == 'κ') {
+                                vars["" + typeChar + ID] = new("1/κ" + ID);
+                            }
+                        }
+                    }
+                }
                 return vars;
             }
         }

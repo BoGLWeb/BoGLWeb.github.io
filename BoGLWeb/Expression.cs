@@ -855,7 +855,7 @@ namespace BoGLWeb {
                         Expression? substitution = vars.GetValueOrDefault(nextTerm.fn);
                         if (substitution != null) {
                             used.Add(nextTerm.fn);
-                            nextTerm.AssignValues("(", new(new[] { substitution }));
+                            nextTerm.AssignValues("(", new(new[] { substitution.Copy() }));
                         }
                     }
                 }
@@ -875,22 +875,26 @@ namespace BoGLWeb {
                         return;
                     }
                 }
-                Stack<Expression> stack = new(new[] { this });
-                while (stack.Count > 0) {
-                    Expression cursor = stack.Pop();
+                Stack<Expression> exprStack = new(new[] { this });
+                Stack<bool> propagateStack = new(new[] { false });
+                while (exprStack.Count > 0) {
+                    Expression cursor = exprStack.Pop();
                     bool isDifferential = cursor.fn[0] == '\'';
-                    if (cursor.fn.Equals(var)) {
+                    bool propagate = propagateStack.Pop() || isDifferential;
+                    if (cursor.fn.Equals(var) && propagate) {
                         cursor.AssignValues("'", new(new[] { cursor.Copy() }));
                     } else if (isDifferential || cursor.children.Count > 0) {
                         if (isDifferential) {
                             Expression child = cursor.children[0];
                             cursor.AssignValues(child.fn, child.children);
+                            exprStack.Push(cursor);
+                            propagateStack.Push(propagate);
                         }
                         foreach (Expression child in cursor.children) {
-                            stack.Push(child);
+                            exprStack.Push(child);
+                            propagateStack.Push(propagate);
                         }
                     }
-                    Console.WriteLine(this);
                 }
             }
 
