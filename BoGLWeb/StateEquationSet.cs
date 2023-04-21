@@ -132,7 +132,7 @@ namespace BoGLWeb {
                         CausalGraphWrapper wrapper = wrapperStack.Pop();
                         int elementID = wrapper.element.GetID();
                         if (used.Contains(elementID)) {
-                            throw new Exception("State finalDifferentialStateEquations cannot be derived in looped causality.");
+                            throw new Exception("State equations cannot be derived in looped causality.");
                         }
                         used.Add(elementID);
                         List<BondGraph.Bond>? bondsToTarget = bondsBySource.GetValueOrDefault(elementID);
@@ -181,6 +181,7 @@ namespace BoGLWeb {
                         } // Note that isEffort will experience exactly one of the two rewrites above.
                         if ("IRC".Contains(indicator)) {
                             wrapperList.Add(GenerateWrapper(pair.Value, isEffort, sourceMap, targetMap));
+                        } else if (indicator == 'G') {
                         }
                     }
                     return wrapperList;
@@ -225,6 +226,9 @@ namespace BoGLWeb {
                                             wrapper.stateEquation = loneChild.stateEquation.Divide(expr);
                                         }
                                         loneChild.stateEquation = new(loneChild.GenerateVariableName());
+                                        break;
+                                    case 'G':
+                                        //
                                         break;
                                     default:
                                         wrapper.stateEquation = loneChild.stateEquation;
@@ -372,6 +376,9 @@ namespace BoGLWeb {
                             break;
                         case 'r':
                             subs.Add(flowVar, new(effortVar + "/" + rVar));
+                            break;
+                        case 'G':
+                            //
                             break;
                     }
                 }
