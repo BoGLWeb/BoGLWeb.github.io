@@ -585,7 +585,7 @@ namespace BoGLWeb {
                 Q_INDEX = 8;
             private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
             private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
-            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "I", "T", "r", "ϕ", "q" };
+            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "ϕ", "q" };
             private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
                 {"v", translationLabels },
                 {"F", translationLabels },

@@ -48,16 +48,16 @@ namespace BoGLWeb {
                     substitutionDictionary.Remove(key);
                 }
                 this.finalDifferentialStateEquations = new string[substitutionDictionary.Count];
+                Expression ZERO = new("0");
                 int index = 0;
                 Dictionary<string, Expression> finalSubstitutions = GetDomainVariables(graphWrapper);
                 foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
                     pair.Value.CollapseDifferentials((pair.Key[0] == 'E' ? 'P' : 'Q') + pair.Key[1..]);
                     pair.Value.Simplify(true);
-                    //this.finalDifferentialStateEquations[index++] = pair.Key + "=" + pair.Value.ToLatexString();
                     string key = pair.Key.StartsWith("E") ? "P" : "Q";
                     Equation equation = new(new(key + pair.Key[1..] + "'"), pair.Value);
                     equation.SubstituteAllVariables(finalSubstitutions);
-                    this.finalDifferentialStateEquations[index++] = equation.GetDependent() + "=" + equation.GetIndependent().ToLatexString();
+                    this.finalDifferentialStateEquations[index++] = equation.GetDependent() + "=" + equation.GetIndependent().Add(ZERO).ToLatexString();
                 }
             }
 
