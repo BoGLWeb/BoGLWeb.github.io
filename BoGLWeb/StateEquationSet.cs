@@ -408,7 +408,7 @@ namespace BoGLWeb {
                             if (domainVar == 'K') {
                                 vars["" + typeChar + ID] = new("1/K" + ID);
                             } else if (domainVar == 'κ') {
-                                vars["" + typeChar + ID] = new("1/κ" + ID);
+                                vars["" + typeChar + ID] = new("1/Kt" + ID);
                             }
                         }
                     }
