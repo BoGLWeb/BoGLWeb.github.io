@@ -53,8 +53,22 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         arrowAndFlat.append("path")
             .attr("d", "M10,5L10,15");
 
+        this.elements.forEach((d: BondGraphElement) => {
+            let testText = this.testSVG.append("text");
+            testText.attr("text-anchor", "middle")
+                .classed("bondGraphText", true);
+            testText.append("tspan")
+                .text(d.label);
+            testText.append("tspan")
+                .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
+                .style('font-size', '10px')
+                .style('baseline-shift', 'sub');
+
+            let bb = testText.node().getBBox();
+            d.labelSize = { width: bb.width, height: bb.height };
+        });
+
         this.bonds.forEach((b: BondGraphBond) => {
-            console.log(b.effortLabel, b.flowLabel);
             let testText = this.testSVG.append("text");
             testText.attr("text-anchor", "middle")
                 .classed("bondGraphText", true);
@@ -75,9 +89,6 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             b.flowLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
             testText.remove();
         });
-
-        console.log(this.bonds.map((b: BondGraphBond) => b.effortLabelAngle));
-        console.log(this.bonds.map((b: BondGraphBond) => b.flowLabelAngle));
     }
 
     makeBaseMarker(id: string, refX, refY, w, h, isSelected) {
@@ -145,20 +156,6 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             .text((d: BondGraphElement) => ["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
             .style('font-size', '10px')
             .style('baseline-shift', 'sub');
-        newElements.each((d: BondGraphElement) => {
-            let testText = this.testSVG.append("text");
-            testText.attr("text-anchor", "middle")
-                .classed("bondGraphText", true);
-            testText.append("tspan")
-                .text(d.label);
-            testText.append("tspan")
-                .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
-                .style('font-size', '10px')
-                .style('baseline-shift', 'sub');
-
-            let bb = testText.node().getBBox();
-            d.labelSize = { width: bb.width, height: bb.height };
-        });
     }
 
     getAngle(d: GraphBond) {
@@ -188,12 +185,12 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
             }
         })
-            .style('marker-start', (d: BondGraphBond) => {
-                if(d.hasDirection) {
-                    return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
-                }
-            })
-            .style('stroke-width', 2);
+        .style('marker-start', (d: BondGraphBond) => {
+            if(d.hasDirection) {
+                return (d.causalStroke && d.causalStrokeDirection ? "url('#causal_stroke_" + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')" : "");
+            }
+        })
+        .style('stroke-width', 2);
         pathGroup.selectAll("circle").remove();
 
         if (this.id == 2) {

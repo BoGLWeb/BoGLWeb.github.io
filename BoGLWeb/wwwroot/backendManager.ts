@@ -6,6 +6,7 @@ import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
+import { GraphElement } from "./types/elements/GraphElement";
 import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
 import { BondGraph } from "./types/graphs/BondGraph";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
@@ -167,7 +168,6 @@ export namespace backendManager {
             let img = new Image(w, h);
             let serializer = new XMLSerializer();
             let svgStr = serializer.serializeToString(svg);
-            console.log(svgStr);
             d3.select("#currentSVG").remove();
 
             for (const i in markers) {
@@ -727,8 +727,7 @@ export namespace backendManager {
             let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
             let edgeRemoveSet = isUndo ? addToSelectionEdges : removeFromSelectionEdges;
-            // @ts-ignore // may want to fix this later, but shouldn't be an issue as long as tab index is correctly recorded 
-            diagram.selectedElements = diagram.selectedElements.concat(diagram.elements.filter(e => elAddSet.includes(e.id)));
+            diagram.selectedElements = (diagram.selectedElements as GraphElement[]).concat(diagram.elements.filter(e => elAddSet.includes(e.id)));
             diagram.selectedBonds = diagram.selectedBonds.concat(diagram.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
             diagram.selectedElements = diagram.selectedElements.filter(e => !elRemoveSet.includes(e.id));
             diagram.selectedBonds = diagram.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
