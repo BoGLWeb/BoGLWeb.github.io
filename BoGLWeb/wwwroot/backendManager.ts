@@ -16,8 +16,9 @@ export namespace backendManager {
     export class BackendManager {
 
         imageBuffer = 15;
+        instance: any;
 
-        public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
+        parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
 
             let minX = Infinity;
@@ -53,84 +54,42 @@ export namespace backendManager {
             this.zoomCenterGraph(JSON.stringify(id + 2));
         }
 
-        public displayUnsimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
-        }
-
-        public displaySimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
-        }
-
-        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
-            this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
-        }
-
-        public loadSystemDiagram(jsonString: string) {
-            let edges = [];
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
-            
-            let parsedJson = JSON.parse(jsonString);
-
-            let elements = new Map<number, SystemDiagramElement>();
-            let i = 0;
-            for (let e of parsedJson.elements) {
-                if (e.x < minX) minX = e.x;
-                if (e.y < minY) minY = e.y;
-                if (e.x > maxX) maxX = e.x;
-                if (e.y > maxY) maxY = e.y;
-                
-                if(e.id != null){
-                    elements.set(e.id, new SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
-                }else{
-                    elements.set(i++, new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
+        parseElementAndEdgeStrings(objects: string[]): [SystemDiagramElement[], GraphBond[]] {
+            let elements: SystemDiagramElement[] = [];
+            let bonds: GraphBond[] = [];
+            for (const object of objects) {
+                let json = JSON.parse(object);
+                if (json.hasOwnProperty("id")) {
+                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
+                } else {
+                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
                 }
             }
-
-            elements.forEach(e => {
-                e.x += (maxX - minX) / 2 - maxX;
-                e.y += (maxY - minY) / 2 - maxY;
-            });
-
-            for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
-                bond.velocity = edge.velocity ?? 0;
-                edges.push(bond);
-            }
-
-            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
-
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
-                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
-
-            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
-            systemDiagram.draggingElement = null;
-            window.systemDiagram = systemDiagram;
-            systemDiagram.updateGraph();
-            this.zoomCenterGraph("1");
-            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
-            systemDiagram.initWidth = bounds.width;
-            systemDiagram.initHeight = bounds.height;
+            return [elements, bonds];
         }
 
-        public async exportAsImage() {
-            let graph = this.getGraphByIndex(window.tabNum);
-            let svg = graph.svg;
-            if (this.getTabNum() == 1) {
-                await this.convertImages("image.hoverImg");
+        parseEdgeIDStrings(edgeIDs: string[]): GraphBondID[] {
+            let edges: GraphBondID[] = [];
+            let i = 0;
+            for (const edgeString of edgeIDs) {
+                let json = JSON.parse(edgeString);
+                edges.push(new GraphBondID(json.source, json.target, i));
+                i++;
             }
-            let copy = svg.node().cloneNode(true);
-            this.applyInlineStyles(svg, d3.select(copy), graph);
-            this.svgToCanvas(svg, copy as SVGElement, graph);
+            return edges;
         }
 
-        public markerToString(marker: string) {
+        checkBondIDs(bondIDs: GraphBondID[], b: GraphBond): GraphBondID {
+            let sourceID = b.source.id;
+            let targetID = b.target.id;
+            return bondIDs.find(e => e.checkEquality(sourceID, targetID));
+        }
+
+        markerToString(marker: string) {
             return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
         }
 
-        public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
+        svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let w = bounds.width / scale + this.imageBuffer * 2;
@@ -216,7 +175,7 @@ export namespace backendManager {
             };
         }
 
-        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
+        applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
             svg.append("style").text(`
                 @font-face {
                     font-family: Symbola;
@@ -281,8 +240,42 @@ export namespace backendManager {
                 + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + this.imageBuffer) + ") scale(1)");
         }
 
+        getTabNum(): number {
+            return parseInt(window.tabNum);
+        }
+
+        saveFileNoPicker(fileName, blob) {
+            const urlToBlob = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.setProperty('display', 'none');
+            document.body.appendChild(a);
+            a.href = urlToBlob;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(urlToBlob);
+            a.remove();
+        }
+
+        hideMenu(menuId: string) {
+            let el = document.getElementById(menuId);
+            if (document.getElementById(menuId)) {
+                el = el.parentElement.parentElement;
+                if (el.getAttribute("hidden-menu") != "true") {
+                    el.setAttribute("hidden-menu", "true");
+                }
+            }
+        }
+
+        getSystemDiagramDisplay() {
+            return this.getGraphByIndex("1") as SystemDiagramDisplay;
+        }
+
+        async handleUndoRedo(undo: boolean) {
+            DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
+        }
+
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
-        public async convertImages(query) {
+        async convertImages(query) {
             const images = document.querySelectorAll(query);
 
             for (let i = 0; i < images.length; i++) {
@@ -307,6 +300,91 @@ export namespace backendManager {
             }
         }
 
+        async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
+            if (window.showSaveFilePicker) {
+                const fileHandle = await window.showSaveFilePicker(pickerOptions);
+                window.filePath = fileHandle;
+                const writableFileStream = await fileHandle.createWritable();
+                await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
+                await writableFileStream.close();
+            } else {
+                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
+            }
+        }
+
+        public displayUnsimplifiedBondGraph(jsonString: string) {
+            this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
+        }
+
+        public displaySimplifiedBondGraph(jsonString: string) {
+            this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
+        }
+
+        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
+            this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
+        }
+
+        public loadSystemDiagram(jsonString: string) {
+            let edges = [];
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            
+            let parsedJson = JSON.parse(jsonString);
+
+            let elements = new Map<number, SystemDiagramElement>();
+            let i = 0;
+            for (let e of parsedJson.elements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+                
+                if(e.id != null){
+                    elements.set(e.id, new SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }else{
+                    elements.set(i++, new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }
+            }
+
+            elements.forEach(e => {
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
+            });
+
+            for (let edge of parsedJson.edges) {
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
+                bond.velocity = edge.velocity ?? 0;
+                edges.push(bond);
+            }
+
+            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
+                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
+
+            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
+            systemDiagram.draggingElement = null;
+            window.systemDiagram = systemDiagram;
+            systemDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            systemDiagram.initWidth = bounds.width;
+            systemDiagram.initHeight = bounds.height;
+        }
+
+        public async exportAsImage() {
+            let graph = this.getGraphByIndex(window.tabNum);
+            let svg = graph.svg;
+            if (this.getTabNum() == 1) {
+                await this.convertImages("image.hoverImg");
+            }
+            let copy = svg.node().cloneNode(true);
+            this.applyInlineStyles(svg, d3.select(copy), graph);
+            this.svgToCanvas(svg, copy as SVGElement, graph);
+        }
+
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
             let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
@@ -326,22 +404,6 @@ export namespace backendManager {
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
-        public getTabNum(): number {
-            return parseInt(window.tabNum);
-        }
-
-        public saveFileNoPicker(fileName, blob) {
-            const urlToBlob = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.setProperty('display', 'none');
-            document.body.appendChild(a);
-            a.href = urlToBlob;
-            a.download = fileName;
-            a.click();
-            window.URL.revokeObjectURL(urlToBlob);
-            a.remove();
-        }
-
         public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
@@ -359,18 +421,6 @@ export namespace backendManager {
             };
 
             await this.saveAsBlob(blob, pickerOptions, null);
-        }
-
-        public async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
-            if (window.showSaveFilePicker) {
-                const fileHandle = await window.showSaveFilePicker(pickerOptions);
-                window.filePath = fileHandle;
-                const writableFileStream = await fileHandle.createWritable();
-                await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
-                await writableFileStream.close();
-            } else {
-                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
-            }
         }
 
         public async saveFile(fileName: string, contentStreamReference: any) {
@@ -421,14 +471,6 @@ export namespace backendManager {
         public clear() {
             this.getSystemDiagramDisplay().selectAll();
             this.getSystemDiagramDisplay().deleteSelection(false);
-        }
-        
-        public areMultipleElementsSelected() {
-            return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
-        }
-
-        public getSystemDiagramDisplay() {
-            return this.getGraphByIndex("1") as SystemDiagramDisplay;
         }
 
         public getSystemDiagram() {
@@ -528,16 +570,6 @@ export namespace backendManager {
             navigator.clipboard.writeText(text);
         }
 
-        private hideMenu(menuId: string) {
-            let el = document.getElementById(menuId);
-            if (document.getElementById(menuId)) {
-                el = el.parentElement.parentElement;
-                if (el.getAttribute("hidden-menu") != "true") {
-                    el.setAttribute("hidden-menu", "true");
-                }
-            }
-        }
-
         public closeMenu(menuName: string) {
             switch (menuName) {
                 case "File":
@@ -626,41 +658,6 @@ export namespace backendManager {
             }).onbeforechange(function () {
                 window.dispatchEvent(new Event('resize'));
             }).start();
-        }
-
-        public parseElementAndEdgeStrings(objects: string[]): [SystemDiagramElement[], GraphBond[]] {
-            let elements: SystemDiagramElement[] = [];
-            let bonds: GraphBond[] = [];
-            for (const object of objects) {
-                let json = JSON.parse(object);
-                if (json.hasOwnProperty("id")) {
-                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
-                } else {
-                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
-                }
-            }
-            return [elements, bonds];
-        }
-
-        public parseEdgeIDStrings(edgeIDs: string[]): GraphBondID[] {
-            let edges: GraphBondID[] = [];
-            let i = 0;
-            for (const edgeString of edgeIDs) {
-                let json = JSON.parse(edgeString);
-                edges.push(new GraphBondID(json.source, json.target, i));
-                i++;
-            }
-            return edges;
-        }
-
-        checkBondIDs(bondIDs: GraphBondID[], b: GraphBond): GraphBondID {
-            let sourceID = b.source.id;
-            let targetID = b.target.id;
-            return bondIDs.find(e => e.checkEquality(sourceID, targetID));
-        }
-
-        async handleUndoRedo(undo: boolean) {
-            DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
         public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], highlight: boolean, isUndo: boolean) {
@@ -775,12 +772,6 @@ export namespace backendManager {
 
             sysDiag.updateGraph();
             sysDiag.updateModifierMenu();
-        }
-        
-        instance: any;
-        
-        public initInstance(instance: any){
-            this.instance = instance;
         }
     }
 
