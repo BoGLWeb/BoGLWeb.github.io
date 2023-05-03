@@ -16,12 +16,36 @@ export namespace backendManager {
     export class BackendManager {
 
         imageBuffer = 15;
-        instance: any;
 
+        minMaxElements(jsonElements: any[], bondGraph: boolean) {
+            let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity ,-Infinity];
+
+            let elements = new Map<number, GraphElement>();
+            let i = 0;
+            for (let e of jsonElements) {
+                if (e.x < minX) minX = e.x;
+                if (e.y < minY) minY = e.y;
+                if (e.x > maxX) maxX = e.x;
+                if (e.y > maxY) maxY = e.y;
+
+                let id = e.id != null ? e.id : i++;
+                elements.set(id, bondGraph ? new BondGraphElement(i, e.ID, e.label, e.x, e.y)
+                    : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers))
+            }
+
+            elements.forEach(e => {
+                e.x += (maxX - minX) / 2 - maxX;
+                e.y += (maxY - minY) / 2 - maxY;
+            });
+
+            return elements;
+        }
+
+        // parses a bond graph string into a bond graph display
         parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
             let bg = JSON.parse(jsonString);
 
-            let minX = Infinity;
+/*            let minX = Infinity;
             let minY = Infinity;
             let maxX = -Infinity;
             let maxY = -Infinity;
@@ -36,7 +60,9 @@ export namespace backendManager {
             elements.forEach(e => {
                 e.x += (maxX - minX) / 2 - maxX;
                 e.y += (maxY - minY) / 2 - maxY;
-            });
+            });*/
+
+            let elements = Array.from(this.minMaxElements(JSON.parse(bg.elements), true).values()) as BondGraphElement[];
 
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
@@ -224,10 +250,8 @@ export namespace backendManager {
             }
             svg.selectAll("edgeHover").remove()
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
+            let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
+
             for (let e of graph.elements) {
                 if (e.x < minX) minX = e.x;
                 if (e.y < minY) minY = e.y;
@@ -235,7 +259,6 @@ export namespace backendManager {
                 if (e.y > maxY) maxY = e.y;
             }
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
-            let isBondGraph = graph instanceof BondGraphDisplay;
             svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + this.imageBuffer) + ", "
                 + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + this.imageBuffer) + ") scale(1)");
         }
@@ -268,10 +291,6 @@ export namespace backendManager {
 
         getSystemDiagramDisplay() {
             return this.getGraphByIndex("1") as SystemDiagramDisplay;
-        }
-
-        async handleUndoRedo(undo: boolean) {
-            DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
         // this will break if additional image types beyond system diagram elements are added to BoGL Web
@@ -326,13 +345,13 @@ export namespace backendManager {
 
         public loadSystemDiagram(jsonString: string) {
             let edges = [];
-            let minX = Infinity;
+            let parsedJson = JSON.parse(jsonString);
+
+          /*let minX = Infinity;
             let minY = Infinity;
             let maxX = -Infinity;
             let maxY = -Infinity;
             
-            let parsedJson = JSON.parse(jsonString);
-
             let elements = new Map<number, SystemDiagramElement>();
             let i = 0;
             for (let e of parsedJson.elements) {
@@ -351,7 +370,9 @@ export namespace backendManager {
             elements.forEach(e => {
                 e.x += (maxX - minX) / 2 - maxX;
                 e.y += (maxY - minY) / 2 - maxY;
-            });
+            });*/
+
+            let elements = this.minMaxElements(parsedJson.elements, false);
 
             for (let edge of parsedJson.edges) {
                 let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
@@ -364,7 +385,7 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
 
-            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
+            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram((Array.from(elements.values()) as SystemDiagramElement[]), edges));
             systemDiagram.draggingElement = null;
             window.systemDiagram = systemDiagram;
             systemDiagram.updateGraph();
@@ -374,15 +395,11 @@ export namespace backendManager {
             systemDiagram.initHeight = bounds.height;
         }
 
-        public async exportAsImage() {
-            let graph = this.getGraphByIndex(window.tabNum);
-            let svg = graph.svg;
-            if (this.getTabNum() == 1) {
-                await this.convertImages("image.hoverImg");
-            }
-            let copy = svg.node().cloneNode(true);
-            this.applyInlineStyles(svg, d3.select(copy), graph);
-            this.svgToCanvas(svg, copy as SVGElement, graph);
+        public getSystemDiagram() {
+            return JSON.stringify({
+                elements: window.systemDiagram.elements,
+                bonds: window.systemDiagram.bonds
+            });
         }
 
         public zoomCenterGraph(index: string) {
@@ -451,106 +468,15 @@ export namespace backendManager {
             }
         }
 
-        public cut() {
-            this.getSystemDiagramDisplay().copySelection();
-            this.getSystemDiagramDisplay().deleteSelection();
-        }
-
-        public copy() {
-            this.getSystemDiagramDisplay().copySelection();
-        }
-
-        public paste() {
-            this.getSystemDiagramDisplay().pasteSelection();
-        }
-
-        public delete(needsConfirmation = true) {
-            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
-        }
-
-        public clear() {
-            this.getSystemDiagramDisplay().selectAll();
-            this.getSystemDiagramDisplay().deleteSelection(false);
-        }
-
-        public getSystemDiagram() {
-            return JSON.stringify({
-                elements: window.systemDiagram.elements,
-                bonds: window.systemDiagram.bonds
-            });
-        }
-
-        public setModifier(i: number, value: boolean) {
-            let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
-
-            if (value) { // adding modifier
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
-                        el.modifiers.push(i);
-                    }
-                }
-            } else { // removing modifiers
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (el.modifiers.includes(i)) {
-                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
-                    }
-                }
-            }
-            window.systemDiagram.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
-            window.systemDiagram.updateModifierMenu();
-        }
-
-        public getGraphByIndex(i: string) {
-            if (i == "1") {
-                return window.systemDiagram;
-            } else if (i == "2") {
-                return window.unsimpBG;
-            } else if (i == "3") {
-                return window.simpBG;
-            } else {
-                return window.causalBG;
-            }
-        }
-
-        public renderEquations(ids: string[], eqStrings: string[]) {
-            for (let i = 0; i < ids.length; i++) {
-                let html = katex.renderToString(eqStrings[i], {
-                    throwOnError: false
-                });
-                const parser = new DOMParser();
-                let parent = document.getElementById(ids[i]);
-                parent.innerHTML = "";
-                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
-            }
-        }
-
-        public setZoom(i: number) {
+        public async exportAsImage() {
             let graph = this.getGraphByIndex(window.tabNum);
-            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-
-            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-
-            if (graph.prevScale * 100 - i != 0) {
-                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
+            let svg = graph.svg;
+            if (this.getTabNum() == 1) {
+                await this.convertImages("image.hoverImg");
             }
-        }
-
-        public setTab(key: string) {
-            window.tabNum = key;
-            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
-        }
-
-        public setVelocity(velocity: number) {
-            let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
-            for (const e of window.systemDiagram.getSelection()) {
-                if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
-                    e.velocity = velocity;
-                }
-            }
-            window.systemDiagram.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
+            let copy = svg.node().cloneNode(true);
+            this.applyInlineStyles(svg, d3.select(copy), graph);
+            this.svgToCanvas(svg, copy as SVGElement, graph);
         }
 
         public generateURL() {
@@ -564,27 +490,6 @@ export namespace backendManager {
             }, function (key, val) {
                 return val.toFixed ? Number(val.toFixed(3)) : val;
             });
-        }
-
-        public textToClipboard(text: string) {
-            navigator.clipboard.writeText(text);
-        }
-
-        public closeMenu(menuName: string) {
-            switch (menuName) {
-                case "File":
-                    this.hideMenu("fileMenu");
-                    break;
-                case "Edit":
-                    this.hideMenu("editMenu");
-                    break;
-                case "Help":
-                    this.hideMenu("helpMenu");
-                    this.hideMenu("exampleMenu");
-                    this.hideMenu("mechTransMenu");
-                    this.hideMenu("mechRotMenu");
-                    this.hideMenu("elecMenu");
-            }
         }
 
         public runTutorial() {
@@ -658,6 +563,10 @@ export namespace backendManager {
             }).onbeforechange(function () {
                 window.dispatchEvent(new Event('resize'));
             }).start();
+        }
+
+        public async handleUndoRedo(undo: boolean) {
+            DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
         public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], highlight: boolean, isUndo: boolean) {
@@ -772,6 +681,122 @@ export namespace backendManager {
 
             sysDiag.updateGraph();
             sysDiag.updateModifierMenu();
+        }
+
+        public cut() {
+            this.getSystemDiagramDisplay().copySelection();
+            this.getSystemDiagramDisplay().deleteSelection();
+        }
+
+        public copy() {
+            this.getSystemDiagramDisplay().copySelection();
+        }
+
+        public paste() {
+            this.getSystemDiagramDisplay().pasteSelection();
+        }
+
+        public delete(needsConfirmation = true) {
+            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+        }
+
+        public clear() {
+            this.getSystemDiagramDisplay().selectAll();
+            this.getSystemDiagramDisplay().deleteSelection(false);
+        }
+
+        public setModifier(i: number, value: boolean) {
+            let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
+
+            if (value) { // adding modifier
+                for (const el of window.systemDiagram.selectedElements) {
+                    if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
+                        el.modifiers.push(i);
+                    }
+                }
+            } else { // removing modifiers
+                for (const el of window.systemDiagram.selectedElements) {
+                    if (el.modifiers.includes(i)) {
+                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
+                    }
+                }
+            }
+            window.systemDiagram.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
+            window.systemDiagram.updateModifierMenu();
+        }
+
+        public setVelocity(velocity: number) {
+            let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
+            for (const e of window.systemDiagram.getSelection()) {
+                if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
+                    e.velocity = velocity;
+                }
+            }
+            window.systemDiagram.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
+        }
+
+        public setZoom(i: number) {
+            let graph = this.getGraphByIndex(window.tabNum);
+            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
+
+            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+
+            if (graph.prevScale * 100 - i != 0) {
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
+            }
+        }
+
+        public setTab(key: string) {
+            window.tabNum = key;
+            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
+        }
+
+        public getGraphByIndex(i: string) {
+            if (i == "1") {
+                return window.systemDiagram;
+            } else if (i == "2") {
+                return window.unsimpBG;
+            } else if (i == "3") {
+                return window.simpBG;
+            } else {
+                return window.causalBG;
+            }
+        }
+
+        public renderEquations(ids: string[], eqStrings: string[]) {
+            for (let i = 0; i < ids.length; i++) {
+                let html = katex.renderToString(eqStrings[i], {
+                    throwOnError: false
+                });
+                const parser = new DOMParser();
+                let parent = document.getElementById(ids[i]);
+                parent.innerHTML = "";
+                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
+            }
+        }
+
+        public textToClipboard(text: string) {
+            navigator.clipboard.writeText(text);
+        }
+
+        public closeMenu(menuName: string) {
+            switch (menuName) {
+                case "File":
+                    this.hideMenu("fileMenu");
+                    break;
+                case "Edit":
+                    this.hideMenu("editMenu");
+                    break;
+                case "Help":
+                    this.hideMenu("helpMenu");
+                    this.hideMenu("exampleMenu");
+                    this.hideMenu("mechTransMenu");
+                    this.hideMenu("mechRotMenu");
+                    this.hideMenu("elecMenu");
+            }
         }
     }
 
