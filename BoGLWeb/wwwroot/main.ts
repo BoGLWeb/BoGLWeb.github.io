@@ -1,9 +1,9 @@
 "use strict";
-import { backendManager } from "./backendManager";
-import { SubmenuID } from "./types/display/BondGraphBond";
-import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
+import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
+import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
+import { SubmenuID } from "./types/display/BondGraphBond";
 import getBackendManager = backendManager.getBackendManager;
 
 var topMenuButtons;
