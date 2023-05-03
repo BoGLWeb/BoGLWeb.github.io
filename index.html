@@ -12,6 +12,8 @@
     <link href="_content/AntDesign/css/ant-design-blazor.css" rel="stylesheet" />
     <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
     <script src="https://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/intro.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/introjs.css">
     <link rel="stylesheet" href="css/main.css" />
@@ -31,12 +33,6 @@
             <div id="loadingText">Loading...</div>
         </div>
     </div>
-
-    <script type="text/javascript">
-        caches.delete("blazor-resources-/").then(function (e) {
-            console.log("'blazor-resources-/' cache deleted");
-        });
-    </script>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.

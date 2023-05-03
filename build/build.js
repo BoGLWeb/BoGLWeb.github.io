@@ -44,11 +44,15 @@ define("types/bonds/BondGraphBond", ["require", "exports", "types/bonds/GraphBon
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BondGraphBond = void 0;
     class BondGraphBond extends GraphBond_1.GraphBond {
-        constructor(source, target, causalStroke, causalStrokeDirection, hasDirection, velocity = 0) {
+        constructor(id, source, target, causalStroke, causalStrokeDirection, hasDirection, effortLabel, flowLabel, velocity = 0) {
             super(source, target, velocity);
+            this.id = 0;
+            this.id = id;
             this.causalStroke = causalStroke;
             this.causalStrokeDirection = causalStrokeDirection;
             this.hasDirection = hasDirection;
+            this.effortLabel = effortLabel;
+            this.flowLabel = flowLabel;
         }
     }
     exports.BondGraphBond = BondGraphBond;
@@ -443,7 +447,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             })
                 .call(this.edgeDrag);
         }
-        pathExtraRendering(paths) {
+        pathExtraRendering(paths, pathGroup) {
             let graph = this;
             paths.classed("hoverablePath", true);
             this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove();
@@ -880,7 +884,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
         }
         svgMouseMove() { }
-        pathExtraRendering(path) { }
+        pathExtraRendering(paths, pathGroup) { }
         renderElements(newElements) { }
         getSelection() {
             return [].concat(this.selectedElements).concat(this.selectedBonds);
@@ -979,9 +983,9 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                         }
                     }
                 }
-                for (const bond of this.bondSelection[0]) {
-                    if (bond && this.checkOverlap(selectionBounds, bond.getBoundingClientRect())) {
-                        newSelection.push(bond.__data__);
+                for (const bond of this.bondSelection.selectAll("path")) {
+                    if (bond[0] && this.checkOverlap(selectionBounds, bond[0].getBoundingClientRect())) {
+                        newSelection.push(bond[0].__data__);
                     }
                 }
                 let removeList = [];
@@ -1209,17 +1213,19 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
                 return String(d.source.id) + "+" + String(d.target.id);
             });
             let paths = this.bondSelection;
-            paths.enter()
-                .append("path")
+            paths.selectAll('path').remove();
+            paths.selectAll('text').remove();
+            paths.enter().append("g");
+            let pathObjects = paths.append("path")
                 .classed("link", true)
                 .attr("d", function (d) { return graph.drawPath.call(graph, d); })
                 .on("mousedown", function (d) {
                 graph.pathMouseDown.call(graph, d);
             });
-            paths.classed(this.selectedClass, function (d) {
+            paths.selectAll("path").classed(this.selectedClass, function (d) {
                 return graph.selectedBonds.includes(d);
             }).attr("d", function (d) { return graph.drawPath.call(graph, d); });
-            this.pathExtraRendering(paths);
+            this.pathExtraRendering(pathObjects, paths);
             paths.exit().remove();
         }
         fullRenderElements(dragmove = false) {
@@ -1288,10 +1294,11 @@ define("types/elements/BondGraphElement", ["require", "exports", "types/elements
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BondGraphElement = void 0;
     class BondGraphElement extends GraphElement_3.GraphElement {
-        constructor(id, label, x, y) {
+        constructor(id, backendId, label, x, y) {
             super(id, x, y);
             this.labelSize = null;
             this.label = label;
+            this.backendId = backendId;
         }
     }
     exports.BondGraphElement = BondGraphElement;
@@ -1317,6 +1324,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
         constructor(id, svg, bondGraph) {
             super(svg, bondGraph);
             this.dragging = false;
+            this.buffer = 15;
             this.id = id;
             this.testSVG = d3.select("#app").append("svg");
             this.testSVG.style("position", "absolute")
@@ -1345,6 +1353,37 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 .attr("d", "M10,10L2,15");
             arrowAndFlat.append("path")
                 .attr("d", "M10,5L10,15");
+            this.elements.forEach((d) => {
+                let testText = this.testSVG.append("text");
+                testText.attr("text-anchor", "middle")
+                    .classed("bondGraphText", true);
+                testText.append("tspan")
+                    .text(d.label);
+                testText.append("tspan")
+                    .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
+                    .style('font-size', '10px')
+                    .style('baseline-shift', 'sub');
+                let bb = testText.node().getBBox();
+                d.labelSize = { width: bb.width, height: bb.height };
+            });
+            this.bonds.forEach((b) => {
+                let testText = this.testSVG.append("text");
+                testText.attr("text-anchor", "middle")
+                    .classed("bondGraphText", true);
+                let l1 = testText.append("tspan")
+                    .text(b.effortLabel);
+                let l2 = testText.append("tspan")
+                    .text(b.id)
+                    .style('font-size', '10px')
+                    .style('baseline-shift', 'sub');
+                let bb = testText.node().getBBox();
+                b.effortLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
+                l1.text(b.flowLabel);
+                l2.text(b.id);
+                bb = testText.node().getBBox();
+                b.flowLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
+                testText.remove();
+            });
         }
         makeBaseMarker(id, refX, refY, w, h, isSelected) {
             let marker = this.defs.append("svg:marker");
@@ -1401,17 +1440,32 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 .call(this.drag);
             let text = newElements.append("text");
             text.attr("text-anchor", "middle")
-                .text((d) => d.label)
-                .classed("bondGraphText", true)
-                .each((d) => {
-                let testText = this.testSVG.append("text");
-                testText.attr("text-anchor", "middle")
-                    .text(() => d.label);
-                let bb = testText.node().getBBox();
-                d.labelSize = { width: bb.width, height: bb.height };
-            });
+                .classed("bondGraphText", true);
+            text.append("tspan")
+                .text((d) => d.label);
+            text.append("tspan")
+                .text((d) => ["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
+                .style('font-size', '10px')
+                .style('baseline-shift', 'sub');
         }
-        pathExtraRendering(paths) {
+        getAngle(d) {
+            return Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+        }
+        getNormAngle(d) {
+            return (this.getAngle(d) + (2 * Math.PI)) % (2 * Math.PI);
+        }
+        isEffortLabel(d, label1) {
+            return (this.getNormAngle(d) > (Math.PI / 4) && this.getNormAngle(d) < (5 * Math.PI / 4)) ? label1 : !label1;
+        }
+        getTextAnchor(d, label1) {
+            let absAngle = Math.abs(this.getAngle(d));
+            let threshAngle = this.isEffortLabel(d, label1) ? d.effortLabelAngle : d.flowLabelAngle;
+            if (absAngle < threshAngle || absAngle > (Math.PI - threshAngle)) {
+                return "middle";
+            }
+            return (label1 && this.getAngle(d) > 0) || (!label1 && this.getAngle(d) < 0) ? "end" : "start";
+        }
+        pathExtraRendering(paths, pathGroup) {
             paths.style('marker-end', (d) => {
                 if (d.hasDirection) {
                     return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -1423,6 +1477,43 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 }
             })
                 .style('stroke-width', 2);
+            pathGroup.selectAll("circle").remove();
+            if (this.id == 2) {
+                let label1 = pathGroup.append("text")
+                    .attr("x", d => {
+                    return (d.source.x + d.target.x) / 2 - Math.sin(this.getAngle(d)) * this.buffer;
+                })
+                    .attr("y", d => {
+                    return (d.source.y + d.target.y) / 2 + Math.cos(this.getAngle(d)) * this.buffer;
+                })
+                    .style("text-anchor", (d) => this.getTextAnchor(d, true))
+                    .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
+                label1.append("tspan")
+                    .text((d) => this.isEffortLabel(d, true) ? d.effortLabel : d.flowLabel)
+                    .classed("bondGraphText", true);
+                label1.append("tspan")
+                    .attr("text-anchor", "middle")
+                    .text((d) => d.id)
+                    .style('font-size', '10px')
+                    .style('baseline-shift', 'sub');
+                let label2 = pathGroup.append("text")
+                    .attr("x", d => {
+                    return (d.source.x + d.target.x) / 2 + Math.sin(this.getAngle(d)) * this.buffer;
+                })
+                    .attr("y", d => {
+                    return (d.source.y + d.target.y) / 2 - Math.cos(this.getAngle(d)) * this.buffer;
+                })
+                    .style("text-anchor", (d) => this.getTextAnchor(d, false))
+                    .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
+                label2.append("tspan")
+                    .text((d) => this.isEffortLabel(d, false) ? d.effortLabel : d.flowLabel)
+                    .classed("bondGraphText", true);
+                label2.append("tspan")
+                    .attr("text-anchor", "middle")
+                    .text((d) => d.id)
+                    .style('font-size', '10px')
+                    .style('baseline-shift', 'sub');
+            }
         }
     }
     exports.BondGraphDisplay = BondGraphDisplay;
@@ -1452,14 +1543,14 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         maxX = e.x;
                     if (e.y > maxY)
                         maxY = e.y;
-                    return new BondGraphElement_1.BondGraphElement(i, e.label, e.x, e.y);
+                    return new BondGraphElement_1.BondGraphElement(i, e.ID, e.label, e.x, e.y);
                 });
                 elements.forEach(e => {
                     e.x += (maxX - minX) / 2 - maxX;
                     e.y += (maxY - minY) / 2 - maxY;
                 });
                 let bonds = JSON.parse(bg.bonds).map(b => {
-                    return new BondGraphBond_1.BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.velocity);
+                    return new BondGraphBond_1.BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
                 });
                 let bondGraph = new BondGraphDisplay_1.BondGraphDisplay(id, svg, new BondGraph_1.BondGraph(elements, bonds));
                 if (id == 0) {
@@ -1559,7 +1650,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 if (this.getTabNum() > 1) {
                     svg.id = "currentSVG";
                     document.body.appendChild(svg);
-                    let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
+                    let paths = d3.selectAll("#currentSVG > g > #bondGroup > g > .link");
                     for (let i = 0; i < paths[0].length; i++) {
                         let path = paths[0][i];
                         let hasMarkerEnd = (_a = path.style) === null || _a === void 0 ? void 0 : _a.markerEnd;
@@ -1586,6 +1677,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 document.body.appendChild(canvas);
                 canvas.width = w;
                 canvas.height = h;
+                img.onerror = () => alert("Error");
                 img.onload = () => {
                     canvas.getContext("2d").drawImage(img, 0, 0, w, h);
                     let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
@@ -1864,6 +1956,17 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 }
                 else {
                     return window.causalBG;
+                }
+            }
+            renderEquations(ids, eqStrings) {
+                for (let i = 0; i < ids.length; i++) {
+                    let html = katex.renderToString(eqStrings[i], {
+                        throwOnError: false
+                    });
+                    const parser = new DOMParser();
+                    let parent = document.getElementById(ids[i]);
+                    parent.innerHTML = "";
+                    parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
                 }
             }
             setZoom(i) {
@@ -2262,6 +2365,28 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             window.onbeforeunload = function (e) {
                 return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
             };
+            const ele = document.getElementById('graphMenu');
+            let x = 0;
+            let w = 0;
+            const mouseDownHandler = function (e) {
+                x = e.clientX;
+                const styles = window.getComputedStyle(ele);
+                w = parseInt(styles.width, 10);
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+            };
+            const mouseMoveHandler = function (e) {
+                const dx = e.clientX - x;
+                ele.style.flex = "0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px";
+            };
+            const mouseUpHandler = function () {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+            };
+            const resizers = ele.querySelectorAll('.resizer');
+            [].forEach.call(resizers, function (resizer) {
+                resizer.addEventListener('mousedown', mouseDownHandler);
+            });
             let examples = ["basic-two-mass-system", "basic-two-mass-system1", "basic-two-mass-system2", "masses_on_a_spring", "moving_masses", "spring_&_damper", "rack_pinion", "motor-gear-pair", "lrc_circuit"];
             for (let i in examples) {
                 fetch("https://boglweb.github.io/rules-and-examples/examples/" + examples[i] + ".bogl");

@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-dZRAczMk6OKtZwMU3R53aY6avI0k0NHNdsy0d5TKqCg=",
+      "hash": "sha256-vzx+WUem1FDJzFFF75cZzSRMw0BIdITEhfu0f0+WNZk=",
       "url": "css\/main.css"
     },
     {
@@ -349,7 +349,7 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-mAfa8fzVKsklF6894CX6bWDoaErrYSwxHhUnXelWeU4=",
+      "hash": "sha256-Iw5PISYqzCLsnb2BOwRf+xGwsNy8\/Y9zyTrBup6jm5Y=",
       "url": "index.html"
     },
     {
@@ -3401,7 +3401,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-nSjFMG+HO36xLdpgQje+HcOlpm1evCNH6hdkyHi8y1Y=",
+      "hash": "sha256-fzMfjlc7VT28WrZ8ncTIxxIAlH279+wIHTld82KW7o8=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3409,7 +3409,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-Xq+vB4dzwR9TLfStRR5sRCL+eNrdcqNMIbWqJAUk2Uo=",
+      "hash": "sha256-qQ7PK5I71cqJfwBVekqI+ZHEldSOOUKLDhN8rHHsK\/I=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -3629,7 +3629,7 @@
       "url": "_framework\/System.Collections.dll"
     },
     {
-      "hash": "sha256-5DOH+YT+Gs9q7W2zv1hQbkKnDFKRsnZNHmVOyGeMZ10=",
+      "hash": "sha256-VQmlcotcNoKyDfkUF6vq9rE\/j41JfVHIcQk5948smLk=",
       "url": "_framework\/System.Collections.Immutable.dll"
     },
     {
@@ -3769,7 +3769,7 @@
       "url": "_framework\/System.ObjectModel.dll"
     },
     {
-      "hash": "sha256-XcVTt8kdkOkUxLuOVcS7BN85NyielHcrMWkUyvV+yZE=",
+      "hash": "sha256-8K7BtJaGzdKIofKyJDZ1pAqgmzWM\/pM4JytJbIC1oWc=",
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
@@ -5629,5 +5629,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "wJbgz0n9"
+  "version": "zQ4gitux"
 };
