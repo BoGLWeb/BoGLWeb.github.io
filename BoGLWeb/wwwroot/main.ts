@@ -36,7 +36,6 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
-    // @ts-ignore
     delete window.jQuery;
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
@@ -123,7 +122,6 @@ async function loadPage() {
     const mouseMoveHandler = function (e) {
         const dx = e.clientX - x;
         ele.style.flex = "0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px";
-        console.log("0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px");
     };
 
     const mouseUpHandler = function () {
