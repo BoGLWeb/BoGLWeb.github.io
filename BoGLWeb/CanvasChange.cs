@@ -79,7 +79,7 @@ namespace BoGLWeb {
                 // Stores the Edge form of the added edgesBySource by source ID
                 private readonly Dictionary<int, List<SystemDiagram.Edge>> newEdges;
                 // Stores whether the added selection should be highlighted
-                private bool highlight;
+                private readonly bool highlight;
 
                 // TODO: fix comment
                 /// <summary> 
