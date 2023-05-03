@@ -5,6 +5,7 @@
 @using System.Text;
 @using System.Text.RegularExpressions
 @using BoGLWeb.EditorHelper
+@using BoGLWeb.DifferentialEquationHelper
 @using BoGLWeb.Json
 @using Newtonsoft.Json
 
@@ -112,7 +113,8 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <Collapse Bordered="false">
+        <div id="blankMenu" style="@("display: " + (currTab == "2" || currTab == "3" ? "block" : "none"))"></div>
+        <Collapse Id="elementMenus" style="@("display: " + (currTab == "1" ? "block" : "none"))" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
             </ExpandIconTemplate>
@@ -134,6 +136,39 @@
                 </Panel>
             </ChildContent>
         </Collapse>
+        <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
+            <Button Class="bogl_button_large" OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
+            <h2>Differential Equation @(diffIndex + 1)</h2>
+            <sub>@stateEquationsStored.Length equations total</sub>
+            <Select Id="equationSelect"
+                    TItem="Option"
+                    TItemValue="int"
+                    DataSource="@equationSwitchOptions"
+                    @bind-Value="@selectedEquation"
+                    DefaultValue="@(0)"
+                    ValueName="@nameof(Option.value)"
+                    LabelName="@nameof(Option.label)"
+                    Style="width:160px; margin-bottom: 15px"
+                    OnSelectedItemChanged="ChangeEquationOption">
+            </Select>
+            @if(stateEquationsStored.Length > 0) {
+                <p>Intermediate steps<br />coming soon!</p>
+                <hr id="diffeqHR" />
+                <p id="finalEquation"></p>
+                renderEquations(new string[] { "finalEquation" }, new string[] { stateEquationsStored[diffIndex] });
+            }
+            <div id="latexTest"></div>
+        </div>
+        <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
+            <Button Class="bogl_button_large" OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
+            <h2>State Variables</h2>
+            <div style="display: flex; flex-direction: column">
+                @foreach (var v in @equationOptions) {
+                    <span>@v</span>
+                }
+            </div>
+        </div>
+        <div class="resizer"></div>
     </div>
     <div class="card-container">
         <div id="zoomMenu">
@@ -153,19 +188,36 @@
         </div>
         <span class="@(tabsDisabled ? "tabsDisabled" : "tabsEnabled")">
             <Tabs Type="@TabType.Card" OnTabClick="e => { TabChange(e); }">
-                <TabPane Key="1" Tab="System" ForceRender=true>
+                <TabPane Key="1" Tab="System" Style="position: relative" ForceRender=true>
                     <div id="modifierMenu">
                         <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
                             <ChildContent>
                                 <Panel Header="Modifers" Key="1" Id="modifierPanel">
                                     <div id="modifierCheckboxWrapper">
-                                        <Checkbox Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">Mass</Checkbox>
-                                        <Checkbox Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">Inertia</Checkbox>
-                                        <Checkbox Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">Stiffness</Checkbox>
-                                        <Checkbox Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">Friction</Checkbox>
-                                        <Checkbox Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">Damping</Checkbox>
-                                        <Checkbox Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">Parallel</Checkbox>
-                                        <Checkbox Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">Tooth Wear</Checkbox>
+                                        @{
+                                            RenderFragment settingsIcon = @<Button Class="settingButton" Size="small"><Icon Type="setting" Theme="fill" Style="color: #5A5A5A"/></Button>;
+                                        }
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }">
+                                            <div style="display: flex; align-items: center;">@("Mass")@if (checkValues[0]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }">
+                                            <div style="display: flex; align-items: center;">@("Inertia")@if (checkValues[1]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }">
+                                            <div style="display: flex; align-items: center;">@("Stiffness")@if (checkValues[2]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[3]" Indeterminate="@checkIndeterminate[3]" Disabled="@disabledValues[3]" OnChange="b => { CheckChange(b, 3); }">
+                                            <div style="display: flex; align-items: center;">@("Friction")@if (checkValues[3]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[4]" Indeterminate="@checkIndeterminate[4]" Disabled="@disabledValues[4]" OnChange="b => { CheckChange(b, 4); }">
+                                            <div style="display: flex; align-items: center;">@("Damping")@if (checkValues[4]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[5]" Indeterminate="@checkIndeterminate[5]" Disabled="@disabledValues[5]" OnChange="b => { CheckChange(b, 5); }">
+                                            <div style="display: flex; align-items: center;">@("Parallel")@if (checkValues[5]) { @settingsIcon }</div>
+                                        </Checkbox>
+                                        <Checkbox Style="padding-right: 0px" Checked="@checkValues[6]" Indeterminate="@checkIndeterminate[6]" Disabled="@disabledValues[6]" OnChange="b => { CheckChange(b, 6); }">
+                                            <div style="display: flex; align-items: center;">@("Tooth Wear")@if (checkValues[6]) { @settingsIcon }</div>
+                                        </Checkbox>
                                     </div>
                                     <hr/>
                                     <div>
@@ -273,14 +325,33 @@
     </div>
 </Modal>
     @{
-        RenderFragment footer = @<Button OnClick="@closeUrlModal">Close</Button>;
+        RenderFragment urlFooter = @<Button OnClick="@closeUrlModal">Close</Button>;
     }
-    <Modal Title="Share SystemDiagram URL" Footer="@footer" Visible="@urlModalVisible" OnCancel="@closeUrlModal">
+    <Modal Title="Share SystemDiagram URL" Footer="@urlFooter" Visible="@urlModalVisible" OnCancel="@closeUrlModal">
     <div style="display: flex">
         <Input style="margin-right: 10px" DefaultValue="@url" TValue="string" ReadOnly/>
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
     </div>
 </Modal>
+@*    @{
+        RenderFragment footer = @<Template>
+            <Button OnClick="@closeLabelValue" Type="primary">Save</Button>
+            <Button OnClick="@closeLabelValue">Cancel</Button>
+            </Template>
+        ;
+        List<string> unitsList = new List<string> { "kg", "gram", "slug" };
+    }*@
+@*<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Label: </div>
+        <Input Style="width: 400px" Placeholder="Label" required="true" DefaultValue="@("M1")" Type="text" />
+    </div><br/>
+    <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px;">Mass: </div>
+        <Input Style="width: 270px; margin-right: 10px;" Placeholder="Value" required="true" DefaultValue="@(4)" Type="number" />
+        <Select DataSource="@unitsList" DefaultValue="@("kg")" Style="width:120px"/>
+    </div>
+</Modal>*@
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
@@ -291,8 +362,6 @@
 
     public static Index? app;
 
-    private int tabNum;
-
     public class Option {
         public string label { get; set; }
         public int value { get; set; }
@@ -301,16 +370,22 @@
     static bool tabsDisabled = true;
     static bool disableUndo = true;
     static bool disableRedo = true;
+    static int diffIndex = 0;
 
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    static string[] equationOptions = new string[] { };
+    List<Option> equationSwitchOptions = new List<Option> { };
+    int selectedEquation;
     static double zoomValue = 100;
     static List<int> selectedVelocity = new List<int> { };
     static bool velocityDisabled = true;
     string currTab = "1";
     static bool isSelecting = false;
     static bool hasCopiedSelection = false;
+    static bool showEquations = false;
+    string[] stateEquationsStored = new string[] { };
 
     public Index() {
         app = this;
@@ -323,7 +398,6 @@
     [JSInvokable]
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
-        Console.WriteLine(cc);
         switch(cc?.GetType().Name) {
             case nameof(CanvasChange.AddSelection):
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
@@ -403,7 +477,7 @@
 
     [JSInvokable]
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
-        Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
+        //Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -411,7 +485,7 @@
 
     [JSInvokable]
     public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
-        Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
+        //Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
         // Need to add unselected deleted edges
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
         UpdateBackendWithInitialStackChange(1);
@@ -421,9 +495,9 @@
     [JSInvokable]
     public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
         if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
-            Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
-            + String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
-            + String.Join(", ", removeEdgeFromSelection) + "]");
+            //Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
+            //+ String.Join(", ", addEdgeToSelection) + "], [" + String.Join(", ", removeElFromSelection) + "], ["
+            //+ String.Join(", ", removeEdgeFromSelection) + "]");
             EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSelection(removeElFromSelection, addElToSelection, removeEdgeFromSelection, addEdgeToSelection), tabID);
             UpdateBackendWithInitialStackChange(tabID);
         }
@@ -432,7 +506,7 @@
 
     [JSInvokable]
     public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
-        Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
+        //Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -440,7 +514,7 @@
 
     [JSInvokable]
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
-        Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
+        //Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
         UpdateBackendWithInitialStackChange(tabID);
         app?.StateHasChanged();
@@ -448,8 +522,8 @@
 
     [JSInvokable]
     public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
-        Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
-            + ", [" + String.Join(", ", prevVelVals) + "]");
+        //Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
+        //    + ", [" + String.Join(", ", prevVelVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeVelocity(elIDs, edgeIDs, velID, prevVelVals), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
@@ -523,6 +597,11 @@
                 return true;
             }
         }
+    }
+
+    public async void renderEquations(string[] ids, string[] eqStrings) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("renderEquations", ids, eqStrings);
     }
 
     [JSInvokable]
@@ -622,7 +701,7 @@
 
     //Check if a modifier has changed
     private async void CheckChange(bool b, int i) {
-        Console.WriteLine("Changing check value", b, i);
+        //Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
@@ -639,9 +718,14 @@
         }
     }
 
+    private async void ChangeEquationOption(Option selection) {
+        diffIndex = selection.value;
+    }
+
     private async void ChangeCausalOption(Option selection) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        showEquations = false;
     }
 
     private readonly List<string> ruleNames = new();
@@ -651,7 +735,7 @@
 
     //Called when the page is loaded
     protected override async Task OnInitializedAsync() {
-        Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
+        //Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
 
         //Loads rulesets
         allRulesLoaded = false;
@@ -705,9 +789,18 @@
         BondGraph item2;
         List<BondGraph> causal;
 
-        try {
+        try
+        {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
+            if(GraphValidityHandler.IsInvalid(sysDiagram)) {
+                throw new ArgumentException("System diagram is disconnected.");
+            }
+            Console.WriteLine("System diagram is connected.");
             (bondGraph, item2, causal) = BondGraphFactory.generateBondGraphs(SystemDiagram.generateSystemDiagramFromXML(sysDiagram.generateBoGLString()).convertToDesignGraph());
+            //StateEquationSet set = new(causal[0]);
+            //stateEquationsInitial = set.GetInitialEquations();
+            //stateEquationsFinal = set.GetFinalEquations();
+            //Console.WriteLine(string.Join(", ", stateEquationsFinal));
         } catch (ArgumentException e) {
             errorVisible = true;
             generatingBondGraph = false;
@@ -742,6 +835,8 @@
 
         causalOptions.Clear();
         foreach (BondGraph g in causal) {
+            BondGraph.BondGraphWrapper wrapper = new(g);
+            wrapper.AssignBondLabels();
             BondGraphEmbedder causalEmbedder = new(g);
 
             while (!causalEmbedder.isOptimized()) {
@@ -752,6 +847,21 @@
             causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
         }
         generateProgress = 100.0;
+
+        // Reset backend bond graphs and prints state equations. TODO: find global variable
+        // storing equations in Index and replace with StateEquationSet object/methods.
+        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
+        try {
+            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
+        } catch(Exception e) {
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+            stateEquationsStored = new string[] { };
+        }
+        equationOptions = stateEquationsStored.Select(e => e.Substring(0, e.IndexOf("="))).ToArray();
+        equationSwitchOptions = Enumerable.Range(0, equationOptions.Length).ToList().Select(i => { 
+            return new Option { label = "Equation for " + equationOptions[i], value = i }; 
+        }).ToList();
 
         //Displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
@@ -844,9 +954,9 @@
         await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-        Console.WriteLine("System Diagram from Json");
+        //Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        Console.WriteLine("BoGL String");
+        //Console.WriteLine("BoGL String");
         Stream fileStream;
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
@@ -885,11 +995,29 @@
     }
 
     bool urlModalVisible = false;
+    bool labelValueModalVisible = false;
     string url = "";
+    string[] stateEquationsInitial = new string[] { };
+    string[] stateEquationsFinal = new string[] { };
 
     //Handles the ok button on the url modal
     private void closeUrlModal() {
         urlModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private void closeLabelValue() {
+        labelValueModalVisible = false;
+        base.StateHasChanged();
+    }
+
+    private async void showStateEquations() {
+        // Get information from backend - '4' is the index of the causal bond graph tab
+        Console.WriteLine('[' + string.Join(", ", stateEquationsInitial) + ']');
+        Console.WriteLine('[' + string.Join(", ", stateEquationsFinal) + ']');
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeVoidAsync("closeMenu", "File");
+        labelValueModalVisible = true;
         base.StateHasChanged();
     }
 
@@ -1044,6 +1172,12 @@
         compressedUrl = builtElementString + "\"edges\":[" + builtEdgeString.Remove(builtEdgeString.Length - 1) + "}]}";
 
         return compressedUrl;
+    }
+
+    private async void copyStateEquations() {
+        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
+        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquationsFinal));
+        await messageService.Success("State equations copied to clipboard!");
     }
 
     //Copies the url representation of the system diagram to the system's clipboard 

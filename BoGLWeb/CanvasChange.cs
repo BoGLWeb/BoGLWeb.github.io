@@ -79,7 +79,7 @@ namespace BoGLWeb {
                 // Stores the Edge form of the added edgesBySource by source ID
                 private readonly Dictionary<int, List<SystemDiagram.Edge>> newEdges;
                 // Stores whether the added selection should be highlighted
-                private bool highlight;
+                private readonly bool highlight;
 
                 // TODO: fix comment
                 /// <summary> 
@@ -97,7 +97,7 @@ namespace BoGLWeb {
                 public AddSelection(int[] IDs, string[] newObjects, string[] prevSelectedEdges, bool highlight) : base(IDs) {
                     this.newObjects = newObjects;
                     this.prevSelectedEdges = prevSelectedEdges;
-                    SystemDiagram.Packager packager = new(newObjects);
+                    SystemDiagram.Wrapper packager = new(newObjects);
                     this.newElements = packager.GetElements();
                     this.newEdges = packager.GetSourceEdges();
                     this.highlight = highlight;
@@ -200,13 +200,13 @@ namespace BoGLWeb {
                 /// the added elements.
                 /// </param>
                 public DeleteSelection(int[] IDs, string[] deleted, string[] unselectedDeletedEdges) : base(IDs) {
-                    SystemDiagram.Packager deletedPackager = new(deleted);
+                    SystemDiagram.Wrapper deletedPackager = new(deleted);
                     this.oldElements = deletedPackager.GetElements();
                     this.oldEdgesBySource = deletedPackager.GetSourceEdges();
                     this.oldEdgesByTarget = deletedPackager.GetTargetEdges();
                     this.deleted = deleted;
                     this.unselectedDeletedEdges = unselectedDeletedEdges;
-                    SystemDiagram.Packager unselectedPackager = new(unselectedDeletedEdges);
+                    SystemDiagram.Wrapper unselectedPackager = new(unselectedDeletedEdges);
                     foreach (KeyValuePair<int, List<SystemDiagram.Edge>> pair in unselectedPackager.GetSourceEdges()) {
                         this.oldEdgesBySource.GetValueOrDefault(pair.Key)?.AddRange(pair.Value);
                     }

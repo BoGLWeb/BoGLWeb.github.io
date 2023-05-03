@@ -4,11 +4,11 @@
             // Stores the UndoRadoHandler used.
             public static readonly EditStackHandler undoRedoHandler = new(new(), new(), new(), new());
             // Stores the edit stacks.
-            public readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
+            private readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
             // Stores the system diagram.
-            public readonly SystemDiagram systemDiagram;
+            private readonly SystemDiagram systemDiagram;
             // Stores the bond graphs.
-            public readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
+            private readonly BondGraph unsimpGraph, simpleGraph, causalGraph;
 
             /// <summary>
             /// Creates a new <c>EditStackHandler</c>.
@@ -141,10 +141,15 @@
             }
 
             /// <summary>
-            /// Generates all bond graphs from a system diagram and 
-            /// clears all graph EditionLists
+            /// Resets all <c>BondGraphs</c> in this <c>EditStackHandler</c>.
             /// </summary>
-            public void ClearBondGraphEditHistories() {
+            /// <param name="unsimp">The unsimplified bond graph.</param>
+            /// <param name="simple">The simplified bond graph.</param>
+            /// <param name="causal">The causal bond graph.</param>
+            public void ResetBondGraphs(BondGraph unsimp, BondGraph simple, BondGraph causal) {
+                this.unsimpGraph.CopyFromModel(unsimp);
+                this.simpleGraph.CopyFromModel(simple);
+                this.causalGraph.CopyFromModel(causal);
                 unsimpStack.Clear();
                 simpleStack.Clear();
                 causalStack.Clear();
@@ -191,7 +196,7 @@
             /// <param name="tab">the int</param>
             /// <returns>the correct <c>CanvasTab</c> according to the
             /// enum settings</returns>
-            private static CanvasTab GetTab(int tab) {
+            public static CanvasTab GetTab(int tab) {
                 return tab switch {
                     (int) CanvasTab.SYSTEM_DIAGRAM => CanvasTab.SYSTEM_DIAGRAM,
                     (int) CanvasTab.UNSIMPLIFIED_BOND_GRAPH => CanvasTab.UNSIMPLIFIED_BOND_GRAPH,

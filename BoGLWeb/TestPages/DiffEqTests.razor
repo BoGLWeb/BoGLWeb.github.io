@@ -1,0 +1,43 @@
+﻿@using DifferentialEquationHelper;
+@using System.Text
+@page "/diffeqtest"
+<h3>DiffEqTests</h3>
+<p>Available functions: @allFunctions</p>
+<p>Parsed test Function: @testFunction</p>
+<Button OnClick="displayAllFunctions">Display All Functions</Button>
+<Button OnClick="parseNextFunction">Parse Next Function</Button>
+@code {
+	/// The test function object.
+	private Expression testFunction = new();
+	/// The array of String functions to be parsed.
+	private String[] fnStrs = { 
+		"4+5",
+		"F1+F2",
+		"m*v",
+		"p4'+1/2*F1",
+		"m2*v1-x'*(m5+m3)"
+	};
+	/// Stores the current index of the array.
+	private int index = 0;
+	/// Stores all available functions.
+	private String allFunctions = "";
+
+	/// Displays the initial set of functions on the canvas.
+	public void displayAllFunctions() {
+		StringBuilder builder = new();
+		char delimiter = ' ';
+		foreach (String str in fnStrs) {
+			builder.Append(delimiter).Append(str);
+			delimiter = ',';
+		}
+		allFunctions = builder.ToString();
+	}
+
+	/// Parses the next Expression value in the 
+	public void parseNextFunction() {
+		testFunction = new(fnStrs[index++]);
+		if(index == fnStrs.Length) {
+			index = 0;
+		}
+	}
+}

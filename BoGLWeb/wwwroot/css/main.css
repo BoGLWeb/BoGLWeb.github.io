@@ -142,16 +142,66 @@ path.link.hidden {
 
 #graphMenu {
     display: flex;
-    flex: 0 0 242px
+    flex: 0 0 242px;
+    position: relative;
 }
 
-.ant-collapse {
+.ant-collapse, #diffeqMenu, #stateVarMenu {
     background-color: #D6EEFF;
     height: calc(100vh - 42px);
     margin: 5px;
     overflow-y: auto;
     padding-bottom: 10px;
     width: 100%
+}
+
+#diffeqMenu, #stateVarMenu {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+#diffeqMenu .ant-btn, #stateVarMenu .ant-btn {
+    margin-top: 10px;
+}
+
+sub {
+    font-style: italic;
+    font-size: 16px;
+    margin-bottom: 30px;
+    margin-top: 5px;
+}
+
+#diffeqAnswer {
+    border: 2px black solid;
+    border-radius: 20px;
+}
+
+#diffeqAnswer > p {
+    margin: 10px;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+#highlightCheck {
+    postion: absolute;
+    bottom: 65px;
+}
+
+#diffeqButtons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#diffeqButtons button:nth-child(2) {
+    margin-left: 15px;
 }
 
 .anticon-down-circle {
@@ -465,7 +515,7 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 #modifierMenu {
     display: block;
     position: absolute;
-    right: 15px;
+    right: 10px;
     width: 120px
 }
 
@@ -524,7 +574,7 @@ hr:not([size]) {
     width: 60px
 }
 
-.bogl_button {
+.bogl_button, .bogl_button_large {
     background-color: #ABDCFF;
     border: 1.5px solid #ABDCFF;
     border-radius: 5px;
@@ -535,11 +585,17 @@ hr:not([size]) {
     padding: 4px 5px
 }
 
-.bogl_button:hover:not(:disabled) {
+.bogl_button_large {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 20px 0px 10px 0px;
+}
+
+.bogl_button:hover:not(:disabled), .bogl_button_large:hover {
     background-color: #BEE6FD !important
 }
 
-.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled) {
+.bogl_button:focus:not(:disabled), .bogl_button:active:not(:disabled), .bogl_button_large:focus, .bogl_button_large:active {
     background-color: #ABDCFF !important
 }
 
@@ -575,29 +631,33 @@ hr:not([size]) {
 }
 
 #generateButton {
-    bottom: 20px;
+    bottom: 10px;
     position: absolute;
     right: 20px
 }
 
 #ruleLoadProgress {
-    bottom: 20px;
-    left: 395px;
+    bottom: 10px;
+    left: 165px;
     position: absolute;
-    width: calc(100% - 490px)
+    width: calc(100% - 265px)
 }
 
 #generateProgress {
-    bottom: 20px;
-    left: 434px;
+    bottom: 10px;
+    left: 200px;
     position: absolute;
-    width: calc(100% - 530px)
+    width: calc(100% - 300px)
+}
+
+.ant-tabs-tabpane[tabindex="0"] {
+    position: relative;
 }
 
 #causalSelect {
     position: absolute;
     right: 10px;
-    top: 77px
+    top: 10px
 }
 
 #zoomMenu {
@@ -631,7 +691,7 @@ hr:not([size]) {
 }
 
 .ant-slider {
-    max-height: calc(100vh - 540px);
+    max-height: calc(100vh - 564px);
     min-height: 100px;
     height: 30vh;
 }
@@ -759,8 +819,8 @@ hr:not([size]) {
 }
 
 #ruleLoadProgressText, #generateProgressText {
-    bottom: 20px;
-    left: 255px;
+    bottom: 10px;
+    left: 20px;
     margin: 0;
     position: absolute
 }
@@ -779,6 +839,51 @@ hr:not([size]) {
 
 [hidden-menu=true], .ant-menu-submenu-popup:not([hidden-menu]) {
     display: none !important;
+}
+
+.resizer {
+    position: absolute;
+    cursor: col-resize;
+    height: 100%;
+    right: 0;
+    top: 0;
+    width: 5px;
+}
+
+.settingButton {
+    background-color: transparent !important;
+    border: transparent !important;
+    box-shadow: none !important;
+    padding: 0 5px;
+}
+
+#blankMenu {
+    background-color: #D6EEFF;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin-left: 5px;
+    margin-top: 5px;
+    display: none;
+}
+
+#diffeqOptions {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 20px;
+}
+
+#latexTest {
+    margin-top: 20px;
+}
+
+hr {
+    background-color: lightgray;
+}
+
+#diffeqHR {
+    width: 80%;
+    margin-bottom: 10px;
 }
 
 input[type="file"] {

@@ -6,6 +6,7 @@ import { BondGraphDisplay } from "./types/display/BondGraphDisplay";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { BondGraphElement } from "./types/elements/BondGraphElement";
 import { ElementNamespace } from "./types/elements/ElementNamespace";
+import { GraphElement } from "./types/elements/GraphElement";
 import { SystemDiagramElement } from "./types/elements/SystemDiagramElement";
 import { BondGraph } from "./types/graphs/BondGraph";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
@@ -28,7 +29,7 @@ export namespace backendManager {
                 if (e.y < minY) minY = e.y;
                 if (e.x > maxX) maxX = e.x;
                 if (e.y > maxY) maxY = e.y;
-                return new BondGraphElement(i, e.label, e.x, e.y);
+                return new BondGraphElement(i, e.ID, e.label, e.x, e.y);
             }) as BondGraphElement[];
 
             elements.forEach(e => {
@@ -37,7 +38,7 @@ export namespace backendManager {
             });
 
             let bonds = JSON.parse(bg.bonds).map(b => {
-                return new BondGraphBond(elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.velocity);
+                return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
@@ -148,7 +149,7 @@ export namespace backendManager {
             if (this.getTabNum() > 1) {
                 svg.id = "currentSVG";
                 document.body.appendChild(svg);
-                let paths = d3.selectAll("#currentSVG > g > #bondGroup > .link");
+                let paths = d3.selectAll("#currentSVG > g > #bondGroup > g > .link");
                 for (let i = 0; i < paths[0].length; i++) {
                     let path = paths[0][i] as HTMLElement;
                     let hasMarkerEnd = path.style?.markerEnd;
@@ -180,6 +181,7 @@ export namespace backendManager {
 
             canvas.width = w;
             canvas.height = h;
+            img.onerror = () => alert("Error");
             img.onload = () => {
                 canvas.getContext("2d").drawImage(img, 0, 0, w, h);
                 let filenames = ["systemDiagram.png", "unsimpBG.png", "simpBG.png", "causalBG.png"];
@@ -469,6 +471,18 @@ export namespace backendManager {
             }
         }
 
+        public renderEquations(ids: string[], eqStrings: string[]) {
+            for (let i = 0; i < ids.length; i++) {
+                let html = katex.renderToString(eqStrings[i], {
+                    throwOnError: false
+                });
+                const parser = new DOMParser();
+                let parent = document.getElementById(ids[i]);
+                parent.innerHTML = "";
+                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
+            }
+        }
+
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
@@ -713,8 +727,7 @@ export namespace backendManager {
             let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
             let edgeRemoveSet = isUndo ? addToSelectionEdges : removeFromSelectionEdges;
-            // @ts-ignore // may want to fix this later, but shouldn't be an issue as long as tab index is correctly recorded 
-            diagram.selectedElements = diagram.selectedElements.concat(diagram.elements.filter(e => elAddSet.includes(e.id)));
+            diagram.selectedElements = (diagram.selectedElements as GraphElement[]).concat(diagram.elements.filter(e => elAddSet.includes(e.id)));
             diagram.selectedBonds = diagram.selectedBonds.concat(diagram.bonds.filter(b => this.checkBondIDs(edgeAddSet, b)));
             diagram.selectedElements = diagram.selectedElements.filter(e => !elRemoveSet.includes(e.id));
             diagram.selectedBonds = diagram.selectedBonds.filter(b => !this.checkBondIDs(edgeRemoveSet, b));
