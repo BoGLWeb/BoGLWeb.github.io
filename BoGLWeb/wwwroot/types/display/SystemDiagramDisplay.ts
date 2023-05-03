@@ -223,7 +223,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .call(this.edgeDrag);
     }
 
-    pathExtraRendering(paths: BGBondSelection) {
+    pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         let graph = this;
 
         paths.classed("hoverablePath", true);

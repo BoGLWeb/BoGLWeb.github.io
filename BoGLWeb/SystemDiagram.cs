@@ -16,6 +16,7 @@ namespace BoGLWeb {
     public class SystemDiagram {
         private static readonly ImmutableDictionary<string, int> modifierIDDict;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
+        private static readonly ImmutableDictionary<int, string> modifierIDDictReverseGraph;
         private static readonly ImmutableDictionary<string, int> typeIDDict;
         private static readonly ImmutableDictionary<int, string> typeIDDictReverse;
 
@@ -32,8 +33,7 @@ namespace BoGLWeb {
 
             modifierIDDict = idBuilder.ToImmutable();
 
-            ImmutableDictionary<int, string>.Builder
-                idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            ImmutableDictionary<int, string>.Builder idBuilderReverse = ImmutableDictionary.CreateBuilder<int, string>();
             idBuilderReverse.Add(0, "MASS");
             idBuilderReverse.Add(1, "INERTIA");
             idBuilderReverse.Add(2, "STIFFNESS");
@@ -43,6 +43,17 @@ namespace BoGLWeb {
             idBuilderReverse.Add(6, "TOOTH_WEAR");
 
             modifierIDDictReverse = idBuilderReverse.ToImmutable();
+
+            ImmutableDictionary<int, string>.Builder modGraphReverse = ImmutableDictionary.CreateBuilder<int, string>();
+            modGraphReverse.Add(0, "Include_Mass");
+            modGraphReverse.Add(1, "Include_Inertia");
+            modGraphReverse.Add(2, "Include_Stiffness");
+            modGraphReverse.Add(3, "Include_Friction");
+            modGraphReverse.Add(4, "Include_Friction");
+            modGraphReverse.Add(5, "PAR");
+            modGraphReverse.Add(6, "Include_Tooth_Wear"); // Pretty sure tooth wear isn't taken into account anywhere?
+
+            modifierIDDictReverseGraph = modGraphReverse.ToImmutable();
 
             ImmutableDictionary<string, int>.Builder typeBuilder = ImmutableDictionary.CreateBuilder<string, int>();
             typeBuilder.Add("System_MT_Mass", 0);
@@ -874,8 +885,7 @@ namespace BoGLWeb {
                         this.modifiers.Add(mod);
                     }
                 }
-                typeIDDictReverse.TryGetValue(this.type, out string? name);
-                this.name = name ?? "";
+                this.name = typeIDDictReverse.GetValueOrDefault(this.type) ?? "";
             }
 
             /// <summary>
@@ -976,7 +986,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A list</returns>
             public List<string> getLabelList() {
-                List<string> strings = this.modifiers.Select(modifier => modifier.ToString()).ToList();
+                List<string> strings = this.modifiers.Select(modifier => modifierIDDictReverseGraph[modifier].ToString()).ToList();
 
                 if (this.velocity == 0) {
                     return strings;
@@ -1284,7 +1294,7 @@ namespace BoGLWeb {
         /// <summary>
         /// Stores parsed elements and edgesBySource for a system diagram.
         /// </summary>
-        public class Packager {
+        public class Wrapper {
             // Stores a subset of elements belonging to a particular system diagram
             private readonly Dictionary<int, Element> elements;
             // Stores a subset of edgesBySource belonging to a particular system diagram by source ID.
@@ -1293,12 +1303,12 @@ namespace BoGLWeb {
             private readonly Dictionary<int, List<Edge>> edgesByTarget;
 
             /// <summary>
-            /// Creates a new Packager.
+            /// Creates a new Wrapper.
             /// </summary>
             /// <param name="newObjects">An array of JSON objects
             /// containing the elements and edgesBySource for this 
             /// system diagram.</param>
-            public Packager(string[] newObjects) {
+            public Wrapper(string[] newObjects) {
                 this.elements = new();
                 this.edgesBySource = new();
                 this.edgesByTarget = new();
@@ -1326,7 +1336,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of elements in this Packager.
+            /// Gets the Dictionary of elements in this Wrapper.
             /// </summary>
             /// <returns>this.elements</returns>
             public Dictionary<int, Element> GetElements() {
@@ -1334,7 +1344,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// Gets the Dictionary of edgesBySource in this Wrapper.
             /// </summary>
             /// <returns>this.edgesBySource</returns>
             public Dictionary<int, List<Edge>> GetSourceEdges() {
@@ -1342,7 +1352,7 @@ namespace BoGLWeb {
             }
 
             /// <summary>
-            /// Gets the Dictionary of edgesBySource in this Packager.
+            /// Gets the Dictionary of edgesBySource in this Wrapper.
             /// </summary>
             /// <returns>this.edgesBySource</returns>
             public Dictionary<int, List<Edge>> GetTargetEdges() {

@@ -36,7 +36,6 @@ export function populateMenu() {
 var topMenuButtons;
 
 async function loadPage() {
-    // @ts-ignore
     delete window.jQuery;
     window.tabNum = "1"; 
     let sliderHolder = document.querySelector("#zoomMenu .ant-slider-handle");
@@ -105,6 +104,36 @@ async function loadPage() {
     window.onbeforeunload = function (e) {
         return "Are you sure you want to exit BoGL Web? Your current progress will be lost unless you download it or make a URL from it.";
     };
+
+    const ele = document.getElementById('graphMenu');
+    let x = 0;
+    let w = 0;
+
+    const mouseDownHandler = function (e) {
+        x = e.clientX;
+
+        const styles = window.getComputedStyle(ele);
+        w = parseInt(styles.width, 10);
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+    };
+
+    const mouseMoveHandler = function (e) {
+        const dx = e.clientX - x;
+        ele.style.flex = "0 0 " + Math.max(Math.min(w + dx, 700), 225) + "px";
+    };
+
+    const mouseUpHandler = function () {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+    };
+
+    const resizers = ele.querySelectorAll('.resizer');
+
+    [].forEach.call(resizers, function (resizer) {
+        resizer.addEventListener('mousedown', mouseDownHandler);
+    });
 
     let examples = ["basic-two-mass-system", "basic-two-mass-system1", "basic-two-mass-system2", "masses_on_a_spring", "moving_masses", "spring_&_damper", "rack_pinion", "motor-gear-pair", "lrc_circuit"];
 

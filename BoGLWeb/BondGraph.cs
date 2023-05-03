@@ -2,6 +2,7 @@
 using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -20,6 +21,15 @@ namespace BoGLWeb {
         public BondGraph() {
             this.elements = new Dictionary<string, Element>();
             this.bonds = new List<Bond>();
+        }
+
+        /// <summary>
+        /// Copies a separate object into this <c>BondGraph</c>.
+        /// </summary>
+        /// <param name="model">The model <c>BondGraph</c>.</param>
+        public void CopyFromModel(BondGraph model) {
+            this.elements = new(model.elements);
+            this.bonds = new(model.bonds);
         }
 
         /// <summary>
@@ -75,6 +85,33 @@ namespace BoGLWeb {
             });
         }
 
+        public static IDictionary<string, string> bondGraphLabels = new Dictionary<string, string>() {
+            { "_Mass", "I:m" },
+            { "_Inertia", "I:J" },
+            { "_Spring", "C:K" },
+            { "_Stiffness", "C:K" },
+            { "_Torque_Input", "Se:τ" },
+            { "_Damper", "R:b" },
+            { "_Friction", "R:b" },
+            { "_Resistor", "R:R" },
+            { "_Force", "Se:F" },
+            { "_Capacitor", "C:C" },
+            { "_Velocity", "Sf:v" },
+            { "_Inductor", "I:L" },
+            { "_Rack&Pinion", "TF:R" },
+            { "_Flywheel", "I:J" },
+            { "_Voltage", "Se:V" },
+            { "_Current", "Sf:i" },
+            { "_ResistanceMotor", "R:R" },
+            { "_InductanceMotor", "I:L" },
+            { "_RotaryInertiaMotor", "I:J" },
+            { "_GearMesh", "TF:R" },
+            { "gear", "TF:R" },
+            { "_Lever", "TF:D" },
+            { "_Transformer", "TF:T" },
+            { "Motor", "GY:K" }
+        };
+
         /// <summary>
         /// Returns the Bond Graph that can be constructed from a designGraph
         /// </summary>
@@ -92,12 +129,20 @@ namespace BoGLWeb {
             //Construct an Element for each node
             foreach(node node in graph.nodes) {
                 StringBuilder sb = new();
+                string label = "";
                 foreach (string l in node.localLabels) {
-                    sb.Append(l);
-                    sb.Append(" ");
+                    label += l + " ";
+                    string strippedLabel = l.Replace("_Added", "");
+                    if (bondGraphLabels.ContainsKey(strippedLabel)) {
+                        bondGraphLabels.TryGetValue(strippedLabel, out label);
+                        break;
+                    } else if (l == "0" || l == "1") {
+                        label = l;
+                        break;
+                    }
                 }
 
-                bondGraph.addElement(node.name, new Element(node.name, sb.ToString().TrimEnd(), 0));
+                bondGraph.addElement(node.name, new Element(node.name, label, 0));
             }
 
             //Construct each arc
@@ -129,6 +174,22 @@ namespace BoGLWeb {
         }
 
         /// <summary>
+        /// Gets a list of all Elements that introduce differential expressions into
+        /// the state finalDifferentialStateEquations of this Graph.
+        /// </summary>
+        /// <returns></returns>
+        public List<Element> GetDifferentialElements() {
+            List<Element> differentials = new();
+            foreach (KeyValuePair<string, Element> pair in this.elements) {
+                char typeChar = pair.Value.GetTypeChar();
+                if (typeChar == 'I' | typeChar == 'C') {
+                    differentials.Add(pair.Value);
+                }
+            }
+            return differentials;
+        }
+
+        /// <summary>
         /// Gets a list of all <c>Elements</c> in this <c>BondGraph</c>
         /// that have the corresponding IDs
         /// </summary>
@@ -153,9 +214,17 @@ namespace BoGLWeb {
             return parsedElements;
         }
 
+        /// <summary>
+        /// Gets the JSON string form of this <c>BondGraph</c>.
+        /// </summary>
+        /// <returns>This <c>BondGraph</c> as a <c>string</c>.</returns>
+        public string GetJSON() {
+            return JsonConvert.SerializeObject(this);
+        }
+
         public class Element {
             [JsonProperty]
-            protected readonly string label;
+            public string label;
             [JsonProperty]
             protected readonly double value;
             private readonly string name;
@@ -168,7 +237,10 @@ namespace BoGLWeb {
             /// Tracks the undo/redo and general IDs for this <c>Element</c>.
             /// </summary>
             private static int universalID = 0;
+            [JsonProperty]
             private int? ID;
+            public string? domain;
+            public bool visited = false;
 
             /// <summary>
             /// Returns a string representing the element. The string includes label, value, name, x, and y coordinates of the element
@@ -293,6 +365,32 @@ namespace BoGLWeb {
             public override int GetHashCode() {
                 return HashCode.Combine(this.name);
             }
+
+            /// <summary>
+            /// Determines from a character the type for this <c>Element</c>.
+            /// </summary>
+            /// <returns>A single character from the label that designates the 
+            /// type of <c>Element</c>.</returns>
+            public char GetTypeChar() {
+                return this.label[0] == 'S' ? this.label[1] : this.label[0];
+            }
+
+            /// <summary>
+            /// Converts this <c>Element</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>Element</c> as a string.</returns>
+            public override string ToString() {
+                return GetTypeChar() + ";" + GetID();
+            }
+
+            /// <summary>
+            /// Gets the variable name for this <c>Element</c>.
+            /// </summary>
+            /// <returns></returns>
+            // Change this once we get variable name input.
+            public string GetVar() {
+                return ToString();
+            }
         }
 
         public class Bond {
@@ -314,12 +412,19 @@ namespace BoGLWeb {
             /// Tracks the undo/redo and general IDs for this <c>Bond</c>.
             /// </summary>
             private static int universalID = 0;
+            [JsonProperty]
             private int? ID;
+            [JsonProperty]
+            public string flowLabel = "f";
+            [JsonProperty]
+            public string effortLabel = "e";
 
             //The arrow will always point at the sink
             /// <summary>
             /// Creates a Bond between two elements
             /// </summary>
+            /// <param name="sourceID">The ID of the source element</param>
+            /// <param name="targetID">The ID of the target element</param>
             /// <param name="source">The source element</param>
             /// <param name="sink">The sink element</param>
             /// <param name="label">Labels for the bond</param>
@@ -327,7 +432,7 @@ namespace BoGLWeb {
             /// <param name="causalStrokeDirection">The position of the causal stroke. True means the causal stroke is at the source. False means the causal stroke is at the sink.</param>
             /// <param name="flow">The flow value for the bond</param>
             /// <param name="effort">The effor value for the bond</param>
-            
+
             public Bond(int sourceID, int targetID, Element source, Element sink, string label, bool causalStroke, bool causalStrokeDirection, bool hasDirection, double flow, double effort) {
                 this.sourceID = sourceID;
                 this.targetID = targetID;
@@ -374,6 +479,16 @@ namespace BoGLWeb {
             /// <returns>An element</returns>
             public Element getSink() {
                 return this.sink;
+            }
+
+            /// <summary>
+            /// Returns the causal stroke direction of this <c>Bond</c>.
+            /// </summary>
+            /// <returns><c>true</c> if the causal stroke points from the source to
+            /// the target (such that the visual stroke itself is on the source side
+            /// of the bond), else <c>false</c>.</returns>
+            public bool GetCausalDirection() {
+                return this.causalStrokeDirection;
             }
 
             /// <summary>
@@ -440,6 +555,221 @@ namespace BoGLWeb {
             /// <returns>An integer</returns>
             public override int GetHashCode() {
                 return HashCode.Combine(this.sourceID, this.targetID, this.causalStroke, this.causalStrokeDirection);
+            }
+
+            /// <summary>
+            /// Converts this <c>Bond</c> to a printable format.
+            /// </summary>
+            /// <returns>This <c>Bond</c> as a string.</returns>
+            public override string ToString() {
+                return "(" + this.source + " " + this.sink + ")";
+            }
+        }
+
+        /// <summary>
+        /// This class rewrites a bond graph as a graph object where all bonds 
+        /// incident to a given element can be accessed in <c>O(1)</c>.
+        /// </summary>
+        public class BondGraphWrapper {
+            private readonly Dictionary<string, Element> elements;
+            private readonly Dictionary<int, List<Bond>> bondsBySource;
+            private readonly Dictionary<int, List<Bond>> bondsByTarget;
+            private readonly int EFFORT_INDEX = 0, 
+                FLOW_INDEX = 1, 
+                R_INDEX = 2, 
+                C_INDEX = 3,
+                I_INDEX = 4,
+                TF_INDEX = 5,
+                GY_INDEX = 6,
+                P_INDEX = 7,
+                Q_INDEX = 8;
+            private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
+            private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
+            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "ϕ", "q" };
+            private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
+                {"v", translationLabels },
+                {"F", translationLabels },
+                {"b", translationLabels },
+                {"m", translationLabels },
+                {"K", translationLabels },
+                {"ω", rotLabels },
+                {"τ", rotLabels },
+                {"D", rotLabels },
+                {"I", rotLabels },
+                {"κ", rotLabels },
+                {"i", elecLabels },
+                {"V", elecLabels },
+                {"R", elecLabels },
+                {"L", elecLabels },
+                {"C", elecLabels }
+            };
+            private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
+                {"F", new List<string>() { "p'", "x'" } },
+                {"τ", new List<string>() { "L'", "θ'" } },
+                {"V", new List<string>() { "ϕ'", "q'" } }
+            };
+
+            /// <summary>
+            /// Creates a new <c>BondGraphWrapper</c>. 
+            /// </summary>
+            /// <param name="graph">The bond graph used to model this object.</param>
+            public BondGraphWrapper(BondGraph graph) {
+                this.elements = graph.getElements();
+                this.bondsBySource = new();
+                this.bondsByTarget = new();
+                foreach (Bond bond in graph.getBonds()) {
+                    int source = bond.getSource().GetID();
+                    List<Bond>? sourceBondsByElement = this.bondsBySource.GetValueOrDefault(source);
+                    if (sourceBondsByElement == null) {
+                        this.bondsBySource.Add(source, new List<Bond> { bond });
+                    } else {
+                        sourceBondsByElement.Add(bond);
+                    }
+                    int target = bond.getSink().GetID();
+                    List<Bond>? targetBondsByElement = this.bondsByTarget.GetValueOrDefault(target);
+                    if (targetBondsByElement == null) {
+                        this.bondsByTarget.Add(target, new List<Bond> { bond });
+                    } else {
+                        targetBondsByElement.Add(bond);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the set of elements in this BondGraph.
+            /// </summary>
+            /// <returns><c>this.elements</c></returns>
+            public Dictionary<string, Element> GetElements() {
+                return this.elements;
+            }
+
+            /// <summary>
+            /// Gets the set of all connections to any given bond such that
+            /// the key (element ID) is the source ID for all bonds listed in
+            /// the value.
+            /// </summary>
+            /// <returns>this.bondsBySource</returns>
+            public Dictionary<int, List<Bond>> GetBondsBySource() {
+                return this.bondsBySource;
+            }
+
+            /// <summary>
+            /// Gets the set of all connections to any given bond such that
+            /// the key (element ID) is the target ID for all bonds listed in
+            /// the value.
+            /// </summary>
+            /// <returns>this.bondsByTarget</returns>
+            public Dictionary<int, List<Bond>> GetBondsByTarget() {
+                return this.bondsByTarget;
+            }
+
+            public void AssignBondLabels() {
+            /* iterate through all elements in bond graph:
+                verify that element is leaf node
+                do depth first search that stops at gyrator elements
+                flip visited boolean on nodes and set domain on bonds (set domain on 0 and 1 junctions and transformers and add them to list)*/
+                Queue<Element> queue = new Queue<Element>();
+                List<Element> futureLeaves = this.elements.Values.ToList().FindAll(e => {
+                    int targetCount = GetBondsByTarget().ContainsKey(e.GetID()) ? GetBondsByTarget()[e.GetID()].Count : 0;
+                    int sourceCount = GetBondsBySource().ContainsKey(e.GetID()) ? GetBondsBySource()[e.GetID()].Count : 0;
+                    return (targetCount + sourceCount) == 1;
+                });
+                while (futureLeaves.Count > 0) {
+                    Element startEl = futureLeaves[0];
+                    futureLeaves.RemoveAt(0);
+                    queue.Enqueue(startEl);
+                    // we have a 1 junction being a leaf node here
+                    string domainCheck = startEl.label.Last().ToString();
+                    List<string> labels = domainLabelDict.ContainsKey(domainCheck) ? domainLabelDict[domainCheck] : new() { "e", "f" };
+                    string effortLabel = labels[EFFORT_INDEX];
+                    string flowLabel = labels[FLOW_INDEX];
+
+                    while (queue.Count > 0) {
+                        Element el = queue.Dequeue();
+                        if (el.visited) continue;
+                        el.visited = true;
+                        el.domain = effortLabel;
+                        List<Element> sourceBonds = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].Select(b => b.getSink()).ToList() : new();
+                        List<Element> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].Select(b => b.getSource()).ToList() : new();
+                        List<Element> neighbors = sourceBonds.Concat(targetBonds).ToList();
+                        if (el.label[0] != 'G' && el.label[0] != 'T') {
+                            neighbors.ForEach(o => queue.Enqueue(o));
+                            if (this.bondsBySource.ContainsKey(el.GetID())) {
+                                this.bondsBySource[el.GetID()].ForEach(b => {
+                                    b.effortLabel = effortLabel;
+                                    b.flowLabel = flowLabel;
+                                });
+                            }
+                            if (this.bondsByTarget.ContainsKey(el.GetID())) {
+                                this.bondsByTarget[el.GetID()].ForEach(b => {
+                                    b.effortLabel = effortLabel;
+                                    b.flowLabel = flowLabel;
+                                });
+                            }
+                            if (el.label[0] == '0') {
+                                el.label += " " + effortLabel;
+                            } else if (el.label[0] == '1') {
+                                el.label += " " + flowLabel;
+                            }
+                        }
+                    }
+
+                    futureLeaves = futureLeaves.FindAll(e => !e.visited);
+                }
+
+                List<Element> iAndCElements = this.elements.Values.ToList().FindAll(e => e.label[0] == 'I' || e.label[0] == 'C' );
+                foreach (Element el in iAndCElements) {
+                    List<Bond> neighbors = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].ToList() : new();
+                    List<Bond> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].ToList() : new();
+                    neighbors.AddRange(targetBonds);
+                    if (el.domain != "e") {
+                        List<string> labels = stateLabelDict[el.domain];
+                        neighbors.ForEach(n => {
+                            if (el.label[0].Equals('I')) {
+                                n.effortLabel = labels[0];
+                            } else {
+                                n.flowLabel = labels[1];
+                            }
+                        });
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the domain-specific replacement variable for a particular element.
+            /// </summary>
+            /// <param name="label">The element label.</param>
+            /// <param name="c">The character denoting the desired coefficient.</param>
+            /// <returns>The character belonging at the beginning of the replacement
+            /// variable.</returns>
+            public char GetDomainVar(string label, char c) {
+                int index = 0;
+                while (label[index] != ' ' && label[index] != ':') {
+                    index++;
+                }
+                index++;
+                return (domainLabelDict.GetValueOrDefault("" + label[index]) ?? new())[GetReplacementIndex(c)][0];
+            }
+
+            /// <summary>
+            /// Gets the replacement index.
+            /// </summary>
+            /// <param name="c">The character representing the index in the 
+            /// variable list.</param>
+            /// <returns>The replacement index.</returns>
+            public int GetReplacementIndex(char c) {
+                return c switch {
+                    'E' => EFFORT_INDEX,
+                    'F' => FLOW_INDEX,
+                    'R' => R_INDEX,
+                    'C' => C_INDEX,
+                    'I' => I_INDEX,
+                    'T' => TF_INDEX,
+                    'G' => GY_INDEX,
+                    'P' => P_INDEX,
+                    'Q' => Q_INDEX,
+                    _ => throw new Exception("Invalid substitution index character " + c + ".")
+                };
             }
         }
     }

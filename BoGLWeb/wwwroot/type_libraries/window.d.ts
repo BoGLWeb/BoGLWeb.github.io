@@ -20,6 +20,7 @@ declare global {
         showOpenFilePicker(options?: any): Promise<FileSystemFileHandle[]>;
         filePath: FileSystemFileHandle;
         introJs(): any;
+        jQuery: any;
     }
 
     interface FileSystemFileHandle extends FileSystemHandle {
