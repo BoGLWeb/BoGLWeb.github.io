@@ -20,12 +20,6 @@ namespace BoGLWeb {
             /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
-                //List<Equation> initialEquations = GetInitialEquations(graphWrapper);
-                //this.initialEquations = new string[initialEquations.Count];
-                //int initialIndex = 0;
-                //foreach (Equation equation in initialEquations) {
-                //    this.initialEquations[initialIndex++] = equation.ToString();
-                //}
                 this.initialEquations = new string[0];
                 List<CausalGraphWrapper> wrappers = CausalGraphWrapper.GenerateList(graphWrapper);
                 Dictionary<string, Expression> substitutionDictionary = new();
@@ -197,7 +191,10 @@ namespace BoGLWeb {
                 /// <summary>
                 /// Forms an incomplete state equation.
                 /// </summary>
-                /// <returns></returns>
+                /// <returns>A key-value pair with the key a string variable 
+                /// representation of a flow or effort variable and value the
+                /// associated expression formed from the <c>CausalWrapper</c>
+                /// tree.</returns>
                 public KeyValuePair<string, Expression> GetExpression() {
                     Stack<CausalGraphWrapper> packageStack = new(new[] { this });
                     Stack<bool> checkStack = new(new[] { false });
