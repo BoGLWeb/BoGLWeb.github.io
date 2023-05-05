@@ -566,12 +566,13 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
-        // undo/redo for adding a selection
-        // TODO: describe all undo/redo functions
+        // undo/redo for adding a selection, where highlight indicates whether the current selection should be modified 
         public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], highlight: boolean, isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(newObjects);
             if (isUndo) {
+                // if undo, get identifiers for all elements/edges and remove those elements/edges from the display object,
+                // then restore the selection from before elements/edges were added if highlight is true
                 let elIDs = elements.map(e => e.id);
                 let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
@@ -583,6 +584,7 @@ export namespace backendManager {
                     sysDiag.setSelection([], []);
                 }
             } else {
+                // if redo, add the recorded elements/edges and select them if highlight is true
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 sysDiag.bonds = sysDiag.bonds.concat(bonds);
                 if (highlight) {
@@ -595,12 +597,14 @@ export namespace backendManager {
             sysDiag.updateMenus();
         }
 
-        // undo/redo for deleting a selection
+        // undo/redo for deleting a selection, recording bonds in unselectedDeletedEdges that are deleted automatically because one of their
+        // end elements got deleted, but not re-highlighting these bonds on undo
         public urDoDeleteSelection(deletedObjects: string[], unselectedDeletedEdges: string[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(deletedObjects);
             let [_, unselectedBonds] = this.parseElementAndEdgeStrings(unselectedDeletedEdges);
             if (isUndo) {
+                // if undo, add back the deleted elements/edges and restore highlight for all but the unselected bonds
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 unselectedBonds = unselectedBonds.map(b => {
                     b.source = sysDiag.elements.find(e => e.id == b.source.id);
@@ -615,6 +619,7 @@ export namespace backendManager {
                 sysDiag.bonds = sysDiag.bonds.concat(bonds).concat(unselectedBonds);
                 sysDiag.setSelection(elements, bonds);
             } else {
+                // if redo, remove the deleted elements from the display object
                 let elIDs = elements.map(e => e.id);
                 let elBonds = bonds.concat(unselectedBonds).map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
@@ -630,6 +635,7 @@ export namespace backendManager {
             let diagram = this.getGraphByIndex(window.tabNum);
             let addToSelectionEdges = this.parseEdgeIDStrings(edgesToAdd);
             let removeFromSelectionEdges = this.parseEdgeIDStrings(edgesToRemove);
+            // toggles whether the elements/edges are added or removed based on whether we're undoing or redoing
             let elAddSet = isUndo ? elIDsToRemove : elIDsToAdd;
             let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
@@ -645,6 +651,7 @@ export namespace backendManager {
         // undo/redo for moving a selection
         public urDoMoveSelection(elements: number[], xOffset: number, yOffset: number, isUndo: boolean) {
             let diagram = this.getGraphByIndex(window.tabNum);
+            // adds or substracts the recorded offset based on whether we're undoing or redoing
             diagram.elements.filter(e => elements.includes(e.id)).forEach(e => {
                 e.x = e.x + (isUndo ? -1 : 1) * xOffset;
                 e.y = e.y + (isUndo ? -1 : 1) * yOffset;
@@ -656,8 +663,10 @@ export namespace backendManager {
         public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let bondIDs = this.parseEdgeIDStrings(edgeIDs);
+            // set the velocity of edges/elements to either the new velocity or their previous velocity depending on whether we're undoing or redoing
             sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
-            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
+            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length
+                + this.checkBondIDs(bondIDs, b).velID] : velID);
             sysDiag.updateGraph();
             sysDiag.updateVelocityMenu();
         }
@@ -669,17 +678,11 @@ export namespace backendManager {
             elIDs.forEach(function (id, i) {
                 let el = sysDiag.elements.find(e => e.id == id);
                 if (isUndo) {
-                    if (prevModVals[i] && !el.modifiers.includes(modID)) {
-                        el.modifiers.push(modID);
-                    } else if (!prevModVals[i] && el.modifiers.includes(modID)) {
-                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                    }
+                    // if undo, reverse modifier addition or removal in selected elements
+                    this.setModifierNoUR(el, modID, prevModVals[i]);
                 } else {
-                    if (modVal && ElementNamespace.elementTypes[el.type].allowedModifiers.includes(modID) && !el.modifiers.includes(modID)) {
-                        el.modifiers.push(modID);
-                    } else if (el.modifiers.includes(modID)) {
-                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                    }
+                    // if redo, enact modifier addition or removal in selected elements
+                    this.setModifierNoUR(el, modID, modVal);
                 }
             });
 
@@ -687,44 +690,54 @@ export namespace backendManager {
             sysDiag.updateModifierMenu();
         }
 
+        // copy then delete the current selection
         public cut() {
             this.getSystemDiagramDisplay().copySelection();
             this.getSystemDiagramDisplay().deleteSelection();
         }
 
+        // copy the current selection
         public copy() {
             this.getSystemDiagramDisplay().copySelection();
         }
 
+        // paste the current selection
         public paste() {
             this.getSystemDiagramDisplay().pasteSelection();
         }
 
+        // delete the current selection, bringing up the confirmation modal if needsConfirmation is true and multiple
+        // elements/edges are being deleted
         public delete(needsConfirmation = true) {
             this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
         }
 
+        // selects all elements/edges in the canvas and deletes them without confirmation
         public clear() {
             this.getSystemDiagramDisplay().selectAll();
             this.getSystemDiagramDisplay().deleteSelection(false);
         }
 
+        setModifierNoUR(el: SystemDiagramElement, i: number, value: boolean) {
+            if (value) { // adding modifier
+                if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
+                    el.modifiers.push(i);
+                }
+            } else { // removing modifiers
+                if (el.modifiers.includes(i)) {
+                    el.modifiers.splice(el.modifiers.indexOf(i), 1);
+                }
+            }
+        }
+
+        // sets the modifier for the current selection
         public setModifier(i: number, value: boolean) {
             let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
 
-            if (value) { // adding modifier
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
-                        el.modifiers.push(i);
-                    }
-                }
-            } else { // removing modifiers
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (el.modifiers.includes(i)) {
-                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
-                    }
-                }
+            for (const el of window.systemDiagram.selectedElements) {
+                this.setModifierNoUR(el, i, value);
             }
+            
             window.systemDiagram.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
