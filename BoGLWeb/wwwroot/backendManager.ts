@@ -674,15 +674,16 @@ export namespace backendManager {
         // undo/redo for changing a selection's modifier
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
+            let backend = this;
 
             elIDs.forEach(function (id, i) {
                 let el = sysDiag.elements.find(e => e.id == id);
                 if (isUndo) {
                     // if undo, reverse modifier addition or removal in selected elements
-                    this.setModifierNoUR(el, modID, prevModVals[i]);
+                    backend.setModifierNoUR(el, modID, prevModVals[i]);
                 } else {
                     // if redo, enact modifier addition or removal in selected elements
-                    this.setModifierNoUR(el, modID, modVal);
+                    backend.setModifierNoUR(el, modID, modVal);
                 }
             });
 
