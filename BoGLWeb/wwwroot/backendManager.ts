@@ -719,6 +719,7 @@ export namespace backendManager {
             this.getSystemDiagramDisplay().deleteSelection(false);
         }
 
+        // set a modifier to a value for a given element without doing any undo/redo
         setModifierNoUR(el: SystemDiagramElement, i: number, value: boolean) {
             if (value) { // adding modifier
                 if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
@@ -733,20 +734,25 @@ export namespace backendManager {
 
         // sets the modifier for the current selection
         public setModifier(i: number, value: boolean) {
+            // save current modifier values
             let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
 
+            // set the modifier for each selected element
             for (const el of window.systemDiagram.selectedElements) {
                 this.setModifierNoUR(el, i, value);
             }
-            
+
+            // update the graph and save action for undo/redo
             window.systemDiagram.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
         }
 
+        // set the velocity of all edges/elements to a given velocity ID
         public setVelocity(velocity: number) {
             let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
             for (const e of window.systemDiagram.getSelection()) {
+                // set the velocity if the object is an edge or it is an element that is allowed to have velocity
                 if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
                     e.velocity = velocity;
                 }
@@ -755,23 +761,28 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
         }
 
+        // set the zoom of the graph to i (0 to 100), used by the zoom slider
         public setZoom(i: number) {
             let graph = this.getGraphByIndex(window.tabNum);
             let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
 
+            // calculate the x and y offsets needed to keep the window centered on its current center while zooming
             let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
             let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
 
+            // only translate and scale if the zoom value has changed
             if (graph.prevScale * 100 - i != 0) {
                 graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
             }
         }
 
+        // change the recorded tab number and set the zoom slider to the new graph's zoom value
         public setTab(key: string) {
             window.tabNum = key;
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
+        // get the graph display object for a given tab ID (1 to 4)
         public getGraphByIndex(i: string) {
             if (i == "1") {
                 return window.systemDiagram;
@@ -784,6 +795,7 @@ export namespace backendManager {
             }
         }
 
+        // render equation strings in DOM elements with particular IDs (match string to ID by list index)
         public renderEquations(ids: string[], eqStrings: string[]) {
             for (let i = 0; i < ids.length; i++) {
                 let html = katex.renderToString(eqStrings[i], {
@@ -796,10 +808,12 @@ export namespace backendManager {
             }
         }
 
+        // copies text to the clipboard
         public textToClipboard(text: string) {
             navigator.clipboard.writeText(text);
         }
 
+        // closes a given menu and all its submenus
         public closeMenu(menuName: string) {
             switch (menuName) {
                 case "File":
@@ -818,6 +832,7 @@ export namespace backendManager {
         }
     }
 
+    // returns a backend manager object
     export function getBackendManager(): BackendManager {
         return new BackendManager();
     }
