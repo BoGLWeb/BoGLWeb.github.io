@@ -3,7 +3,7 @@ import { ElementNamespace } from "./types/elements/ElementNamespace";
 import { SystemDiagramDisplay } from "./types/display/SystemDiagramDisplay";
 import { backendManager } from "./backendManager";
 import { SystemDiagram } from "./types/graphs/SystemDiagram";
-import { SubmenuID } from "./types/display/BondGraphBond";
+import { SubmenuID } from "./types/display/SubmenuID";
 import getBackendManager = backendManager.getBackendManager;
 
 var topMenuButtons;
