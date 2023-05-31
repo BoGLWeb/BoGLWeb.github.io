@@ -333,25 +333,6 @@
         <Button @onclick="copyUrl"><Icon Type="copy" Theme="outline"/> Copy Link</Button>
     </div>
 </Modal>
-@*    @{
-        RenderFragment footer = @<Template>
-            <Button OnClick="@closeLabelValue" Type="primary">Save</Button>
-            <Button OnClick="@closeLabelValue">Cancel</Button>
-            </Template>
-        ;
-        List<string> unitsList = new List<string> { "kg", "gram", "slug" };
-    }*@
-@*<Modal Title="Assign Value and Label for Mass" Visible="@labelValueModalVisible" Footer="@footer">
-    <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px;">Label: </div>
-        <Input Style="width: 400px" Placeholder="Label" required="true" DefaultValue="@("M1")" Type="text" />
-    </div><br/>
-    <div style="display: flex; align-items: center;">
-        <div style="margin-right: 10px;">Mass: </div>
-        <Input Style="width: 270px; margin-right: 10px;" Placeholder="Value" required="true" DefaultValue="@(4)" Type="number" />
-        <Select DataSource="@unitsList" DefaultValue="@("kg")" Style="width:120px"/>
-    </div>
-</Modal>*@
 <Modal Title="Confirm Deleting Many Items" Visible="@confirmDeleteModalVisible" OnOk="@handleDeleteOk" OnCancel="@handleDeleteCancel">
     <p>You are about to delete many items. Please confirm that this is what you want to do. You can disable this warning in the help menu.</p>
 </Modal>
@@ -396,6 +377,7 @@
     private static bool[] disabledValues { get; set; } = { true, true, true, true, true, true, true };
 
     [JSInvokable]
+    // handles a command to undo or redo in a given tab
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
         switch(cc?.GetType().Name) {
@@ -429,6 +411,7 @@
         app?.StateHasChanged();
     }
 
+    // undo command
     public async void Undo()
     {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -436,6 +419,7 @@
         await module.InvokeVoidAsync("handleUndoRedo", true);
     }
 
+    // redo command
     public async void Redo()
     {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -443,18 +427,21 @@
         await module.InvokeVoidAsync("handleUndoRedo", false);
     }
 
+    // cut command
     public async void Cut() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("cut");
     }
 
+    // copy command
     public async void Copy() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("copy");
     }
 
+    // paste command
     public async void Paste() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
@@ -463,12 +450,14 @@
 
     static bool deleteManyChecked = true;
 
+    // delete command
     public async void Delete() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
         await module.InvokeVoidAsync("delete");
     }
 
+    // clear command
     public async void Clear() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Edit");
@@ -476,6 +465,7 @@
     }
 
     [JSInvokable]
+    // records an add selection undo/redo object
     public static void URAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight) {
         //Console.WriteLine("Recording elements and edgesBySource added: [" + String.Join(", ", newObjects) + "], [" + String.Join(", ", prevSelectedElements) + "], [" + String.Join(", ", prevSelectedEdges) + "] " + highlight.ToString());
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.AddSelection(prevSelectedElements, newObjects, prevSelectedEdges, highlight), 1);
@@ -484,15 +474,17 @@
     }
 
     [JSInvokable]
+    // records a delete selection undo/redo object
     public static void URDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges) {
         //Console.WriteLine("Recording elements and edgesBySource deleted: [" + String.Join(", ", deletedObjects) + "], [" + String.Join(", ", unselectedDeletedEdges) + "]");
-        // Need to add unselected deleted edges
+        // adds unselected deleted edges
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.DeleteSelection(new int[0], deletedObjects, unselectedDeletedEdges), 1);
         UpdateBackendWithInitialStackChange(1);
         app?.StateHasChanged();
     }
 
     [JSInvokable]
+    // records a selection change undo/redo object
     public static void URChangeSelection(int tabID, int[] addElToSelection, string[] addEdgeToSelection, int[] removeElFromSelection, string[] removeEdgeFromSelection) {
         if (addEdgeToSelection.Length > 0 || removeEdgeFromSelection.Length > 0 || addElToSelection.Length > 0 || removeElFromSelection.Length > 0) {
             //Console.WriteLine("Recording selection change: " + tabID + ", [" + String.Join(", ", addElToSelection) + "], ["
@@ -505,6 +497,7 @@
     }
 
     [JSInvokable]
+    // records a modifier change undo/redo object
     public static void URChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals) {
         //Console.WriteLine("Recording modifer change: [" + String.Join(", ", elIDs) + "], " + modID + ", " + modVal + ", [" + String.Join(", ", prevModVals) + "]");
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeModifier(elIDs, modID, modVal, prevModVals), 1);
@@ -513,6 +506,7 @@
     }
 
     [JSInvokable]
+    // records a selection movement undo/redo object
     public static void URMoveSelection(int tabID, int[] elements, float xOffset, float yOffset) {
         //Console.WriteLine("Recording selection movement: " + tabID + ", [" + String.Join(", ", elements) + "], " + xOffset + ", " + yOffset);
         EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.MoveSelection(elements, xOffset, yOffset), tabID);
@@ -521,6 +515,7 @@
     }
 
     [JSInvokable]
+    // records a velocity change undo/redo object
     public static void URChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals) {
         //Console.WriteLine("Recording new velocity change: [" + String.Join(", ", elIDs) + "], [" + String.Join(", ", edgeIDs) + "], " + velID
         //    + ", [" + String.Join(", ", prevVelVals) + "]");
@@ -529,10 +524,11 @@
         app?.StateHasChanged();
     }
 
+    // updates the backend for a given tab
     public static void UpdateBackendWithInitialStackChange(int tab) {
-        if(tab == 1) { // System diagram
+        if(tab == 1) { // system diagram
             EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
-        } else { // Some bond graph
+        } else { // bond graph
             EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
         }
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
@@ -540,12 +536,14 @@
         app?.StateHasChanged();
     }
 
+    // completes an undo/redo add selection
     public async void URDoAddSelection(string[] newObjects, int[] prevSelectedElements, string[] prevSelectedEdges, bool highlight, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoAddSelection", newObjects, prevSelectedElements, prevSelectedEdges, highlight, isUndo);
         app?.StateHasChanged();
     }
 
+    // completes an undo/redo delete selection
     public async void URDoDeleteSelection(string[] deletedObjects, string[] unselectedDeletedEdges, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         // put unselected deleted edges here where the empty list is
@@ -553,31 +551,35 @@
         app?.StateHasChanged();
     }
 
+    // completes an undo/redo change selection
     public async void URDoChangeSelection(int[] elIDsToAdd, string[] edgesToAdd, int[] elIDsToRemove, string[] edgesToRemove, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelection", elIDsToAdd, edgesToAdd, elIDsToRemove, edgesToRemove, isUndo);
         app?.StateHasChanged();
     }
 
+    // completes an undo/redo modifier change
     public async void URDoChangeSelectionModifier(int[] elIDs, int modID, bool modVal, bool[] prevModVals, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelectionModifier", elIDs, modID, modVal, prevModVals, isUndo);
         app?.StateHasChanged();
     }
 
-    public async void URDoMoveSelection(int[] elements, double xOffset, double yOffset, bool isUndo)
-    {
+    // completes an undo/redo selection movement
+    public async void URDoMoveSelection(int[] elements, double xOffset, double yOffset, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoMoveSelection", elements, xOffset, yOffset, isUndo);
         app?.StateHasChanged();
     }
 
+    // completes an undo/redo velocity change
     public async void URDoChangeSelectionVelocity(int[] elIDs, string[] edgeIDs, int velID, int[] prevVelVals, bool isUndo) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("urDoChangeSelectionVelocity", elIDs, edgeIDs, velID, prevVelVals, isUndo);
         app?.StateHasChanged();
     }
 
+    // exports the current tab as an image
     public async void exportAsImage() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("exportAsImage");
@@ -585,6 +587,7 @@
     }
 
     [JSInvokable]
+    // shows the delete confirmation modal
     public static async Task<bool> showDeleteConfirmationModal(bool multiElementsSelected) {
         if (!deleteManyChecked) {
             return true;
@@ -599,25 +602,28 @@
         }
     }
 
+    // renders equations into DOM elements with given IDs
     public async void renderEquations(string[] ids, string[] eqStrings) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("renderEquations", ids, eqStrings);
     }
 
     [JSInvokable]
+    // set whether something in the graph is being selected
     public static void SetIsSelecting(bool value) {
         Index.isSelecting = value;
         app?.StateHasChanged();
     }
 
     [JSInvokable]
+    // set whether there is something copied to paste
     public static void SetHasCopied(bool value) {
         Index.hasCopiedSelection = value;
         app?.StateHasChanged();
     }
 
-    //Set is the velocity option is disabled in the modifier menu
     [JSInvokable]
+    // set whether the velocity menu is disabled
     public static void SetVelocityDisabled(bool disabled) {
         Index.velocityDisabled = disabled;
         if (disabled) {
@@ -626,14 +632,14 @@
         app?.StateHasChanged();
     }
 
-    //Set the velocity
     [JSInvokable]
+    // set the selected velocity in the velocity menu
     public static void SetVelocity(List<int> velocities) {
         Index.selectedVelocity = velocities;
         app?.StateHasChanged();
     }
 
-    //Change the velocity on the backend
+    // change the velocity in the frontend
     public async void ChangeVelocity(int velocity) {
         Index.selectedVelocity = new List<int> { velocity };
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
@@ -641,8 +647,8 @@
         app?.StateHasChanged();
     }
 
-    //Clear the check boxes in the modifier menu
     [JSInvokable]
+    // clear the check boxes in the modifier menu
     public static void ClearCheckboxes() {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = false;
@@ -651,8 +657,8 @@
         app?.StateHasChanged();
     }
 
-    //Set which check boxes are pressed
     [JSInvokable]
+    // set which modifier check boxes are pressed and indicate which are intermediately checked
     public static void SetCheckboxes(int[] checkboxValues) {
         for (int i = 0; i < Index.checkValues.Length; i++) {
             Index.checkValues[i] = checkboxValues[i] != 0;
@@ -661,8 +667,8 @@
         app?.StateHasChanged();
     }
 
-    //Clear the check boxes which are disabled
     [JSInvokable]
+    // clear the check boxes which are disabled
     public static void ClearDisabled() {
         for (int i = 0; i < disabledValues.Length; i++) {
             disabledValues[i] = true;
@@ -670,8 +676,8 @@
         app?.StateHasChanged();
     }
 
-    //Sets which check boxes are disabled
     [JSInvokable]
+    // sets which modifier check boxes are disabled
     public static void SetDisabled(int[] indices) {
         for (int i = 0; i < disabledValues.Length; i++) {
             disabledValues[i] = !indices.Contains(i);
@@ -679,34 +685,34 @@
         app?.StateHasChanged();
     }
 
-    //Set the current zoom
     [JSInvokable]
+    // set the zoom slider to a given value
     public static void SetScale(double scale) {
         zoomValue = scale * 100;
         app?.StateHasChanged();
     }
 
+    // opens the about modal
     private async void OpenAboutModal() {
         visible = true;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "Help");
     }
 
-    //Change the zoom
+    // changes the zoom in tab's graph display
     private async void SliderChange(double i) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         zoomValue = i;
         await module.InvokeVoidAsync("setZoom", i);
     }
 
-    //Check if a modifier has changed
+    // propegate modifier changes to the front-end
     private async void CheckChange(bool b, int i) {
-        //Console.WriteLine("Changing check value", b, i);
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
     }
 
-    //Change tabs
+    // propegate a tab change to the front-end
     private async void TabChange(string key) {
         if (!tabsDisabled) {
             this.currTab = key;
@@ -718,10 +724,12 @@
         }
     }
 
+    // changes which state equation is being displayed in the causal bond graph tab
     private async void ChangeEquationOption(Option selection) {
         diffIndex = selection.value;
     }
 
+    // changes which causal bond graph is being displayed
     private async void ChangeCausalOption(Option selection) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
@@ -733,11 +741,9 @@
     private string fileToLoad = "";
     private double loadPercent = 0;
 
-    //Called when the page is loaded
+    // initializes the page
     protected override async Task OnInitializedAsync() {
-        //Console.WriteLine("IT IS LATE! WELCOME TO THE MANIA!");
-
-        //Loads rulesets
+        // loads rulesets
         allRulesLoaded = false;
         ruleNames.Add("BondGraphRuleset"); //58
         ruleNames.Add("SimplificationRuleset"); //28
@@ -771,7 +777,7 @@
 
     private double generateProgress = 0.0;
 
-    //Generates the series of bond graphs and displays them to the screen
+    // generates the series of bond graphs and displays them to the screen
     private async Task generateButtonClicked() {
         double initZoom = zoomValue;
         generateProgress = 0.0;
@@ -779,7 +785,7 @@
         base.StateHasChanged();
         await Task.Delay(1);
 
-        //Generates the bond graphs
+        // generates the bond graphs
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
         generateProgress = 5.0;
@@ -789,8 +795,7 @@
         BondGraph item2;
         List<BondGraph> causal;
 
-        try
-        {
+        try {
             sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
             if(GraphValidityHandler.IsInvalid(sysDiagram)) {
                 throw new ArgumentException("System diagram is disconnected.");
@@ -814,7 +819,7 @@
 
         BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
 
-        //Lays out the bond graphs
+        // lays out the bond graphs
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
@@ -848,8 +853,8 @@
         }
         generateProgress = 100.0;
 
-        // Reset backend bond graphs and prints state equations. TODO: find global variable
-        // storing equations in Index and replace with StateEquationSet object/methods.
+        // resets backend bond graphs and prints state equations
+        // TODO: find global variable storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
         try {
             stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
@@ -863,7 +868,7 @@
             return new Option { label = "Equation for " + equationOptions[i], value = i }; 
         }).ToList();
 
-        //Displays the bond graphs on the canvas
+        // displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
@@ -895,12 +900,14 @@
     private static string errorMessage = "";
     private static string errorTitle = "";
 
+    // opens a BoGL file and loads it in the front-end
     private async void openBoGLFile() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
     }
 
     [JSInvokable]
+    // opens a system diagram file
     public static string openSystemDiagram(string file) {
         SystemDiagram sysDiagram;
         try {
@@ -916,7 +923,7 @@
         }
     }
 
-    //Turns a string into a Stream
+    // turns a string into a Stream
     private Stream getFileStream(string fileData) {
         var testData = fileData;
         var fileStream = new MemoryStream(Encoding.ASCII.GetBytes(testData));
@@ -924,7 +931,7 @@
         return fileStream;
     }
 
-    //Saves the system diagram to the user's file system
+    // saves the system diagram to the user's file system
     private async void save() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
@@ -948,15 +955,13 @@
         await module.InvokeVoidAsync("saveFile", fileName, streamRef);
     }
 
-    //Saves the system diagram as a .bogl file to the user's file system
+    // saves the system diagram as a .bogl file to the user's file system
     private async void saveAs() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
         var file = await module.InvokeAsync<object>("getSystemDiagram");
 
-        //Console.WriteLine("System Diagram from Json");
         SystemDiagram sysDiagram = SystemDiagram.generateSystemDiagramFromJSON(file.ToString());
-        //Console.WriteLine("BoGL String");
         Stream fileStream;
         try {
             fileStream = getFileStream(sysDiagram.generateBoGLString());
@@ -971,7 +976,7 @@
         await module.InvokeVoidAsync("saveAsFile", fileName, streamRef);
     }
 
-    //Handles the but report button
+    // handles the bug report button
     private void reportBugs() {
         NavManager.NavigateTo("https://docs.google.com/forms/d/e/1FAIpQLSffPWzycTP4QXjOFTU0VCcUNcLwqEurq5vl44EDE-OqM7jqzQ/viewform");
     }
@@ -980,7 +985,7 @@
 
     bool visible = false;
 
-    //Handles the ok button on the about modal
+    // handles the ok button on the about modal
     private void handleOk() {
         visible = false;
         base.StateHasChanged();
@@ -988,7 +993,7 @@
 
     static bool errorVisible = false;
 
-    //Handles the ok button on the error modal
+    // handles the ok button on the error modal
     private void handleErrorOk() {
         errorVisible = false;
         base.StateHasChanged();
@@ -1000,30 +1005,15 @@
     string[] stateEquationsInitial = new string[] { };
     string[] stateEquationsFinal = new string[] { };
 
-    //Handles the ok button on the url modal
+    // handles the ok button on the url modal
     private void closeUrlModal() {
         urlModalVisible = false;
         base.StateHasChanged();
     }
 
-    private void closeLabelValue() {
-        labelValueModalVisible = false;
-        base.StateHasChanged();
-    }
-
-    private async void showStateEquations() {
-        // Get information from backend - '4' is the index of the causal bond graph tab
-        Console.WriteLine('[' + string.Join(", ", stateEquationsInitial) + ']');
-        Console.WriteLine('[' + string.Join(", ", stateEquationsFinal) + ']');
-        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeVoidAsync("closeMenu", "File");
-        labelValueModalVisible = true;
-        base.StateHasChanged();
-    }
-
-    //Converts the system diagram to a url
+    // converts the system diagram to a url
     private async void generateUrl() {
-    //Get information from backend
+        // get information from backend
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeVoidAsync("closeMenu", "File");
         var generatedUrl = await module.InvokeAsync<object>("generateURL");
@@ -1035,7 +1025,7 @@
             await messageService.Error("Invalid URL Generated");
         }
 
-    //Process json into url
+        // processes json into url
         Regex elementName = new Regex("\"elements\":");
         Regex typeName = new Regex("\"type\":");
         Regex xName = new Regex("\"x\":");
@@ -1058,7 +1048,7 @@
         jsonStr = targetName.Replace(jsonStr, "");
         jsonStr = bondsName.Replace(jsonStr, "");
 
-    //Shorten URL
+        // shortens URL
         Regex urlShort1 = new Regex("{\\[{");
         Regex urlShort2 = new Regex("\\[]");
         Regex urlShort3 = new Regex("},{");
@@ -1084,14 +1074,14 @@
         jsonStr = urlShort11.Replace(jsonStr, "k");
 
 
-    //Add url to modal
+        // adds url to modal
         url = "https://boglweb.github.io/?q=" + jsonStr;
         urlModalVisible = true;
         base.StateHasChanged();
     }
 
-    //Removes the compression from the url and turns it back into a json string
     [JSInvokable]
+    // removes the compression from the url and turns it back into a json string
     public static string uncompressUrl(string compressedUrl) {
         Regex urlShort1 = new Regex("f");
         Regex urlShort2 = new Regex("d");
@@ -1174,20 +1164,14 @@
         return compressedUrl;
     }
 
-    private async void copyStateEquations() {
-        var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
-        await module.InvokeAsync<object>("textToClipboard", string.Join('\n', stateEquationsFinal));
-        await messageService.Success("State equations copied to clipboard!");
-    }
-
-    //Copies the url representation of the system diagram to the system's clipboard 
+    // copies the url representation of the system diagram to the system's clipboard 
     private async void copyUrl() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         await module.InvokeAsync<object>("textToClipboard", url);
         await messageService.Success("URL copied to clipboard!");
     }
 
-    //Runs the introjs tutorial
+    // runs the introjs tutorial
     private async Task runTutorial() {
         var module = await JS.InvokeAsync<IJSObjectReference>("window.backendManager.getBackendManager");
         // ant-menu-submenu-hidden
@@ -1196,6 +1180,7 @@
 
     private static bool confirmDeleteModalVisible = false;
 
+    // handles clicking the ok button on the confirm delete multiple elements modal
     private async void handleDeleteOk() {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("delete", false);
@@ -1203,6 +1188,7 @@
         base.StateHasChanged();
     }
 
+    // handles clicking the cancel button on the confirm delete multiple element modal
     private void handleDeleteCancel() {
         confirmDeleteModalVisible = false;
         base.StateHasChanged();
