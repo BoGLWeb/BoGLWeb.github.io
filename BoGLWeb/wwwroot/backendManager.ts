@@ -704,7 +704,7 @@ export namespace backendManager {
 
         // paste the current selection
         public paste() {
-            this.getSystemDiagramDisplay().pasteSelection();
+            this.getSystemDiagramDisplay().paste();
         }
 
         // delete the current selection, bringing up the confirmation modal if needsConfirmation is true and multiple

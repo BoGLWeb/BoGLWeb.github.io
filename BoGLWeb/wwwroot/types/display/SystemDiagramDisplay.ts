@@ -9,10 +9,10 @@ import { MultiElementType } from "../elements/MultiElementType";
 import { GraphElement } from "../elements/GraphElement";
 import { backendManager } from "../../backendManager";
 
+// describes the specialized functionality needed for a system diagram
 export class SystemDiagramDisplay extends BaseGraphDisplay {
-    edgeCircle: SVGSelection;
-    rejectX: SVGSelection;
-    edgeOrigin: SystemDiagramElement = null;
+    // velocity constants
+    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
     velocityMap = {
         0: "",
         1: "⮢",
@@ -25,8 +25,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         8: "⮤"
     };
 
-    velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
+    // edge and edge creation variables
+    edgeCircle: SVGSelection;
+    rejectX: SVGSelection;
+    edgeOrigin: SystemDiagramElement = null;
     justClickedEdge: boolean = false;
+
+    // element and edge variables
     selectedElements: SystemDiagramElement[] = [];
     copiedElements: SystemDiagramElement[] = [];
     copiedEdges: GraphBond[] = [];
@@ -36,6 +41,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
 
+        // increments the highest element ID on element creation to prevent duplicate IDs
         this.highestElemId = systemDiagram.nodes.length + 1;
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
@@ -48,11 +54,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .style("display", "none");
     }
 
+    // returns a combined list of selected elements and bonds
     getSelection() {
         return ([] as (SystemDiagramElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
     }
 
-    moveCircle(e: SystemDiagramElement) {
+    // moves a green circle or red X around the perimeter of the element being hovered over
+    moveIndicator(e: SystemDiagramElement) {
         d3.event.stopPropagation();
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
         let x = coordinates[0];
@@ -61,7 +69,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let fourth = 1 / 4 * Math.PI;
         let s = 30;
         let coords = [];
-        // quads 1, 2, 3, and 4
+        // handles quads 1, 2, 3, and 4
         if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
             coords = [s, -s * Math.tan(theta)]
         } else if (theta >= fourth && theta < 3 * fourth) {
@@ -75,10 +83,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.rejectX.attr("transform", "translate(" + (e.x + coords[0]) + "," + (e.y + coords[1]) + ") rotate(45)")
     }
 
+    // draws an edge that extends from a source node to the current mouse position
     setFollowingEdge(sourceNode: SystemDiagramElement) {
         this.edgeOrigin = sourceNode;
         if (sourceNode == null) {
-            // hide edge
+            // hide edge if there is no source
             this.dragBond.classed("hidden", true);
         } else {
             this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
@@ -86,6 +95,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    // sets the visibility of the edge marker
     setEdgeMarkerVisible(e: SystemDiagramElement) {
         if (!this.edgeOrigin || ElementNamespace.isCompatible(this.edgeOrigin, e, this)) {
             this.edgeCircle.style("display", "block");
@@ -96,6 +106,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    // renders the system diagram elements
     renderElements(newElements: GraphElementSelection) {
         let graph = this;
         newElements.classed("boglElem", true)
@@ -111,6 +122,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         group.attr("style", "fill:inherit;")
             .attr("index", function (d, i) { return d.id.toString(); });
 
+        // creates the invisible outer boundary that shows the edge indicator when hovered over
         let edgeHover = group.append("rect");
         edgeHover.attr("width", "80px")
             .attr("height", "80px")
@@ -119,7 +131,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .classed("edgeHover", true)
             .on("mousemove", function (e) {
                 graph.moveSelectionRect();
-                graph.moveCircle.call(graph, e);
+                graph.moveIndicator.call(graph, e);
             })
             .on("mouseenter", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
@@ -137,6 +149,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         let hoverBox = group.append("g");
 
+        // creates the outline of the element
         let box = hoverBox.append("rect");
         box.classed("outline", true)
             .attr("width", "60px")
@@ -144,6 +157,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("x", "-30px")
             .attr("y", "-30px");
 
+        // adds the image representing the element
         let image = hoverBox.append("image");
         image.attr("href", function (d) { return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg"; })
             .classed("hoverImg", true)
@@ -153,6 +167,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("height", "50px")
             .attr("width", "50px");
 
+        // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
         asterisk
             .text("*")
@@ -165,6 +180,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         group.selectAll("text").html(null);
 
+        // adds velocity markers to elements
         group.each(function (d: SystemDiagramElement) {
             if (d.velocity != 0) {
                 let text = group.append("text");
@@ -195,7 +211,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
         });
 
-        // determine whether mouse is near edge of element
+        // initializes mouse events for image
         image.on("mouseenter", function () {
             graph.edgeCircle.style("display", "none");
         })
@@ -206,10 +222,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.setEdgeMarkerVisible.call(graph, e);
             });
 
-        // edgeMouseUp
+        // initializes mouse events for outline box
         box.on("mousemove", function (e) {
             graph.moveSelectionRect();
-            graph.moveCircle.call(graph, e);
+            graph.moveIndicator.call(graph, e);
         })
             .on("mouseenter", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
@@ -223,12 +239,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .call(this.edgeDrag);
     }
 
+    // completes extra path rendering for system diagram paths
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         let graph = this;
 
         paths.classed("hoverablePath", true);
 
-        // removed velocity arrows because they're not generated directly through d3 and are therefore not removed on update
+        // removes velocity arrows because they're not generated directly through d3 and are therefore not removed on update
         // if we can find a way to do this through D3 this removal would no longer be needed, which would be cool, but haven't found that yet
         this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove()
         paths.each((e, i) => {
@@ -271,14 +288,20 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         });
     }
 
+    // updates the modifier menu
     updateModifierMenu() {
-        if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
+        if (this.selectedElements.length > 0) {
+            // if some elements are selected, update the modifier menu to match their modifiers
             let allAllowedModifiers = [];
             let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
+            // count the number of times a modifier is applied to determine whether the checkbox is unchecked, partially
+            // checked, or fully checked. Also record which modifiers are allowed for the selected elements
             for (const e of this.selectedElements) {
                 allAllowedModifiers = allAllowedModifiers.concat(ElementNamespace.elementTypes[e.type].allowedModifiers);
                 e.modifiers.forEach(m => selectedModifiers[m]++);
             }
+            // if a modifier count matches the number of elements in the selection, check it fully;
+            // if it is lower than that but not 0, check partially, otherwise leave unchecked
             selectedModifiers = selectedModifiers.map(m => {
                 if (m == this.selectedElements.length) {
                     return 2;
@@ -290,12 +313,15 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", selectedModifiers);
             DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", [...new Set(allAllowedModifiers)]);
         } else {
+            // if no elements are selected, clear checkboxes and disable them all
             DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
             DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", []);
         }
     }
 
+    // updates the velocity menu
     updateVelocityMenu() {
+        // if nothing is selected, disable the velocity menu, otherwise enable it
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocityDisabled", this.selectedElements.length == 0 && this.selectedBonds.length == 0);
         let velocities = [];
         for (const el of this.getSelection()) {
@@ -306,11 +332,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetVelocity", velocities);
     }
 
+    // handles clicking on an edge
     pathMouseDown(bond: GraphBond) {
         this.justClickedEdge = true;
         super.pathMouseDown(bond);
     }
 
+    // handles clicking on the edge of an element, in the invisible border around it, starts edge creation
     handleEdgeDown(el: SystemDiagramElement) {
         d3.event.stopPropagation();
         if (!this.edgeOrigin) {
@@ -319,6 +347,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    // handle ending a click or drag on the edge of an element in the invisible portion, can add a new bond or start bond creation
     handleEdgeUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
@@ -331,7 +360,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
-    // mousedown on element
+    // handles mousedown on element, can start edge creation
     nodeMouseDown(el: SystemDiagramElement) {
         d3.event.stopPropagation();
         this.mouseDownNode = el;
@@ -341,15 +370,19 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    // sets the selection to an element list and edge list
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList as SystemDiagramElement[];
         this.selectedBonds = bondList;
     }
 
+    // adds an edge if the edge is valid
     addBond(source, target) {
+        // checks whether the source and target are compatible
         let isCompatible = ElementNamespace.isCompatible(source, target, this);
 
         if (isCompatible) {
+            // if compatible, creates an edge and selects it
             let bond = new GraphBond(source, target);
             this.bonds.push(bond);
             let selectedElements = this.selectedElements;
@@ -359,12 +392,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [JSON.stringify(bond)], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
         } else {
+            // if not compatible, stops edge creation
             this.setFollowingEdge(null);
             this.updateGraph();
         }
         this.updateMenus();
     }
 
+    // handles ending a click or drag on an element (not the invisible border)
     nodeMouseUp(el: SystemDiagramElement) {
         d3.event.stopPropagation();
 
@@ -372,14 +407,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.handleAreaSelectionEnd()) return;
 
         if (this.edgeOrigin !== el && this.edgeOrigin !== null) {
+            // if coming from an element that is not this one, make an edge
             this.addBond(this.edgeOrigin, el);
         } else {
-            // we"re in the same node
+            // we're in the same node, change the current selection
             if (!this.justDragged) {
                 let addEl = [];
                 let removeEl = [];
                 let removeEdges = [];
                 if (d3.event.ctrlKey || d3.event.metaKey) {
+                    // if CTRL+click, toggle element inclusion in the current selection
                     if (this.selectionContains(el)) {
                         this.removeFromSelection(el, false);
                         removeEl = [el];
@@ -388,6 +425,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         addEl = [el];
                     }
                 } else {
+                    // if th element is not included in the current selection, replace the current selection with this element
                     if (!this.selectionContains(el)) {
                         addEl = [el];
                         removeEl = this.selectedElements;
@@ -395,6 +433,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         this.setSelection([el], []);
                     }
                 }
+                // update graph and undo/redo
                 this.updateGraph();
                 DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...this.listToIDObjects(addEl.concat([])), ...this.listToIDObjects(removeEl.concat(removeEdges)));
                 this.updateMenus();
@@ -403,13 +442,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    // update the modifier, velocity, and top menus
     updateMenus() {
         this.updateModifierMenu();
         this.updateVelocityMenu();
         this.updateTopMenu();
     }
 
-    // mouseup on main svg
+    // handles mouseup on SVG background
     svgMouseUp() {
         this.setFollowingEdge(null);
         let selectedElements = this.selectedElements;
@@ -417,21 +457,23 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (this.justClickedEdge) {
             this.justClickedEdge = false;
         } else if (this.draggingElement != null) {
+            // if dragging an element from the element menu, add it to the system diagram
             let newElementSelection;
             let newBondSelection;
+            // if the element is a multi-element, add the multi-element
             if (ElementNamespace.elementTypes[this.draggingElement].isMultiElement) {
-                //Get mouse location
+                // get mouse location
                 document.body.style.cursor = "auto";
                 let xycoords = d3.mouse(this.svgG.node());
 
-                //Store the multi-element type so it can be accessed easier later in the function
+                // store the multi-element type so it can be accessed easier later in the function
                 let multiElementType = <MultiElementType>ElementNamespace.elementTypes[this.draggingElement];
 
-                //Create a list of the sub-elements
+                // create a list of the sub-elements
                 let subElementList: SystemDiagramElement[] = [];
                 let subBondList: GraphBond[] = [];
 
-                //Place sub-elements
+                // place sub-elements
                 for (let i = 0; i < multiElementType.subElements.length; i++) {
                     let subElementType = multiElementType.subElements[i];
                     let subElementOffset = multiElementType.offsets[i];
@@ -441,7 +483,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     this.addToSelection(element, false);
                 }
 
-                //Add edges between sub-elements
+                // add edges between sub-elements
                 for (let i = 0; i < multiElementType.subElementEdges.length; i++) {
                     let element1 = subElementList[multiElementType.subElementEdges[i][0]];
                     let element2 = subElementList[multiElementType.subElementEdges[i][1]];
@@ -461,27 +503,30 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 newElementSelection = [element];
                 newBondSelection = [];
             }
-            //Update the system diagram
+            // update the system diagram
             this.setSelection(newElementSelection, newBondSelection);
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", [].concat(newElementSelection).concat(newBondSelection).map(e => JSON.stringify(e)), ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)), true);
             this.updateMenus();
         } else if (!this.justScaleTransGraph) {
+            // if the background is clicked, clear the selection
             this.setSelection([], []);
             this.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), [], [], ...this.listToIDObjects([].concat(selectedElements).concat(selectedBonds)));
             this.updateMenus();
         }
         if (this.justScaleTransGraph) {
-            // dragged not clicked
+            // the graph was dragged, not clicked
             this.justScaleTransGraph = false;
         }
     }
 
+    // checks whether a CTRL combo has occurred
     checkCtrlCombo(a: number) {
         return (d3.event.keyCode == a && this.ctrlPressed) || (this.ctrlPressed && this.lastKeyDown == a);
     }
 
+    // copies the selection
     copySelection() {
         this.copiedElements = this.selectedElements.map(e => e.copy(this.highestElemId++, 75));
         this.copiedEdges = this.selectedBonds.filter(b => this.selectionContains(b.source) && this.selectionContains(b.target))
@@ -489,19 +534,24 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetHasCopied", true);
     }
 
+    // deletes the selection, with an option to disable confirmation for deleting more than one thing
     async deleteSelection(needsConfirmation = true) {
         let result;
         let graph = this;
 
+        // if the deletion needs confirmation, open the confirmation modal
         if (needsConfirmation) {
             result = await DotNet.invokeMethodAsync("BoGLWeb", "showDeleteConfirmationModal", this.getSelection().length > 1);
         }
 
         if (!needsConfirmation || result) {
+            // if deletion is not refused, delete the selection
             let splicedBonds = [];
+            // delete selected bonds
             for (let e of this.selectedBonds) {
                 this.bonds = this.bonds.filter(bond => bond != e);
             }
+            // delete selected elements and the bonds connected to them
             for (let e of this.selectedElements) {
                 let toSplice = this.bonds.filter(function (l) {
                     return (l.source === e || l.target === e);
@@ -521,7 +571,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
-    pasteSelection() {
+    // pastes the currently copied selection
+    paste() {
         let selectedElements = this.selectedElements;
         let selectedBonds = this.selectedBonds;
         this.elements = this.elements.concat(this.copiedElements);
@@ -534,7 +585,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.updateMenus();
     }
 
-    // keydown on main svg
+    // handles keydown on main svg, determines current and last key pressed to determine what action should be taken
     async svgKeyDown() {
         let graph = this;
 
@@ -543,9 +594,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.ctrlPressed = (<KeyboardEvent>d3.event).keyCode == this.CTRL_KEY;
         }
 
-        // make sure repeated key presses don't register for each keydown
+        // makes sure repeated key presses don't register for each keydown
         this.lastKeyDown = (<KeyboardEvent>d3.event).keyCode;
 
+        // handle single key commands
         switch ((<KeyboardEvent>d3.event).keyCode) {
             case this.BACKSPACE_KEY:
             case this.DELETE_KEY:
@@ -566,6 +618,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 break;
         }
 
+        // handle multi-key command combos
         if (this.checkCtrlCombo(this.A_KEY)) {
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelection", parseInt(window.tabNum), ...graph.listToIDObjects(
                 [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)))), [], []);
@@ -578,7 +631,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             this.copySelection();
             this.deleteSelection();
         } else if (this.checkCtrlCombo(this.V_KEY)) {
-            this.pasteSelection();
+            this.paste();
         } else if (this.checkCtrlCombo(this.Z_KEY)) {
             backendManager.getBackendManager().handleUndoRedo(true);
         } else if (this.checkCtrlCombo(this.Y_KEY)) {
@@ -586,11 +639,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         }
     }
 
+    // when the mouse moves on the SVG background, hide the edge indicator
     svgMouseMove() {
         this.edgeCircle.style("display", "none");
         this.rejectX.style("display", "none");
     }
 
+    // record whether we're in the middle of a CTRL combo
     svgKeyUp() {
         if (d3.event.keyCode == this.CTRL_KEY) {
             this.ctrlPressed = false;
@@ -598,6 +653,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.lastKeyDown = -1;
     }
 
+    // handles edge drag behavior
     get edgeDrag() {
         let graph = this;
         return d3.behavior.drag()
@@ -609,12 +665,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             });
     }
 
+    // draws an edge that follows the mouse from a source node if the source node is not null
     dragmoveEdge() {
         if (this.edgeOrigin) {
             this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
         }
     }
 
+    // handles all scaling and translation in the system diagram
     zoomed() {
         if (!this.edgeOrigin) {
             this.justScaleTransGraph = true;
