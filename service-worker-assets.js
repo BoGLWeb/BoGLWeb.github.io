@@ -349,11 +349,11 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-Iw5PISYqzCLsnb2BOwRf+xGwsNy8\/Y9zyTrBup6jm5Y=",
+      "hash": "sha256-XF53g8jtuBIRYGmgoszCd0Dxo4W+12X2qiE\/blrjW1I=",
       "url": "index.html"
     },
     {
-      "hash": "sha256-DbpeqgZQHELaD1NBO6r89S5sF4nPMXgr4+XuZpQoCak=",
+      "hash": "sha256-nrWgb0YOuISf+WNu8Ry58yG4g294GCnm8EA\/PSWB3vQ=",
       "url": "manifest.json"
     },
     {
@@ -3401,7 +3401,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-GLgUd7rwuU8RLB5JXjJfCoNRI2Im\/F3X9GYql2BZkGA=",
+      "hash": "sha256-5TNTgNfbPDeUBVIcNZu9sIpI9lQNeh9Klzc+gifLA44=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3409,7 +3409,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-bV9WjlCONtheHUSr+uviMBEJwLEVqheoh6ttFcg\/lLU=",
+      "hash": "sha256-3lft7GQ+Z1mdgcaUjQRYEar\/+llgTbsQPMBCAs5YoOU=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5629,5 +5629,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "UXGfCfeT"
+  "version": "YzToaLPV"
 };

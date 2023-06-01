@@ -254,7 +254,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
     class SystemDiagramDisplay extends BaseGraphDisplay_1.BaseGraphDisplay {
         constructor(svg, systemDiagram) {
             super(svg, systemDiagram);
-            this.edgeOrigin = null;
+            this.velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
             this.velocityMap = {
                 0: "",
                 1: "⮢",
@@ -266,7 +266,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 7: "⮦",
                 8: "⮤"
             };
-            this.velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
+            this.edgeOrigin = null;
             this.justClickedEdge = false;
             this.selectedElements = [];
             this.copiedElements = [];
@@ -286,7 +286,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
         getSelection() {
             return [].concat(this.selectedElements).concat(this.selectedBonds);
         }
-        moveCircle(e) {
+        moveIndicator(e) {
             d3.event.stopPropagation();
             let coordinates = d3.mouse(d3.event.currentTarget);
             let x = coordinates[0];
@@ -351,7 +351,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 .classed("edgeHover", true)
                 .on("mousemove", function (e) {
                 graph.moveSelectionRect();
-                graph.moveCircle.call(graph, e);
+                graph.moveIndicator.call(graph, e);
             })
                 .on("mouseenter", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
@@ -434,7 +434,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             });
             box.on("mousemove", function (e) {
                 graph.moveSelectionRect();
-                graph.moveCircle.call(graph, e);
+                graph.moveIndicator.call(graph, e);
             })
                 .on("mouseenter", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
@@ -494,7 +494,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
             });
         }
         updateModifierMenu() {
-            if ((this.selectedElements.length > 0 || this.selectedBonds.length > 0) && this.selectedElements.length > 0) {
+            if (this.selectedElements.length > 0) {
                 let allAllowedModifiers = [];
                 let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
                 for (const e of this.selectedElements) {
@@ -722,7 +722,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                 }
             });
         }
-        pasteSelection() {
+        paste() {
             let selectedElements = this.selectedElements;
             let selectedBonds = this.selectedBonds;
             this.elements = this.elements.concat(this.copiedElements);
@@ -775,7 +775,7 @@ define("types/display/SystemDiagramDisplay", ["require", "exports", "types/bonds
                     this.deleteSelection();
                 }
                 else if (this.checkCtrlCombo(this.V_KEY)) {
-                    this.pasteSelection();
+                    this.paste();
                 }
                 else if (this.checkCtrlCombo(this.Z_KEY)) {
                     backendManager_1.backendManager.getBackendManager().handleUndoRedo(true);
@@ -830,6 +830,7 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
         constructor(svg, baseGraph) {
             this.selectedClass = "selected";
             this.bondClass = "bond";
+            this.PAN_SPEED = 2.0;
             this.BACKSPACE_KEY = 8;
             this.DELETE_KEY = 46;
             this.ENTER_KEY = 13;
@@ -844,27 +845,25 @@ define("types/display/BaseGraphDisplay", ["require", "exports", "types/bonds/Gra
             this.ARROW_UP = 38;
             this.ARROW_RIGHT = 39;
             this.ARROW_DOWN = 40;
-            this.PAN_SPEED = 2.0;
-            this.dragAllowed = false;
             this.prevScale = 1;
             this.initXPos = null;
             this.initYPos = null;
+            this.initWidth = 0;
+            this.initHeight = 0;
             this.svgX = 0;
             this.svgY = 0;
             this.draggingElement = null;
             this.selectedElements = [];
             this.selectedBonds = [];
+            this.highestElemId = 0;
             this.mouseDownNode = null;
             this.justDragged = false;
             this.justScaleTransGraph = false;
             this.lastKeyDown = -1;
-            this.highestElemId = 0;
-            this.elementsBeforeDrag = null;
+            this.dragAllowed = false;
             this.dragXOffset = 0;
             this.dragYOffset = 0;
             this.startedSelectionDrag = false;
-            this.initWidth = 0;
-            this.initHeight = 0;
             this.elements = baseGraph.nodes || [];
             this.bonds = baseGraph.edges || [];
             svg.selectAll('*').remove();
@@ -1528,13 +1527,12 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
             constructor() {
                 this.imageBuffer = 15;
             }
-            parseAndDisplayBondGraph(id, jsonString, svg) {
-                let bg = JSON.parse(jsonString);
-                let minX = Infinity;
-                let minY = Infinity;
-                let maxX = -Infinity;
-                let maxY = -Infinity;
-                let elements = JSON.parse(bg.elements).map((e, i) => {
+            centerElements(jsonElements, bondGraph) {
+                var _a;
+                let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
+                let elements = new Map();
+                let i = 0;
+                for (let e of jsonElements) {
                     if (e.x < minX)
                         minX = e.x;
                     if (e.y < minY)
@@ -1543,12 +1541,19 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         maxX = e.x;
                     if (e.y > maxY)
                         maxY = e.y;
-                    return new BondGraphElement_1.BondGraphElement(i, e.ID, e.label, e.x, e.y);
-                });
+                    let id = (_a = e.id) !== null && _a !== void 0 ? _a : i++;
+                    elements.set(id, bondGraph ? new BondGraphElement_1.BondGraphElement(i, e.ID, e.label, e.x, e.y)
+                        : new SystemDiagramElement_2.SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }
                 elements.forEach(e => {
                     e.x += (maxX - minX) / 2 - maxX;
                     e.y += (maxY - minY) / 2 - maxY;
                 });
+                return elements;
+            }
+            parseAndDisplayBondGraph(id, jsonString, svg) {
+                let bg = JSON.parse(jsonString);
+                let elements = Array.from(this.centerElements(JSON.parse(bg.elements), true).values());
                 let bonds = JSON.parse(bg.bonds).map(b => {
                     return new BondGraphBond_1.BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
                 });
@@ -1565,72 +1570,34 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 bondGraph.updateGraph();
                 this.zoomCenterGraph(JSON.stringify(id + 2));
             }
-            displayUnsimplifiedBondGraph(jsonString) {
-                this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
-            }
-            displaySimplifiedBondGraph(jsonString) {
-                this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
-            }
-            displayCausalBondGraphOption(jsonStrings, index) {
-                this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
-            }
-            loadSystemDiagram(jsonString) {
-                var _a;
-                let edges = [];
-                let minX = Infinity;
-                let minY = Infinity;
-                let maxX = -Infinity;
-                let maxY = -Infinity;
-                let parsedJson = JSON.parse(jsonString);
-                let elements = new Map();
-                let i = 0;
-                for (let e of parsedJson.elements) {
-                    if (e.x < minX)
-                        minX = e.x;
-                    if (e.y < minY)
-                        minY = e.y;
-                    if (e.x > maxX)
-                        maxX = e.x;
-                    if (e.y > maxY)
-                        maxY = e.y;
-                    if (e.id != null) {
-                        elements.set(e.id, new SystemDiagramElement_2.SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
+            parseElementAndEdgeStrings(objects) {
+                let elements = [];
+                let bonds = [];
+                for (const object of objects) {
+                    let json = JSON.parse(object);
+                    if (json.hasOwnProperty("id")) {
+                        elements.push(new SystemDiagramElement_2.SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
                     }
                     else {
-                        elements.set(i++, new SystemDiagramElement_2.SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
+                        bonds.push(new GraphBond_4.GraphBond(json.source, json.target, json.velocity));
                     }
                 }
-                elements.forEach(e => {
-                    e.x += (maxX - minX) / 2 - maxX;
-                    e.y += (maxY - minY) / 2 - maxY;
-                });
-                for (let edge of parsedJson.edges) {
-                    let bond = new GraphBond_4.GraphBond(elements.get(edge.source), elements.get(edge.target));
-                    bond.velocity = (_a = edge.velocity) !== null && _a !== void 0 ? _a : 0;
-                    edges.push(bond);
-                }
-                window.systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram([], []));
-                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))), ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
-                let systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram(Array.from(elements.values()), edges));
-                systemDiagram.draggingElement = null;
-                window.systemDiagram = systemDiagram;
-                systemDiagram.updateGraph();
-                this.zoomCenterGraph("1");
-                let bounds = systemDiagram.svg.select("g").node().getBoundingClientRect();
-                systemDiagram.initWidth = bounds.width;
-                systemDiagram.initHeight = bounds.height;
+                return [elements, bonds];
             }
-            exportAsImage() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let graph = this.getGraphByIndex(window.tabNum);
-                    let svg = graph.svg;
-                    if (this.getTabNum() == 1) {
-                        yield this.convertImages("image.hoverImg");
-                    }
-                    let copy = svg.node().cloneNode(true);
-                    this.applyInlineStyles(svg, d3.select(copy), graph);
-                    this.svgToCanvas(svg, copy, graph);
-                });
+            parseEdgeIDStrings(edgeIDs) {
+                let edges = [];
+                let i = 0;
+                for (const edgeString of edgeIDs) {
+                    let json = JSON.parse(edgeString);
+                    edges.push(new GraphBondID_1.GraphBondID(json.source, json.target, i));
+                    i++;
+                }
+                return edges;
+            }
+            checkBondIDs(bondIDs, b) {
+                let sourceID = b.source.id;
+                let targetID = b.target.id;
+                return bondIDs.find(e => e.checkEquality(sourceID, targetID));
             }
             markerToString(marker) {
                 return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
@@ -1759,10 +1726,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 }
                 svg.selectAll("edgeHover").remove();
                 let bounds = oldSVG.select("g").node().getBoundingClientRect();
-                let minX = Infinity;
-                let minY = Infinity;
-                let maxX = -Infinity;
-                let maxY = -Infinity;
+                let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
                 for (let e of graph.elements) {
                     if (e.x < minX)
                         minX = e.x;
@@ -1774,9 +1738,34 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         maxY = e.y;
                 }
                 let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
-                let isBondGraph = graph instanceof BondGraphDisplay_1.BondGraphDisplay;
                 svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + this.imageBuffer) + ", "
                     + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + this.imageBuffer) + ") scale(1)");
+            }
+            getTabNum() {
+                return parseInt(window.tabNum);
+            }
+            saveFileNoPicker(fileName, blob) {
+                const urlToBlob = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.setProperty('display', 'none');
+                document.body.appendChild(a);
+                a.href = urlToBlob;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(urlToBlob);
+                a.remove();
+            }
+            hideMenu(menuId) {
+                let el = document.getElementById(menuId);
+                if (document.getElementById(menuId)) {
+                    el = el.parentElement.parentElement;
+                    if (el.getAttribute("hidden-menu") != "true") {
+                        el.setAttribute("hidden-menu", "true");
+                    }
+                }
+            }
+            getSystemDiagramDisplay() {
+                return this.getGraphByIndex("1");
             }
             convertImages(query) {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -1802,6 +1791,56 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     }
                 });
             }
+            saveAsBlob(blob, pickerOptions, svgBlob) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (window.showSaveFilePicker) {
+                        const fileHandle = yield window.showSaveFilePicker(pickerOptions);
+                        window.filePath = fileHandle;
+                        const writableFileStream = yield fileHandle.createWritable();
+                        yield writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
+                        yield writableFileStream.close();
+                    }
+                    else {
+                        this.saveFileNoPicker(pickerOptions.suggestedName, blob);
+                    }
+                });
+            }
+            displayUnsimplifiedBondGraph(jsonString) {
+                this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
+            }
+            displaySimplifiedBondGraph(jsonString) {
+                this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
+            }
+            displayCausalBondGraphOption(jsonStrings, index) {
+                this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
+            }
+            loadSystemDiagram(jsonString) {
+                var _a;
+                let edges = [];
+                let parsedJson = JSON.parse(jsonString);
+                let elements = this.centerElements(parsedJson.elements, false);
+                for (let edge of parsedJson.edges) {
+                    let bond = new GraphBond_4.GraphBond(elements.get(edge.source), elements.get(edge.target));
+                    bond.velocity = (_a = edge.velocity) !== null && _a !== void 0 ? _a : 0;
+                    edges.push(bond);
+                }
+                window.systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram([], []));
+                DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))), ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
+                let systemDiagram = new SystemDiagramDisplay_2.SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram_1.SystemDiagram(Array.from(elements.values()), edges));
+                systemDiagram.draggingElement = null;
+                window.systemDiagram = systemDiagram;
+                systemDiagram.updateGraph();
+                this.zoomCenterGraph("1");
+                let bounds = systemDiagram.svg.select("g").node().getBoundingClientRect();
+                systemDiagram.initWidth = bounds.width;
+                systemDiagram.initHeight = bounds.height;
+            }
+            getSystemDiagram() {
+                return JSON.stringify({
+                    elements: window.systemDiagram.elements,
+                    bonds: window.systemDiagram.bonds
+                });
+            }
             zoomCenterGraph(index) {
                 let graph = this.getGraphByIndex(index);
                 let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
@@ -1821,20 +1860,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 graph.changeScale(xTrans, yTrans, scale);
                 graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
             }
-            getTabNum() {
-                return parseInt(window.tabNum);
-            }
-            saveFileNoPicker(fileName, blob) {
-                const urlToBlob = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.setProperty('display', 'none');
-                document.body.appendChild(a);
-                a.href = urlToBlob;
-                a.download = fileName;
-                a.click();
-                window.URL.revokeObjectURL(urlToBlob);
-                a.remove();
-            }
             saveAsFile(fileName, contentStreamReference, pickerOptions) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const arrayBuffer = yield contentStreamReference.arrayBuffer();
@@ -1851,20 +1876,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         ],
                     };
                     yield this.saveAsBlob(blob, pickerOptions, null);
-                });
-            }
-            saveAsBlob(blob, pickerOptions, svgBlob) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    if (window.showSaveFilePicker) {
-                        const fileHandle = yield window.showSaveFilePicker(pickerOptions);
-                        window.filePath = fileHandle;
-                        const writableFileStream = yield fileHandle.createWritable();
-                        yield writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
-                        yield writableFileStream.close();
-                    }
-                    else {
-                        this.saveFileNoPicker(pickerOptions.suggestedName, blob);
-                    }
                 });
             }
             saveFile(fileName, contentStreamReference) {
@@ -1895,102 +1906,17 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     }
                 });
             }
-            cut() {
-                this.getSystemDiagramDisplay().copySelection();
-                this.getSystemDiagramDisplay().deleteSelection();
-            }
-            copy() {
-                this.getSystemDiagramDisplay().copySelection();
-            }
-            paste() {
-                this.getSystemDiagramDisplay().pasteSelection();
-            }
-            delete(needsConfirmation = true) {
-                this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
-            }
-            clear() {
-                this.getSystemDiagramDisplay().selectAll();
-                this.getSystemDiagramDisplay().deleteSelection(false);
-            }
-            areMultipleElementsSelected() {
-                return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
-            }
-            getSystemDiagramDisplay() {
-                return this.getGraphByIndex("1");
-            }
-            getSystemDiagram() {
-                return JSON.stringify({
-                    elements: window.systemDiagram.elements,
-                    bonds: window.systemDiagram.bonds
+            exportAsImage() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    let graph = this.getGraphByIndex(window.tabNum);
+                    let svg = graph.svg;
+                    if (this.getTabNum() == 1) {
+                        yield this.convertImages("image.hoverImg");
+                    }
+                    let copy = svg.node().cloneNode(true);
+                    this.applyInlineStyles(svg, d3.select(copy), graph);
+                    this.svgToCanvas(svg, copy, graph);
                 });
-            }
-            setModifier(i, value) {
-                let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
-                if (value) {
-                    for (const el of window.systemDiagram.selectedElements) {
-                        if (ElementNamespace_2.ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
-                            el.modifiers.push(i);
-                        }
-                    }
-                }
-                else {
-                    for (const el of window.systemDiagram.selectedElements) {
-                        if (el.modifiers.includes(i)) {
-                            el.modifiers.splice(el.modifiers.indexOf(i), 1);
-                        }
-                    }
-                }
-                window.systemDiagram.updateGraph();
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
-                window.systemDiagram.updateModifierMenu();
-            }
-            getGraphByIndex(i) {
-                if (i == "1") {
-                    return window.systemDiagram;
-                }
-                else if (i == "2") {
-                    return window.unsimpBG;
-                }
-                else if (i == "3") {
-                    return window.simpBG;
-                }
-                else {
-                    return window.causalBG;
-                }
-            }
-            renderEquations(ids, eqStrings) {
-                for (let i = 0; i < ids.length; i++) {
-                    let html = katex.renderToString(eqStrings[i], {
-                        throwOnError: false
-                    });
-                    const parser = new DOMParser();
-                    let parent = document.getElementById(ids[i]);
-                    parent.innerHTML = "";
-                    parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
-                }
-            }
-            setZoom(i) {
-                let graph = this.getGraphByIndex(window.tabNum);
-                let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-                let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-                let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-                if (graph.prevScale * 100 - i != 0) {
-                    graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
-                }
-            }
-            setTab(key) {
-                window.tabNum = key;
-                DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
-            }
-            setVelocity(velocity) {
-                let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
-                for (const e of window.systemDiagram.getSelection()) {
-                    if (e instanceof GraphBond_4.GraphBond || ElementNamespace_2.ElementNamespace.elementTypes[e.type].velocityAllowed) {
-                        e.velocity = velocity;
-                    }
-                }
-                window.systemDiagram.updateGraph();
-                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
             }
             generateURL() {
                 return JSON.stringify({
@@ -2003,34 +1929,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 }, function (key, val) {
                     return val.toFixed ? Number(val.toFixed(3)) : val;
                 });
-            }
-            textToClipboard(text) {
-                navigator.clipboard.writeText(text);
-            }
-            hideMenu(menuId) {
-                let el = document.getElementById(menuId);
-                if (document.getElementById(menuId)) {
-                    el = el.parentElement.parentElement;
-                    if (el.getAttribute("hidden-menu") != "true") {
-                        el.setAttribute("hidden-menu", "true");
-                    }
-                }
-            }
-            closeMenu(menuName) {
-                switch (menuName) {
-                    case "File":
-                        this.hideMenu("fileMenu");
-                        break;
-                    case "Edit":
-                        this.hideMenu("editMenu");
-                        break;
-                    case "Help":
-                        this.hideMenu("helpMenu");
-                        this.hideMenu("exampleMenu");
-                        this.hideMenu("mechTransMenu");
-                        this.hideMenu("mechRotMenu");
-                        this.hideMenu("elecMenu");
-                }
             }
             runTutorial() {
                 this.closeMenu("Help");
@@ -2103,35 +2001,6 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 }).onbeforechange(function () {
                     window.dispatchEvent(new Event('resize'));
                 }).start();
-            }
-            parseElementAndEdgeStrings(objects) {
-                let elements = [];
-                let bonds = [];
-                for (const object of objects) {
-                    let json = JSON.parse(object);
-                    if (json.hasOwnProperty("id")) {
-                        elements.push(new SystemDiagramElement_2.SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
-                    }
-                    else {
-                        bonds.push(new GraphBond_4.GraphBond(json.source, json.target, json.velocity));
-                    }
-                }
-                return [elements, bonds];
-            }
-            parseEdgeIDStrings(edgeIDs) {
-                let edges = [];
-                let i = 0;
-                for (const edgeString of edgeIDs) {
-                    let json = JSON.parse(edgeString);
-                    edges.push(new GraphBondID_1.GraphBondID(json.source, json.target, i));
-                    i++;
-                }
-                return edges;
-            }
-            checkBondIDs(bondIDs, b) {
-                let sourceID = b.source.id;
-                let targetID = b.target.id;
-                return bondIDs.find(e => e.checkEquality(sourceID, targetID));
             }
             handleUndoRedo(undo) {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -2223,36 +2092,130 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 let sysDiag = window.systemDiagram;
                 let bondIDs = this.parseEdgeIDStrings(edgeIDs);
                 sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
-                sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
+                sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length
+                    + this.checkBondIDs(bondIDs, b).velID] : velID);
                 sysDiag.updateGraph();
                 sysDiag.updateVelocityMenu();
             }
             urDoChangeSelectionModifier(elIDs, modID, modVal, prevModVals, isUndo) {
                 let sysDiag = window.systemDiagram;
+                let backend = this;
                 elIDs.forEach(function (id, i) {
                     let el = sysDiag.elements.find(e => e.id == id);
                     if (isUndo) {
-                        if (prevModVals[i] && !el.modifiers.includes(modID)) {
-                            el.modifiers.push(modID);
-                        }
-                        else if (!prevModVals[i] && el.modifiers.includes(modID)) {
-                            el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                        }
+                        backend.setModifierNoUR(el, modID, prevModVals[i]);
                     }
                     else {
-                        if (modVal && ElementNamespace_2.ElementNamespace.elementTypes[el.type].allowedModifiers.includes(modID) && !el.modifiers.includes(modID)) {
-                            el.modifiers.push(modID);
-                        }
-                        else if (el.modifiers.includes(modID)) {
-                            el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                        }
+                        backend.setModifierNoUR(el, modID, modVal);
                     }
                 });
                 sysDiag.updateGraph();
                 sysDiag.updateModifierMenu();
             }
-            initInstance(instance) {
-                this.instance = instance;
+            cut() {
+                this.getSystemDiagramDisplay().copySelection();
+                this.getSystemDiagramDisplay().deleteSelection();
+            }
+            copy() {
+                this.getSystemDiagramDisplay().copySelection();
+            }
+            paste() {
+                this.getSystemDiagramDisplay().paste();
+            }
+            delete(needsConfirmation = true) {
+                this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            }
+            clear() {
+                this.getSystemDiagramDisplay().selectAll();
+                this.getSystemDiagramDisplay().deleteSelection(false);
+            }
+            setModifierNoUR(el, i, value) {
+                if (value) {
+                    if (ElementNamespace_2.ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
+                        el.modifiers.push(i);
+                    }
+                }
+                else {
+                    if (el.modifiers.includes(i)) {
+                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
+                    }
+                }
+            }
+            setModifier(i, value) {
+                let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
+                for (const el of window.systemDiagram.selectedElements) {
+                    this.setModifierNoUR(el, i, value);
+                }
+                window.systemDiagram.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
+                window.systemDiagram.updateModifierMenu();
+            }
+            setVelocity(velocity) {
+                let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
+                for (const e of window.systemDiagram.getSelection()) {
+                    if (e instanceof GraphBond_4.GraphBond || ElementNamespace_2.ElementNamespace.elementTypes[e.type].velocityAllowed) {
+                        e.velocity = velocity;
+                    }
+                }
+                window.systemDiagram.updateGraph();
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
+            }
+            setZoom(i) {
+                let graph = this.getGraphByIndex(window.tabNum);
+                let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
+                let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+                let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+                if (graph.prevScale * 100 - i != 0) {
+                    graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
+                }
+            }
+            setTab(key) {
+                window.tabNum = key;
+                DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
+            }
+            getGraphByIndex(i) {
+                if (i == "1") {
+                    return window.systemDiagram;
+                }
+                else if (i == "2") {
+                    return window.unsimpBG;
+                }
+                else if (i == "3") {
+                    return window.simpBG;
+                }
+                else {
+                    return window.causalBG;
+                }
+            }
+            renderEquations(ids, eqStrings) {
+                for (let i = 0; i < ids.length; i++) {
+                    let html = katex.renderToString(eqStrings[i], {
+                        throwOnError: false
+                    });
+                    const parser = new DOMParser();
+                    let parent = document.getElementById(ids[i]);
+                    parent.innerHTML = "";
+                    parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
+                }
+            }
+            textToClipboard(text) {
+                navigator.clipboard.writeText(text);
+            }
+            closeMenu(menuName) {
+                switch (menuName) {
+                    case "File":
+                        this.hideMenu("fileMenu");
+                        break;
+                    case "Edit":
+                        this.hideMenu("editMenu");
+                        break;
+                    case "Help":
+                        this.hideMenu("helpMenu");
+                        this.hideMenu("exampleMenu");
+                        this.hideMenu("mechTransMenu");
+                        this.hideMenu("mechRotMenu");
+                        this.hideMenu("elecMenu");
+                }
             }
         }
         backendManager.BackendManager = BackendManager;
@@ -2262,7 +2225,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
         backendManager.getBackendManager = getBackendManager;
     })(backendManager = exports.backendManager || (exports.backendManager = {}));
 });
-define("types/display/BondGraphBond", ["require", "exports"], function (require, exports) {
+define("types/display/SubmenuID", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SubmenuID = void 0;
@@ -2275,12 +2238,128 @@ define("types/display/BondGraphBond", ["require", "exports"], function (require,
     }
     exports.SubmenuID = SubmenuID;
 });
-define("main", ["require", "exports", "types/elements/ElementNamespace", "types/display/SystemDiagramDisplay", "backendManager", "types/graphs/SystemDiagram", "types/display/BondGraphBond"], function (require, exports, ElementNamespace_3, SystemDiagramDisplay_3, backendManager_2, SystemDiagram_2, BondGraphBond_2) {
+define("main", ["require", "exports", "types/elements/ElementNamespace", "types/display/SystemDiagramDisplay", "backendManager", "types/graphs/SystemDiagram", "types/display/SubmenuID"], function (require, exports, ElementNamespace_3, SystemDiagramDisplay_3, backendManager_2, SystemDiagram_2, SubmenuID_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.populateMenu = void 0;
     var getBackendManager = backendManager_2.backendManager.getBackendManager;
-    function populateMenu() {
+    var topMenuButtons;
+    let hasAssignedInputClick = false;
+    var menuClickingDone = false;
+    var menuIdMap = {
+        0: "fileMenu",
+        1: "editMenu",
+        2: "helpMenu",
+        3: "exampleMenu",
+        4: "mechTransMenu",
+        5: "mechRotMenu",
+        6: "elecMenu"
+    };
+    var submenuMap = {
+        2: [new SubmenuID_1.SubmenuID(3, 3)],
+        3: [new SubmenuID_1.SubmenuID(1, 4), new SubmenuID_1.SubmenuID(2, 5), new SubmenuID_1.SubmenuID(3, 6)]
+    };
+    function loadSystemDiagram(text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let systemDiagramText = yield DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+            if (systemDiagramText != null) {
+                getBackendManager().loadSystemDiagram(systemDiagramText);
+            }
+        });
+    }
+    function waitForMenuClickingDone(func) {
+        if (menuClickingDone) {
+            func();
+        }
+        else {
+            setTimeout(() => waitForMenuClickingDone(func), 20);
+        }
+    }
+    function findParentMenu(menuId) {
+        for (let key of Object.keys(submenuMap)) {
+            if (submenuMap[key].some(sub => sub.id == menuId)) {
+                return parseInt(key);
+            }
+        }
+        return null;
+    }
+    function findAllParentMenus(menuId) {
+        let parent = findParentMenu(menuId);
+        if (parent != null) {
+            return [parent, ...findAllParentMenus(parent)];
+        }
+        return [];
+    }
+    function menuClickAction(menuTitle, k) {
+        menuTitle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            let parents = findAllParentMenus(k);
+            waitForMenuClickingDone(() => {
+                var _a;
+                if (k == 0 && !hasAssignedInputClick) {
+                    hasAssignedInputClick = true;
+                    let input = document.getElementById("fileUpload");
+                    input.onchange = () => __awaiter(this, void 0, void 0, function* () {
+                        let files = Array.from(input.files);
+                        if (files[0].text) {
+                            let text = yield files[0].text();
+                            loadSystemDiagram(text);
+                        }
+                        else {
+                            const reader = new FileReader();
+                            reader.onload = event => {
+                                loadSystemDiagram(event.target.result);
+                            };
+                            reader.readAsText(files[0]);
+                        }
+                    });
+                }
+                let el = document.getElementById(menuIdMap[k]);
+                if (el) {
+                    el = (_a = el.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement;
+                    el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
+                    if (![0, 1, 2].includes(k)) {
+                        let menuTitleBounds = menuTitle.getBoundingClientRect();
+                        el.style.top = menuTitleBounds.top + "px";
+                        el.style.left = (menuTitleBounds.left + menuTitleBounds.width + 4) + "px";
+                    }
+                    if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
+                        for (let sub of submenuMap[k]) {
+                            if (!sub.hasClickAction) {
+                                let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
+                                menuClickAction(el, sub.id);
+                                sub.hasClickAction = true;
+                            }
+                        }
+                    }
+                    for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
+                        el = document.getElementById(menuIdMap[i]);
+                        if (i == k || parents.includes(i) || !el)
+                            continue;
+                        el = el.parentElement.parentElement;
+                        el.setAttribute("hidden-menu", "true");
+                    }
+                }
+            });
+        });
+    }
+    function clickSubmenus(menuId) {
+        var _a, _b;
+        const cond = (_b = (_a = document.getElementById(menuIdMap[menuId])) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.parentElement;
+        if (cond) {
+            for (let submenu of submenuMap[menuId]) {
+                let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
+                submenuEl.click();
+                clickSubmenus(submenu.id);
+            }
+        }
+        else if (submenuMap.hasOwnProperty(menuId)) {
+            setTimeout(() => clickSubmenus(menuId), 20);
+        }
+        if (menuId == 6) {
+            menuClickingDone = true;
+        }
+    }
+    function populateElementMenu() {
         ElementNamespace_3.ElementNamespace.categories.map((c, i) => {
             ElementNamespace_3.ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
                 const group = document.createElement('div');
@@ -2302,8 +2381,6 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             });
         });
     }
-    exports.populateMenu = populateMenu;
-    var topMenuButtons;
     function loadPage() {
         return __awaiter(this, void 0, void 0, function* () {
             delete window.jQuery;
@@ -2333,7 +2410,7 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
                 document.body.style.cursor = "auto";
                 window.systemDiagram.draggingElement = null;
             });
-            populateMenu();
+            populateElementMenu();
             window.unsimpBGSVG = d3.select("#unsimpBG").append("svg");
             window.unsimpBGSVG.classed("graphSVG", true);
             window.simpBGSVG = d3.select("#simpBG").append("svg");
@@ -2397,97 +2474,6 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
             }
         });
     }
-    var menuIdMap = {
-        0: "fileMenu",
-        1: "editMenu",
-        2: "helpMenu",
-        3: "exampleMenu",
-        4: "mechTransMenu",
-        5: "mechRotMenu",
-        6: "elecMenu"
-    };
-    var submenuMap = {
-        2: [new BondGraphBond_2.SubmenuID(3, 3)],
-        3: [new BondGraphBond_2.SubmenuID(1, 4), new BondGraphBond_2.SubmenuID(2, 5), new BondGraphBond_2.SubmenuID(3, 6)]
-    };
-    var menuClickingDone = false;
-    function findParentMenu(menuId) {
-        for (let key of Object.keys(submenuMap)) {
-            if (submenuMap[key].some(sub => sub.id == menuId)) {
-                return parseInt(key);
-            }
-        }
-        return null;
-    }
-    function findAllParentMenus(menuId) {
-        let parent = findParentMenu(menuId);
-        if (parent != null) {
-            return [parent, ...findAllParentMenus(parent)];
-        }
-        return [];
-    }
-    let hasAssignedInputClick = false;
-    function loadSystemDiagram(text) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let systemDiagramText = yield DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
-            if (systemDiagramText != null) {
-                getBackendManager().loadSystemDiagram(systemDiagramText);
-            }
-        });
-    }
-    function menuClickAction(menuTitle, k) {
-        menuTitle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            let parents = findAllParentMenus(k);
-            waitForMenuClickingDone(() => {
-                var _a;
-                if (k == 0 && !hasAssignedInputClick) {
-                    hasAssignedInputClick = true;
-                    let input = document.getElementById("fileUpload");
-                    input.onchange = () => __awaiter(this, void 0, void 0, function* () {
-                        let files = Array.from(input.files);
-                        if (files[0].text) {
-                            let text = yield files[0].text();
-                            loadSystemDiagram(text);
-                        }
-                        else {
-                            const reader = new FileReader();
-                            reader.onload = event => {
-                                loadSystemDiagram(event.target.result);
-                            };
-                            reader.readAsText(files[0]);
-                        }
-                    });
-                }
-                let el = document.getElementById(menuIdMap[k]);
-                if (el) {
-                    el = (_a = el.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement;
-                    el.setAttribute("hidden-menu", (el.getAttribute("hidden-menu") == "false").toString());
-                    if (![0, 1, 2].includes(k)) {
-                        let menuTitleBounds = menuTitle.getBoundingClientRect();
-                        el.style.top = menuTitleBounds.top + "px";
-                        el.style.left = (menuTitleBounds.left + menuTitleBounds.width + 4) + "px";
-                    }
-                    if (el.getAttribute("hidden-menu") == "false" && submenuMap.hasOwnProperty(k)) {
-                        for (let sub of submenuMap[k]) {
-                            if (!sub.hasClickAction) {
-                                let el = document.getElementById(menuIdMap[k]).parentElement.children[sub.index];
-                                menuClickAction(el, sub.id);
-                                sub.hasClickAction = true;
-                            }
-                        }
-                    }
-                    for (let i = 0; i < Object.keys(menuIdMap).length; i++) {
-                        el = document.getElementById(menuIdMap[i]);
-                        if (i == k || parents.includes(i) || !el)
-                            continue;
-                        el = el.parentElement.parentElement;
-                        el.setAttribute("hidden-menu", "true");
-                    }
-                }
-            });
-        });
-    }
     function pollDOM() {
         const el = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
         if (el) {
@@ -2495,31 +2481,6 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
         }
         else {
             setTimeout(pollDOM, 20);
-        }
-    }
-    function clickSubmenus(menuId) {
-        var _a, _b;
-        const cond = (_b = (_a = document.getElementById(menuIdMap[menuId])) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.parentElement;
-        if (cond) {
-            for (let submenu of submenuMap[menuId]) {
-                let submenuEl = document.getElementById(menuIdMap[menuId]).parentElement.children[submenu.index];
-                submenuEl.click();
-                clickSubmenus(submenu.id);
-            }
-        }
-        else if (submenuMap.hasOwnProperty(menuId)) {
-            setTimeout(() => clickSubmenus(menuId), 20);
-        }
-        if (menuId == 6) {
-            menuClickingDone = true;
-        }
-    }
-    function waitForMenuClickingDone(func) {
-        if (menuClickingDone) {
-            func();
-        }
-        else {
-            setTimeout(() => waitForMenuClickingDone(func), 20);
         }
     }
     pollDOM();
