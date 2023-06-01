@@ -1,4 +1,5 @@
-﻿export class Modifier {
+﻿// provides an ID and name for a modifier
+export class Modifier {
     id: number;
     name: string;
 

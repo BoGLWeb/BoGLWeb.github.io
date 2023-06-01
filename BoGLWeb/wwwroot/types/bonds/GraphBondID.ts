@@ -1,4 +1,5 @@
-﻿export class GraphBondID {
+﻿// allows graph bonds to be compared and stores their velocity, used for undo/redo
+export class GraphBondID {
     source: number;
     target: number;
     velID: number;

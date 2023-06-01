@@ -5,7 +5,9 @@ import { Modifier } from "./Modifier";
 import { SystemDiagramElement } from "./SystemDiagramElement";
 import {MultiElementType} from "./MultiElementType";
 
+// provides information about all system diagram elements
 export namespace ElementNamespace {
+    // system diagram element categories
     export const categories: Category[] = [
         new Category(0, "Basic Mechanical Translation", "mechTrans"),
         new Category(1, "Basic Mechanical Rotation", "mechRot"),
@@ -14,6 +16,7 @@ export namespace ElementNamespace {
         new Category(4, "Actuators", "actuators")
     ];
 
+    // list of element modifiers
     export const modifiers: Modifier[] = [
         new Modifier(0, "Mass"),
         new Modifier(1, "Inertia"),
@@ -24,6 +27,7 @@ export namespace ElementNamespace {
         new Modifier(6, "Tooth Wear")
     ];
 
+    // all system diagram element types
     export const elementTypes: ElementType[] = [
         new ElementType(0, "Mass", 0, "mass", [3], true),
         new ElementType(1, "Spring", 0, "spring", [5], true, 2),
@@ -57,12 +61,14 @@ export namespace ElementNamespace {
         new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
         new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
     ];
-    
+
+    // compatibility groups with element IDs showing which elements can connect to each other
     export const mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 18, 12, 13, 14]);
     export const mrCompatibilityGroup = new Set([8, 9, 7, 12, 13, 15, 14, 10, 12, 11, 16, 18, 28]);
     export const eCompatibilityGroup = new Set([21, 22, 25, 24, 23, 20, 27, 26, 28]);
     export const oCompatibilityGroup = new Set([29, 28]);
 
+    // checks whether two system diagram elements can be connected
     export function isCompatible(e1: SystemDiagramElement, e2: SystemDiagramElement, graph: SystemDiagramDisplay) {
         if (e1 === null || e2 === null || e1.id === e2.id) return false;
         let mtCompatible = mtCompatibilityGroup.has(e1.type) && mtCompatibilityGroup.has(e2.type);

@@ -17,31 +17,45 @@ export namespace backendManager {
 
         imageBuffer = 15;
 
-        public parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
-            let bg = JSON.parse(jsonString);
+        // takes in a list of JSON elements and centers them around (0, 0) while turning them into GraphElements
+        centerElements(jsonElements: any[], bondGraph: boolean) {
+            let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity ,-Infinity];
 
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
-            let elements = JSON.parse(bg.elements).map((e, i) => {
+            let elements = new Map<number, GraphElement>();
+            let i = 0;
+            // find min and max x and y while making GraphElement objects
+            for (let e of jsonElements) {
                 if (e.x < minX) minX = e.x;
                 if (e.y < minY) minY = e.y;
                 if (e.x > maxX) maxX = e.x;
                 if (e.y > maxY) maxY = e.y;
-                return new BondGraphElement(i, e.ID, e.label, e.x, e.y);
-            }) as BondGraphElement[];
 
+                let id = e.id ?? i++;
+                elements.set(id, bondGraph ? new BondGraphElement(i, e.ID, e.label, e.x, e.y)
+                    : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers))
+            }
+
+            // transform elements to center around (0, 0)
             elements.forEach(e => {
                 e.x += (maxX - minX) / 2 - maxX;
                 e.y += (maxY - minY) / 2 - maxY;
             });
 
+            return elements;
+        }
+
+        // parses a bond graph string into a bond graph display
+        parseAndDisplayBondGraph(id: number, jsonString: string, svg: SVGSelection) {
+            let bg = JSON.parse(jsonString);
+            let elements = Array.from(this.centerElements(JSON.parse(bg.elements), true).values()) as BondGraphElement[];
+
+            // makes BondGraphDisplay
             let bonds = JSON.parse(bg.bonds).map(b => {
                 return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
+            // assigns BondGraphDisplay to appropriate window attribute
             if (id == 0) {
                 window.unsimpBG = bondGraph;
             } else if (id == 1) {
@@ -49,88 +63,53 @@ export namespace backendManager {
             } else {
                 window.causalBG = bondGraph;
             }
+
+            // updates and zooms new bond graph display
             bondGraph.updateGraph();
             this.zoomCenterGraph(JSON.stringify(id + 2));
         }
 
-        public displayUnsimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
-        }
-
-        public displaySimplifiedBondGraph(jsonString: string) {
-            this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
-        }
-
-        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
-            this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
-        }
-
-        public loadSystemDiagram(jsonString: string) {
-            let edges = [];
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
-            
-            let parsedJson = JSON.parse(jsonString);
-
-            let elements = new Map<number, SystemDiagramElement>();
-            let i = 0;
-            for (let e of parsedJson.elements) {
-                if (e.x < minX) minX = e.x;
-                if (e.y < minY) minY = e.y;
-                if (e.x > maxX) maxX = e.x;
-                if (e.y > maxY) maxY = e.y;
-                
-                if(e.id != null){
-                    elements.set(e.id, new SystemDiagramElement(e.id, e.type, e.x, e.y, e.velocity, e.modifiers));
-                }else{
-                    elements.set(i++, new SystemDiagramElement(i, e.type, e.x, e.y, e.velocity, e.modifiers));
+        // parses a list of JSON strings representing elements and bonds into SystemDiagramElement and GraphBond lists
+        parseElementAndEdgeStrings(objects: string[]): [SystemDiagramElement[], GraphBond[]] {
+            let elements: SystemDiagramElement[] = [];
+            let bonds: GraphBond[] = [];
+            for (const object of objects) {
+                let json = JSON.parse(object);
+                if (json.hasOwnProperty("id")) {
+                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
+                } else {
+                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
                 }
             }
-
-            elements.forEach(e => {
-                e.x += (maxX - minX) / 2 - maxX;
-                e.y += (maxY - minY) / 2 - maxY;
-            });
-
-            for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
-                bond.velocity = edge.velocity ?? 0;
-                edges.push(bond);
-            }
-
-            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
-
-            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
-                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
-
-            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram(Array.from(elements.values()), edges));
-            systemDiagram.draggingElement = null;
-            window.systemDiagram = systemDiagram;
-            systemDiagram.updateGraph();
-            this.zoomCenterGraph("1");
-            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
-            systemDiagram.initWidth = bounds.width;
-            systemDiagram.initHeight = bounds.height;
+            return [elements, bonds];
         }
 
-        public async exportAsImage() {
-            let graph = this.getGraphByIndex(window.tabNum);
-            let svg = graph.svg;
-            if (this.getTabNum() == 1) {
-                await this.convertImages("image.hoverImg");
+        // transofmrs edge IDs into GraphBondID objects
+        parseEdgeIDStrings(edgeIDs: string[]): GraphBondID[] {
+            let edges: GraphBondID[] = [];
+            let i = 0;
+            for (const edgeString of edgeIDs) {
+                let json = JSON.parse(edgeString);
+                edges.push(new GraphBondID(json.source, json.target, i));
+                i++;
             }
-            let copy = svg.node().cloneNode(true);
-            this.applyInlineStyles(svg, d3.select(copy), graph);
-            this.svgToCanvas(svg, copy as SVGElement, graph);
+            return edges;
         }
 
-        public markerToString(marker: string) {
+        // determines whether two GraphBondID objects are equal
+        checkBondIDs(bondIDs: GraphBondID[], b: GraphBond): GraphBondID {
+            let sourceID = b.source.id;
+            let targetID = b.target.id;
+            return bondIDs.find(e => e.checkEquality(sourceID, targetID));
+        }
+
+        // encodes a marker string safely so that it can be added to a URI
+        markerToString(marker: string) {
             return marker.replaceAll('"', "&quot;").replaceAll("#", encodeURIComponent("#")).replace("_selected", "");
         }
 
-        public svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
+        // converts an SVG to an HTML canvas to allow for image export
+        svgToCanvas(oldSVG: SVGSelection, svg: SVGElement, graph: BaseGraphDisplay) {
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
             let w = bounds.width / scale + this.imageBuffer * 2;
@@ -143,8 +122,8 @@ export namespace backendManager {
 
             let markers = {};
 
-            // bond graph with directed edges
-            // This is necessary because the marker-start and marker-end CSS properties are messing up string serialization,
+            // For any bond graph with directed edges, replace marker strings with placeholders
+            // This is necessary because the marker-start and marker-end CSS properties mess up string serialization,
             // so we put in placeholders then replace them after string serialization
             if (this.getTabNum() > 1) {
                 svg.id = "currentSVG";
@@ -165,20 +144,24 @@ export namespace backendManager {
                 svg.id = "";
             }
 
+            // serialize the SVG
             let img = new Image(w, h);
             let serializer = new XMLSerializer();
             let svgStr = serializer.serializeToString(svg);
             d3.select("#currentSVG").remove();
 
+            // replace the marker strings with their original values
             for (const i in markers) {
                 svgStr = svgStr.replaceAll(i, markers[i]);
             }
 
+            // encode SVG string into image
             img.src = "data:image/svg+xml;utf8," + svgStr;
 
             var canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
 
+            // convert image to canvas and open file save popup on image load
             canvas.width = w;
             canvas.height = h;
             img.onerror = () => alert("Error");
@@ -210,13 +193,16 @@ export namespace backendManager {
                         ],
                     };
 
+                    // save the image blob when the user gives it a name then update the graph
                     this.saveAsBlob(blob, pickerOptions, new Blob([svgStr.replaceAll("%23", "#")]));
                     graph.updateGraph();
                 });
             };
         }
 
-        public applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
+        // applies styles to the SVG before it is exported as an image
+        applyInlineStyles(oldSVG: SVGSelection, svg: SVGSelection, graph: BaseGraphDisplay) {
+            // adds the Symbola font to the SVG for the eight arrow symbols used for velocity (only 8 symbols of the font encoded here)
             svg.append("style").text(`
                 @font-face {
                     font-family: Symbola;
@@ -265,10 +251,8 @@ export namespace backendManager {
             }
             svg.selectAll("edgeHover").remove()
             let bounds = (oldSVG.select("g").node() as HTMLElement).getBoundingClientRect();
-            let minX = Infinity;
-            let minY = Infinity;
-            let maxX = -Infinity;
-            let maxY = -Infinity;
+            let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
+
             for (let e of graph.elements) {
                 if (e.x < minX) minX = e.x;
                 if (e.y < minY) minY = e.y;
@@ -276,13 +260,47 @@ export namespace backendManager {
                 if (e.y > maxY) maxY = e.y;
             }
             let scale = parseFloat(oldSVG.select("g").attr("transform").split(" ")[2].replace("scale(", "").replace(")", ""));
-            let isBondGraph = graph instanceof BondGraphDisplay;
             svg.select("g").attr("transform", "translate(" + ((bounds.width / scale) / 2 + (maxX - minX) / 2 - maxX + this.imageBuffer) + ", "
                 + ((bounds.height / scale) / 2 + (maxY - minY) / 2 - maxY + this.imageBuffer) + ") scale(1)");
         }
 
-        // this will break if additional image types beyond system diagram elements are added to BoGL Web
-        public async convertImages(query) {
+        // gets the current tab numbers, starting with 1 as the system diagram tab
+        getTabNum(): number {
+            return parseInt(window.tabNum);
+        }
+
+        // alternative saving method that attempts to download an image automatically, workaround for Firefox
+        saveFileNoPicker(fileName, blob) {
+            const urlToBlob = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.setProperty('display', 'none');
+            document.body.appendChild(a);
+            a.href = urlToBlob;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(urlToBlob);
+            a.remove();
+        }
+
+        // hides a menu with a particular menu id
+        hideMenu(menuId: string) {
+            let el = document.getElementById(menuId);
+            if (document.getElementById(menuId)) {
+                el = el.parentElement.parentElement;
+                if (el.getAttribute("hidden-menu") != "true") {
+                    el.setAttribute("hidden-menu", "true");
+                }
+            }
+        }
+
+        // gets the system diagram display object
+        getSystemDiagramDisplay() {
+            return this.getGraphByIndex("1") as SystemDiagramDisplay;
+        }
+
+        // converts all SVG images in the system diagram display into inline form
+        // as a note, this will break if additional image types besides SVGs are used for system diagram elements
+        async convertImages(query) {
             const images = document.querySelectorAll(query);
 
             for (let i = 0; i < images.length; i++) {
@@ -307,6 +325,72 @@ export namespace backendManager {
             }
         }
 
+        // saves a blob to a file
+        async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
+            if (window.showSaveFilePicker) {
+                const fileHandle = await window.showSaveFilePicker(pickerOptions);
+                window.filePath = fileHandle;
+                const writableFileStream = await fileHandle.createWritable();
+                // if the user chooses to save an image as an SVG, use the SVG blob
+                await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
+                await writableFileStream.close();
+            } else {
+                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
+            }
+        }
+
+        // parse and display unsimplified bond graph
+        public displayUnsimplifiedBondGraph(jsonString: string) {
+            this.parseAndDisplayBondGraph(0, jsonString, window.unsimpBGSVG);
+        }
+
+        // parse and display simplified bond graph
+        public displaySimplifiedBondGraph(jsonString: string) {
+            this.parseAndDisplayBondGraph(1, jsonString, window.simpBGSVG);
+        }
+
+        // parse and display causal bond graph
+        public displayCausalBondGraphOption(jsonStrings: Array<string>, index: number) {
+            this.parseAndDisplayBondGraph(2, jsonStrings[index], window.causalBGSVG);
+        }
+
+        // load a system diagram from a JSON string and display it
+        public loadSystemDiagram(jsonString: string) {
+            let edges = [];
+            let parsedJson = JSON.parse(jsonString);
+            let elements = this.centerElements(parsedJson.elements, false);
+
+            for (let edge of parsedJson.edges) {
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
+                bond.velocity = edge.velocity ?? 0;
+                edges.push(bond);
+            }
+
+            window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
+                ...window.systemDiagram.listToIDObjects([].concat(window.systemDiagram.selectedElements).concat(window.systemDiagram.selectedBonds)), false);
+
+            let systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram((Array.from(elements.values()) as SystemDiagramElement[]), edges));
+            systemDiagram.draggingElement = null;
+            window.systemDiagram = systemDiagram;
+            systemDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+            let bounds = (systemDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            systemDiagram.initWidth = bounds.width;
+            systemDiagram.initHeight = bounds.height;
+        }
+
+        // get the current system diagram as a JSON string
+        public getSystemDiagram() {
+            return JSON.stringify({
+                elements: window.systemDiagram.elements,
+                bonds: window.systemDiagram.bonds
+            });
+        }
+
+        // zooms and centers a particular graph by finding the center of the current display and centering the graph there
+        // scales the graph to 80% of the screen height or width, whichever is smaller, so that the graph has a margin of empty space around it
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
             let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
@@ -314,6 +398,7 @@ export namespace backendManager {
             let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
             let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
             let scale = 1;
+            // choose which dimension to scale to 80% in
             if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
                 scale = (0.8 * windowDim.width) / svgDim.width;
             } else {
@@ -326,22 +411,7 @@ export namespace backendManager {
             graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
         }
 
-        public getTabNum(): number {
-            return parseInt(window.tabNum);
-        }
-
-        public saveFileNoPicker(fileName, blob) {
-            const urlToBlob = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.setProperty('display', 'none');
-            document.body.appendChild(a);
-            a.href = urlToBlob;
-            a.download = fileName;
-            a.click();
-            window.URL.revokeObjectURL(urlToBlob);
-            a.remove();
-        }
-
+        // converts a contentStreamReference to a blob and saves the blob to a file
         public async saveAsFile(fileName: string, contentStreamReference: any, pickerOptions) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
@@ -361,18 +431,7 @@ export namespace backendManager {
             await this.saveAsBlob(blob, pickerOptions, null);
         }
 
-        public async saveAsBlob(blob: any, pickerOptions: any, svgBlob: any) {
-            if (window.showSaveFilePicker) {
-                const fileHandle = await window.showSaveFilePicker(pickerOptions);
-                window.filePath = fileHandle;
-                const writableFileStream = await fileHandle.createWritable();
-                await writableFileStream.write(fileHandle.name.includes(".svg") || fileHandle.name.includes(".svgz") ? svgBlob : blob);
-                await writableFileStream.close();
-            } else {
-                this.saveFileNoPicker(pickerOptions.suggestedName, blob);
-            }
-        }
-
+        // converts a contentStreamReference to a blob and saves the blob to a file, using a preselected filename if available
         public async saveFile(fileName: string, contentStreamReference: any) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
@@ -401,116 +460,20 @@ export namespace backendManager {
             }
         }
 
-        public cut() {
-            this.getSystemDiagramDisplay().copySelection();
-            this.getSystemDiagramDisplay().deleteSelection();
-        }
-
-        public copy() {
-            this.getSystemDiagramDisplay().copySelection();
-        }
-
-        public paste() {
-            this.getSystemDiagramDisplay().pasteSelection();
-        }
-
-        public delete(needsConfirmation = true) {
-            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
-        }
-
-        public clear() {
-            this.getSystemDiagramDisplay().selectAll();
-            this.getSystemDiagramDisplay().deleteSelection(false);
-        }
-        
-        public areMultipleElementsSelected() {
-            return this.getSystemDiagramDisplay().selectedElements.length > 1 || this.getSystemDiagramDisplay().selectedBonds.length > 1;
-        }
-
-        public getSystemDiagramDisplay() {
-            return this.getGraphByIndex("1") as SystemDiagramDisplay;
-        }
-
-        public getSystemDiagram() {
-            return JSON.stringify({
-                elements: window.systemDiagram.elements,
-                bonds: window.systemDiagram.bonds
-            });
-        }
-
-        public setModifier(i: number, value: boolean) {
-            let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
-
-            if (value) { // adding modifier
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
-                        el.modifiers.push(i);
-                    }
-                }
-            } else { // removing modifiers
-                for (const el of window.systemDiagram.selectedElements) {
-                    if (el.modifiers.includes(i)) {
-                        el.modifiers.splice(el.modifiers.indexOf(i), 1);
-                    }
-                }
-            }
-            window.systemDiagram.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
-            window.systemDiagram.updateModifierMenu();
-        }
-
-        public getGraphByIndex(i: string) {
-            if (i == "1") {
-                return window.systemDiagram;
-            } else if (i == "2") {
-                return window.unsimpBG;
-            } else if (i == "3") {
-                return window.simpBG;
-            } else {
-                return window.causalBG;
-            }
-        }
-
-        public renderEquations(ids: string[], eqStrings: string[]) {
-            for (let i = 0; i < ids.length; i++) {
-                let html = katex.renderToString(eqStrings[i], {
-                    throwOnError: false
-                });
-                const parser = new DOMParser();
-                let parent = document.getElementById(ids[i]);
-                parent.innerHTML = "";
-                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
-            }
-        }
-
-        public setZoom(i: number) {
+        // exports the current tab as an image, copying the SVG before turning it into an image object
+        public async exportAsImage() {
             let graph = this.getGraphByIndex(window.tabNum);
-            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
-
-            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
-
-            if (graph.prevScale * 100 - i != 0) {
-                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
+            let svg = graph.svg;
+            if (this.getTabNum() == 1) {
+                await this.convertImages("image.hoverImg");
             }
+            let copy = svg.node().cloneNode(true);
+            this.applyInlineStyles(svg, d3.select(copy), graph);
+            this.svgToCanvas(svg, copy as SVGElement, graph);
         }
 
-        public setTab(key: string) {
-            window.tabNum = key;
-            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
-        }
-
-        public setVelocity(velocity: number) {
-            let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
-            for (const e of window.systemDiagram.getSelection()) {
-                if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
-                    e.velocity = velocity;
-                }
-            }
-            window.systemDiagram.updateGraph();
-            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
-        }
-
+        // TODO: rename function to be more accurate
+        // stringifies the current system diagram and rounds its element x and y positions
         public generateURL() {
             return JSON.stringify({
                 elements: window.systemDiagram.elements.map(e => {
@@ -524,37 +487,7 @@ export namespace backendManager {
             });
         }
 
-        public textToClipboard(text: string) {
-            navigator.clipboard.writeText(text);
-        }
-
-        private hideMenu(menuId: string) {
-            let el = document.getElementById(menuId);
-            if (document.getElementById(menuId)) {
-                el = el.parentElement.parentElement;
-                if (el.getAttribute("hidden-menu") != "true") {
-                    el.setAttribute("hidden-menu", "true");
-                }
-            }
-        }
-
-        public closeMenu(menuName: string) {
-            switch (menuName) {
-                case "File":
-                    this.hideMenu("fileMenu");
-                    break;
-                case "Edit":
-                    this.hideMenu("editMenu");
-                    break;
-                case "Help":
-                    this.hideMenu("helpMenu");
-                    this.hideMenu("exampleMenu");
-                    this.hideMenu("mechTransMenu");
-                    this.hideMenu("mechRotMenu");
-                    this.hideMenu("elecMenu");
-            }
-        }
-
+        // runs the tutorial using Intro.js
         public runTutorial() {
             this.closeMenu("Help");
             window.introJs().setOptions({
@@ -628,45 +561,18 @@ export namespace backendManager {
             }).start();
         }
 
-        public parseElementAndEdgeStrings(objects: string[]): [SystemDiagramElement[], GraphBond[]] {
-            let elements: SystemDiagramElement[] = [];
-            let bonds: GraphBond[] = [];
-            for (const object of objects) {
-                let json = JSON.parse(object);
-                if (json.hasOwnProperty("id")) {
-                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
-                } else {
-                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
-                }
-            }
-            return [elements, bonds];
-        }
-
-        public parseEdgeIDStrings(edgeIDs: string[]): GraphBondID[] {
-            let edges: GraphBondID[] = [];
-            let i = 0;
-            for (const edgeString of edgeIDs) {
-                let json = JSON.parse(edgeString);
-                edges.push(new GraphBondID(json.source, json.target, i));
-                i++;
-            }
-            return edges;
-        }
-
-        checkBondIDs(bondIDs: GraphBondID[], b: GraphBond): GraphBondID {
-            let sourceID = b.source.id;
-            let targetID = b.target.id;
-            return bondIDs.find(e => e.checkEquality(sourceID, targetID));
-        }
-
-        async handleUndoRedo(undo: boolean) {
+        // handles undo/redo using the backend
+        public async handleUndoRedo(undo: boolean) {
             DotNet.invokeMethodAsync("BoGLWeb", "UndoRedoHandler", parseInt(window.tabNum), undo);
         }
 
+        // undo/redo for adding a selection, where highlight indicates whether the current selection should be modified 
         public urDoAddSelection(newObjects: string[], prevSelElIDs: number[], prevSelectedEdges: string[], highlight: boolean, isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(newObjects);
             if (isUndo) {
+                // if undo, get identifiers for all elements/edges and remove those elements/edges from the display object,
+                // then restore the selection from before elements/edges were added if highlight is true
                 let elIDs = elements.map(e => e.id);
                 let elBonds = bonds.map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
@@ -678,6 +584,7 @@ export namespace backendManager {
                     sysDiag.setSelection([], []);
                 }
             } else {
+                // if redo, add the recorded elements/edges and select them if highlight is true
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 sysDiag.bonds = sysDiag.bonds.concat(bonds);
                 if (highlight) {
@@ -690,11 +597,14 @@ export namespace backendManager {
             sysDiag.updateMenus();
         }
 
+        // undo/redo for deleting a selection, recording bonds in unselectedDeletedEdges that are deleted automatically because one of their
+        // end elements got deleted, but not re-highlighting these bonds on undo
         public urDoDeleteSelection(deletedObjects: string[], unselectedDeletedEdges: string[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let [elements, bonds] = this.parseElementAndEdgeStrings(deletedObjects);
             let [_, unselectedBonds] = this.parseElementAndEdgeStrings(unselectedDeletedEdges);
             if (isUndo) {
+                // if undo, add back the deleted elements/edges and restore highlight for all but the unselected bonds
                 sysDiag.elements = sysDiag.elements.concat(elements);
                 unselectedBonds = unselectedBonds.map(b => {
                     b.source = sysDiag.elements.find(e => e.id == b.source.id);
@@ -709,6 +619,7 @@ export namespace backendManager {
                 sysDiag.bonds = sysDiag.bonds.concat(bonds).concat(unselectedBonds);
                 sysDiag.setSelection(elements, bonds);
             } else {
+                // if redo, remove the deleted elements from the display object
                 let elIDs = elements.map(e => e.id);
                 let elBonds = bonds.concat(unselectedBonds).map(b => { return new GraphBondID(b.source.id, b.target.id); });
                 sysDiag.elements = sysDiag.elements.filter(e => !elIDs.includes(e.id));
@@ -719,10 +630,12 @@ export namespace backendManager {
             sysDiag.updateMenus();
         }
 
+        // undo/redo for changing a selection
         public urDoChangeSelection(elIDsToAdd: number[], edgesToAdd: string[], elIDsToRemove: number[], edgesToRemove: string[], isUndo: boolean) {
             let diagram = this.getGraphByIndex(window.tabNum);
             let addToSelectionEdges = this.parseEdgeIDStrings(edgesToAdd);
             let removeFromSelectionEdges = this.parseEdgeIDStrings(edgesToRemove);
+            // toggles whether the elements/edges are added or removed based on whether we're undoing or redoing
             let elAddSet = isUndo ? elIDsToRemove : elIDsToAdd;
             let elRemoveSet = isUndo ? elIDsToAdd : elIDsToRemove;
             let edgeAddSet = isUndo ? removeFromSelectionEdges : addToSelectionEdges;
@@ -735,8 +648,10 @@ export namespace backendManager {
             diagram.updateMenus();
         }
 
+        // undo/redo for moving a selection
         public urDoMoveSelection(elements: number[], xOffset: number, yOffset: number, isUndo: boolean) {
             let diagram = this.getGraphByIndex(window.tabNum);
+            // adds or substracts the recorded offset based on whether we're undoing or redoing
             diagram.elements.filter(e => elements.includes(e.id)).forEach(e => {
                 e.x = e.x + (isUndo ? -1 : 1) * xOffset;
                 e.y = e.y + (isUndo ? -1 : 1) * yOffset;
@@ -744,46 +659,180 @@ export namespace backendManager {
             diagram.updateGraph();
         }
 
+        // undo/redo for changing a selection's velocity
         public urDoChangeSelectionVelocity(elIDs: number[], edgeIDs: string[], velID: number, prevVelVals: number[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
             let bondIDs = this.parseEdgeIDStrings(edgeIDs);
+            // set the velocity of edges/elements to either the new velocity or their previous velocity depending on whether we're undoing or redoing
             sysDiag.elements.filter(e => elIDs.includes(e.id)).forEach(e => e.velocity = isUndo ? prevVelVals[elIDs.findIndex(i => i == e.id)] : velID);
-            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length + this.checkBondIDs(bondIDs, b).velID] : velID);
+            sysDiag.bonds.filter(b => this.checkBondIDs(bondIDs, b)).forEach(b => b.velocity = isUndo ? prevVelVals[elIDs.length
+                + this.checkBondIDs(bondIDs, b).velID] : velID);
             sysDiag.updateGraph();
             sysDiag.updateVelocityMenu();
         }
 
+        // undo/redo for changing a selection's modifier
         public urDoChangeSelectionModifier(elIDs: number[], modID: number, modVal: boolean, prevModVals: boolean[], isUndo: boolean) {
             let sysDiag = window.systemDiagram;
+            let backend = this;
 
             elIDs.forEach(function (id, i) {
                 let el = sysDiag.elements.find(e => e.id == id);
                 if (isUndo) {
-                    if (prevModVals[i] && !el.modifiers.includes(modID)) {
-                        el.modifiers.push(modID);
-                    } else if (!prevModVals[i] && el.modifiers.includes(modID)) {
-                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                    }
+                    // if undo, reverse modifier addition or removal in selected elements
+                    backend.setModifierNoUR(el, modID, prevModVals[i]);
                 } else {
-                    if (modVal && ElementNamespace.elementTypes[el.type].allowedModifiers.includes(modID) && !el.modifiers.includes(modID)) {
-                        el.modifiers.push(modID);
-                    } else if (el.modifiers.includes(modID)) {
-                        el.modifiers.splice(el.modifiers.indexOf(modID), 1);
-                    }
+                    // if redo, enact modifier addition or removal in selected elements
+                    backend.setModifierNoUR(el, modID, modVal);
                 }
             });
 
             sysDiag.updateGraph();
             sysDiag.updateModifierMenu();
         }
-        
-        instance: any;
-        
-        public initInstance(instance: any){
-            this.instance = instance;
+
+        // copy then delete the current selection
+        public cut() {
+            this.getSystemDiagramDisplay().copySelection();
+            this.getSystemDiagramDisplay().deleteSelection();
+        }
+
+        // copy the current selection
+        public copy() {
+            this.getSystemDiagramDisplay().copySelection();
+        }
+
+        // paste the current selection
+        public paste() {
+            this.getSystemDiagramDisplay().paste();
+        }
+
+        // delete the current selection, bringing up the confirmation modal if needsConfirmation is true and multiple
+        // elements/edges are being deleted
+        public delete(needsConfirmation = true) {
+            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+        }
+
+        // selects all elements/edges in the canvas and deletes them without confirmation
+        public clear() {
+            this.getSystemDiagramDisplay().selectAll();
+            this.getSystemDiagramDisplay().deleteSelection(false);
+        }
+
+        // set a modifier to a value for a given element without doing any undo/redo
+        setModifierNoUR(el: SystemDiagramElement, i: number, value: boolean) {
+            if (value) { // adding modifier
+                if (ElementNamespace.elementTypes[el.type].allowedModifiers.includes(i) && !el.modifiers.includes(i)) {
+                    el.modifiers.push(i);
+                }
+            } else { // removing modifiers
+                if (el.modifiers.includes(i)) {
+                    el.modifiers.splice(el.modifiers.indexOf(i), 1);
+                }
+            }
+        }
+
+        // sets the modifier for the current selection
+        public setModifier(i: number, value: boolean) {
+            // save current modifier values
+            let prevModVals = window.systemDiagram.selectedElements.map(e => e.modifiers.includes(i));
+
+            // set the modifier for each selected element
+            for (const el of window.systemDiagram.selectedElements) {
+                this.setModifierNoUR(el, i, value);
+            }
+
+            // update the graph and save action for undo/redo
+            window.systemDiagram.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
+            window.systemDiagram.updateModifierMenu();
+        }
+
+        // set the velocity of all edges/elements to a given velocity ID
+        public setVelocity(velocity: number) {
+            let prevVelVals = window.systemDiagram.getSelection().map(e => e.velocity);
+            for (const e of window.systemDiagram.getSelection()) {
+                // set the velocity if the object is an edge or it is an element that is allowed to have velocity
+                if (e instanceof GraphBond || ElementNamespace.elementTypes[e.type].velocityAllowed) {
+                    e.velocity = velocity;
+                }
+            }
+            window.systemDiagram.updateGraph();
+            DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionVelocity", ...window.systemDiagram.listToIDObjects(window.systemDiagram.getSelection()), velocity, prevVelVals);
+        }
+
+        // set the zoom of the graph to i (0 to 100), used by the zoom slider
+        public setZoom(i: number) {
+            let graph = this.getGraphByIndex(window.tabNum);
+            let windowDim = graph.svg.node().parentElement.getBoundingClientRect();
+
+            // calculate the x and y offsets needed to keep the window centered on its current center while zooming
+            let xOffset = (graph.prevScale * 100 - i) * (graph.svgX - graph.initXPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+            let yOffset = (graph.prevScale * 100 - i) * (graph.svgY - graph.initYPos) / ((graph.prevScale + (i > graph.prevScale ? 0.01 : -0.01)) * 100);
+
+            // only translate and scale if the zoom value has changed
+            if (graph.prevScale * 100 - i != 0) {
+                graph.changeScale(windowDim.width / 2 - (windowDim.width / 2 - graph.svgX) - xOffset, windowDim.height / 2 - (windowDim.height / 2 - graph.svgY) - yOffset, i / 100);
+            }
+        }
+
+        // change the recorded tab number and set the zoom slider to the new graph's zoom value
+        public setTab(key: string) {
+            window.tabNum = key;
+            DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
+        }
+
+        // get the graph display object for a given tab ID (1 to 4)
+        public getGraphByIndex(i: string) {
+            if (i == "1") {
+                return window.systemDiagram;
+            } else if (i == "2") {
+                return window.unsimpBG;
+            } else if (i == "3") {
+                return window.simpBG;
+            } else {
+                return window.causalBG;
+            }
+        }
+
+        // render equation strings in DOM elements with particular IDs (match string to ID by list index)
+        public renderEquations(ids: string[], eqStrings: string[]) {
+            for (let i = 0; i < ids.length; i++) {
+                let html = katex.renderToString(eqStrings[i], {
+                    throwOnError: false
+                });
+                const parser = new DOMParser();
+                let parent = document.getElementById(ids[i]);
+                parent.innerHTML = "";
+                parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
+            }
+        }
+
+        // copies text to the clipboard
+        public textToClipboard(text: string) {
+            navigator.clipboard.writeText(text);
+        }
+
+        // closes a given menu and all its submenus
+        public closeMenu(menuName: string) {
+            switch (menuName) {
+                case "File":
+                    this.hideMenu("fileMenu");
+                    break;
+                case "Edit":
+                    this.hideMenu("editMenu");
+                    break;
+                case "Help":
+                    this.hideMenu("helpMenu");
+                    this.hideMenu("exampleMenu");
+                    this.hideMenu("mechTransMenu");
+                    this.hideMenu("mechRotMenu");
+                    this.hideMenu("elecMenu");
+            }
         }
     }
 
+    // returns a backend manager object
     export function getBackendManager(): BackendManager {
         return new BackendManager();
     }
