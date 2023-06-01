@@ -6,10 +6,14 @@ import { BaseGraph } from "../graphs/BaseGraph";
 import { SystemDiagramDisplay } from "./SystemDiagramDisplay";
 import { SystemDiagramElement } from "../elements/SystemDiagramElement";
 
+// defines the basic functionality common to the system diagram display and the bond graph displays
 export class BaseGraphDisplay {
     // constants
     readonly selectedClass: string = "selected";
     readonly bondClass: string = "bond";
+    readonly PAN_SPEED: number = 2.0;
+
+    // keyboard constants
     readonly BACKSPACE_KEY: number = 8;
     readonly DELETE_KEY: number = 46;
     readonly ENTER_KEY: number = 13;
@@ -24,18 +28,17 @@ export class BaseGraphDisplay {
     readonly ARROW_UP: number = 38;
     readonly ARROW_RIGHT: number = 39;
     readonly ARROW_DOWN: number = 40;
-    readonly PAN_SPEED: number = 2.0;
 
-    // These are related to slider zoom and dragging, some may no longer be needed once zoom is fixed
-    dragAllowed: boolean = false;
+    // zoom variables
     prevScale: number = 1;
     initXPos: number = null;
     initYPos: number = null;
+    initWidth: number = 0;
+    initHeight: number = 0;
     svgX: number = 0;
     svgY: number = 0;
-    dragX: number;
-    dragY: number;
 
+    // edge and element variables 
     elements: GraphElement[];
     bonds: GraphBond[];
     svg: SVGSelection;
@@ -46,37 +49,41 @@ export class BaseGraphDisplay {
     draggingElement: number = null;
     selectedElements: GraphElement[] = [];
     selectedBonds: GraphBond[] = [];
+    highestElemId: number = 0;
 
+    // user event variables
     mouseDownNode: GraphElement = null;
     justDragged: boolean = false;
     justScaleTransGraph: boolean = false;
     lastKeyDown: number = -1;
-    highestElemId: number = 0;
+
+    // drag variables
+    dragAllowed: boolean = false;
+    dragX: number;
+    dragY: number;
     dragStartX: number;
     dragStartY: number;
-    elementsBeforeDrag: GraphElement[] = null;
     dragXOffset: number = 0;
     dragYOffset: number = 0;
     startedSelectionDrag: boolean = false;
-    initWidth: number = 0;
-    initHeight: number = 0;
 
     constructor(svg: SVGSelection, baseGraph: BaseGraph) {
         this.elements = baseGraph.nodes || [];
         this.bonds = baseGraph.edges || [];
 
+        // clears out the current SVG content to make a new graph
         svg.selectAll('*').remove();
 
         this.svg = svg;
         this.svgG = svg.append("g");
         let svgG = this.svgG;
 
-        // displayed when dragging between elements, here because it needs to be added first
+        // displays when dragging between elements, here because it needs to be added before it's referenced
         this.dragBond = this.svgG.append("svg:path");
         this.dragBond.attr("class", "link dragline hidden")
             .attr("d", "M0,0L0,0");
 
-        // svg elements and bonds
+        // makes svg elements and bonds
         let bondElements = svgG.append("g");
         bondElements.attr("id", "bondGroup");
         this.bondSelection = bondElements.selectAll("g");
@@ -84,24 +91,28 @@ export class BaseGraphDisplay {
 
         svg.call(this.dragSvg()).on("dblclick.zoom", null);
 
-        // listen for key events
+        // listens for key events
         let graph = this;
         svg.on("mouseup", function (d) { graph.svgMouseUp.call(graph, d); });
         svg.on("mousemove", function (d) { graph.svgMouseMove.call(graph, d); });
     }
 
+    // functions defined by subclasses
     svgMouseMove() { }
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) { }
     renderElements(newElements: GraphElementSelection) { }
 
+    // returns the selection
     getSelection() {
         return ([] as (GraphElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
     }
 
+    // updates the top menu
     updateMenus() {
         this.updateTopMenu();
     }
 
+    // clears selection if the user clicks on the SVG background unless scaling or translating the graph
     svgMouseUp() {
         if (!this.justScaleTransGraph) {
             let prevSelection = this.getSelection();
@@ -133,10 +144,12 @@ export class BaseGraphDisplay {
         }
     }
 
+    // checks whether a given key ID was pressed in sequence with CTRL
     checkCtrlCombo(a: number) {
         return d3.event && ((d3.event.keyCode == a && this.lastKeyDown == this.CTRL_KEY) || (d3.event.keyCode == this.CTRL_KEY && this.lastKeyDown == a));
     }
 
+    // selects all elements and edges in the current tab
     selectAll() {
         let removeFromSelection = [].concat(this.elements.filter(e => !this.selectedElements.includes(e as SystemDiagramElement))).concat(this.bonds.filter(e => !this.selectedBonds.includes(e)));
         this.setSelection(this.elements, this.bonds);
@@ -145,19 +158,21 @@ export class BaseGraphDisplay {
         this.updateMenus();
     }
 
+    // enables the CTRL+A combo, which is the only one available in bond graph tabs
     svgKeyUp() {
         if (this.checkCtrlCombo(this.A_KEY)) {
             this.selectAll();
         }
     }
 
+    // enables selection and de-selection of an edge between nodes
     pathMouseDown(bond: GraphBond) {
         d3.event.stopPropagation();
         let addEdges = [];
         let removeEl = [];
         let removeEdges = [];
-
         if (d3.event.ctrlKey || d3.event.metaKey) {
+            // if CTRL+click, toggle edge in selection
             if (this.selectionContains(bond)) {
                 this.removeFromSelection(bond);
                 removeEdges = [bond];
@@ -166,6 +181,7 @@ export class BaseGraphDisplay {
                 addEdges = [bond];
             }
         } else {
+            // if the edge is not in the current selection, change the selection to the edge
             if (!this.selectionContains(bond)) {
                 addEdges = [bond];
                 removeEl = this.selectedElements;
@@ -179,10 +195,12 @@ export class BaseGraphDisplay {
         this.updateMenus();
     }
 
+    // handles the end of an area selection, determining what elements and edges to put in the new selection
     handleAreaSelectionEnd() {
         if (!d3.select("#selectionRect").node()) return false;
         let selectionBounds = d3.select("#selectionRect").node().getBoundingClientRect();
         if (Math.round(selectionBounds.width) > 0 && Math.round(selectionBounds.height) > 0) {
+            // if the selection covers any area, determine what elements and edges are in it
             let newSelection = [];
             if (this instanceof SystemDiagramDisplay) {
                 for (const el of this.elementSelection.selectAll(".outline")) {
@@ -205,6 +223,7 @@ export class BaseGraphDisplay {
 
             let removeList = [];
             let addList = [];
+            // determine which elements/edges are being removed and which are being added for undo/redo
             if (d3.event.sourceEvent?.ctrlKey || d3.event.sourceEvent?.metaKey) {
                 for (const e of newSelection) {
                     if (this.selectionContains(e)) {
@@ -230,6 +249,7 @@ export class BaseGraphDisplay {
         return false;
     }
 
+    // change selection after clicking node
     nodeMouseUp(el: GraphElement) {
         d3.event.stopPropagation();
 
@@ -241,6 +261,7 @@ export class BaseGraphDisplay {
             let remove = [];
 
             if (d3.event.ctrlKey || d3.event.metaKey) {
+                // if CTRL+click, toggle node inclusion in the selection
                 if (this.selectionContains(el)) {
                     this.removeFromSelection(el);
                     remove = [el];
@@ -249,6 +270,7 @@ export class BaseGraphDisplay {
                     addEl = [el];
                 }
             } else {
+                // if the selection does not contain the node, switch the selection to the node
                 if (!this.selectionContains(el)) {
                     addEl = [el];
                     remove = this.getSelection();
@@ -263,10 +285,12 @@ export class BaseGraphDisplay {
         this.justDragged = false;
     }
 
+    // enable or disable top menu buttons based on whether there is a selection
     updateTopMenu() {
         DotNet.invokeMethodAsync("BoGLWeb", "SetIsSelecting", this.selectedElements.length > 0 || this.selectedBonds.length > 0);
     }
 
+    // adds elements and edges to the selection, optionally recording the action in undo/redo
     addToSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
         if (e instanceof GraphElement) {
             this.selectedElements.push(e);
@@ -278,6 +302,7 @@ export class BaseGraphDisplay {
         }
     }
 
+    // check whether the selection contains an element or edge
     selectionContains(e: GraphElement | GraphBond) {
         if (e instanceof GraphElement) {
             return this.selectedElements.includes(e);
@@ -286,6 +311,7 @@ export class BaseGraphDisplay {
         }
     }
 
+    // remove an element or edge from the selection, optionally record the action in undo/redo
     removeFromSelection(e: GraphElement | GraphBond, undoRedo: boolean = true) {
         if (e instanceof GraphElement) {
             this.selectedElements = this.selectedElements.filter(d => d != e);
@@ -297,18 +323,20 @@ export class BaseGraphDisplay {
         }
     }
 
+    // set the selection to a given list of elements and edges
     setSelection(elList: GraphElement[], bondList: GraphBond[]) {
         this.selectedElements = elList;
         this.selectedBonds = bondList;
     }
 
-    // mousedown on element
+    // record node on dragging
     nodeMouseDown(el: GraphElement) {
         (<Event>d3.event).stopPropagation();
         this.mouseDownNode = el;
         this.justDragged = false;
     }
 
+    // return x and y coordinates for the end of an edge given a surce and target
     getEdgePosition(sourceEl: GraphElement, targetEl: GraphElement) {
         let x = targetEl.x - sourceEl.x;
         let y = targetEl.y - sourceEl.y;
@@ -318,7 +346,7 @@ export class BaseGraphDisplay {
         let thetaLL = Math.PI + thetaUR;
         let thetaLR = 2 * Math.PI - thetaUR;
         let coords = [];
-        // quads 1, 2, 3, and 4
+        // handles quadrants 1, 2, 3, and 4
         if ((theta >= 0 && theta < thetaUR) || (theta >= thetaLR && theta < 2 * Math.PI)) {
             coords = [30, -30 * Math.tan(theta)]
         } else if (theta >= thetaUR && theta < thetaUL) {
@@ -331,16 +359,21 @@ export class BaseGraphDisplay {
         return coords;
     }
 
+    // draws a graph bond on the SVG
     drawPath(d: GraphBond) {
         if (this.startedSelectionDrag && this instanceof SystemDiagramDisplay) {
+            // when a selection is being dragged in a system diagram, draws edges to the center of elements to reduce computation;
+            // does not do this for bond graph because the edge will be visible behind the text
             return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
         } else {
+            // draws a bond to the edge of each element
             let sourceEnd = this.getEdgePosition(d.source, d.target);
             let targetEnd = this.getEdgePosition(d.target, d.source);
             return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
         }
     }
 
+    // defines drag click event
     get drag() {
         let graph = this;
         return d3.behavior.drag()
@@ -353,6 +386,7 @@ export class BaseGraphDisplay {
             });
     }
 
+    // changes the scale with x and y offsets to center the graph on a given point while zooming
     changeScale(x: number, y: number, scale: number) {
         this.svgX = x;
         this.svgY = y;
@@ -366,16 +400,19 @@ export class BaseGraphDisplay {
         DotNet.invokeMethodAsync("BoGLWeb", "SetScale", scale);
     }
 
+    // check if two rectangles overlap
     checkOverlap(rect1, rect2) {
         return rect1.top <= rect2.bottom && rect1.bottom >= rect2.top && rect1.left <= rect2.right && rect1.right >= rect2.left;
     }
 
+    // converts a list of elements and edges to lists of element and bond IDs
     listToIDObjects(eList: (GraphElement | GraphBond)[]): [number[], string[]] {
         let elements: number[] = (eList.filter(e => e instanceof GraphElement) as GraphElement[]).map(e => e.id);
         let bonds: string[] = (eList.filter(e => e instanceof GraphBond) as GraphBond[]).map(e => JSON.stringify({ source: e.source.id, target: e.target.id }));
         return [elements, bonds];
     }
 
+    // move the selection rectangle to follow the mouse
     moveSelectionRect() {
         let mouse = d3.mouse(this.svgG.node());
         this.dragX = this.svgX;
@@ -391,12 +428,13 @@ export class BaseGraphDisplay {
         }
     }
 
-    // listen for dragging
+    // listen for dragging on the SVG
     dragSvg() {
         let graph = this;
         return d3.behavior.zoom()
             .on("zoom", function () {
                 graph.zoomed.call(graph);
+                // handle moving the selection area
                 if (graph.dragAllowed) {
                     graph.dragX = d3.event.translate[0];
                     graph.dragY = d3.event.translate[1];
@@ -405,6 +443,7 @@ export class BaseGraphDisplay {
                 }
             })
             .on("zoomstart", function () {
+                // check whether shift is being held down, if so dragging the selection rectangle is allowed
                 graph.dragAllowed = d3.event.sourceEvent.buttons === 2;
                 graph.dragX = graph.dragX ?? graph.svgX;
                 graph.dragY = graph.dragY ?? graph.svgY;
@@ -414,6 +453,7 @@ export class BaseGraphDisplay {
                 if (document.getElementById("selectionRect")) {
                     document.getElementById("selectionRect").remove();
                 }
+                // append drag rectangle to the graph
                 graph.svgG.append("rect")
                     .attr("id", "selectionRect")
                     .attr("x", graph.dragStartX)
@@ -431,6 +471,7 @@ export class BaseGraphDisplay {
             });
     }
 
+    // draws all connections in the graph
     drawPaths() {
         let graph = this;
         this.bondSelection = this.bondSelection.data(this.bonds, function (d) {
@@ -438,6 +479,9 @@ export class BaseGraphDisplay {
         });
 
         let paths = this.bondSelection;
+        // something about the way d3 is used here is not always removing path and text objects properly;
+        // ideally this would be investigated to save processing time (not having to delete and re-create objects constantly),
+        // but this works without issue for now
         paths.selectAll('path').remove();
         paths.selectAll('text').remove();
 
@@ -461,7 +505,10 @@ export class BaseGraphDisplay {
         paths.exit().remove();
     }
 
+    // render elements in the graph
     fullRenderElements(dragmove: boolean = false) {
+        // if a selection is being dragged, only move the dragged elements, no reprocessing to avoid lag
+        // this is necessary because dragmove calls the updateGraph function at a much higher frequency than normal
         if (dragmove) {
             this.elementSelection.filter(e => this.selectedElements.includes(e)).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             return;
@@ -490,8 +537,11 @@ export class BaseGraphDisplay {
         this.elementSelection.exit().remove();
     }
 
+    // moves either currently dragged element or the selection it's a part of
     dragmove(el: GraphElement) {
         if (this.mouseDownNode) {
+            // if the element is part of a selection already, move the whole selection,
+            // else switch selection to just this element
             if (!this.selectedElements.includes(el)) {
                 let selection = this.getSelection();
                 // not updating menus until end of drag because it causes significant lag
@@ -511,9 +561,10 @@ export class BaseGraphDisplay {
                 el.y += dy;
             }
 
-            // Just update element selection positions without editing anything else since dragmove gets called so much
+            // just update element selection positions without editing anything else since dragmove gets called so much
             this.updateGraph(true);
         } else {
+            // at the end of the selection movement, record undo/redo and update the graph and menus
             if (this.startedSelectionDrag) {
                 DotNet.invokeMethodAsync("BoGLWeb", "URMoveSelection", parseInt(window.tabNum), this.selectedElements.map(e => e.id), this.dragXOffset, this.dragYOffset);
                 this.dragXOffset = 0;
@@ -525,12 +576,13 @@ export class BaseGraphDisplay {
         }
     }
 
-    // call to propagate changes to graph
+    // propagates new changes to graph
     updateGraph(dragmove: boolean = false) {
         this.drawPaths();
         this.fullRenderElements(dragmove);
     }
 
+    // called on any form of scaling or translation
     zoomed() {
         this.justScaleTransGraph = true;
         if (this.prevScale !== (<ZoomEvent>d3.event).scale || d3.event.sourceEvent.buttons == 2) {
