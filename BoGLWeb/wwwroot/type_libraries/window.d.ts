@@ -3,7 +3,7 @@ import { backendManager } from "./../backendManager";
 import { SystemDiagramDisplay } from "../types/display/SystemDiagramDisplay";
 import { BondGraphDisplay } from "../types/display/BondGraphDisplay";
 
-// Adds the elements we're storing on the window to the window type
+// adds the elements we're storing on the window to the window type
 declare global {
     interface Window {
         systemDiagramSVG: SVGSelection;

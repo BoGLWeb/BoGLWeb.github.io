@@ -1,5 +1,7 @@
-﻿export class GraphElement {
+﻿// provides basic information about a graph element
+export class GraphElement {
     id: number;
+    // the graph element x and y positions
     x: number;
     y: number;
 
