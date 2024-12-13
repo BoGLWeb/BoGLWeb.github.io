@@ -213,7 +213,7 @@
       "url": "images\/elements\/gravity.svg"
     },
     {
-      "hash": "sha256-5SwMXhbMPJ6rD\/hdzgb9ZwLlbjsutWWoBuEYSgSDz\/Q=",
+      "hash": "sha256-09WjJxIjUyMFyAX08aXDCNp+or\/UoThPPiC+YJwZqjs=",
       "url": "images\/elements\/inductor.svg"
     },
     {
@@ -5629,5 +5629,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "YzToaLPV"
+  "version": "XlcYJ8NC"
 };
