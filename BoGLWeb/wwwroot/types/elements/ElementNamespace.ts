@@ -30,14 +30,14 @@ export namespace ElementNamespace {
     // all system diagram element types
     export const elementTypes: ElementType[] = [
         new ElementType(0, "Mass", 0, "mass", [3], true),
-        new ElementType(1, "Spring", 0, "spring", [5], true, 2),
+        new ElementType(1, "Spring", 0, "transSpring", [5], true, 2),
         new ElementType(2, "Damper", 0, "damper", [5], true, 2),
         new ElementType(3, "Ground", 0, "mech_ground", [], false),
         new ElementType(4, "Force Input", 0, "force_input", [], true),
         new ElementType(5, "Gravity", 0, "gravity", [], false),
         new ElementType(6, "Velocity Input", 0, "velocity_input", [], true),
         new ElementType(7, "Flywheel", 1, "flywheel", [], true),
-        new ElementType(8, "Rotational Spring", 1, "spring", [5], true, 2),
+        new ElementType(8, "Rotational Spring", 1, "rotSpring", [5], true, 2),
         new ElementType(9, "Rotational Damper", 1, "damper", [5], true, 2),
         new ElementType(10, "Torque Input", 1, "torque_input", [], true),
         new ElementType(11, "Velocity Input", 1, "velocity_input", [], true),
