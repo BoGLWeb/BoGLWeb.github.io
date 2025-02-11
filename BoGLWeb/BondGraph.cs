@@ -2,6 +2,7 @@
 using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,14 +15,16 @@ namespace BoGLWeb {
         protected Dictionary<string, Element> elements;
         [JsonProperty]
         protected List<Bond> bonds;
-
+        
         /// <summary>
         /// Creates an instance of BondGraph
         /// </summary>
         public BondGraph() {
+            
             this.elements = new Dictionary<string, Element>();
             this.bonds = new List<Bond>();
         }
+        
 
         /// <summary>
         /// Copies a separate object into this <c>BondGraph</c>.
@@ -124,8 +127,11 @@ namespace BoGLWeb {
                 throw new ArgumentException("Graph was null");
             }
 
-            BondGraph bondGraph = new();
+            Element.resetUni();
+            Bond.resetUni();
 
+            BondGraph bondGraph = new();
+            
             //Construct an Element for each node
             foreach(node node in graph.nodes) {
                 StringBuilder sb = new();
@@ -141,7 +147,7 @@ namespace BoGLWeb {
                         break;
                     }
                 }
-
+                
                 bondGraph.addElement(node.name, new Element(node.name, label, 0));
             }
 
@@ -170,6 +176,7 @@ namespace BoGLWeb {
                 }
             }
 
+           
             return bondGraph;
         }
 
@@ -261,7 +268,11 @@ namespace BoGLWeb {
                 this.name = name;
                 this.label = label;
                 this.value = value;
-                AssignID(0, true);
+                bool dist = false;
+                if (name.Contains(":") || label.Contains("1") || label.Contains("0")) {
+                    dist = true;
+                }
+                AssignID(0, dist);
 
                 Random rnd = new();
                 this.x = rnd.Next(2000);
@@ -358,6 +369,10 @@ namespace BoGLWeb {
                        this.name.Equals(element.name);
             }
 
+            public static void resetUni() {
+                universalID = 0;
+            }
+
             /// <summary>
             /// Creates a hash code for the element using the element's name
             /// </summary>
@@ -418,7 +433,7 @@ namespace BoGLWeb {
             public string flowLabel = "f";
             [JsonProperty]
             public string effortLabel = "e";
-
+            
             //The arrow will always point at the sink
             /// <summary>
             /// Creates a Bond between two elements
@@ -444,7 +459,11 @@ namespace BoGLWeb {
                 this.flow = flow;
                 this.effort = effort;
                 this.hasDirection = hasDirection;
-                AssignID(0, true);
+                this.ID = source.GetID();
+            }
+
+            public static void resetUni() {
+                universalID = 0;
             }
 
             /// <summary>
