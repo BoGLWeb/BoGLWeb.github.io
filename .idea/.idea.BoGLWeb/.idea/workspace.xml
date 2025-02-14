@@ -9,9 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/BondGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/BondGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/GraphProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/GraphProcessor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/mass.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,6 +120,8 @@
       <workItem from="1738935136341" duration="4303000" />
       <workItem from="1739139388895" duration="1009000" />
       <workItem from="1739286019019" duration="1400000" />
+      <workItem from="1739299678206" duration="564000" />
+      <workItem from="1739412016434" duration="192000" />
     </task>
     <task id="LOCAL-00001" summary="New spring images">
       <option name="closed" value="true" />
