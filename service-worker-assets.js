@@ -229,7 +229,7 @@
       "url": "images\/elements\/lever.svg"
     },
     {
-      "hash": "sha256-XUKVyjC6LBLOlQ8q5g\/47fHHHuDJPJT\/5t+FMSy4uiM=",
+      "hash": "sha256-FUz0itftTqTPg2TKea9APnGQPZ+lcvHBpDMwiD0WS50=",
       "url": "images\/elements\/mass.svg"
     },
     {
@@ -261,6 +261,10 @@
       "url": "images\/elements\/resistor.svg"
     },
     {
+      "hash": "sha256-sElQz3X78e4hLHFF3rysmbyPSsbowzHfSBRd0PPD6EI=",
+      "url": "images\/elements\/rotSpring.svg"
+    },
+    {
       "hash": "sha256-kbJSrKwS8wNEioMOLevX\/DT9mNSw\/AQibRCZBXvKMoQ=",
       "url": "images\/elements\/shaft.svg"
     },
@@ -275,6 +279,10 @@
     {
       "hash": "sha256-HCphSz8Q40PGTDw+WoLrqjjLs21XiJWpHWwYRlQs+FM=",
       "url": "images\/elements\/transformer.svg"
+    },
+    {
+      "hash": "sha256-1o3ZrM\/SM1YPYM\/vBZBprzh1hDadm1hIjDVV+VQCYN4=",
+      "url": "images\/elements\/transSpring.svg"
     },
     {
       "hash": "sha256-tuWlZ\/ek5pCGN3KaLjoJi4mGooM5i3xJkmsJffZYh5o=",
@@ -3401,7 +3409,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-5TNTgNfbPDeUBVIcNZu9sIpI9lQNeh9Klzc+gifLA44=",
+      "hash": "sha256-hJYre2exvNlBeFfCQJYbos1UzDQO1ECLZ\/OwTq7ytlI=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3409,7 +3417,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-3lft7GQ+Z1mdgcaUjQRYEar\/+llgTbsQPMBCAs5YoOU=",
+      "hash": "sha256-7y2aRAbb93Xbz0ZWys19ImwMsD12XI0oD+X3Fy3Ocq4=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5629,5 +5637,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "XlcYJ8NC"
+  "version": "ICVY7WVm"
 };

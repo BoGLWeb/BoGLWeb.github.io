@@ -12,7 +12,7 @@ define("types/elements/GraphElement", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GraphElement = void 0;
     class GraphElement {
-        constructor(id, x, y) {
+        constructor(id, x, y, label) {
             this.id = id;
             this.x = x;
             this.y = y;
@@ -44,15 +44,21 @@ define("types/bonds/BondGraphBond", ["require", "exports", "types/bonds/GraphBon
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BondGraphBond = void 0;
     class BondGraphBond extends GraphBond_1.GraphBond {
-        constructor(id, source, target, causalStroke, causalStrokeDirection, hasDirection, effortLabel, flowLabel, velocity = 0) {
+        constructor(id, source, target, causalStroke, causalStrokeDirection, hasDirection, effortLabel, flowLabel, velocity = 0, srclbl, tarlbl, srcId, tarID) {
             super(source, target, velocity);
             this.id = 0;
+            this.srcID = 700;
+            this.tarID = 800;
             this.id = id;
             this.causalStroke = causalStroke;
             this.causalStrokeDirection = causalStrokeDirection;
             this.hasDirection = hasDirection;
             this.effortLabel = effortLabel;
             this.flowLabel = flowLabel;
+            this.srclbl = srclbl;
+            this.tarlbl = tarlbl;
+            this.srcID = srcId;
+            this.tarID = tarID;
         }
     }
     exports.BondGraphBond = BondGraphBond;
@@ -183,14 +189,14 @@ define("types/elements/ElementNamespace", ["require", "exports", "types/elements
         ];
         ElementNamespace.elementTypes = [
             new ElementType_2.ElementType(0, "Mass", 0, "mass", [3], true),
-            new ElementType_2.ElementType(1, "Spring", 0, "spring", [5], true, 2),
+            new ElementType_2.ElementType(1, "Spring", 0, "transSpring", [5], true, 2),
             new ElementType_2.ElementType(2, "Damper", 0, "damper", [5], true, 2),
             new ElementType_2.ElementType(3, "Ground", 0, "mech_ground", [], false),
             new ElementType_2.ElementType(4, "Force Input", 0, "force_input", [], true),
             new ElementType_2.ElementType(5, "Gravity", 0, "gravity", [], false),
             new ElementType_2.ElementType(6, "Velocity Input", 0, "velocity_input", [], true),
             new ElementType_2.ElementType(7, "Flywheel", 1, "flywheel", [], true),
-            new ElementType_2.ElementType(8, "Rotational Spring", 1, "spring", [5], true, 2),
+            new ElementType_2.ElementType(8, "Rotational Spring", 1, "rotSpring", [5], true, 2),
             new ElementType_2.ElementType(9, "Rotational Damper", 1, "damper", [5], true, 2),
             new ElementType_2.ElementType(10, "Torque Input", 1, "torque_input", [], true),
             new ElementType_2.ElementType(11, "Velocity Input", 1, "velocity_input", [], true),
@@ -1465,6 +1471,9 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             return (label1 && this.getAngle(d) > 0) || (!label1 && this.getAngle(d) < 0) ? "end" : "start";
         }
         pathExtraRendering(paths, pathGroup) {
+            let flows = ['v', 'i'];
+            let specs = ['x', 'q'];
+            let effs = ['p', 'ϕ'];
             paths.style('marker-end', (d) => {
                 if (d.hasDirection) {
                     return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -1492,7 +1501,52 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     .classed("bondGraphText", true);
                 label1.append("tspan")
                     .attr("text-anchor", "middle")
-                    .text((d) => d.id)
+                    .text((d) => {
+                    let flow = flows.indexOf(d.flowLabel[0]);
+                    let spec = specs.indexOf(d.flowLabel[0]);
+                    let eff = effs.indexOf(d.effortLabel[0]);
+                    if (this.isEffortLabel(d, true)) {
+                        if (d.effortLabel[0] == 'F') {
+                            if (d.srclbl.includes('F'))
+                                return d.srcID;
+                            return d.tarID;
+                        }
+                        if (eff >= 0) {
+                            return d.tarID;
+                        }
+                        return d.srcID;
+                    }
+                    else {
+                        if (spec >= 0) {
+                            return d.tarID;
+                        }
+                        if (spec >= 0) {
+                            return d.tarID;
+                        }
+                        if (flow >= 0) {
+                            if (d.flowLabel[0] == flows[flow]) {
+                                if (d.srclbl[2] == flows[flow]) {
+                                    return d.srcID;
+                                }
+                                else {
+                                    return d.tarID;
+                                }
+                            }
+                            else {
+                                return d.tarID;
+                            }
+                        }
+                        if (d.srclbl.includes(d.flowLabel[0])) {
+                            return d.srcID;
+                        }
+                        else if (d.tarlbl.includes(d.flowLabel[0])) {
+                            return d.srcID;
+                        }
+                        else {
+                            return d.srcID;
+                        }
+                    }
+                })
                     .style('font-size', '10px')
                     .style('baseline-shift', 'sub');
                 let label2 = pathGroup.append("text")
@@ -1509,7 +1563,49 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     .classed("bondGraphText", true);
                 label2.append("tspan")
                     .attr("text-anchor", "middle")
-                    .text((d) => d.id)
+                    .text((d) => {
+                    let flow = flows.indexOf(d.flowLabel[0]);
+                    let spec = specs.indexOf(d.flowLabel[0]);
+                    let eff = effs.indexOf(d.effortLabel[0]);
+                    if (this.isEffortLabel(d, false)) {
+                        if (d.effortLabel[0] == 'F') {
+                            if (d.srclbl.includes('F'))
+                                return d.srcID;
+                            return d.tarID;
+                        }
+                        if (eff >= 0) {
+                            return d.tarID;
+                        }
+                        return d.srcID;
+                    }
+                    else {
+                        if (flow >= 0) {
+                            if (d.flowLabel[0] == flows[flow]) {
+                                if (d.srclbl[2] == flows[flow]) {
+                                    return d.srcID;
+                                }
+                                else {
+                                    return d.tarID;
+                                }
+                            }
+                            else {
+                                return d.tarID;
+                            }
+                        }
+                        if (eff >= 0) {
+                            return d.tarID;
+                        }
+                        if (d.srclbl.includes(d.flowLabel[0])) {
+                            return d.srcID;
+                        }
+                        else if (d.tarlbl.includes(d.flowLabel[0])) {
+                            return d.srcID;
+                        }
+                        else {
+                            return d.srcID;
+                        }
+                    }
+                })
                     .style('font-size', '10px')
                     .style('baseline-shift', 'sub');
             }
@@ -1555,7 +1651,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 let bg = JSON.parse(jsonString);
                 let elements = Array.from(this.centerElements(JSON.parse(bg.elements), true).values());
                 let bonds = JSON.parse(bg.bonds).map(b => {
-                    return new BondGraphBond_1.BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel);
+                    return new BondGraphBond_1.BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel, 0, elements[b.sourceID].label, elements[b.targetID].label, b.sourceID, b.targetID);
                 });
                 let bondGraph = new BondGraphDisplay_1.BondGraphDisplay(id, svg, new BondGraph_1.BondGraph(elements, bonds));
                 if (id == 0) {
