@@ -1,0 +1,3409 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\bin\\Debug\\net6.0\\wwwroot\\_framework\\blazor.webassembly.js",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\.nojekyll",
+      "PackagePath": "staticwebassets\\.nojekyll"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0CapacitorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0CapacitorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0CapacitorFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0CapacitorFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0CapacitorFlip33.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0CapacitorFlip33.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0CapacitorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0CapacitorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0InductorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0InductorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0InductorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0InductorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0JuncInvd.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0JuncInvd.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0JuncInvdNA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0JuncInvdNA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0RFlag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0RFlag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0Resistor2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0Resistor2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\0Resistor3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\0Resistor3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\10Flip1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\10Flip1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\10Flip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\10Flip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\10Flip3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\10Flip3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\10Flip4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\10Flip4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1CapacitorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1CapacitorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1CapacitorFlip22.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1CapacitorFlip22.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1CapacitorFlip3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1CapacitorFlip3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1CapacitorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1CapacitorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1InductorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1InductorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1InductorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1InductorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1JuncInvd.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1JuncInvd.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1JuncInvdNA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1JuncInvdNA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1RFlag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1RFlag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1Resistor2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1Resistor2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\1Resistor3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\1Resistor3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Adjacent0DirFix.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Adjacent0DirFix.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Adjacent0DirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Adjacent0DirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Adjacent1DirFix.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Adjacent1DirFix.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Adjacent1DirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Adjacent1DirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\AxleRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\AxleRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BadParallelRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\BadParallelRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BearingRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\BearingRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BeforeBG-PopulateVelAdded.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\BeforeBG-PopulateVelAdded.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BeforeBG-VerifyDirRuleSet.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\BeforeBG-VerifyDirRuleSet.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BeltRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\BeltRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BeltRule_Modified_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\BeltRule_Modified_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\BondGraphRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\BondGraphRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CalibrationNewRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CalibrationNewRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CalibrationNewRuleset_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CalibrationNewRuleset_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CalibrationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CalibrationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CapacitorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CapacitorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality0CapacitorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality0CapacitorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality0InductorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality0InductorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality0ResistorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality0ResistorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality101Down.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality101Down.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality102.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality102.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality103.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality103.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality104.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality104.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality10Correct.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality10Correct.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality10New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality10New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality11New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality11New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality1CapacitorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality1CapacitorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality1InductorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality1InductorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Causality1ResistorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Causality1ResistorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityCalibrationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityCalibrationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityGY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityGY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityGY2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityGY2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityIntegralC.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityIntegralC.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityIntegralI.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityIntegralI.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityResistorJunc.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityResistorJunc.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityResistorR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityResistorR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalitySe.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalitySe.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalitySf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalitySf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTF2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTF2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTFGYTest.gxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTFGYTest.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTestGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTestGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTestGraphBeforeCorrections.gxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTestGraphBeforeCorrections.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CausalityTestGraphBeforeR.gxml",
+      "PackagePath": "staticwebassets\\Rules\\CausalityTestGraphBeforeR.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Centrifugal_Pump_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Centrifugal_Pump_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingAdj0Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingAdj0Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingAdj1Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingAdj1Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingFlowThr0Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingFlowThr0Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingFlowThr1Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingFlowThr1Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJunc10Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJunc10Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJunc10Rule1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJunc10Rule1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJunc11Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJunc11Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1GY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1GY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRule1TF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRule1TF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleGY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleGY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleI.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleI.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleSe.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleSe.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleSf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleSf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingINVDJuncRuleTF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingINVDJuncRuleTF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CheckingRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\CheckingRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Circuit1Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Circuit1Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Circuit2Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Circuit2Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Clean23Ruleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Clean23Ruleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Clean2Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Clean2Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Clean3Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Clean3Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CleanDNR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CleanDNR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CleanGA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CleanGA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CleanINVDRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CleanINVDRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CleanNone.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CleanNone.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\CurrentRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\CurrentRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DamperRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DamperRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DemoGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\DemoGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DemoGraphRulesApplied.gxml",
+      "PackagePath": "staticwebassets\\Rules\\DemoGraphRulesApplied.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DemoGraphRulesAppliedFinalGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\DemoGraphRulesAppliedFinalGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Dir10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Dir10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirAppliedCleanRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirAppliedCleanRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirApplyRemaining.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirApplyRemaining.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirCleanupRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirCleanupRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirFixRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirFixRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirFlowthrough01.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirFlowthrough01.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirFlowthrough02.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirFlowthrough02.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirFlowthrough11.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirFlowthrough11.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirFlowthrough12.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirFlowthrough12.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirMark.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirMark.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirMarkRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\DirMarkRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\DirRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\DirRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirRuleset3.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\DirRuleset3.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirSeTag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirSeTag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirSfTag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirSfTag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirTagMark.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirTagMark.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DirTagMark2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DirTagMark2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Direction_Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Direction_Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DisconnectedCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\DisconnectedCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\DisconnectedCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\DisconnectedCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ECEGraph Test.gxml",
+      "PackagePath": "staticwebassets\\Rules\\ECEGraph Test.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0A.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0A.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0CA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0CA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0IA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0IA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0RA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0RA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0Se2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0Se2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0SeA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0SeA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0Sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0Sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0Sf2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0Sf2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough0SfA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough0SfA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1A.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1A.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1CA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1CA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1IA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1IA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1RA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1RA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1Se2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1Se2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1SeA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1SeA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1Sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1Sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1Sf2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1Sf2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Flowthrough1SfA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Flowthrough1SfA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\FlywheelRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\FlywheelRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\FlywheelShaftGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\FlywheelShaftGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ForceRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ForceRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ForceRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ForceRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\FrictionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\FrictionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GYdirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GYdirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GYdirFix2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GYdirFix2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GearStandaloneRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GearStandaloneRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GearTrainRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GearTrainRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GearTrainRule_GearAdded.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GearTrainRule_GearAdded.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GravityRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GravityRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GravityTagRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GravityTagRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GroundCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GroundCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GroundCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\GroundCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GroundJunctionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GroundJunctionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GroundRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GroundRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GroundTaggedRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GroundTaggedRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\GyratorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\GyratorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\HydraulicIncreaseRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\HydraulicIncreaseRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Hydraulic_Jack_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Hydraulic_Jack_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ICCalibrationRuleSet.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\ICCalibrationRuleSet.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ICFixTotalRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\ICFixTotalRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDCheck.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDCheck.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDCheckRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDCheckRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDCheckStopRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDCheckStopRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDMarkerRules.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDMarkerRules.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDMarkerRules_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDMarkerRules_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDRFlagFlip1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDRFlagFlip1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\INVDRFlagFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\INVDRFlagFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeInertiaRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeInertiaRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeInertiaRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeInertiaRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeInertiaRule_Modified.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeInertiaRule_Modified.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeMassRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeMassRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeStiffness.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeStiffness.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeStiffnessRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeStiffnessRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeStiffnessRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeStiffnessRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\IncludeStiffnessRule3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\IncludeStiffnessRule3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\InductorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\InductorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\InverseCRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\InverseCRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\InverseRRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\InverseRRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\InverseSpringRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\InverseSpringRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\Copy a Label.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\Copy a Label.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\Find Housings.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\Find Housings.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\Gearmate.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\Gearmate.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\Gearmate2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\Gearmate2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\InversionRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\InversionRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\random test.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\random test.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Inversion Rules\\test file.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Inversion Rules\\test file.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\InversionRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\InversionRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\JunctionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\JunctionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LabelGears.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LabelGears.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LabelGears1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LabelGears1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LabelShafts.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LabelShafts.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LargeECEGraphNew.gxml",
+      "PackagePath": "staticwebassets\\Rules\\LargeECEGraphNew.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LevelRule_Modified_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LevelRule_Modified_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LevelRule_Modified_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LevelRule_Modified_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LeverRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LeverRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LeveraddedRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LeveraddedRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\LinVelLeverRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\LinVelLeverRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MarkupBeforeICRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\MarkupBeforeICRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MassRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MassRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MassSpringDamper.gxml",
+      "PackagePath": "staticwebassets\\Rules\\MassSpringDamper.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MassSpringDamperIncludeFriction.gxml",
+      "PackagePath": "staticwebassets\\Rules\\MassSpringDamperIncludeFriction.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MotorBasicRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MotorBasicRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MotorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MotorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MotorRule_Modified_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MotorRule_Modified_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MotorRule_Modified_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MotorRule_Modified_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MotorRule_Modified_3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MotorRule_Modified_3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MovePartLabels.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MovePartLabels.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\MoveTFEnds.grxml",
+      "PackagePath": "staticwebassets\\Rules\\MoveTFEnds.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NewCausalityMethodRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\NewCausalityMethodRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NewCausalityMethodRuleset_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\NewCausalityMethodRuleset_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NewCausalityMethodRuleset_3.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\NewCausalityMethodRuleset_3.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NewCorrectionMethodTestRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\NewCorrectionMethodTestRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\New_Direction_rules.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\New_Direction_rules.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\New_direction_removestart.grxml",
+      "PackagePath": "staticwebassets\\Rules\\New_direction_removestart.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NoGroundCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\NoGroundCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\NoGroundCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\NoGroundCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\OPPRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\OPPRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Piston_Cylinder_Imperfect_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Piston_Cylinder_Imperfect_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Piston_Cylinder_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Piston_Cylinder_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Positive_Disp_Pump_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Positive_Disp_Pump_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PressureAtmRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PressureAtmRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PressureJuncRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PressureJuncRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyMountRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyMountRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyMountRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyMountRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyRule_Modified_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyRule_Modified_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyRule_Modified_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyRule_Modified_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PulleyaddedRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PulleyaddedRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\PumpRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\PumpRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RFlagClean.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RFlagClean.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RFlagCleanRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\RFlagCleanRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RackPinionGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\RackPinionGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RackPinionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RackPinionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RackPinionRule_gearadded.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RackPinionRule_gearadded.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RackPinionRule_rackadded.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RackPinionRule_rackadded.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ReliefRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ReliefRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Remove0FromShaft.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Remove0FromShaft.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RemoveGearGear0DOF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RemoveGearGear0DOF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RemoveGearShaftCoincident.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RemoveGearShaftCoincident.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RemoveGearmate.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RemoveGearmate.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ReservoirSourceRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ReservoirSourceRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ReservoirStorageRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ReservoirStorageRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ResistorApply1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ResistorApply1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ResistorApply2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ResistorApply2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ResistorApply3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ResistorApply3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ResistorApply4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ResistorApply4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ResistorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ResistorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RestrictionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\RestrictionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\RuleSetPaths.txt",
+      "PackagePath": "staticwebassets\\Rules\\RuleSetPaths.txt"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules.zip",
+      "PackagePath": "staticwebassets\\Rules\\Rules.zip"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0CapacitorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0CapacitorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0CapacitorFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0CapacitorFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0CapacitorFlip33.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0CapacitorFlip33.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0CapacitorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0CapacitorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0InductorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0InductorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0InductorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0InductorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0JuncInvd.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0JuncInvd.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0JuncInvdNA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0JuncInvdNA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0RFlag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0RFlag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0Resistor2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0Resistor2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\0Resistor3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\0Resistor3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\10Flip1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\10Flip1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\10Flip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\10Flip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\10Flip3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\10Flip3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\10Flip4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\10Flip4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1CapacitorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1CapacitorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1CapacitorFlip22.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1CapacitorFlip22.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1CapacitorFlip3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1CapacitorFlip3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1CapacitorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1CapacitorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1InductorFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1InductorFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1InductorFlipCorrect.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1InductorFlipCorrect.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1JuncInvd.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1JuncInvd.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1JuncInvdNA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1JuncInvdNA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1RFlag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1RFlag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1Resistor2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1Resistor2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\1Resistor3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\1Resistor3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Adjacent0DirFix.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Adjacent0DirFix.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Adjacent0DirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Adjacent0DirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Adjacent1DirFix.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Adjacent1DirFix.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Adjacent1DirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Adjacent1DirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\AxleRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\AxleRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\BadParallelRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\BadParallelRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\BearingRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\BearingRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\BeltRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\BeltRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\BondGraphRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\BondGraphRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CalibrationNewRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CalibrationNewRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CalibrationNewRuleset_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CalibrationNewRuleset_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CalibrationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CalibrationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CapacitorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CapacitorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality0CapacitorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality0CapacitorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality0InductorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality0InductorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality0ResistorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality0ResistorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality101Down.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality101Down.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality102.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality102.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality103.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality103.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality104.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality104.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality10Correct.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality10Correct.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality10New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality10New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality11New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality11New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality1CapacitorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality1CapacitorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality1InductorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality1InductorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Causality1ResistorAdjust.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Causality1ResistorAdjust.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityCalibrationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityCalibrationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityGY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityGY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityGY2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityGY2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityIntegralC.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityIntegralC.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityIntegralI.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityIntegralI.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityResistorJunc.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityResistorJunc.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityResistorR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityResistorR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalitySe.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalitySe.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalitySf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalitySf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTF2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTF2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTFGYTest.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTFGYTest.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTestGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTestGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTestGraphBeforeCorrections.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTestGraphBeforeCorrections.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CausalityTestGraphBeforeR.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CausalityTestGraphBeforeR.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Centrifugal_Pump_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Centrifugal_Pump_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingAdj0Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingAdj0Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingAdj1Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingAdj1Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingFlowThr0Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingFlowThr0Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingFlowThr1Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingFlowThr1Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJunc10Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJunc10Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJunc10Rule1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJunc10Rule1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJunc11Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJunc11Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1GY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1GY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1TF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRule1TF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleGY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleGY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleI.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleI.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleSe.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleSe.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleSf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleSf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleTF.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingINVDJuncRuleTF.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CheckingRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CheckingRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Circuit1Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Circuit1Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Circuit2Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Circuit2Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Clean23Ruleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Clean23Ruleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Clean2Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Clean2Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Clean3Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Clean3Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CleanDNR.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CleanDNR.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CleanGA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CleanGA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CleanINVDRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CleanINVDRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CleanNone.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CleanNone.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\CurrentRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\CurrentRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DamperRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DamperRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DemoGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DemoGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DemoGraphRulesApplied.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DemoGraphRulesApplied.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DemoGraphRulesAppliedFinalGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DemoGraphRulesAppliedFinalGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Dir10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Dir10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirAppliedCleanRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirAppliedCleanRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirApplyRemaining.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirApplyRemaining.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirCleanupRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirCleanupRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirFixRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirFixRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirFlowthrough01.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirFlowthrough01.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirFlowthrough02.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirFlowthrough02.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirFlowthrough11.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirFlowthrough11.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirFlowthrough12.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirFlowthrough12.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirMark.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirMark.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirMarkRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirMarkRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirRuleset3.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirRuleset3.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirSeTag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirSeTag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirSfTag.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirSfTag.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirTagMark.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirTagMark.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DirTagMark2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DirTagMark2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Direction_Graph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Direction_Graph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DisconnectedCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DisconnectedCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\DisconnectedCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\DisconnectedCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ECEGraph Test.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ECEGraph Test.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0A.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0A.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0CA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0CA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0IA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0IA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0RA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0RA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0Se2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0Se2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0SeA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0SeA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0Sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0Sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0Sf2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0Sf2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough0SfA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough0SfA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1A.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1A.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1CA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1CA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1IA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1IA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1RA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1RA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1Se2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1Se2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1SeA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1SeA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1Sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1Sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1Sf2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1Sf2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Flowthrough1SfA.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Flowthrough1SfA.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\FlywheelRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\FlywheelRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\FlywheelShaftGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\FlywheelShaftGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ForceRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ForceRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\FrictionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\FrictionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GYdirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GYdirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GYdirFix2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GYdirFix2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GearTrainRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GearTrainRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GravityRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GravityRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GravityTagRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GravityTagRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GroundCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GroundCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GroundCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GroundCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GroundJunctionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GroundJunctionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GroundRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GroundRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GroundTaggedRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GroundTaggedRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\GyratorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\GyratorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\HydraulicIncreaseRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\HydraulicIncreaseRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Hydraulic_Jack_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Hydraulic_Jack_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ICCalibrationRuleSet.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ICCalibrationRuleSet.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ICFixTotalRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ICFixTotalRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDCheck.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDCheck.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDCheckRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDCheckRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDCheckStopRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDCheckStopRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDFlip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDFlip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDMarkerRules.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDMarkerRules.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDMarkerRules_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDMarkerRules_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDRFlagFlip1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDRFlagFlip1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\INVDRFlagFlip2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\INVDRFlagFlip2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\IncludeInertiaRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\IncludeInertiaRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\IncludeMassRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\IncludeMassRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\IncludeStiffnessRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\IncludeStiffnessRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\InductorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\InductorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\InverseCRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\InverseCRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\InverseRRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\InverseRRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\InverseSpringRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\InverseSpringRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\JunctionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\JunctionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\LargeECEGraphNew.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\LargeECEGraphNew.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\LeverRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\LeverRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\LinVelLeverRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\LinVelLeverRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MarkupBeforeICRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MarkupBeforeICRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MassRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MassRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MassSpringDamper.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MassSpringDamper.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MassSpringDamperIncludeFriction.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MassSpringDamperIncludeFriction.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MotorBasicRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MotorBasicRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\MotorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\MotorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset_3.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NewCausalityMethodRuleset_3.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NewCorrectionMethodTestRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NewCorrectionMethodTestRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NoGroundCheckRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NoGroundCheckRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\NoGroundCheckRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\NoGroundCheckRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\OPPRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\OPPRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Piston_Cylinder_Imperfect_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Piston_Cylinder_Imperfect_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Piston_Cylinder_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Piston_Cylinder_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Positive_Disp_Pump_Rule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Positive_Disp_Pump_Rule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PressureAtmRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PressureAtmRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PressureJuncRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PressureJuncRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PulleyMountRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PulleyMountRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PulleyMountRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PulleyMountRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PulleyRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PulleyRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\PumpRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\PumpRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\RFlagClean.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\RFlagClean.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\RFlagCleanRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\RFlagCleanRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\RackPinionGraph.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\RackPinionGraph.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\RackPinionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\RackPinionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ReliefRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ReliefRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ReservoirSourceRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ReservoirSourceRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ReservoirStorageRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ReservoirStorageRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ResistorApply1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ResistorApply1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ResistorApply2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ResistorApply2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ResistorApply3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ResistorApply3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ResistorApply4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ResistorApply4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ResistorRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ResistorRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\RestrictionRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\RestrictionRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SAMERule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SAMERule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\ShaftRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\ShaftRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step1Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step1Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step2Dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step2Dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step2Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step2Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step3Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step3Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification00Step4Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification00Step4Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step1Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step1Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step2Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step2Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step2dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step2dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step3Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step3Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification11Step4Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification11Step4Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Simplification2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Simplification2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationDoubleArrow00.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationDoubleArrow00.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationDoubleArrow10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationDoubleArrow10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationDoubleArrow11.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationDoubleArrow11.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough2C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough2C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough2I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough2I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationFlowThrough2Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationFlowThrough2Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationGroundStep1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationGroundStep1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationGroundStep2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationGroundStep2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel0Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel0Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel0Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel0Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel0Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel0Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel0Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel0Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel1Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel1Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel1Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel1Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel1Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel1Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationParallel1Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationParallel1Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTF11Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTF11Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTF11Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTF11Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTFTFStep1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTFTFStep1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTFTFStep2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTFTFStep2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTFTFStep3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTFTFStep3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplificationTFTFStep4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplificationTFTFStep4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SimplifiedECEGraph Test.gxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SimplifiedECEGraph Test.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\SpringRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\SpringRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\StorageTankRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\StorageTankRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TFCalibration1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TFCalibration1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TFCalibration2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TFCalibration2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TFEndRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TFEndRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TFdirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TFdirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TFdirFix2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TFdirFix2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TankInput.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TankInput.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TestRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TestRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TestRuleset1IC.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TestRuleset1IC.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\Torque_InputRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\Torque_InputRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TranformerECERule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TranformerECERule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TranformerFlipRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TranformerFlipRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TranformerFlipRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TranformerFlipRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TranformerRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TranformerRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TransformerFlipRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TransformerFlipRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\TransformerFlipRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\TransformerFlipRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\VelocitySource.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\VelocitySource.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\VoiceCoilTransducerRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\VoiceCoilTransducerRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\VoltageRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\VoltageRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_1_1_i.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_1_1_i.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_1_o_c.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_1_o_c.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_1_o_r.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_1_o_r.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Rules_ORIG\\dir_sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Rules_ORIG\\dir_sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SAMERule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SAMERule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\ShaftRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\ShaftRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step1Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step1Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step2Dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step2Dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step2Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step2Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step3Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step3Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification00Step4Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification00Step4Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step1Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step1Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step2Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step2Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step2dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step2dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step3Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step3Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification11Step4Parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification11Step4Parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Simplification2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\Simplification2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationDoubleArrow00.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationDoubleArrow00.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationDoubleArrow10.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationDoubleArrow10.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationDoubleArrow11.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationDoubleArrow11.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough1C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough1C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough1I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough1I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough1Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough1Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough2C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough2C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough2I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough2I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationFlowThrough2Se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationFlowThrough2Se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationGroundStep1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationGroundStep1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationGroundStep2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationGroundStep2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel0Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel0Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel0Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel0Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel0Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel0Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel0Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel0Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel1Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel1Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel1Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel1Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel1Step3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel1Step3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationParallel1Step4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationParallel1Step4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTF11Step1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTF11Step1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTF11Step2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTF11Step2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTFTFStep1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTFTFStep1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTFTFStep2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTFTFStep2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTFTFStep3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTFTFStep3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplificationTFTFStep4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplificationTFTFStep4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SimplifiedECEGraph Test.gxml",
+      "PackagePath": "staticwebassets\\Rules\\SimplifiedECEGraph Test.gxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SolidworksRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\SolidworksRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\SpringRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\SpringRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddIntermediate0-1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddIntermediate0-1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddIntermediate1-0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddIntermediate1-0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddIntermediate2-0-1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddIntermediate2-0-1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddIntermediate2-1-0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddIntermediate2-1-0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddSummIndication0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddSummIndication0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_AddSummIndication1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_AddSummIndication1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_EqualFlow_1junction.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_EqualFlow_1junction.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Equaleffort_0junction.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Equaleffort_0junction.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_FormatForSum.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_FormatForSum.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_FormatGraph.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_FormatGraph.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_GY_Effort.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_GY_Effort.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_GY_Flow.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_GY_Flow.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_REMOVEIntermediate2-1-0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_REMOVEIntermediate2-1-0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_RemoveSumIndication.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_RemoveSumIndication.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Ruleset_1.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Ruleset_1.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Ruleset_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Ruleset_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Ruleset_2Backup.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Ruleset_2Backup.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Ruleset_3.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Ruleset_3.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_SourceEffort.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_SourceEffort.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_SourceFlowt.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_SourceFlowt.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum1_IndicationNEW.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum1_IndicationNEW.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_AddLabels.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_AddLabels.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_EFFORT1-New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_EFFORT1-New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_FLOW0-New.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_FLOW0-New.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_Remove.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_Remove.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_buildequation.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_buildequation.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_effort1Junction.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_effort1Junction.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_flow0Junction.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_flow0Junction.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_knownLabel0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_knownLabel0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_Sum_knownLabel1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_Sum_knownLabel1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_TF_Effort.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_TF_Effort.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_TF_Flow.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_TF_Flow.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_derivative_C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_derivative_C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_derivative_I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_derivative_I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_derivative_R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_derivative_R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_integral_C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_integral_C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_integral_I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_integral_I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_integral_R.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_integral_R.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_label_C.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_label_C.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_label_I.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_label_I.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_label_Source0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_label_Source0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_label_Source1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_label_Source1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_removeSummedLabel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_removeSummedLabel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_sum_apply.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_sum_apply.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_sum_buildequation0.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_sum_buildequation0.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_sum_buildequation1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\State_sum_buildequation1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\State_unFormatGraph.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\State_unFormatGraph.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\StorageTankRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\StorageTankRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TFCalibration1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TFCalibration1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TFCalibration2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TFCalibration2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TFEndRemove.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TFEndRemove.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TFdirFix1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TFdirFix1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TFdirFix2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TFdirFix2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TankInput.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TankInput.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TestRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TestRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TestRuleset1IC.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\TestRuleset1IC.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\Torque_InputRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\Torque_InputRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TranformerECERule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TranformerECERule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TranformerFlipRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TranformerFlipRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TranformerFlipRule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TranformerFlipRule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TranformerRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\TranformerRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TransformerFlipRuleset.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\TransformerFlipRuleset.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\TransformerFlipRuleset2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\TransformerFlipRuleset2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\VelocitySource.grxml",
+      "PackagePath": "staticwebassets\\Rules\\VelocitySource.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\VoiceCoilTransducerRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\VoiceCoilTransducerRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\VoltageRule.grxml",
+      "PackagePath": "staticwebassets\\Rules\\VoltageRule.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir1_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir1_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir2_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir2_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir3_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir3_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\beforeBG_checkdir4_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\beforeBG_checkdir4_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_1_1_i.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_1_1_i.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_1_o_c.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_1_o_c.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_1_o_r.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_1_o_r.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir_3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir_3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir_4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir_4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_dir_5.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_dir_5.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_se.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_se.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_se2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_se2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_se_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_se_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_sf.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_sf.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\dir_sf_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\dir_sf_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_GY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_GY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_TY.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_TY.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_down.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_down.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_down_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_down_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_general.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_general.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_general_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_general_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_general_3.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_general_3.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_general_4.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_general_4.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_left.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_left.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_left_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_left_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_mechRot.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_mechRot.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_parallel.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_parallel.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_right.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_right.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_right_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_right_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_up.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_up.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionConnections_up_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionConnections_up_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\newDirectionRuleSet_2.rsxml",
+      "PackagePath": "staticwebassets\\Rules\\newDirectionRuleSet_2.rsxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\new_direction_attempt.grxml",
+      "PackagePath": "staticwebassets\\Rules\\new_direction_attempt.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\new_direction_flip.grxml",
+      "PackagePath": "staticwebassets\\Rules\\new_direction_flip.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\new_direction_flipother.grxml",
+      "PackagePath": "staticwebassets\\Rules\\new_direction_flipother.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\new_direction_rule2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\new_direction_rule2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\random test.grxml",
+      "PackagePath": "staticwebassets\\Rules\\random test.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\remove_1.grxml",
+      "PackagePath": "staticwebassets\\Rules\\remove_1.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\Rules\\remove_2.grxml",
+      "PackagePath": "staticwebassets\\Rules\\remove_2.grxml"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\bouncingLogo.png",
+      "PackagePath": "staticwebassets\\bouncingLogo.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\build\\build.js",
+      "PackagePath": "staticwebassets\\build\\build.js"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\build\\build.js.map",
+      "PackagePath": "staticwebassets\\build\\build.js.map"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\css\\SegoeUI.woff",
+      "PackagePath": "staticwebassets\\css\\SegoeUI.woff"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\css\\SegoeUIBold.woff",
+      "PackagePath": "staticwebassets\\css\\SegoeUIBold.woff"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\css\\Symbola_arrows.ttf",
+      "PackagePath": "staticwebassets\\css\\Symbola_arrows.ttf"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\css\\main.css",
+      "PackagePath": "staticwebassets\\css\\main.css"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\basic-two-mass-system.bogl",
+      "PackagePath": "staticwebassets\\examples\\basic-two-mass-system.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\basic-two-mass-system1.bogl",
+      "PackagePath": "staticwebassets\\examples\\basic-two-mass-system1.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\basic-two-mass-system2.bogl",
+      "PackagePath": "staticwebassets\\examples\\basic-two-mass-system2.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\classic.bogl",
+      "PackagePath": "staticwebassets\\examples\\classic.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\current_multi_parallel.bogl",
+      "PackagePath": "staticwebassets\\examples\\current_multi_parallel.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\current_parallel.bogl",
+      "PackagePath": "staticwebassets\\examples\\current_parallel.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\current_parallel_with resistors.bogl",
+      "PackagePath": "staticwebassets\\examples\\current_parallel_with resistors.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\electrical_system.bogl",
+      "PackagePath": "staticwebassets\\examples\\electrical_system.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\goof.bogl",
+      "PackagePath": "staticwebassets\\examples\\goof.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\json_test.bogl",
+      "PackagePath": "staticwebassets\\examples\\json_test.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\lrc_circuit.bogl",
+      "PackagePath": "staticwebassets\\examples\\lrc_circuit.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\masses_on_&_off_wheels.bogl",
+      "PackagePath": "staticwebassets\\examples\\masses_on_&_off_wheels.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\masses_on_a_spring.bogl",
+      "PackagePath": "staticwebassets\\examples\\masses_on_a_spring.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\masses_on_wheels.bogl",
+      "PackagePath": "staticwebassets\\examples\\masses_on_wheels.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\masses_on_wheels_with_damper_&_spring.bogl",
+      "PackagePath": "staticwebassets\\examples\\masses_on_wheels_with_damper_&_spring.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\masses_on_wheels_with_spring.bogl",
+      "PackagePath": "staticwebassets\\examples\\masses_on_wheels_with_spring.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\mechrotandrackpinion.bogl",
+      "PackagePath": "staticwebassets\\examples\\mechrotandrackpinion.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\motor-gear-pair.bogl",
+      "PackagePath": "staticwebassets\\examples\\motor-gear-pair.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\motor.bogl",
+      "PackagePath": "staticwebassets\\examples\\motor.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\moving_masses.bogl",
+      "PackagePath": "staticwebassets\\examples\\moving_masses.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\open_circuit.bogl",
+      "PackagePath": "staticwebassets\\examples\\open_circuit.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\plane_motion.bogl",
+      "PackagePath": "staticwebassets\\examples\\plane_motion.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\rack_pinion.bogl",
+      "PackagePath": "staticwebassets\\examples\\rack_pinion.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\rack_pinion_example.bogl",
+      "PackagePath": "staticwebassets\\examples\\rack_pinion_example.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\spring_&_damper.bogl",
+      "PackagePath": "staticwebassets\\examples\\spring_&_damper.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\three_voltages.bogl",
+      "PackagePath": "staticwebassets\\examples\\three_voltages.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\transformer.bogl",
+      "PackagePath": "staticwebassets\\examples\\transformer.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\transformer_with_ground.bogl",
+      "PackagePath": "staticwebassets\\examples\\transformer_with_ground.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\two_voltages.bogl",
+      "PackagePath": "staticwebassets\\examples\\two_voltages.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\voltage_multi_parallel.bogl",
+      "PackagePath": "staticwebassets\\examples\\voltage_multi_parallel.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\voltage_open_circuit.bogl",
+      "PackagePath": "staticwebassets\\examples\\voltage_open_circuit.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\voltage_parallel_circuit.bogl",
+      "PackagePath": "staticwebassets\\examples\\voltage_parallel_circuit.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\examples\\voltage_parallel_resistor.bogl",
+      "PackagePath": "staticwebassets\\examples\\voltage_parallel_resistor.bogl"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\gear.png",
+      "PackagePath": "staticwebassets\\gear.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\icon-192.png",
+      "PackagePath": "staticwebassets\\icon-192.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\icon-512.png",
+      "PackagePath": "staticwebassets\\icon-512.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\belt.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\belt.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\capacitor.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\capacitor.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\current_input.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\current_input.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\damper.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\damper.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\elec_ground.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\elec_ground.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\flywheel.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\flywheel.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\force_input.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\force_input.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\gear.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\gear.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\gear_pair.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\gear_pair.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\gravity.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\gravity.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\inductor.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\inductor.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\junction.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\junction.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\junction_palette.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\junction_palette.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\lever.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\lever.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\mass.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\mass.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\mech_ground.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\mech_ground.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\pm_motor.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\pm_motor.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\pulley.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\pulley.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\pulley_grounded.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\pulley_grounded.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\rack.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\rack.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\rack_pinion.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\rack_pinion.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\resistor.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\resistor.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\rotSpring.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\rotSpring.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\shaft.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\shaft.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\spring.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\spring.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\torque_input.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\torque_input.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\transSpring.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\transSpring.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\transformer.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\transformer.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\vc_transducer.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\vc_transducer.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\velocity_input.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\velocity_input.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\elements\\voltage_input.svg",
+      "PackagePath": "staticwebassets\\images\\elements\\voltage_input.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\clear.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\clear.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\copy.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\copy.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\cut.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\cut.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\new.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\new.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\open.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\open.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\paste.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\paste.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\redo.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\redo.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\save-as.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\save-as.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\save.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\save.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\trash.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\trash.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\menuBar\\undo.png",
+      "PackagePath": "staticwebassets\\images\\menuBar\\undo.png"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\sliderIcon.svg",
+      "PackagePath": "staticwebassets\\images\\sliderIcon.svg"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\tutorial\\EdgeCreationGif-Edited.gif",
+      "PackagePath": "staticwebassets\\images\\tutorial\\EdgeCreationGif-Edited.gif"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\images\\tutorial\\ZoomGif-Edited.gif",
+      "PackagePath": "staticwebassets\\images\\tutorial\\ZoomGif-Edited.gif"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\manifest.json",
+      "PackagePath": "staticwebassets\\manifest.json"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\require.js",
+      "PackagePath": "staticwebassets\\require.js"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\sample-data\\weather.json",
+      "PackagePath": "staticwebassets\\sample-data\\weather.json"
+    },
+    {
+      "Id": "C:\\Users\\brend\\Downloads\\Pradeep\\BoGLWeb.github.io\\BoGLWeb\\wwwroot\\tsconfig.json",
+      "PackagePath": "staticwebassets\\tsconfig.json"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.build.BoGLWeb.props",
+      "PackagePath": "build\\BoGLWeb.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.BoGLWeb.props",
+      "PackagePath": "buildMultiTargeting\\BoGLWeb.props"
+    },
+    {
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildTransitive.BoGLWeb.props",
+      "PackagePath": "buildTransitive\\BoGLWeb.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
