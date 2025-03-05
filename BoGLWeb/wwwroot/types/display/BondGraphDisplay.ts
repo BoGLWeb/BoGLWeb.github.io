@@ -200,6 +200,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
     // finishes extra rendering for bnds that are specific to bond graphs (aka not shared with system diagrams)
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
+        let flows : string[]  = ['v', 'i'];
+        let specs : string[] = ['x', 'q'];
+        let effs : string[] = ['p', 'ϕ']; // change ϕ to lambda
         // sets the start and end markers for the bond
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
@@ -213,7 +216,6 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         })
         .style('stroke-width', 2);
         pathGroup.selectAll("circle").remove();
-
         // an ID of 2 indicates that this is the causal bond graph, therefore show effort and flow labels
         if (this.id == 2) {
             // looking at the bond from source to target, label1 is the leftmost one;
@@ -233,7 +235,46 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .classed("bondGraphText", true);
             label1.append("tspan")
                 .attr("text-anchor", "middle")
-                .text((d: BondGraphBond) => d.id)
+                .text((d: BondGraphBond) => {
+                    let flow = flows.indexOf(d.flowLabel[0]);
+                    let spec = specs.indexOf(d.flowLabel[0]);
+                    let eff = effs.indexOf(d.effortLabel[0]);
+                    if(this.isEffortLabel(d, true)) {
+                        if(d.effortLabel[0] == 'F'){
+                            if(d.srclbl.includes('F')) return d.srcID;
+                            return d.tarID;
+                        }
+                        if (eff >= 0){
+                            return d.tarID;
+                        }
+                        return d.srcID;
+                    } else {
+                        if(spec >= 0){
+                            return d.tarID;
+                        }
+                        if(spec >= 0){
+                            return d.tarID;
+                        }
+                        if (flow >= 0) {
+                            if (d.flowLabel[0] == flows[flow]) {
+                                if (d.srclbl[2] == flows[flow]) {
+                                    return d.srcID;
+                                } else {
+                                    return d.tarID;
+                                }
+                            } else {
+                                return d.tarID;
+                            }
+                        }
+                        if(d.srclbl.includes(d.flowLabel[0])){
+                            return d.srcID;
+                        } else if (d.tarlbl.includes(d.flowLabel[0])){
+                            return d.srcID;
+                        } else {
+                            return d.srcID;
+                        }
+                    }
+                })
                 .style('font-size', '10px')
                 .style('baseline-shift', 'sub');
             // looking at the bond from source to target, label1 is the rightmost one
@@ -251,7 +292,43 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .classed("bondGraphText", true);
             label2.append("tspan")
                 .attr("text-anchor", "middle")
-                .text((d: BondGraphBond) => d.id)
+                .text((d: BondGraphBond) => {
+                    let flow = flows.indexOf(d.flowLabel[0]);
+                    let spec = specs.indexOf(d.flowLabel[0]);
+                    let eff = effs.indexOf(d.effortLabel[0]);
+                    if(this.isEffortLabel(d, false)) {
+                        if(d.effortLabel[0] == 'F'){
+                            if(d.srclbl.includes('F')) return d.srcID;
+                            return d.tarID;
+                        }
+                        if (eff >= 0){
+                            return d.tarID;
+                        }
+                        return d.srcID;
+                    } else {
+                        if (flow >= 0) {
+                            if (d.flowLabel[0] == flows[flow]) {
+                                if (d.srclbl[2] == flows[flow]) {
+                                    return d.srcID;
+                                } else {
+                                    return d.tarID;
+                                }
+                            } else {
+                                return d.tarID;
+                            }
+                        }
+                        if (eff >= 0){
+                            return d.tarID;
+                        }
+                        if(d.srclbl.includes(d.flowLabel[0])){
+                            return d.srcID;
+                        } else if (d.tarlbl.includes(d.flowLabel[0])){
+                            return d.srcID;
+                        } else {
+                            return d.srcID;
+                        }
+                    }
+                })
                 .style('font-size', '10px')
                 .style('baseline-shift', 'sub');
         }

@@ -14,8 +14,12 @@ export class BondGraphBond extends GraphBond {
     effortLabelAngle: number;
     flowLabelAngle: number;
     id: number = 0;
+    srclbl : string
+    tarlbl : string
+    srcID: number = 700;
+    tarID : number = 800;
 
-    constructor(id: number, source: GraphElement, target: GraphElement, causalStroke: boolean, causalStrokeDirection: boolean, hasDirection: boolean, effortLabel: string, flowLabel: string, velocity: number = 0) {
+    constructor(id: number, source: GraphElement, target: GraphElement, causalStroke: boolean, causalStrokeDirection: boolean, hasDirection: boolean, effortLabel: string, flowLabel: string, velocity: number = 0, srclbl?:string, tarlbl?:string, srcId?:number, tarID?:number) {
         super(source, target, velocity);
         this.id = id;
         this.causalStroke = causalStroke;
@@ -23,5 +27,9 @@ export class BondGraphBond extends GraphBond {
         this.hasDirection = hasDirection;
         this.effortLabel = effortLabel;
         this.flowLabel = flowLabel;
+        this.srclbl = srclbl;
+        this.tarlbl = tarlbl;
+        this.srcID = srcId;
+        this.tarID = tarID;
     }
 }

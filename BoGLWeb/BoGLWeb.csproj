@@ -826,6 +826,20 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
 
+  <PropertyGroup>
+      <Company>BoGLWeb</Company>
+      <Configuration>Debug</Configuration>
+      <FileVersion>1.0.0.0</FileVersion>
+      <InformationalVersion>1.0.0+6c6171249dfed73b6080245fb99863e333475c06</InformationalVersion>
+      <Product>BoGLWeb</Product>
+      <Title>BoGLWeb</Title>
+      <Version>1.0.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
