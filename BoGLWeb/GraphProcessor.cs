@@ -13,7 +13,7 @@ namespace BoGLWeb {
         /// <exception cref="Exception">Thrown if the any generated BondGraphs are null</exception>
         public static (BondGraph, BondGraph, List<BondGraph>) generateBondGraphs(designGraph systemGraph) {
             BondGraphFactory factory = new(systemGraph);
-
+            
             //Check that we create all three bond graphs
             switch (factory.simplifiedBG) {
                 case null when factory.unsimplifiedBG is null:
