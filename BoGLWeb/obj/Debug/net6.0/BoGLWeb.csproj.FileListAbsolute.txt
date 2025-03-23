@@ -1502,8 +1502,8 @@ C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\comp
 C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\g9wohog0o0-1g6dzeoluu.gz
 C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\1mvg5xvpm5-xxwcmr94me.gz
 C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\65zf6c19e3-pf4yq2tlc6.gz
-C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\x0ahlkrt9h-a4vmyt4bky.gz
-C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\tfz351u35b-oolp9cr3nb.gz
-C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\im8t4td7ml-ltoi58ogve.gz
 C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\staticwebassets.build.endpoints.json
 C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\staticwebassets\msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\x0ahlkrt9h-qw280fekmw.gz
+C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\tfz351u35b-9wsqhap3q8.gz
+C:\Users\brend\Downloads\Pradeep\BoGLWeb.github.io\BoGLWeb\obj\Debug\net6.0\compressed\im8t4td7ml-fkufc2uqvk.gz

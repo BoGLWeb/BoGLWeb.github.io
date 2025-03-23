@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "Derw8MAb",
+  "version": "jlAmE2N+",
   "assets": [
     {
       "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
@@ -4446,11 +4446,11 @@ self.assetsManifest = {
       "url": "_framework/AntDesign.dll"
     },
     {
-      "hash": "sha256-Cj1xUFZMu/8hO5fFlAkhv9Kv+SLBHuf3iyDCo0qnpnA=",
+      "hash": "sha256-ujzrs3QMAcVdWhD9zF3+tZuEF3VX9/vMffLkRiooaJo=",
       "url": "_framework/BoGLWeb.dll"
     },
     {
-      "hash": "sha256-+PxSMNmmuRzyaKe11udfKcI9hvJlY9h8WOjaaKt2P0I=",
+      "hash": "sha256-N4IxZ+tW4J3VwGniFm4WDAWG0zP14jmRI74hcP9P4aw=",
       "url": "_framework/BoGLWeb.pdb"
     },
     {
@@ -5314,7 +5314,7 @@ self.assetsManifest = {
       "url": "_framework/WindowsBase.dll"
     },
     {
-      "hash": "sha256-1+xILHF8t0nMohknS7FhQhIvjaV1zSGTrPr8TvPwZlk=",
+      "hash": "sha256-f3wpDZDP6CtiZZ1Ba7dTN1r9Tu8oQx1DctYaZGf//CU=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -5634,11 +5634,11 @@ self.assetsManifest = {
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-yySKFWwf/rmAg+waazyFAg+GcsvlOM0eA6YlRC+Gpqc=",
+      "hash": "sha256-DsMB4GQUPBG3jzw9QXSf0sfzGCMR4reh/Bm+9/8JIkI=",
       "url": "build/build.js"
     },
     {
-      "hash": "sha256-kb4DDudyXAN8RFSVQGty0pyaq+wjOgt8nC/a0TBOLVI=",
+      "hash": "sha256-irvwA/u/8HFS0Jh7aiJ5Ed++vQSbX1TP4nwd8Oj+S0w=",
       "url": "build/build.js.map"
     },
     {

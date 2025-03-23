@@ -200,10 +200,11 @@ export class BondGraphDisplay extends BaseGraphDisplay {
 
     // finishes extra rendering for bnds that are specific to bond graphs (aka not shared with system diagrams)
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
-        let flows : string[]  = ['v', 'i'];
-        let specs : string[] = ['x', 'q'];
-        let effs : string[] = ['p', 'ϕ']; // change ϕ to lambda
+        let flows : string[]  = ['v', 'i', 'ω'];
+        let specs : string[] = ['x', 'q', 'θ'];
+        let effs : string[] = ['p', 'λ', 'L'];
         // sets the start and end markers for the bond
+        let forcs : string[] = ['F', 'τ', 'V']
         paths.style('marker-end', (d: BondGraphBond) => {
             if(d.hasDirection){
                 return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -239,9 +240,10 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);
+                    let forc = forcs.indexOf(d.effortLabel[0]);
                     if(this.isEffortLabel(d, true)) {
-                        if(d.effortLabel[0] == 'F'){
-                            if(d.srclbl.includes('F')) return d.srcID;
+                        if(forc >= 0){
+                            if(d.srclbl.indexOf(d.effortLabel[0]) >= 0) return d.srcID;
                             return d.tarID;
                         }
                         if (eff >= 0){
@@ -249,11 +251,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                         }
                         return d.srcID;
                     } else {
-                        if(spec >= 0){
-                            return d.tarID;
-                        }
-                        if(spec >= 0){
-                            return d.tarID;
+                        if(spec >= 0) {
+                            if (forcs.indexOf(d.srclbl[2]) >= 0) return d.tarID;
+                            return d.srcID;
                         }
                         if (flow >= 0) {
                             if (d.flowLabel[0] == flows[flow]) {
@@ -265,6 +265,9 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                             } else {
                                 return d.tarID;
                             }
+                        }
+                        if (eff >= 0){
+                            return d.tarID;
                         }
                         if(d.srclbl.includes(d.flowLabel[0])){
                             return d.srcID;
@@ -296,9 +299,10 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);
+                    let forc = forcs.indexOf(d.effortLabel[0]);
                     if(this.isEffortLabel(d, false)) {
-                        if(d.effortLabel[0] == 'F'){
-                            if(d.srclbl.includes('F')) return d.srcID;
+                        if(forc >= 0){
+                            if(d.srclbl.indexOf(d.effortLabel[0]) >= 0) return d.srcID;
                             return d.tarID;
                         }
                         if (eff >= 0){
@@ -306,6 +310,10 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                         }
                         return d.srcID;
                     } else {
+                        if(spec >= 0) {
+                            if (forcs.indexOf(d.srclbl[2]) >= 0) return d.tarID;
+                            return d.srcID;
+                        }
                         if (flow >= 0) {
                             if (d.flowLabel[0] == flows[flow]) {
                                 if (d.srclbl[2] == flows[flow]) {

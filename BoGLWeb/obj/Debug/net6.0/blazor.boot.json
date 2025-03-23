@@ -1,7 +1,7 @@
 {
   "entryAssembly": "BoGLWeb",
   "resources": {
-    "hash": "sha256-wggQggK9WBoEaY22/aGbpKNijXG7xVSOc7xrKumkrSs=",
+    "hash": "sha256-Jlm2d4NQzsbz6whNYa1AlOhK3ZAtbciGZ/er9fAcwq8=",
     "runtime": {
       "dotnet.js": "sha256-pu7MO47B6So4jcW6iY2UI11lBZYz2EQnJKiYNsOpNJg=",
       "dotnet.timezones.blat": "sha256-vrFYQt55a4tGoDGoyRfjjGa1nSecx646RK78iTzPWCM=",
@@ -233,10 +233,10 @@
       "mscorlib.dll": "sha256-FHccFgM8rcGOQ8oacA4eEgiiOynHayVKyd2ICq3Bo4w=",
       "netstandard.dll": "sha256-D91viTBgwuzeuIOx1KgBYnoY0hl2IpcBu/zr22Fu0BU=",
       "System.Private.CoreLib.dll": "sha256-5FbWgChEgLPlYByi8VsHTisbCpgMNSbf95JK5dVOs50=",
-      "BoGLWeb.dll": "sha256-Cj1xUFZMu/8hO5fFlAkhv9Kv+SLBHuf3iyDCo0qnpnA="
+      "BoGLWeb.dll": "sha256-ujzrs3QMAcVdWhD9zF3+tZuEF3VX9/vMffLkRiooaJo="
     },
     "pdb": {
-      "BoGLWeb.pdb": "sha256-+PxSMNmmuRzyaKe11udfKcI9hvJlY9h8WOjaaKt2P0I="
+      "BoGLWeb.pdb": "sha256-N4IxZ+tW4J3VwGniFm4WDAWG0zP14jmRI74hcP9P4aw="
     },
     "satelliteResources": {
       "cs": {

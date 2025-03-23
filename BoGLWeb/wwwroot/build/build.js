@@ -1471,9 +1471,10 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             return (label1 && this.getAngle(d) > 0) || (!label1 && this.getAngle(d) < 0) ? "end" : "start";
         }
         pathExtraRendering(paths, pathGroup) {
-            let flows = ['v', 'i'];
-            let specs = ['x', 'ϕ'];
-            let effs = ['p', 'q'];
+            let flows = ['v', 'i', 'ω'];
+            let specs = ['x', 'q', 'θ'];
+            let effs = ['p', 'λ', 'L'];
+            let forcs = ['F', 'τ', 'V'];
             paths.style('marker-end', (d) => {
                 if (d.hasDirection) {
                     return "url('#" + (d.causalStroke && !d.causalStrokeDirection ? "causal_stroke_and_arrow_" : "arrow_") + this.id + (this.selectedBonds.includes(d) ? "_selected" : "") + "')";
@@ -1505,9 +1506,10 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);
+                    let forc = forcs.indexOf(d.effortLabel[0]);
                     if (this.isEffortLabel(d, true)) {
-                        if (d.effortLabel[0] == 'F') {
-                            if (d.srclbl.includes('F'))
+                        if (forc >= 0) {
+                            if (d.srclbl.indexOf(d.effortLabel[0]) >= 0)
                                 return d.srcID;
                             return d.tarID;
                         }
@@ -1518,10 +1520,9 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     }
                     else {
                         if (spec >= 0) {
-                            return d.tarID;
-                        }
-                        if (spec >= 0) {
-                            return d.tarID;
+                            if (forcs.indexOf(d.srclbl[2]) >= 0)
+                                return d.tarID;
+                            return d.srcID;
                         }
                         if (flow >= 0) {
                             if (d.flowLabel[0] == flows[flow]) {
@@ -1535,6 +1536,9 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                             else {
                                 return d.tarID;
                             }
+                        }
+                        if (eff >= 0) {
+                            return d.tarID;
                         }
                         if (d.srclbl.includes(d.flowLabel[0])) {
                             return d.srcID;
@@ -1567,9 +1571,10 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);
+                    let forc = forcs.indexOf(d.effortLabel[0]);
                     if (this.isEffortLabel(d, false)) {
-                        if (d.effortLabel[0] == 'F') {
-                            if (d.srclbl.includes('F'))
+                        if (forc >= 0) {
+                            if (d.srclbl.indexOf(d.effortLabel[0]) >= 0)
                                 return d.srcID;
                             return d.tarID;
                         }
@@ -1579,6 +1584,11 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                         return d.srcID;
                     }
                     else {
+                        if (spec >= 0) {
+                            if (forcs.indexOf(d.srclbl[2]) >= 0)
+                                return d.tarID;
+                            return d.srcID;
+                        }
                         if (flow >= 0) {
                             if (d.flowLabel[0] == flows[flow]) {
                                 if (d.srclbl[2] == flows[flow]) {

@@ -9,83 +9,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe8a6a9a-c941-456b-aeef-05691874a158" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/App.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/arc.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/candidate.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/designGraph.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/graphElement.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/hyperarc.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseClasses/node.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb.csproj.user" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BondGraph.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BondGraphEmbedder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CanvasChange.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EditStackHandler.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EditionList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Equation.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Expression.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphBondID.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphProcessor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphValidityHandler.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HashList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Json/UrlJson.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/BasicFiler.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/ComparerAndEnumerators.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/DoubleCollectionConverter.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/ErrorLogger.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/GlobalSettings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/IMainWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/IntCollectionConverter.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/MatrixMathFunctions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/MyIOPath.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/SearchIO.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/SearchIOToTextWriter.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/ShapeData.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logistics/StringCollectionConverter.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Index.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/BoglFileLoadTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/DiffEqTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/PlaywrightTests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/RuleRuleSetLoadTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/UndoRedoTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlaywrightTests/Usings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/Relaxation.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/embeddingRule.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/grammarRule.Basic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/grammarRule.MatchingMethods.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/grammarRule.NegativeRecognize.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/grammarRule.RecognizeApply.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/grammarRule.ShapeMethods.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/option.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/ruleArc.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/ruleHyperarc.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/ruleNode.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/ruleSet.Basic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Prop/ruleSet.File.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Properties/ServiceDependencies/BoGLWeb - Web Deploy/profile.arm.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Properties/launchSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RuleSetMap.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search Process/SearchProcess.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StateEquationSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SystemDiagram.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestPages/ComplexSystemDiagramFromBoglFileTest.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestPages/DiffEqTests.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestPages/RuleRulesetTest.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestPages/SimpleSystemDiagramFromBoGLFileTest.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestPages/UndoRedoTest.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/Sorting.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_Imports.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/borderedicon_ZG7_icon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BondGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BondGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.staticwebassets.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.staticwebassets.endpoints.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/BoGLWeb.staticwebassets.runtime.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.dll.gz" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.dll.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.pdb.gz" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/BoGLWeb.pdb.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json.gz" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/service-worker-assets.js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/service-worker-assets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/wwwroot/service-worker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/BoGLWeb.sourcelink.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/blazor.boot.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/blazor.boot.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/compressed/im8t4td7ml-ltoi58ogve.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/compressed/tfz351u35b-oolp9cr3nb.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/compressed/x0ahlkrt9h-a4vmyt4bky.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/service-worker/service-worker-assets.js.build" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/service-worker/service-worker-assets.js.build" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/service-worker/service-worker.js.build" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/service-worker/service-worker.js.build" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.build.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.build.endpoints.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.build.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.development.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets.development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets/msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets/msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets/msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssets.props" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/staticwebassets/msbuild.BoGLWeb.Microsoft.AspNetCore.StaticWebAssets.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/build/build.js" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/build/build.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/build/build.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/build/build.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/types/display/BondGraphDisplay.ts" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/types/display/BondGraphDisplay.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,23 +61,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.BoGLWeb.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Brendon",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.customizations",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2024.3.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Brendon&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\JetBrains Rider 2024.3.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BoGLWeb">
     <configuration name="BoGLWeb" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb.csproj" />
@@ -168,6 +123,8 @@
       <workItem from="1740580657428" duration="3099000" />
       <workItem from="1740845116962" duration="4370000" />
       <workItem from="1741111640543" duration="25633000" />
+      <workItem from="1741448970357" duration="2428000" />
+      <workItem from="1742746270614" duration="3712000" />
     </task>
     <servers />
   </component>

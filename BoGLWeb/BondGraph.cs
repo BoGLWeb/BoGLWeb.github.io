@@ -604,7 +604,7 @@ namespace BoGLWeb {
                 Q_INDEX = 8;
             private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
             private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
-            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "ϕ", "q" };
+            private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "λ", "q" };
             private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
                 {"v", translationLabels },
                 {"F", translationLabels },
@@ -625,7 +625,7 @@ namespace BoGLWeb {
             private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
                 {"F", new List<string>() { "p'", "x'" } },
                 {"τ", new List<string>() { "L'", "θ'" } },
-                {"V", new List<string>() { "ϕ'", "q'" } }
+                {"V", new List<string>() { "λ'", "q'" } }
             };
 
             /// <summary>
