@@ -1619,12 +1619,158 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
     exports.backendManager = void 0;
     var backendManager;
     (function (backendManager) {
+        let numsRan = 0;
         class BackendManager {
             constructor() {
                 this.imageBuffer = 15;
             }
+            adjustTwoPoints(E1, E2, elementSize) {
+                const copy1 = [...E1];
+                const copy2 = [...E2];
+                let arr = [];
+                const dist = ([x, y]) => Math.sqrt(x * x + y * y);
+                let dist1 = dist(copy1);
+                let dist2 = dist(copy2);
+                if (dist1 === dist2) {
+                    if (dist1 > 0) {
+                        copy1[0] = copy1[0] + ((copy1[0] / dist1) * elementSize);
+                        copy1[1] = copy1[1] + ((copy1[1] / dist1) * elementSize);
+                    }
+                    else {
+                        const angle = Math.random() * 2 * Math.PI;
+                        const dx = Math.cos(angle);
+                        const dy = Math.sin(angle);
+                        copy1[0] = copy1[0] + (elementSize * dx);
+                        copy1[1] = copy1[1] + (elementSize * dy);
+                    }
+                }
+                else {
+                    if (dist1 > dist2) {
+                        copy1[0] = copy1[0] + ((copy1[0] / dist1) * elementSize);
+                        copy1[1] = copy1[1] + ((copy1[1] / dist1) * elementSize);
+                    }
+                    else {
+                        copy2[0] = copy2[0] + ((copy2[0] / dist2) * elementSize);
+                        copy2[1] = copy2[1] + ((copy2[1] / dist2) * elementSize);
+                    }
+                }
+                arr.push(copy1);
+                arr.push(copy2);
+                return arr;
+            }
+            adjustOverlap(elementLocations, elementSize, minX, maxX, minY, maxY) {
+                let screenSizeX = Math.abs(maxX - minX);
+                if (screenSizeX < elementSize) {
+                    screenSizeX = elementSize;
+                }
+                let screenSizeY = Math.abs(maxY - minY);
+                if (screenSizeY < elementSize) {
+                    screenSizeY = elementSize;
+                }
+                let xIndexes = Math.ceil(screenSizeX / elementSize);
+                let yIndexes = Math.ceil(screenSizeY / elementSize);
+                let generalElementLocations;
+                let noOffendingElements = false;
+                while (!noOffendingElements) {
+                    screenSizeX = Math.abs(maxX - minX);
+                    if (screenSizeX < elementSize) {
+                        screenSizeX = elementSize;
+                    }
+                    screenSizeY = Math.abs(maxY - minY);
+                    if (screenSizeY < elementSize) {
+                        screenSizeY = elementSize;
+                    }
+                    xIndexes = Math.ceil(screenSizeX / elementSize);
+                    yIndexes = Math.ceil(screenSizeY / elementSize);
+                    generalElementLocations =
+                        Array.from({ length: xIndexes }, () => Array.from({ length: yIndexes }, () => []));
+                    let offendingElements = [];
+                    for (let i = 0; i < elementLocations.length; i++) {
+                        let n1 = elementLocations[i][0];
+                        let n2 = elementLocations[i][1];
+                        let arr = [n1, n2];
+                        let x = Math.abs((arr[0] - minX) / elementSize);
+                        let y = Math.abs((arr[1] - minY) / elementSize);
+                        let roundedDownX = Math.floor(x);
+                        let roundedUpX = Math.ceil(x);
+                        let roundedDownY = Math.floor(y);
+                        let roundedUpY = Math.ceil(y);
+                        roundedDownX = Math.min(roundedDownX, generalElementLocations.length - 1);
+                        roundedUpX = Math.min(roundedUpX, generalElementLocations.length - 1);
+                        roundedDownY = Math.min(roundedDownY, generalElementLocations[0].length - 1);
+                        roundedUpY = Math.min(roundedUpY, generalElementLocations[0].length - 1);
+                        if (roundedUpX != roundedDownX && roundedUpY != roundedUpY) {
+                            generalElementLocations[roundedUpX][roundedUpY].push(i);
+                        }
+                        generalElementLocations[roundedDownX][roundedDownY].push(i);
+                    }
+                    for (let x = 0; x < generalElementLocations.length; x++) {
+                        for (let y = 0; y < generalElementLocations[0].length; y++) {
+                            let length = generalElementLocations[x][y].length;
+                            if (length > 1) {
+                                for (let z = 0; z < length; z++) {
+                                    for (let z2 = 0; z2 < length; z2++) {
+                                        let arr = [];
+                                        if (z != z2) {
+                                            arr.push(generalElementLocations[x][y][z]);
+                                            arr.push(generalElementLocations[x][y][z2]);
+                                            let firstElement = elementLocations[generalElementLocations[x][y][z]];
+                                            let secondElement = elementLocations[generalElementLocations[x][y][z2]];
+                                            let absX = Math.abs(firstElement[0] - secondElement[0]);
+                                            let absY = Math.abs(firstElement[1] - secondElement[1]);
+                                            if ((absX < elementSize) && (absY < elementSize)) {
+                                                console.log('Problem: ', firstElement, secondElement);
+                                                offendingElements.push(arr);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (offendingElements.length === 0) {
+                        noOffendingElements = true;
+                        console.log('Terminated Successfully');
+                    }
+                    for (let i = 0; i < offendingElements.length; i++) {
+                        console.log('Started');
+                        let firstElement = elementLocations[offendingElements[i][0]];
+                        let secondElement = elementLocations[offendingElements[i][1]];
+                        let newLocations = [];
+                        newLocations = this.adjustTwoPoints(firstElement, secondElement, elementSize);
+                        if (minX > newLocations[0][0]) {
+                            minX = newLocations[0][0];
+                        }
+                        else if (maxX < newLocations[0][0]) {
+                            maxX = newLocations[0][0];
+                        }
+                        if (minY > newLocations[0][1]) {
+                            minY = newLocations[0][1];
+                        }
+                        else if (maxY < newLocations[0][1]) {
+                            maxY = newLocations[0][1];
+                        }
+                        if (minX > newLocations[1][0]) {
+                            minX = newLocations[1][0];
+                        }
+                        else if (maxX < newLocations[1][0]) {
+                            maxX = newLocations[1][0];
+                        }
+                        if (minY > newLocations[1][1]) {
+                            minY = newLocations[1][1];
+                        }
+                        else if (maxY < newLocations[1][1]) {
+                            maxY = newLocations[1][1];
+                        }
+                        elementLocations[offendingElements[i][0]] = newLocations[0];
+                        elementLocations[offendingElements[i][1]] = newLocations[1];
+                    }
+                }
+                return elementLocations;
+            }
             centerElements(jsonElements, bondGraph) {
                 var _a;
+                numsRan++;
                 let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
                 let elements = new Map();
                 let i = 0;
@@ -1641,9 +1787,30 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     elements.set(id, bondGraph ? new BondGraphElement_1.BondGraphElement(i, e.ID, e.label, e.x, e.y)
                         : new SystemDiagramElement_2.SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers));
                 }
+                let normal_ElementSize = 64;
+                let BG_ElementSize = 40;
+                let elementLocations = [];
                 elements.forEach(e => {
-                    e.x += (maxX - minX) / 2 - maxX;
-                    e.y += (maxY - minY) / 2 - maxY;
+                    let arr = [];
+                    arr.push(e.x);
+                    arr.push(e.y);
+                    elementLocations.push(arr);
+                });
+                let adjustedLocations;
+                if (numsRan > 1) {
+                    adjustedLocations = this.adjustOverlap(elementLocations, BG_ElementSize, minX, maxX, minY, maxY);
+                    if (numsRan === 3) {
+                        numsRan = 0;
+                    }
+                }
+                else {
+                    adjustedLocations = this.adjustOverlap(elementLocations, normal_ElementSize, minX, maxX, minY, maxY);
+                }
+                let iterator = 0;
+                elements.forEach(e => {
+                    e.x = adjustedLocations[iterator][0];
+                    e.y = adjustedLocations[iterator][1];
+                    iterator++;
                 });
                 return elements;
             }
