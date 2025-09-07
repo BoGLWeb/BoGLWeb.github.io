@@ -1,4 +1,4 @@
-﻿ import { BondGraphBond } from "./types/bonds/BondGraphBond";
+ import { BondGraphBond } from "./types/bonds/BondGraphBond";
 import { GraphBond } from "./types/bonds/GraphBond";
 import { GraphBondID } from "./types/bonds/GraphBondID";
 import { BaseGraphDisplay } from "./types/display/BaseGraphDisplay";
@@ -13,12 +13,200 @@ import { SystemDiagram } from "./types/graphs/SystemDiagram";
 import { SVGSelection } from "./type_libraries/d3-selection";
 
 export namespace backendManager {
+    let numsRan: number = 0;
     export class BackendManager {
 
         imageBuffer = 15;
+        
+        adjustTwoPoints(E1: number[], E2: number[], elementSize: number): number[][] {
+            const copy1 = [...E1];
+            const copy2 = [...E2];
+            let arr: number[][] = [];
+            const dist = ([x, y]: number[]) => Math.sqrt(x * x + y * y);
+            let dist1: number = dist(copy1);
+            let dist2: number = dist(copy2);
+            if(dist1 === dist2){
+                if(dist1 > 0){
+                    copy1[0] = copy1[0] + ((copy1[0] / dist1)*elementSize);
+                    copy1[1] = copy1[1] + ((copy1[1] / dist1)*elementSize);
+                }else{
+                    const angle = Math.random() * 2 * Math.PI; // random angle in radians (0 to 2π)
+                    const dx = Math.cos(angle); // X direction
+                    const dy = Math.sin(angle); // Y direction
+                    
+                    copy1[0] = copy1[0] + (elementSize*dx); // moving the first element a random point on a circle away from the collision
+                    copy1[1] = copy1[1] + (elementSize*dy);
+                }
+            }else{
+                if(dist1 > dist2){
+                    copy1[0] = copy1[0] + ((copy1[0] / dist1)*elementSize);
+                    copy1[1] = copy1[1] + ((copy1[1] / dist1)*elementSize);
+                }else{
+                    copy2[0] = copy2[0] + ((copy2[0] / dist2)*elementSize);
+                    copy2[1] = copy2[1] + ((copy2[1] / dist2)*elementSize);
+                }
+            }
+            arr.push(copy1);
+            arr.push(copy2);
+            return arr;
+        }
+        
+        // takes in an 2d array of locations of elements
+        adjustOverlap(elementLocations: number[][], elementSize: number, minX: number, maxX: number, minY: number, maxY: number): number[][] {
+            let screenSizeX: number = Math.abs(maxX - minX);
+            if(screenSizeX < elementSize){screenSizeX = elementSize;}
+            let screenSizeY: number = Math.abs(maxY - minY);
+            if(screenSizeY < elementSize){screenSizeY = elementSize;}
+            
+            // Generating Screen Sizes
+            let xIndexes: number = Math.ceil(screenSizeX / elementSize);
+            let yIndexes: number = Math.ceil(screenSizeY / elementSize);
+            
+            
+            let generalElementLocations: number[][][];
+            let noOffendingElements: boolean = false;
+            while(!noOffendingElements){
+                screenSizeX= Math.abs(maxX - minX);
+                if(screenSizeX < elementSize){screenSizeX = elementSize;}
+                screenSizeY = Math.abs(maxY - minY);
+                if(screenSizeY < elementSize){screenSizeY = elementSize;}
+                
+                // updating number of indexes in either directions
+                xIndexes = Math.ceil(screenSizeX / elementSize);
+                yIndexes = Math.ceil(screenSizeY / elementSize);
+                generalElementLocations=
+                    Array.from({ length: xIndexes }, () =>
+                        Array.from({ length: yIndexes }, () =>
+                            [] // Initialize each element as an empty array
+                        )
+                    );
+                // initiallizing an empty array for numbers
+                let offendingElements: number[][] = [];
+                for(let i: number = 0; i < elementLocations.length; i++) {
+                    // 
+                    let n1: number = elementLocations[i][0];
+                    let n2: number = elementLocations[i][1];
+                    let arr: number[] = [n1, n2];
+                    /*console.log('arr:', arr);
+                    console.log('elementSize:', elementSize);
+                    console.log('screenSizeX:', screenSizeX);
+                    console.log('screenSizeY:', screenSizeY);*/
+                    let x = Math.abs((arr[0] - minX) / elementSize);
+                    let y = Math.abs((arr[1] - minY) / elementSize);
+                    let roundedDownX: number = Math.floor(x);
+                    let roundedUpX: number = Math.ceil(x);
+                    let roundedDownY: number = Math.floor(y);
+                    let roundedUpY: number = Math.ceil(y);
+                    roundedDownX = Math.min(roundedDownX, generalElementLocations.length - 1);
+                    roundedUpX = Math.min(roundedUpX, generalElementLocations.length - 1);
+                    roundedDownY = Math.min(roundedDownY, generalElementLocations[0].length - 1);
+                    roundedUpY = Math.min(roundedUpY, generalElementLocations[0].length - 1);
+                    /*console.log('x = (', arr[0], ' - ', minX, ') / ', elementSize);
+                    console.log('y = (', arr[1], ' - ', minY, ') / ', elementSize);
+                    console.log('X: ', x);
+                    console.log('Y: ', y);
+                    console.log(`generalElementLocations length: ${generalElementLocations.length}`);
+                    console.log('generalElementLocations:', generalElementLocations);
+                    console.log('generalElementLocations X:', generalElementLocations.length);
+                    console.log('generalElementLocations Y:', generalElementLocations[0].length);*/
+                    if(roundedUpX != roundedDownX && roundedUpY != roundedUpY){
+                        generalElementLocations[roundedUpX][roundedUpY].push(i);
+                    }
+                    //console.log('elementSize:', elementSize);
+                    generalElementLocations[roundedDownX][roundedDownY].push(i);
+                }
 
+                // finding elements close together
+                for(let x: number = 0; x < generalElementLocations.length; x++) {
+                    for(let y: number = 0; y < generalElementLocations[0].length; y++) {
+                        let length: number = generalElementLocations[x][y].length; // TODO fix
+                        if(length > 1){
+                            for(let z = 0; z < length; z++){
+                                for(let z2: number = 0; z2 < length; z2++){
+                                    let arr: number[] = [];
+                                    if(z != z2){
+                                        //TODO: FIX -resolved?
+                                        // debug tools
+                                        /*console.log('arr: ', arr);
+                                        console.log('generalElementLocations: ', generalElementLocations);
+                                        console.log('generalElementLocationsX: ', generalElementLocations.length);
+                                        console.log('generalElementLocationsY: ', generalElementLocations[x].length);
+                                        console.log('generalElementLocationsZ: ', generalElementLocations[x][y].length);
+                                        console.log('Attempting: ', x, ', ', y, ', ', z);*/
+                                        arr.push(generalElementLocations[x][y][z]);
+                                        arr.push(generalElementLocations[x][y][z2]);
+                                        let firstElement:number[] = elementLocations[generalElementLocations[x][y][z]];
+                                        let secondElement:number[] = elementLocations[generalElementLocations[x][y][z2]];
+                                        let absX: number = Math.abs(firstElement[0] - secondElement[0]);
+                                        let absY: number = Math.abs(firstElement[1] - secondElement[1]);
+                                        if((absX < elementSize) && (absY < elementSize)){
+                                            console.log('Problem: ', firstElement,secondElement);
+                                            offendingElements.push(arr);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (offendingElements.length === 0) {
+                    noOffendingElements = true;
+                    console.log('Terminated Successfully');
+                }
+                // keeping a copy because splicing may
+                for(let i: number = 0; i < offendingElements.length; i++) {
+                    console.log('Started');
+                    // getting the absolute value of the difference between the x and y axis of the two points
+                    let firstElement: number[] = elementLocations[offendingElements[i][0]];
+                    let secondElement: number[] = elementLocations[offendingElements[i][1]];
+                    //TODO: fix
+                    /*console.log('elementLocations', elementLocations);
+                    console.log('f1: ',firstElement);
+                    console.log('f2: ',secondElement);
+                    console.log('i: ', i);
+                    console.log('FE: ', elementLocations[offendingElements[i][0]]);
+                    console.log('SE: ', elementLocations[offendingElements[i][1]]);
+                    console.log('absX', Math.abs(firstElement[0] - secondElement[0]));
+                    console.log('absY', Math.abs(firstElement[1] - secondElement[1]));*/
+                    //let absX: number = Math.abs(firstElement[0] - secondElement[0]);
+                    //let absY: number = Math.abs(firstElement[1] - secondElement[1]);
+                    let newLocations: number[][] = [];
+                    // checking if the first element is further away from 0
+                    newLocations = this.adjustTwoPoints(firstElement, secondElement, elementSize);
+                    if (minX > newLocations[0][0]) {
+                        minX = newLocations[0][0];
+                    } else if (maxX < newLocations[0][0]) {
+                        maxX = newLocations[0][0];
+                    }
+                    if (minY > newLocations[0][1]) {
+                        minY = newLocations[0][1];
+                    } else if (maxY < newLocations[0][1]) {
+                        maxY = newLocations[0][1];
+                    }
+
+                    if (minX > newLocations[1][0]) {
+                        minX = newLocations[1][0];
+                    } else if (maxX < newLocations[1][0]) {
+                        maxX = newLocations[1][0];
+                    }
+                    if (minY > newLocations[1][1]) {
+                        minY = newLocations[1][1];
+                    } else if (maxY < newLocations[1][1]) {
+                        maxY = newLocations[1][1];
+                    }
+
+                    // setting new locations
+                    elementLocations[offendingElements[i][0]] = newLocations[0];
+                    elementLocations[offendingElements[i][1]] = newLocations[1];
+                }
+            }
+            
+            return elementLocations; // returns all of the locations for every element adjusted
+        }
+        
         // takes in a list of JSON elements and centers them around (0, 0) while turning them into GraphElements
         centerElements(jsonElements: any[], bondGraph: boolean) {
+            numsRan++;
             let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity ,-Infinity];
 
             let elements = new Map<number, GraphElement>();
@@ -34,13 +222,35 @@ export namespace backendManager {
                 elements.set(id, bondGraph ? new BondGraphElement(i, e.ID, e.label, e.x, e.y)
                     : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers))
             }
-
-            // transform elements to center around (0, 0)
+            
+            let normal_ElementSize: number = 64;
+            let BG_ElementSize: number = 40;
+            let elementLocations:number[][] = [];
+            
+            // passing all elements to a list for finding collisions
             elements.forEach(e => {
-                e.x += (maxX - minX) / 2 - maxX;
-                e.y += (maxY - minY) / 2 - maxY;
+                let arr:number[] = [];
+                arr.push(e.x);
+                arr.push(e.y);
+                elementLocations.push(arr);
             });
-
+            let adjustedLocations: number[][];
+            // getting all of the adjusted locations
+            if(numsRan > 1){
+                adjustedLocations = this.adjustOverlap(elementLocations, BG_ElementSize, minX, maxX, minY, maxY);
+                if(numsRan === 3){
+                    numsRan = 0;
+                }
+            }else{
+                adjustedLocations = this.adjustOverlap(elementLocations, normal_ElementSize, minX, maxX, minY, maxY);
+            }
+            let iterator: number = 0;
+            // finally updating all of the positions
+            elements.forEach(e => {
+                e.x = adjustedLocations[iterator][0];
+                e.y = adjustedLocations[iterator][1];
+                iterator++;
+            })
             return elements;
         }
 
