@@ -141,21 +141,21 @@
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
             </ExpandIconTemplate>
             <ChildContent>
-                <Panel Header="Mechanical Translation Symbols" Key="1">
+                <Panel Header="Elements" Key="1">
                     <div id="mechTransSymbols" class="elementHolder"></div>
                 </Panel>
-                <Panel Header="Mechanical Rotation Symbols" Key="2">
+                <Panel Header="Sources" Key="2">
                     <div id="mechRotSymbols" class="elementHolder"></div>
                 </Panel>
-                <Panel Header="Transmission Element Symbols" Key="3">
+                <Panel Header="Junctions" Key="3">
                     <div id="transElemSymbols" class="elementHolder"></div>
                 </Panel>
-                <Panel Header="Electrical Symbols" Key="3">
-                    <div id="electricalSymbols" class="elementHolder"></div>
-                </Panel>
-                <Panel Header="Actuator Symbols" Key="3">
-                    <div id="actuatorsSymbols" class="elementHolder"></div>
-                </Panel>
+                @* <Panel Header="Electrical Symbols" Key="3"> *@
+                @*     <div id="electricalSymbols" class="elementHolder"></div> *@
+                @* </Panel> *@
+                @* <Panel Header="Actuator Symbols" Key="3"> *@
+                @*     <div id="actuatorsSymbols" class="elementHolder"></div> *@
+                @* </Panel> *@
             </ChildContent>
         </Collapse>
         <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
