@@ -113,7 +113,7 @@
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <div id="blankMenu" style="@("display: " + (currTab == "2" || currTab == "3" ? "block" : "none"))"></div>
+        <div id="blankMenu" style="@("display: " + (currTab == "3" || currTab == "4" ? "block" : "none"))"></div>
         <Collapse Id="elementMenus" style="@("display: " + (currTab == "1" ? "block" : "none"))" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
@@ -133,6 +133,28 @@
                 </Panel>
                 <Panel Header="Actuators" Key="3">
                     <div id="actuators" class="elementHolder"></div>
+                </Panel>
+            </ChildContent>
+        </Collapse>
+        <Collapse Id="sketchMenus" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+            <ExpandIconTemplate>
+                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+            </ExpandIconTemplate>
+            <ChildContent>
+                <Panel Header="Mechanical Translation Symbols" Key="1">
+                    <div id="mechTransSymbols" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Mechanical Rotation Symbols" Key="2">
+                    <div id="mechRotSymbols" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Transmission Element Symbols" Key="3">
+                    <div id="transElemSymbols" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Electrical Symbols" Key="3">
+                    <div id="electricalSymbols" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Actuator Symbols" Key="3">
+                    <div id="actuatorsSymbols" class="elementHolder"></div>
                 </Panel>
             </ChildContent>
         </Collapse>
@@ -159,7 +181,7 @@
             }
             <div id="latexTest"></div>
         </div>
-        <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
+        <div id="stateVarMenu"  style="@("display: " + (currTab == "5" && !showEquations ? "flex" : "none"))">
             <Button Class="bogl_button_large" OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
             <h2>State Variables</h2>
             <div style="display: flex; flex-direction: column">
@@ -273,13 +295,16 @@
                     }
                     <div id="systemDiagram"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="2" Tab="Unsimplified BG" ForceRender=true>
+                <TabPane Key="2" Tab="Sketch" ForceRender=true>
+                    <div id="sketch"></div>
+                </TabPane>
+                <TabPane Disabled="tabsDisabled" Key="3" Tab="Unsimplified BG" ForceRender=true>
                     <div id="unsimpBG"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="3" Tab="Simplified BG" ForceRender=true>
+                <TabPane Disabled="tabsDisabled" Key="4" Tab="Simplified BG" ForceRender=true>
                     <div id="simpBG"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="4" Tab="Causal BG" ForceRender=true>
+                <TabPane Disabled="tabsDisabled" Key="5" Tab="Causal BG" ForceRender=true>
                     <Select Id="causalSelect"
                             TItem="Option"
                             TItemValue="int"
@@ -313,6 +338,7 @@
         <p>Terry Hearst</p>
         <p>Talal Jaber</p>
         <p>Corrin Courville</p>
+        <p>Brendon Peters</p>
         <p>Advisors:</p>
         <p>Prof. David Brown</p>
         <p>Prof. Pradeep Radhakrishan</p>
@@ -714,7 +740,7 @@
 
     // propegate a tab change to the front-end
     private async void TabChange(string key) {
-        if (!tabsDisabled) {
+        if (!tabsDisabled || key == "1" || key == "2") {
             this.currTab = key;
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
             await module.InvokeVoidAsync("setTab", key);
@@ -857,7 +883,7 @@
         // TODO: find global variable storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
         try {
-            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
+            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(5)).GetFinalEquations()).ToArray();
         } catch(Exception e) {
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);

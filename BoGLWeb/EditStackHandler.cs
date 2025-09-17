@@ -4,7 +4,7 @@
             // Stores the UndoRadoHandler used.
             public static readonly EditStackHandler undoRedoHandler = new(new(), new(), new(), new());
             // Stores the edit stacks.
-            private readonly EditionList<CanvasChange> systemStack, unsimpStack, simpleStack, causalStack;
+            private readonly EditionList<CanvasChange> systemStack, sketchStack, unsimpStack, simpleStack, causalStack;
             // Stores the system diagram.
             private readonly SystemDiagram systemDiagram;
             // Stores the bond graphs.
@@ -15,6 +15,7 @@
             /// </summary>
             public EditStackHandler(SystemDiagram diagram, BondGraph unsimpGraph, BondGraph simpleGraph, BondGraph causalGraph) {
                 this.systemStack = new EditionList<CanvasChange>();
+                this.sketchStack = new EditionList<CanvasChange>();
                 this.unsimpStack = new EditionList<CanvasChange>();
                 this.simpleStack = new EditionList<CanvasChange>();
                 this.causalStack = new EditionList<CanvasChange>();
@@ -126,6 +127,7 @@
             private EditionList<CanvasChange> GetStackFromTab(CanvasTab tab) {
                 return tab switch {
                     CanvasTab.SYSTEM_DIAGRAM => systemStack,
+                    CanvasTab.SKETCH => sketchStack,
                     CanvasTab.UNSIMPLIFIED_BOND_GRAPH => unsimpStack,
                     CanvasTab.SIMPLIFIED_BOND_GRAPH => simpleStack,
                     CanvasTab.CAUSAL_BOND_GRAPH => causalStack,
@@ -199,6 +201,7 @@
             public static CanvasTab GetTab(int tab) {
                 return tab switch {
                     (int) CanvasTab.SYSTEM_DIAGRAM => CanvasTab.SYSTEM_DIAGRAM,
+                    (int) CanvasTab.SKETCH => CanvasTab.SKETCH,
                     (int) CanvasTab.UNSIMPLIFIED_BOND_GRAPH => CanvasTab.UNSIMPLIFIED_BOND_GRAPH,
                     (int) CanvasTab.SIMPLIFIED_BOND_GRAPH => CanvasTab.SIMPLIFIED_BOND_GRAPH,
                     (int) CanvasTab.CAUSAL_BOND_GRAPH => CanvasTab.CAUSAL_BOND_GRAPH,
@@ -213,9 +216,10 @@
         /// </summary>
         public enum CanvasTab {
             SYSTEM_DIAGRAM = 1,
-            UNSIMPLIFIED_BOND_GRAPH = 2,
-            SIMPLIFIED_BOND_GRAPH = 3,
-            CAUSAL_BOND_GRAPH = 4
+            SKETCH = 2,
+            UNSIMPLIFIED_BOND_GRAPH = 3,
+            SIMPLIFIED_BOND_GRAPH = 4,
+            CAUSAL_BOND_GRAPH = 5
         }
     }
 }
