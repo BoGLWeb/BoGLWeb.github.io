@@ -142,10 +142,46 @@
             </ExpandIconTemplate>
             <ChildContent>
                 <Panel Header="Elements" Key="1">
-                    <div id="mechTransSymbols" class="elementHolder"></div>
+                    <Collapse Id="sketchElements" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+                        </ExpandIconTemplate>
+                        <ChildContent>
+                            <Panel Header="Mechanical Translation" Key="1">
+                                <div id="mechTransElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Mechanical Rotation" Key="2">
+                                <div id="mechRotElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Electrical" Key="3">
+                                <div id="elecElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Hydraulic" Key="3">
+                                <div id="hydraulicElem" class="elementHolder"></div>
+                            </Panel>
+                        </ChildContent>
+                    </Collapse>
                 </Panel>
                 <Panel Header="Sources" Key="2">
-                    <div id="mechRotSymbols" class="elementHolder"></div>
+                    <Collapse Id="sketchSources" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+                        </ExpandIconTemplate>
+                        <ChildContent>
+                            <Panel Header="Mechanical Translation" Key="1">
+                                <div id="mechTransSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Mechanical Rotation" Key="2">
+                                <div id="mechRotSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Electrical" Key="3">
+                                <div id="elecSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Hydraulic" Key="3">
+                                <div id="hydraulicSrc" class="elementHolder"></div>
+                            </Panel>
+                        </ChildContent>
+                    </Collapse>
                 </Panel>
                 <Panel Header="Junctions" Key="3">
                     <div id="transElemSymbols" class="elementHolder"></div>
