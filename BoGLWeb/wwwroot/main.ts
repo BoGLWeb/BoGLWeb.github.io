@@ -313,3 +313,24 @@ function pollDOM() {
 
 // starts the DOM polling
 pollDOM();
+
+
+//sub-optional resolution sizes - open to changes
+const min_width = 800;
+const min_height = 800;
+
+//popup not shown as a defualt 
+let popupShown = false;
+
+function checkWindowSize() {
+    if ((window.innerWidth < min_width ||window.innerHeight < min_height) && !popupShown) {
+        popupShown = true;
+        alert('Warning: Window screen size is sub-optimal');
+    } else if (window.innerWidth >= min_width && window.innerHeight >= min_height) {
+        popupShown = false; // reset when window size is okay
+    }
+    console.log("Script loaded")
+}
+
+window.addEventListener('resize', checkWindowSize);
+checkWindowSize();
