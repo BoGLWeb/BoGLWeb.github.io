@@ -320,17 +320,14 @@ const min_width = 800;
 const min_height = 800;
 
 //popup not shown as a defualt 
-let popupShown = false;
+//let popupShown = false;
 
 function checkWindowSize() {
-    if ((window.innerWidth < min_width ||window.innerHeight < min_height) && !popupShown) {
-        popupShown = true;
+    if ((window.innerWidth < min_width ||window.innerHeight < min_height)) {
+     
         alert('Warning: Window screen size is sub-optimal');
-    } else if (window.innerWidth >= min_width && window.innerHeight >= min_height) {
-        popupShown = false; // reset when window size is okay
-    }
-    console.log("Script loaded")
+    } 
+    console.log("Window Size Script loaded")
 }
-
 window.addEventListener('resize', checkWindowSize);
 checkWindowSize();
