@@ -3409,7 +3409,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-hJYre2exvNlBeFfCQJYbos1UzDQO1ECLZ\/OwTq7ytlI=",
+      "hash": "sha256-EH1za5yipRTIY5ItN6f96keCXhbmzYEb5Z8yloHRXcY=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3417,7 +3417,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-7y2aRAbb93Xbz0ZWys19ImwMsD12XI0oD+X3Fy3Ocq4=",
+      "hash": "sha256-k5HB9jJFdT\/vF5eM+Smjcv+AULrF6d0OX09GQCPNWvQ=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5637,5 +5637,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "ICVY7WVm"
+  "version": "Ovps05Cz"
 };
