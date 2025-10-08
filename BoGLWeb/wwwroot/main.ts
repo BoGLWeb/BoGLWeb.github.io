@@ -319,15 +319,25 @@ pollDOM();
 const min_width = 800;
 const min_height = 800;
 
-//popup not shown as a defualt 
-//let popupShown = false;
+const modal = document.getElementById("resolution-warning-modal")!;
+const closeBtn = document.querySelector(".resolution-modal-close")!;
 
 function checkWindowSize() {
-    if ((window.innerWidth < min_width ||window.innerHeight < min_height)) {
-     
-        alert('Warning: Window screen size is sub-optimal');
-    } 
-    console.log("Window Size Script loaded")
+    const isTooSmall = window.innerWidth < min_width || window.innerHeight < min_height;
+    if (isTooSmall) {
+        modal.classList.remove("hidden");
+    } else {
+        modal.classList.add("hidden");
+    }
 }
-window.addEventListener('resize', checkWindowSize);
+
+// Hide modal when "X" is clicked
+closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+});
+
+// Re-check when window is resized
+window.addEventListener("resize", checkWindowSize);
+
+// Run once on page load
 checkWindowSize();
