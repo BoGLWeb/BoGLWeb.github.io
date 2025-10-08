@@ -10,6 +10,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/main.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +20,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DpaMonitoringSettings">
-    <option name="autoShow" value="false" />
+    <option name="firstShow" value="false" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -31,7 +34,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/BoGLWeb/BoGLWeb.github.io.git&quot;,
-    &quot;accountId&quot;: &quot;825f8be4-8d27-44fc-a16b-775ccb2d8ed1&quot;
+    &quot;accountId&quot;: &quot;17934695-2669-45d9-9eb8-d5786373706a&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
@@ -49,22 +52,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.BoGLWeb.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Brendon",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2024.2.7\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.BoGLWeb: IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;210-minimize-warning&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.typescriptcompiler&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Cindy\\AppData\\Local\\JetBrains\\JetBrains Rider 2024.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BoGLWeb">
     <configuration name="BoGLWeb" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb/BoGLWeb.csproj" />
@@ -73,6 +78,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
+      <browser name="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
@@ -88,6 +94,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
+      <browser name="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
@@ -124,6 +131,11 @@
       <workItem from="1739299678206" duration="564000" />
       <workItem from="1739412016434" duration="192000" />
       <workItem from="1740580510626" duration="143000" />
+      <workItem from="1756910190846" duration="339000" />
+      <workItem from="1758673800938" duration="59000" />
+      <workItem from="1758673948675" duration="9379000" />
+      <workItem from="1759880493231" duration="64000" />
+      <workItem from="1759881735060" duration="2291000" />
     </task>
     <task id="LOCAL-00001" summary="New spring images">
       <option name="closed" value="true" />
@@ -141,9 +153,24 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="New spring images" />
     <option name="LAST_COMMIT_MESSAGE" value="New spring images" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

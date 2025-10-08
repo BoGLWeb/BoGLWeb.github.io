@@ -6,7 +6,8 @@
     "lib": [ "es2021", "dom" ],
     "esModuleInterop": true,
     "removeComments": true,
-    "outFile": "./build/build.js"
+    "outFile": "./build/build.js",
+    "moduleResolution": "node",
   },
   "exclude": [
     "node_modules"

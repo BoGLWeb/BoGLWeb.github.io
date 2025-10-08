@@ -42,6 +42,14 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    <!-- screen-size modal -->
+    <div id="resolution-warning-modal" class="resolution-modal hidden">
+        <div class="resolution-modal-content">
+            <span class="resolution-modal-close">&times;</span>
+            <p>⚠️ Your window size is sub-optimal for this application. Please resize for best experience.</p>
+        </div>
+    </div>
 </body>
 
 </html>
