@@ -508,6 +508,10 @@ export namespace backendManager {
             return this.getGraphByIndex("1") as SystemDiagramDisplay;
         }
 
+        getSketchDiagramDisplay() {
+            return this.getGraphByIndex("2") as SystemDiagramDisplay;
+        }
+
         // converts all SVG images in the system diagram display into inline form
         // as a note, this will break if additional image types besides SVGs are used for system diagram elements
         async convertImages(query) {
@@ -591,11 +595,44 @@ export namespace backendManager {
             systemDiagram.initHeight = bounds.height;
         }
 
+        public loadSketchDiagram(jsonString: string) {
+            let edges = [];
+            let parsedJson = JSON.parse(jsonString);
+            let elements = this.centerElements(parsedJson.elements, false);
+
+            for (let edge of parsedJson.edges) {
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
+                bond.velocity = edge.velocity ?? 0;
+                edges.push(bond);
+            }
+
+            window.sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram([], []));
+
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
+                ...window.sketchDiagram.listToIDObjects([].concat(window.sketchDiagram.selectedElements).concat(window.sketchDiagram.selectedBonds)), false);
+
+            let sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram((Array.from(elements.values()) as SystemDiagramElement[]), edges));
+            sketchDiagram.draggingElement = null;
+            window.sketchDiagram = sketchDiagram;
+            sketchDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+            let bounds = (sketchDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            sketchDiagram.initWidth = bounds.width;
+            sketchDiagram.initHeight = bounds.height;
+        }
+
         // get the current system diagram as a JSON string
         public getSystemDiagram() {
             return JSON.stringify({
                 elements: window.systemDiagram.elements,
                 bonds: window.systemDiagram.bonds
+            });
+        }
+
+        public getSketchDiagram() {
+            return JSON.stringify({
+                elements: window.sketchDiagram.elements,
+                bonds: window.sketchDiagram.bonds
             });
         }
 
@@ -903,30 +940,52 @@ export namespace backendManager {
 
         // copy then delete the current selection
         public cut() {
-            this.getSystemDiagramDisplay().copySelection();
-            this.getSystemDiagramDisplay().deleteSelection();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().copySelection();
+                this.getSystemDiagramDisplay().deleteSelection();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().copySelection();
+                this.getSketchDiagramDisplay().deleteSelection();
+            }
         }
 
         // copy the current selection
         public copy() {
-            this.getSystemDiagramDisplay().copySelection();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().copySelection();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().copySelection();
+            }
         }
 
         // paste the current selection
         public paste() {
-            this.getSystemDiagramDisplay().paste();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().paste();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().paste();
+            }
         }
 
         // delete the current selection, bringing up the confirmation modal if needsConfirmation is true and multiple
         // elements/edges are being deleted
         public delete(needsConfirmation = true) {
-            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().deleteSelection(needsConfirmation);
+            }
         }
 
         // selects all elements/edges in the canvas and deletes them without confirmation
         public clear() {
-            this.getSystemDiagramDisplay().selectAll();
-            this.getSystemDiagramDisplay().deleteSelection(false);
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().selectAll();
+                this.getSystemDiagramDisplay().deleteSelection(false);
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().selectAll();
+                this.getSketchDiagramDisplay().deleteSelection(false);
+            }
         }
 
         // set a modifier to a value for a given element without doing any undo/redo
@@ -997,8 +1056,10 @@ export namespace backendManager {
             if (i == "1") {
                 return window.systemDiagram;
             } else if (i == "2") {
-                return window.unsimpBG;
+                return window.sketchDiagram;
             } else if (i == "3") {
+                return window.unsimpBG;
+            } else if (i == "4") {
                 return window.simpBG;
             } else {
                 return window.causalBG;

@@ -13,7 +13,15 @@ export namespace ElementNamespace {
         new Category(1, "Basic Mechanical Rotation", "mechRot"),
         new Category(2, "Transmission Elements", "transElem"),
         new Category(3, "Electrical", "electrical"),
-        new Category(4, "Actuators", "actuators")
+        new Category(4, "Actuators", "actuators"),
+        new Category(5, "Mechanical Translation", "mechTransElem"),
+        new Category(6, "Mechanical Rotation", "mechRotElem"),
+        new Category(7, "Electrical", "elecElem"),
+        new Category(8, "Hydraulic", "hydraulicElem"),
+        new Category(9, "Mechanical Translation", "mechTransSrc"),
+        new Category(10, "Mechanical Rotation", "mechRotSrc"),
+        new Category(11, "Electrical", "elecSrc"),
+        new Category(12, "Hydraulic", "hydraulicSrc")
     ];
 
     // list of element modifiers
@@ -59,7 +67,8 @@ export namespace ElementNamespace {
         new ElementType(27, "Voltage Input", 3, "voltage_input", [], false),
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
         new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
-        new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
+        new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true),
+        new ElementType(31, "I:M", 5, "I-M", [], false)
     ];
 
     // compatibility groups with element IDs showing which elements can connect to each other

@@ -153,7 +153,12 @@ function populateElementMenu() {
             // if the element is dragged, store it in system diagram
             group.addEventListener("mousedown", function () {
                 document.body.style.cursor = "grabbing";
-                window.systemDiagram.draggingElement = e.id;
+                if(window.tabNum == "1") {
+                    window.systemDiagram.draggingElement = e.id;
+                } else {
+                    window.sketchDiagram.draggingElement = e.id;
+                }
+                
             });
 
             document.getElementById(c.folderName).appendChild(group);
@@ -164,11 +169,20 @@ function populateElementMenu() {
             group.appendChild(box);
 
             var image = document.createElement('img');
-            image.src = "images/elements/" + e.image + ".svg";
-            image.draggable = false;
-            image.classList.add("elemImage");
-            image.title = e.name;
-            box.appendChild(image);
+            if(e.category <= 4) {
+                image.src = "images/elements/" + e.image + ".svg";
+                image.draggable = false;
+                image.classList.add("elemImage");
+                image.title = e.name;
+                box.appendChild(image);
+            } else {
+                image.src = "images/sketch/" + e.image + ".svg";
+                image.draggable = false;
+                image.classList.add("sketchImage");
+                image.title = e.name;
+                box.appendChild(image);
+            }
+            
         });
     });
 }
@@ -187,6 +201,8 @@ async function loadPage() {
     window.backendManager = backendManager;
     window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     window.systemDiagramSVG.classed("graphSVG", true);
+    window.sketchDiagramSVG = d3.select("#systemDiagram").append("svg");
+    window.sketchDiagramSVG.classed("graphSVG", true);
 
     // looks as URL and checks whether a system diagram needs to be loaded from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -201,12 +217,22 @@ async function loadPage() {
         window.systemDiagram.updateGraph();
         backendManager.getBackendManager().zoomCenterGraph("1");
         window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
+        window.sketchDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+        window.sketchDiagram.updateGraph();
+        backendManager.getBackendManager().zoomCenterGraph("1");
+        window.sketchDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
     }
 
     // on mouseup, clear element dragged from menu
     document.addEventListener("mouseup", function () {
-        document.body.style.cursor = "auto";
-        window.systemDiagram.draggingElement = null;
+        if(window.tabNum == "1") {
+            document.body.style.cursor = "auto";
+            window.systemDiagram.draggingElement = null;
+        } else {
+            document.body.style.cursor = "auto";
+            window.sketchDiagram.draggingElement = null;
+        }
+        
     });
 
     // populate the element menu

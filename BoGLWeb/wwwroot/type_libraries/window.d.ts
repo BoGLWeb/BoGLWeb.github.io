@@ -7,8 +7,10 @@ import { BondGraphDisplay } from "../types/display/BondGraphDisplay";
 declare global {
     interface Window {
         systemDiagramSVG: SVGSelection;
+        sketchDiagramSVG: SVGSelection;
         backendManager: typeof backendManager;
         systemDiagram: SystemDiagramDisplay;
+        sketchDiagram: SystemDiagramDisplay;
         tabNum: string;
         unsimpBGSVG: SVGSelection;
         simpBGSVG: SVGSelection;
