@@ -109,7 +109,7 @@ export namespace backendManager {
                     console.log('generalElementLocations:', generalElementLocations);
                     console.log('generalElementLocations X:', generalElementLocations.length);
                     console.log('generalElementLocations Y:', generalElementLocations[0].length);*/
-                    if(roundedUpX != roundedDownX && roundedUpY != roundedUpY){
+                    if(roundedUpX != roundedDownX && roundedUpY != roundedDownY){
                         generalElementLocations[roundedUpX][roundedUpY].push(i);
                     }
                     //console.log('elementSize:', elementSize);
@@ -638,24 +638,61 @@ export namespace backendManager {
 
         // zooms and centers a particular graph by finding the center of the current display and centering the graph there
         // scales the graph to 80% of the screen height or width, whichever is smaller, so that the graph has a margin of empty space around it
+        // public zoomCenterGraph(index: string) {
+        //     let graph = this.getGraphByIndex(index);
+        //     let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
+        //     graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+        //     let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
+        //     let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
+        //     let scale = 1;
+        //     // choose which dimension to scale to 80% in
+        //     if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
+        //         scale = (0.8 * windowDim.width) / svgDim.width;
+        //     } else {
+        //         scale = (0.8 * windowDim.height) / svgDim.height;
+        //     }
+        //     scale = Math.min(Math.max(scale, 0.25), 1.75);
+        //     let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
+        //     let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
+        //     graph.changeScale(xTrans, yTrans, scale);
+        //     graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
+        // }
+
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
-            let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
-            graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+            // If the graph or its core elements don't exist yet, do nothing.
+            if (!graph || !graph.svg || !graph.svg.node()) {
+                return;
+            }
+
+            // --- Start of Fix ---
+            // Get the container of the SVG element directly, which is more robust.
+            const svgContainer = graph.svg.node().parentElement;
+            if (!svgContainer) return; // Exit if the container isn't found
+
+            let prevDisplay = svgContainer.style.display;
+            svgContainer.style.display = "block";
+            // --- End of Fix ---
+
             let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
-            let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
+            let windowDim = svgContainer.getBoundingClientRect(); // Use the container for dimensions
             let scale = 1;
-            // choose which dimension to scale to 80% in
-            if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
+
+            // Prevent division by zero if diagram is empty
+            if (svgDim.width === 0 || svgDim.height === 0) {
+                scale = 1;
+            } else if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
                 scale = (0.8 * windowDim.width) / svgDim.width;
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
+
             scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
             graph.changeScale(xTrans, yTrans, scale);
-            graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
+
+            svgContainer.style.display = prevDisplay; // Restore the original display property
         }
 
         // converts a contentStreamReference to a blob and saves the blob to a file

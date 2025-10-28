@@ -1,5 +1,5 @@
 ﻿import { SVGSelection } from "./d3-selection";
-import { backendManager } from "./../backendManager";
+import { backendManager } from "../backendManager";
 import { SystemDiagramDisplay } from "../types/display/SystemDiagramDisplay";
 import { BondGraphDisplay } from "../types/display/BondGraphDisplay";
 

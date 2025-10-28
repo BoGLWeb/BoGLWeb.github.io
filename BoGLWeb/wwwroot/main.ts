@@ -31,7 +31,12 @@ var submenuMap = {
 async function loadSystemDiagram(text: string) {
     let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
     if (systemDiagramText != null) {
-        getBackendManager().loadSystemDiagram(systemDiagramText);
+        //if(window.tabNum == "1") {
+            getBackendManager().loadSystemDiagram(systemDiagramText);
+        // } else {
+        //     getBackendManager().loadSketchDiagram(systemDiagramText);
+        // }
+        
     }
 }
 
@@ -199,10 +204,14 @@ async function loadPage() {
     sliderHolder.appendChild(sliderImg);
 
     window.backendManager = backendManager;
-    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
-    window.systemDiagramSVG.classed("graphSVG", true);
-    window.sketchDiagramSVG = d3.select("#systemDiagram").append("svg");
-    window.sketchDiagramSVG.classed("graphSVG", true);
+
+    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg").classed("graphSVG", true);
+    window.sketchDiagramSVG = d3.select("#systemDiagram").append("svg").classed("graphSVG", true).style("display", "none");
+    //
+    // window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
+    // window.systemDiagramSVG.classed("graphSVG", true);
+    // window.sketchDiagramSVG = d3.select("#systemDiagram").append("svg");
+    // window.sketchDiagramSVG.classed("graphSVG", true);
 
     // looks as URL and checks whether a system diagram needs to be loaded from URL
     const urlParams = new URLSearchParams(window.location.search);
