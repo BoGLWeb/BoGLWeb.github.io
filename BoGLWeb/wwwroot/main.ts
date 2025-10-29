@@ -28,15 +28,26 @@ var submenuMap = {
 }
 
 // loads a system diagram from a string
+// async function loadSystemDiagram(text: string) {
+//     let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
+//     if (systemDiagramText != null) {
+//         //if(window.tabNum == "1") {
+//             getBackendManager().loadSystemDiagram(systemDiagramText);
+//         // } else {
+//         //     getBackendManager().loadSketchDiagram(systemDiagramText);
+//         // }
+//        
+//     }
+// }
+
 async function loadSystemDiagram(text: string) {
     let systemDiagramText = await DotNet.invokeMethodAsync("BoGLWeb", "openSystemDiagram", text);
     if (systemDiagramText != null) {
-        //if(window.tabNum == "1") {
+        if(window.tabNum == "1") {
             getBackendManager().loadSystemDiagram(systemDiagramText);
-        // } else {
-        //     getBackendManager().loadSketchDiagram(systemDiagramText);
-        // }
-        
+        } else {
+            getBackendManager().loadSketchDiagram(systemDiagramText);
+        }
     }
 }
 
@@ -205,8 +216,14 @@ async function loadPage() {
 
     window.backendManager = backendManager;
 
-    window.systemDiagramSVG = d3.select("#systemDiagram").append("svg").classed("graphSVG", true);
-    window.sketchDiagramSVG = d3.select("#systemDiagram").append("svg").classed("graphSVG", true).style("display", "none");
+    window.systemDiagramSVG = d3.select("#systemDiagram")
+        .append("svg")
+        .classed("graphSVG", true);
+
+    window.sketchDiagramSVG = d3.select("#sketch")
+        .append("svg")
+        .classed("graphSVG", true);
+
     //
     // window.systemDiagramSVG = d3.select("#systemDiagram").append("svg");
     // window.systemDiagramSVG.classed("graphSVG", true);
@@ -221,27 +238,23 @@ async function loadPage() {
         let sysDiagramString = await DotNet.invokeMethodAsync("BoGLWeb", "uncompressUrl", myParam);
         getBackendManager().loadSystemDiagram(sysDiagramString);
     } else {
-        // if URL has no system diagram, load an empty systemm diagram
+        // if URL has no system diagram, load an empty system diagram
         window.systemDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
         window.systemDiagram.updateGraph();
         backendManager.getBackendManager().zoomCenterGraph("1");
         window.systemDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
-        window.sketchDiagram = new SystemDiagramDisplay(window.systemDiagramSVG, new SystemDiagram([], []));
+        window.sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram([], []));
         window.sketchDiagram.updateGraph();
         backendManager.getBackendManager().zoomCenterGraph("1");
-        window.sketchDiagram.changeScale(window.systemDiagram.svgX, window.systemDiagram.svgY, 1);
+        window.sketchDiagram.changeScale(window.sketchDiagram.svgX, window.sketchDiagram.svgY, 1);
     }
 
     // on mouseup, clear element dragged from menu
     document.addEventListener("mouseup", function () {
-        if(window.tabNum == "1") {
             document.body.style.cursor = "auto";
             window.systemDiagram.draggingElement = null;
-        } else {
             document.body.style.cursor = "auto";
             window.sketchDiagram.draggingElement = null;
-        }
-        
     });
 
     // populate the element menu

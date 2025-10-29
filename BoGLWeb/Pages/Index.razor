@@ -88,13 +88,13 @@
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || currTab != "2" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CutSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || currTab != "2" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CopySvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || currTab != "2" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
         <Button Shape="Square" Disabled="@disableUndo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
@@ -103,10 +103,10 @@
         <Button Shape="Square" Disabled="@disableRedo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
             <Icon Component="RedoSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || currTab != "2" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || currTab != "2"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="ClearSvg"/>
         </Button>
     </li>
