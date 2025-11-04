@@ -42,7 +42,6 @@ export namespace ElementNamespace {
         new ElementType(10, "Torque Input", 1, "torque_input", [], true),
         new ElementType(11, "Velocity Input", 1, "velocity_input", [], true),
         new ElementType(12, "Lever", 2, "lever", [3, 1], true),
-        //new ElementType(13, "Pulley", 2, "pulley", [3, 1], true),
         new ElementType(13, "Belt", 2, "belt", [5, 2, 4], true),
         new ElementType(14, "Shaft", 2, "shaft", [2, 4], true, 2),
         new ElementType(15, "Gear", 2, "gear", [3, 1, 6], true),

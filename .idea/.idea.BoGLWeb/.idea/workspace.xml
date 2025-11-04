@@ -11,10 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/backendManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/backendManager.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/pulley.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -133,7 +132,8 @@
       <workItem from="1760372755480" duration="2973000" />
       <workItem from="1761145113746" duration="2544000" />
       <workItem from="1761928715675" duration="418000" />
-      <workItem from="1762136998050" duration="706000" />
+      <workItem from="1762136998050" duration="1830000" />
+      <workItem from="1762297075044" duration="429000" />
     </task>
     <task id="LOCAL-00001" summary="New spring images">
       <option name="closed" value="true" />
@@ -151,6 +151,17 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="New spring images" />

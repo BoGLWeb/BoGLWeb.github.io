@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace BoGLWeb {
-    public class SystemDiagram {
+    public class SystemDiagram { 
         private static readonly ImmutableDictionary<string, int> modifierIDDict;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverseGraph;
@@ -104,7 +104,6 @@ namespace BoGLWeb {
             typeBuilderReverse.Add(10, "System_MR_Torque_Input");
             typeBuilderReverse.Add(11, "System_MR_Velocity_Input");
             typeBuilderReverse.Add(12, "System_MR_Lever");
-            //typeBuilderReverse.Add(13, "System_MR_Pulley");
             typeBuilderReverse.Add(13, "System_MR_Belt");
             typeBuilderReverse.Add(14, "System_MR_Shaft");
             typeBuilderReverse.Add(15, "System_MR_Gear");
