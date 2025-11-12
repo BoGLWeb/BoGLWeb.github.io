@@ -86,6 +86,7 @@ namespace BoGLWeb {
             typeBuilder.Add("System_O_PM_Motor", 27);
             typeBuilder.Add("System_O_VC_Transducer", 28);
             typeBuilder.Add("System_MR_Pulley_Grounded", 29);
+            /*typeBuilder.Add("System_MR_Bearing", 30);*/
 
             typeIDDict = typeBuilder.ToImmutable();
 
@@ -121,6 +122,7 @@ namespace BoGLWeb {
             typeBuilderReverse.Add(27, "System_O_PM_Motor");
             typeBuilderReverse.Add(28, "System_O_VC_Transducer");
             typeBuilderReverse.Add(29, "System_MR_Pulley_Grounded");
+            /*typeBuilderReverse.Add(30, "System_MR_Bearing");*/
 
             typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
