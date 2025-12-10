@@ -87,10 +87,6 @@ export namespace backendManager {
                     let n1: number = elementLocations[i][0];
                     let n2: number = elementLocations[i][1];
                     let arr: number[] = [n1, n2];
-                    /*console.log('arr:', arr);
-                    console.log('elementSize:', elementSize);
-                    console.log('screenSizeX:', screenSizeX);
-                    console.log('screenSizeY:', screenSizeY);*/
                     let x = Math.abs((arr[0] - minX) / elementSize);
                     let y = Math.abs((arr[1] - minY) / elementSize);
                     let roundedDownX: number = Math.floor(x);
@@ -101,18 +97,9 @@ export namespace backendManager {
                     roundedUpX = Math.min(roundedUpX, generalElementLocations.length - 1);
                     roundedDownY = Math.min(roundedDownY, generalElementLocations[0].length - 1);
                     roundedUpY = Math.min(roundedUpY, generalElementLocations[0].length - 1);
-                    /*console.log('x = (', arr[0], ' - ', minX, ') / ', elementSize);
-                    console.log('y = (', arr[1], ' - ', minY, ') / ', elementSize);
-                    console.log('X: ', x);
-                    console.log('Y: ', y);
-                    console.log(`generalElementLocations length: ${generalElementLocations.length}`);
-                    console.log('generalElementLocations:', generalElementLocations);
-                    console.log('generalElementLocations X:', generalElementLocations.length);
-                    console.log('generalElementLocations Y:', generalElementLocations[0].length);*/
-                    if(roundedUpX != roundedDownX && roundedUpY != roundedUpY){
+                    if(roundedUpX != roundedDownX && roundedUpY != roundedDownY){
                         generalElementLocations[roundedUpX][roundedUpY].push(i);
                     }
-                    //console.log('elementSize:', elementSize);
                     generalElementLocations[roundedDownX][roundedDownY].push(i);
                 }
 
@@ -159,17 +146,6 @@ export namespace backendManager {
                     // getting the absolute value of the difference between the x and y axis of the two points
                     let firstElement: number[] = elementLocations[offendingElements[i][0]];
                     let secondElement: number[] = elementLocations[offendingElements[i][1]];
-                    //TODO: fix
-                    /*console.log('elementLocations', elementLocations);
-                    console.log('f1: ',firstElement);
-                    console.log('f2: ',secondElement);
-                    console.log('i: ', i);
-                    console.log('FE: ', elementLocations[offendingElements[i][0]]);
-                    console.log('SE: ', elementLocations[offendingElements[i][1]]);
-                    console.log('absX', Math.abs(firstElement[0] - secondElement[0]));
-                    console.log('absY', Math.abs(firstElement[1] - secondElement[1]));*/
-                    //let absX: number = Math.abs(firstElement[0] - secondElement[0]);
-                    //let absY: number = Math.abs(firstElement[1] - secondElement[1]);
                     let newLocations: number[][] = [];
                     // checking if the first element is further away from 0
                     newLocations = this.adjustTwoPoints(firstElement, secondElement, elementSize);
@@ -200,7 +176,7 @@ export namespace backendManager {
                     elementLocations[offendingElements[i][1]] = newLocations[1];
                 }
             }
-            
+            console.log("Completed Successfully");
             return elementLocations; // returns all of the locations for every element adjusted
         }
         

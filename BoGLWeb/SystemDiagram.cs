@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace BoGLWeb {
-    public class SystemDiagram {
+    public class SystemDiagram { 
         private static readonly ImmutableDictionary<string, int> modifierIDDict;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverse;
         private static readonly ImmutableDictionary<int, string> modifierIDDictReverseGraph;
@@ -69,24 +69,23 @@ namespace BoGLWeb {
             typeBuilder.Add("System_MR_Torque_Input", 10);
             typeBuilder.Add("System_MR_Velocity_Input", 11);
             typeBuilder.Add("System_MR_Lever", 12);
-            typeBuilder.Add("System_MR_Pulley", 13);
-            typeBuilder.Add("System_MR_Pulley_Grounded", 30);
-            typeBuilder.Add("System_MR_Belt", 14);
-            typeBuilder.Add("System_MR_Shaft", 15);
-            typeBuilder.Add("System_MR_Gear", 16);
-            typeBuilder.Add("System_MR_Gear_Pair", 17);
-            typeBuilder.Add("System_MR_Rack", 18);
-            typeBuilder.Add("System_MR_Rack_Pinion", 19);
-            typeBuilder.Add("System_E_Inductor", 20);
-            typeBuilder.Add("System_E_Capacitor", 21);
-            typeBuilder.Add("System_E_Resistor", 22);
-            typeBuilder.Add("System_E_Transformer", 23);
-            typeBuilder.Add("System_E_Junction", 24);
-            typeBuilder.Add("System_E_Ground", 25);
-            typeBuilder.Add("System_E_Current_Input", 26);
-            typeBuilder.Add("System_E_Voltage_Input", 27);
-            typeBuilder.Add("System_O_PM_Motor", 28);
-            typeBuilder.Add("System_O_VC_Transducer", 29);
+            typeBuilder.Add("System_MR_Belt", 13);
+            typeBuilder.Add("System_MR_Shaft", 14);
+            typeBuilder.Add("System_MR_Gear", 15);
+            typeBuilder.Add("System_MR_Gear_Pair", 16);
+            typeBuilder.Add("System_MR_Rack", 17);
+            typeBuilder.Add("System_MR_Rack_Pinion", 18);
+            typeBuilder.Add("System_E_Inductor", 19);
+            typeBuilder.Add("System_E_Capacitor", 20);
+            typeBuilder.Add("System_E_Resistor", 21);
+            typeBuilder.Add("System_E_Transformer", 22);
+            typeBuilder.Add("System_E_Junction", 23);
+            typeBuilder.Add("System_E_Ground", 24);
+            typeBuilder.Add("System_E_Current_Input", 25);
+            typeBuilder.Add("System_E_Voltage_Input", 26);
+            typeBuilder.Add("System_O_PM_Motor", 27);
+            typeBuilder.Add("System_O_VC_Transducer", 28);
+            typeBuilder.Add("System_MR_Pulley_Grounded", 29);
 
             typeIDDict = typeBuilder.ToImmutable();
 
@@ -105,24 +104,23 @@ namespace BoGLWeb {
             typeBuilderReverse.Add(10, "System_MR_Torque_Input");
             typeBuilderReverse.Add(11, "System_MR_Velocity_Input");
             typeBuilderReverse.Add(12, "System_MR_Lever");
-            typeBuilderReverse.Add(13, "System_MR_Pulley");
-            typeBuilderReverse.Add(30, "System_MR_Pulley_Grounded");
-            typeBuilderReverse.Add(14, "System_MR_Belt");
-            typeBuilderReverse.Add(15, "System_MR_Shaft");
-            typeBuilderReverse.Add(16, "System_MR_Gear");
-            typeBuilderReverse.Add(17, "System_MR_Gear_Pair");
-            typeBuilderReverse.Add(18, "System_MR_Rack");
-            typeBuilderReverse.Add(19, "System_MR_Rack_Pinion");
-            typeBuilderReverse.Add(20, "System_E_Inductor");
-            typeBuilderReverse.Add(21, "System_E_Capacitor");
-            typeBuilderReverse.Add(22, "System_E_Resistor");
-            typeBuilderReverse.Add(23, "System_E_Transformer");
-            typeBuilderReverse.Add(24, "System_E_Junction");
-            typeBuilderReverse.Add(25, "System_E_Ground");
-            typeBuilderReverse.Add(26, "System_E_Current_Input");
-            typeBuilderReverse.Add(27, "System_E_Voltage_Input");
-            typeBuilderReverse.Add(28, "System_O_PM_Motor");
-            typeBuilderReverse.Add(29, "System_O_VC_Transducer");
+            typeBuilderReverse.Add(13, "System_MR_Belt");
+            typeBuilderReverse.Add(14, "System_MR_Shaft");
+            typeBuilderReverse.Add(15, "System_MR_Gear");
+            typeBuilderReverse.Add(16, "System_MR_Gear_Pair");
+            typeBuilderReverse.Add(17, "System_MR_Rack");
+            typeBuilderReverse.Add(18, "System_MR_Rack_Pinion");
+            typeBuilderReverse.Add(19, "System_E_Inductor");
+            typeBuilderReverse.Add(20, "System_E_Capacitor");
+            typeBuilderReverse.Add(21, "System_E_Resistor");
+            typeBuilderReverse.Add(22, "System_E_Transformer");
+            typeBuilderReverse.Add(23, "System_E_Junction");
+            typeBuilderReverse.Add(24, "System_E_Ground");
+            typeBuilderReverse.Add(25, "System_E_Current_Input");
+            typeBuilderReverse.Add(26, "System_E_Voltage_Input");
+            typeBuilderReverse.Add(27, "System_O_PM_Motor");
+            typeBuilderReverse.Add(28, "System_O_VC_Transducer");
+            typeBuilderReverse.Add(29, "System_MR_Pulley_Grounded");
 
             typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
