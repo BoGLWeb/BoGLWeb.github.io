@@ -201,29 +201,28 @@ define("types/elements/ElementNamespace", ["require", "exports", "types/elements
             new ElementType_2.ElementType(10, "Torque Input", 1, "torque_input", [], true),
             new ElementType_2.ElementType(11, "Velocity Input", 1, "velocity_input", [], true),
             new ElementType_2.ElementType(12, "Lever", 2, "lever", [3, 1], true),
-            new ElementType_2.ElementType(13, "Pulley", 2, "pulley", [3, 1], true),
-            new ElementType_2.ElementType(14, "Belt", 2, "belt", [5, 2, 4], true),
-            new ElementType_2.ElementType(15, "Shaft", 2, "shaft", [2, 4], true, 2),
-            new ElementType_2.ElementType(16, "Gear", 2, "gear", [3, 1, 6], true),
-            new MultiElementType_1.MultiElementType(17, "Gear Pair", 2, "gear_pair", [], false, [16, 16], [[0, 1]], [[0, 0], [100, 0]]),
-            new ElementType_2.ElementType(18, "Rack", 2, "rack", [3, 1, 6, 0], true),
-            new MultiElementType_1.MultiElementType(19, "Rack Pinion", 2, "rack_pinion", [], false, [16, 18], [[0, 1]], [[0, 0], [0, 100]]),
-            new ElementType_2.ElementType(20, "Inductor", 3, "inductor", [], false, 2),
-            new ElementType_2.ElementType(21, "Capacitor", 3, "capacitor", [], false, 2),
-            new ElementType_2.ElementType(22, "Resistor", 3, "resistor", [], false, 2),
-            new ElementType_2.ElementType(23, "Transformer", 3, "transformer", [], false, 4),
-            new ElementType_2.ElementType(24, "Junction Palette", 3, "junction_palette", [], false, 4),
-            new ElementType_2.ElementType(25, "Ground", 3, "elec_ground", [], false, 2),
-            new ElementType_2.ElementType(26, "Current Input", 3, "current_input", [], false),
-            new ElementType_2.ElementType(27, "Voltage Input", 3, "voltage_input", [], false),
-            new ElementType_2.ElementType(28, "PM Motor", 4, "pm_motor", [], false),
-            new ElementType_2.ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
-            new ElementType_2.ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
+            new ElementType_2.ElementType(13, "Belt", 2, "belt", [5, 2, 4], true),
+            new ElementType_2.ElementType(14, "Shaft", 2, "shaft", [2, 4], true, 2),
+            new ElementType_2.ElementType(15, "Gear", 2, "gear", [3, 1, 6], true),
+            new MultiElementType_1.MultiElementType(16, "Gear Pair", 2, "gear_pair", [], false, [16, 16], [[0, 1]], [[0, 0], [100, 0]]),
+            new ElementType_2.ElementType(17, "Rack", 2, "rack", [3, 1, 6, 0], true),
+            new MultiElementType_1.MultiElementType(18, "Rack Pinion", 2, "rack_pinion", [], false, [16, 18], [[0, 1]], [[0, 0], [0, 100]]),
+            new ElementType_2.ElementType(19, "Inductor", 3, "inductor", [], false, 2),
+            new ElementType_2.ElementType(20, "Capacitor", 3, "capacitor", [], false, 2),
+            new ElementType_2.ElementType(21, "Resistor", 3, "resistor", [], false, 2),
+            new ElementType_2.ElementType(22, "Transformer", 3, "transformer", [], false, 4),
+            new ElementType_2.ElementType(23, "Junction Palette", 3, "junction_palette", [], false, 4),
+            new ElementType_2.ElementType(24, "Ground", 3, "elec_ground", [], false, 2),
+            new ElementType_2.ElementType(25, "Current Input", 3, "current_input", [], false),
+            new ElementType_2.ElementType(26, "Voltage Input", 3, "voltage_input", [], false),
+            new ElementType_2.ElementType(27, "PM Motor", 4, "pm_motor", [], false),
+            new ElementType_2.ElementType(28, "VC Transducer", 4, "vc_transducer", [], false),
+            new ElementType_2.ElementType(29, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
         ];
-        ElementNamespace.mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 18, 12, 13, 14]);
-        ElementNamespace.mrCompatibilityGroup = new Set([8, 9, 7, 12, 13, 15, 14, 10, 12, 11, 16, 18, 28]);
-        ElementNamespace.eCompatibilityGroup = new Set([21, 22, 25, 24, 23, 20, 27, 26, 28]);
-        ElementNamespace.oCompatibilityGroup = new Set([29, 28]);
+        ElementNamespace.mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 17, 12, 13]);
+        ElementNamespace.mrCompatibilityGroup = new Set([8, 9, 7, 12, 14, 13, 10, 12, 11, 15, 17, 27]);
+        ElementNamespace.eCompatibilityGroup = new Set([20, 21, 24, 23, 22, 19, 26, 25, 27]);
+        ElementNamespace.oCompatibilityGroup = new Set([28, 27]);
         function isCompatible(e1, e2, graph) {
             if (e1 === null || e2 === null || e1.id === e2.id)
                 return false;
@@ -1699,7 +1698,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         roundedUpX = Math.min(roundedUpX, generalElementLocations.length - 1);
                         roundedDownY = Math.min(roundedDownY, generalElementLocations[0].length - 1);
                         roundedUpY = Math.min(roundedUpY, generalElementLocations[0].length - 1);
-                        if (roundedUpX != roundedDownX && roundedUpY != roundedUpY) {
+                        if (roundedUpX != roundedDownX && roundedUpY != roundedDownY) {
                             generalElementLocations[roundedUpX][roundedUpY].push(i);
                         }
                         generalElementLocations[roundedDownX][roundedDownY].push(i);
@@ -1766,6 +1765,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                         elementLocations[offendingElements[i][1]] = newLocations[1];
                     }
                 }
+                console.log("Completed Successfully");
                 return elementLocations;
             }
             centerElements(jsonElements, bondGraph) {

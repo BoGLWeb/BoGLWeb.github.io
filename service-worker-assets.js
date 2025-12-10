@@ -245,10 +245,6 @@
       "url": "images\/elements\/pulley_grounded.svg"
     },
     {
-      "hash": "sha256-0QdrvGbCycKsHY+ssCaUtNxlGr27MVT5vGgPQLs3Zhw=",
-      "url": "images\/elements\/pulley.svg"
-    },
-    {
       "hash": "sha256-vGN\/a1SF0mqGs7xU4mLvmwDgjdRnBtKgeNoXZlTnTNU=",
       "url": "images\/elements\/rack_pinion.svg"
     },
@@ -3409,7 +3405,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-EH1za5yipRTIY5ItN6f96keCXhbmzYEb5Z8yloHRXcY=",
+      "hash": "sha256-pV6ccJdIVuJCaUYm7q8D3vH5RGlfqiTUgZnJ96T+An4=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3417,7 +3413,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-k5HB9jJFdT\/vF5eM+Smjcv+AULrF6d0OX09GQCPNWvQ=",
+      "hash": "sha256-pG\/qOYG+1kANKCq5M918TixPl0fWmLxxilYYR1dH45I=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5637,5 +5633,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "Ovps05Cz"
+  "version": "KWQzYcT4"
 };
