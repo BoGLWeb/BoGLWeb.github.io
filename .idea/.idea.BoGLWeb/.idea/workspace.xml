@@ -11,11 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/Bearing.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/torSpring.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/rotSpring.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/force_input.svg" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/force_input.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/velocity_input.svg" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/velocity_input.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +59,7 @@
     &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;remove-element-from-namespace&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;change-element-names-and-svgs&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -135,7 +134,10 @@
       <workItem from="1761928715675" duration="418000" />
       <workItem from="1762136998050" duration="1830000" />
       <workItem from="1762297075044" duration="1264000" />
-      <workItem from="1762922404607" duration="3661000" />
+      <workItem from="1762922404607" duration="7479000" />
+      <workItem from="1764383876805" duration="699000" />
+      <workItem from="1765339953937" duration="433000" />
+      <workItem from="1768535364910" duration="1184000" />
     </task>
     <task id="LOCAL-00001" summary="New spring images">
       <option name="closed" value="true" />
