@@ -184,6 +184,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .style("display", e => {
                 return (e as SystemDiagramElement).modifiers.length > 0 ? "block" : "none";
             });
+        
+        let elemNum = newElements.append("text");
+        elemNum
+            .text(d => (d as SystemDiagramElement).manualNum) // 1. Set the text to the number
+            .attr("x", "16")                                // 2. Position (adjust X as needed)
+            .attr("y", "-13")                                // 3. Position (moved down to bottom-right)
+            .style("font-size", "20px")                     // 4. Adjust font size for readability
+            .style("display", d => {
+                return (d as SystemDiagramElement).manualNum !== -1 ? "block" : "none";
+            });                    // 6. Ensure visibility
 
         group.selectAll("text").html(null);
 

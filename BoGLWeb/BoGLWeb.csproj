@@ -883,4 +883,8 @@
 	  <TypeScriptCompile Include="wwwroot\types\elements\MultiElementType.ts" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\sketch\" />
+	</ItemGroup>
+
 </Project>

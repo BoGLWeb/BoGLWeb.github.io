@@ -220,7 +220,7 @@ async function loadPage() {
         .append("svg")
         .classed("graphSVG", true);
 
-    window.sketchDiagramSVG = d3.select("#sketch")
+    window.sketchDiagramSVG = d3.select("#sketchDiagram")
         .append("svg")
         .classed("graphSVG", true);
 

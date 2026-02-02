@@ -538,6 +538,34 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
     padding: 0 10px 5px !important
 }
 
+#sketchSideMenu {
+    display: block;
+    position: absolute;
+    right: 10px;
+    width: 120px;
+    /* --- ADD THESE LINES --- */
+    top: 10px;                     /* Anchor to the top */
+    max-height: calc(100vh - 150px); /* Limit height (Viewport - Header/Tabs space) */
+    z-index: 100;                  /* Ensure it floats above the canvas */
+}
+
+#sketchSideMenu > .ant-collapse {
+    height: 100%;
+    /* --- CHANGE THIS LINE --- */
+    overflow-y: auto !important;   /* Enable vertical scrolling */
+    overflow-x: hidden;            /* Hide horizontal scrollbar */
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#sketchPanelWrapper > .ant-checkbox-wrapper {
+    margin-left: 0
+}
+
+#sketchPanel > div > .ant-collapse-content-box {
+    padding: 0 10px 5px !important
+}
+
 .ant-collapse-icon-position-right > div > .ant-collapse-header {
     padding-bottom: 0 !important;
     padding-top: 2px !important
