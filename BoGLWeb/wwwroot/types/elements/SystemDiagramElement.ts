@@ -6,7 +6,7 @@ export class SystemDiagramElement extends GraphElement {
     modifiers: number[]; // modifiers that have been applied to the element
     velocity: number; // velocity of the element
     sketch: boolean = false;
-    manualNum: number = -1;
+    manualNum: number = 0;
     
     constructor(id: number, type: number, x: number, y: number, velocity: number, modifiers: number[]) {
         super(id, x, y);

@@ -343,10 +343,14 @@
                                         <div style="margin-bottom: 12px;">
                                             <div style="margin-bottom: 4px;">Elements Number</div>
                                             <AntDesign.InputNumber @bind-Value="@currentElemNumber" 
-                                                         Min="0" 
-                                                         Style="width: 100%;" 
-                                                         Placeholder="Enter a number" />
+                                                                   TValue="int"
+                                                                   Min="0" 
+                                                                   Style="width: 100%;" 
+                                                                   Placeholder="Enter a number" 
+                                                                   OnChange="addManualNumber"/>
                                         </div>
+                                        
+                                        <Button OnClick="@(() => ResetManualNumber())" Danger>None</Button>
 
                                         <div>
                                             <div style="margin-bottom: 4px;">Configuration</div>
@@ -811,6 +815,36 @@
     private async void CheckChange(bool b, int i) {
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("setModifier", i, b);
+    }
+
+    private async void addManualNumber(int i)
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("addManualNumber", i);
+    }
+    
+
+    [JSInvokable]
+    public static void SetManualNum(int num) {
+        if (app != null) {
+            // If -1 (no selection), you might want to display 0 or clear the box
+            app.currentElemNumber = num == -1 ? 0 : num;
+            app.StateHasChanged();
+        }
+    }
+    
+    [JSInvokable]
+    public static void SyncManualNum(int num) {
+        if (app != null) {
+            app.currentElemNumber = num;
+            app.StateHasChanged();
+        }
+    }
+    
+    private async Task ResetManualNumber() {
+        currentElemNumber = -1; // Reset local state
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("addManualNumber", -1);
     }
 
     // propegate a tab change to the front-end

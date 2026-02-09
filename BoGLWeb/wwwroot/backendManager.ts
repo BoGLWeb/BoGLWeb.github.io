@@ -1038,6 +1038,12 @@ export namespace backendManager {
             }
         }
 
+        setManNumsNoUR(el: SystemDiagramElement, value: number) {
+            if (value >= 0) { // adding modifier
+                    el.manualNum = value;
+            }
+        }
+
         // sets the modifier for the current selection
         public setModifier(i: number, value: boolean) {
             // save current modifier values
@@ -1052,6 +1058,15 @@ export namespace backendManager {
             window.systemDiagram.updateGraph();
             DotNet.invokeMethodAsync("BoGLWeb", "URChangeSelectionModifier", window.systemDiagram.selectedElements.map(e => e.id), i, value, prevModVals);
             window.systemDiagram.updateModifierMenu();
+        }
+
+        public addManualNumber(value: number) {
+            let diagram = this.getGraphByIndex(window.tabNum) as SystemDiagramDisplay;
+
+            for (const el of diagram.selectedElements) {
+                el.manualNum = value; // Sets value to -1
+            }
+            diagram.updateGraph();
         }
 
         // set the velocity of all edges/elements to a given velocity ID

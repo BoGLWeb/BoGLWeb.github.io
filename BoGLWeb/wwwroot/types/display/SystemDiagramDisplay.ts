@@ -189,8 +189,8 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         elemNum
             .text(d => (d as SystemDiagramElement).manualNum) // 1. Set the text to the number
             .attr("x", "16")                                // 2. Position (adjust X as needed)
-            .attr("y", "-13")                                // 3. Position (moved down to bottom-right)
-            .style("font-size", "20px")                     // 4. Adjust font size for readability
+            .attr("y", "13")                                // 3. Position (moved down to bottom-right)
+            .style("font-size", "14px")                     // 4. Adjust font size for readability
             .style("display", d => {
                 return (d as SystemDiagramElement).manualNum !== -1 ? "block" : "none";
             });                    // 6. Ensure visibility
@@ -307,6 +307,36 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
     // updates the modifier menu
     updateModifierMenu() {
+        if (this.selectedElements.length > 0) {
+            // if some elements are selected, update the modifier menu to match their modifiers
+            let allAllowedModifiers = [];
+            let selectedModifiers = [0, 0, 0, 0, 0, 0, 0];
+            // count the number of times a modifier is applied to determine whether the checkbox is unchecked, partially
+            // checked, or fully checked. Also record which modifiers are allowed for the selected elements
+            for (const e of this.selectedElements) {
+                allAllowedModifiers = allAllowedModifiers.concat(ElementNamespace.elementTypes[e.type].allowedModifiers);
+                e.modifiers.forEach(m => selectedModifiers[m]++);
+            }
+            // if a modifier count matches the number of elements in the selection, check it fully;
+            // if it is lower than that but not 0, check partially, otherwise leave unchecked
+            selectedModifiers = selectedModifiers.map(m => {
+                if (m == this.selectedElements.length) {
+                    return 2;
+                } else if (m > 0) {
+                    return 1;
+                }
+                return 0;
+            });
+            DotNet.invokeMethodAsync("BoGLWeb", "SetCheckboxes", selectedModifiers);
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", [...new Set(allAllowedModifiers)]);
+        } else {
+            // if no elements are selected, clear checkboxes and disable them all
+            DotNet.invokeMethodAsync("BoGLWeb", "ClearCheckboxes");
+            DotNet.invokeMethodAsync("BoGLWeb", "SetDisabled", []);
+        }
+    }
+
+    updateManualNums() {
         if (this.selectedElements.length > 0) {
             // if some elements are selected, update the modifier menu to match their modifiers
             let allAllowedModifiers = [];
@@ -459,11 +489,18 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.justDragged = false;
     }
 
-    // update the modifier, velocity, and top menus
     updateMenus() {
         this.updateModifierMenu();
         this.updateVelocityMenu();
         this.updateTopMenu();
+
+        // Add this to update the InputNumber in the UI
+        if (this.selectedElements.length > 0) {
+            // Pass the manualNum of the first selected element to Blazor
+            DotNet.invokeMethodAsync("BoGLWeb", "SetManualNum", this.selectedElements[0].manualNum);
+        } else {
+            DotNet.invokeMethodAsync("BoGLWeb", "SetManualNum", -1);
+        }
     }
 
     // handles mouseup on SVG background
