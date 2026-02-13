@@ -176,7 +176,8 @@ define("types/elements/ElementNamespace", ["require", "exports", "types/elements
             new Category_1.Category(1, "Basic Mechanical Rotation", "mechRot"),
             new Category_1.Category(2, "Transmission Elements", "transElem"),
             new Category_1.Category(3, "Electrical", "electrical"),
-            new Category_1.Category(4, "Actuators", "actuators")
+            new Category_1.Category(4, "Actuators", "actuators"),
+            new Category_1.Category(5, "Hydraulics", "hydraulics")
         ];
         ElementNamespace.modifiers = [
             new Modifier_1.Modifier(0, "Mass"),
@@ -217,7 +218,8 @@ define("types/elements/ElementNamespace", ["require", "exports", "types/elements
             new ElementType_2.ElementType(26, "Voltage Input", 3, "voltage_input", [], false),
             new ElementType_2.ElementType(27, "PM Motor", 4, "pm_motor", [], false),
             new ElementType_2.ElementType(28, "VC Transducer", 4, "vc_transducer", [], false),
-            new ElementType_2.ElementType(29, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true)
+            new ElementType_2.ElementType(29, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true),
+            new ElementType_2.ElementType(30, "Hydraulic Pump", 5, "hydraulic_pump", [], true)
         ];
         ElementNamespace.mtCompatibilityGroup = new Set([0, 1, 2, 3, 4, 5, 6, 17, 12, 13]);
         ElementNamespace.mrCompatibilityGroup = new Set([8, 9, 7, 12, 14, 13, 10, 12, 11, 15, 17, 27]);
