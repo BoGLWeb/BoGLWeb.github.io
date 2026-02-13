@@ -213,10 +213,6 @@
       "url": "images\/elements\/gravity.svg"
     },
     {
-      "hash": "sha256-VZ\/rETKNaiPoMq9bHhG8fripa5TbhLcCZ+7g+XIqwaI=",
-      "url": "images\/elements\/hydraulic_pump.svg"
-    },
-    {
       "hash": "sha256-09WjJxIjUyMFyAX08aXDCNp+or\/UoThPPiC+YJwZqjs=",
       "url": "images\/elements\/inductor.svg"
     },
@@ -3409,7 +3405,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-d8ohjZEvmc6WJHMNi8KnYKVvv9ns5tz9Ky1uCOlzjQo=",
+      "hash": "sha256-pV6ccJdIVuJCaUYm7q8D3vH5RGlfqiTUgZnJ96T+An4=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3417,7 +3413,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-paMEIDWBlxi7JOfbi3hh8oXe1cIOcig44JOpN8paLMw=",
+      "hash": "sha256-pG\/qOYG+1kANKCq5M918TixPl0fWmLxxilYYR1dH45I=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -5637,5 +5633,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "oToZ2wiU"
+  "version": "KWQzYcT4"
 };
