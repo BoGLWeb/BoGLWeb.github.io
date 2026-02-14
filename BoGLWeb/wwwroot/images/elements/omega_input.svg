@@ -5,7 +5,7 @@
    viewBox="0 0 944 441"
    version="1.1"
    id="svg1"
-   sodipodi:docname="force_input.svg"
+   sodipodi:docname="omega_input.svg"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -44,8 +44,10 @@
        x="149.80928"
        y="177.36316"
        style="font-size:189.913px;fill:#24221c;stroke-width:0.989134"><tspan
+         style="font-size:290.146px;stroke-width:0.989134"
+         id="tspan4">w</tspan><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;stroke-width:0.989134"
-         id="tspan3">F(t)</tspan></tspan></text>
+         id="tspan3">(t)</tspan></tspan></text>
   <circle
      id="path4"
      style="fill:#000000;stroke:none"
