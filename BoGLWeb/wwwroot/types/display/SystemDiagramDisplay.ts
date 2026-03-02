@@ -37,6 +37,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     copiedEdges: GraphBond[] = [];
     ctrlPressed: boolean = false;
     elements: SystemDiagramElement[];
+    diagramType: string = "sys";
+    markerId: string;
+    
 
     constructor(svg: SVGSelection, systemDiagram: SystemDiagram) {
         super(svg, systemDiagram);
@@ -52,6 +55,26 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("d", d3.svg.symbol().type("cross").size(100))
             .style("fill", "red")
             .style("display", "none");
+
+        // Generate a unique ID for this specific diagram's arrowhead
+        this.markerId = "arrowhead_" + Math.random().toString(36).substr(2, 9);
+
+        const defs = this.svgG.append("defs");
+        defs.append("marker")
+            .attr("id", this.markerId)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 10)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            // M0,-5 (Start top left) L10,0 (Line to center tip)
+            // We remove the L0,5 (Line to bottom left) to leave only the top half
+            .attr("d", "M0,-5L10,0")
+            .attr("fill", "none")
+            .attr("stroke", "#000")
+            .attr("stroke-width", "1.5"); // Adjust thickness as needed
     }
 
     // returns a combined list of selected elements and bonds
@@ -87,11 +110,34 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     setFollowingEdge(sourceNode: SystemDiagramElement) {
         this.edgeOrigin = sourceNode;
         if (sourceNode == null) {
-            // hide edge if there is no source
             this.dragBond.classed("hidden", true);
+            this.dragBond.attr("marker-end", null); // Clean up marker
         } else {
+            // 1. Draw the line
             this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+
+            // 2. Decide if it gets an arrow or a normal line
+            if (this.diagramType === "sys" || this.diagramType === "unsimp") {
+                this.dragBond.attr("marker-end", null); // Normal line
+            } else {
+                this.dragBond.attr("marker-end", "url(#" + this.markerId + ")"); // Arrow line
+            }
+
             this.dragBond.classed("hidden", false);
+        }
+    }
+
+    dragmoveEdge() {
+        if (this.edgeOrigin) {
+            // 1. Update line coordinates
+            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+
+            // 2. Decide if it gets an arrow or a normal line
+            if (this.diagramType === "sys" || this.diagramType === "unsimp") {
+                this.dragBond.attr("marker-end", null); // Normal line
+            } else {
+                this.dragBond.attr("marker-end", "url(#" + this.markerId + ")"); // Arrow line
+            }
         }
     }
 
@@ -262,6 +308,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         paths.classed("hoverablePath", true);
 
+        // Apply normal line vs. arrow based on diagram type
+        if (this.diagramType === "sys" || this.diagramType === "unsimp") {
+            paths.attr("marker-end", null); // Normal line
+        } else {
+            paths.attr("marker-end", "url(#" + this.markerId + ")"); // Arrow line
+        }
+
         // removes velocity arrows because they're not generated directly through d3 and are therefore not removed on update
         // if we can find a way to do this through D3 this removal would no longer be needed, which would be cool, but haven't found that yet
         this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove()
@@ -297,7 +350,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                     yOffset = -7 * mult;
                     xOffset = 0;
                 }
-
+                this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove();
                 d3.select(paths[0][i].parentNode).append("text").classed("velocityArrow " + velocityClass + " velocity_" + v + "_edge", true)
                     .text(graph.velocityMap[e.velocity]).attr("x", (e.target.x - e.source.x) / 2 + e.source.x + xOffset).attr("y",
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
@@ -717,13 +770,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("drag", function (d) {
                 graph.dragmoveEdge.call(graph, d);
             });
-    }
-
-    // draws an edge that follows the mouse from a source node if the source node is not null
-    dragmoveEdge() {
-        if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
-        }
     }
 
     // handles all scaling and translation in the system diagram

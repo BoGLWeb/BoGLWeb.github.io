@@ -68,7 +68,15 @@ export namespace ElementNamespace {
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
         new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
         new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true),
-        new ElementType(31, "I:M", 5, "I-M", [], false)
+        new ElementType(31, "I:M", 5, "I-M", [], false),
+        new ElementType(32, "0", 5, "0-MT", [], false),
+        new ElementType(32, "0", 5, "0-MT", [], false),
+        new ElementType(33, "1", 5, "1-MT", [], false),
+        new ElementType(34, "C:C", 5, "C-C", [], false),
+        new ElementType(35, "C:Ch", 5, "C-Ch", [], false),
+        new ElementType(34, "C:K", 5, "C-K", [], false),
+        new ElementType(34, "C:Kt", 5, "C-Kt", [], false),
+        new ElementType(34, "GY", 5, "GY", [], false),
     ];
 
     // compatibility groups with element IDs showing which elements can connect to each other
@@ -76,6 +84,7 @@ export namespace ElementNamespace {
     export const mrCompatibilityGroup = new Set([8, 9, 7, 12, 13, 15, 14, 10, 12, 11, 16, 18, 28]);
     export const eCompatibilityGroup = new Set([21, 22, 25, 24, 23, 20, 27, 26, 28]);
     export const oCompatibilityGroup = new Set([29, 28]);
+    export const sketchCompatibilityGroup = new Set([31, 32]);
 
     // checks whether two system diagram elements can be connected
     export function isCompatible(e1: SystemDiagramElement, e2: SystemDiagramElement, graph: SystemDiagramDisplay) {
@@ -84,11 +93,12 @@ export namespace ElementNamespace {
         let mrCompatible = mrCompatibilityGroup.has(e1.type) && mrCompatibilityGroup.has(e2.type);
         let eCompatible = eCompatibilityGroup.has(e1.type) && eCompatibilityGroup.has(e2.type);
         let oCompatible = oCompatibilityGroup.has(e1.type) && oCompatibilityGroup.has(e2.type);
+        let sketchCompatible = sketchCompatibilityGroup.has(e1.type) && sketchCompatibilityGroup.has(e2.type);
         let maxSourceBonds = ElementNamespace.elementTypes[e1.type].maxConnections;
         let maxTargetBonds = ElementNamespace.elementTypes[e2.type].maxConnections;
         let numTargetBonds = graph.bonds.filter(b => b.target.id == e2.id || b.source.id == e2.id).length;
         let numSourceBonds = graph.bonds.filter(b => b.target.id == e1.id || b.source.id == e1.id).length;
         let edgesLikeThisCount = graph.bonds.filter(b => (b.target.id == e1.id && b.source.id == e2.id) || (b.target.id == e2.id && b.source.id == e1.id)).length;
-        return (mtCompatible || mrCompatible || eCompatible || oCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
+        return (mtCompatible || mrCompatible || eCompatible || oCompatible || sketchCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
     }
 }

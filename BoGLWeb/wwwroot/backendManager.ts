@@ -16,6 +16,7 @@ export namespace backendManager {
     let numsRan: number = 0;
     export class BackendManager {
 
+        sketchType: string = "unsimp"
         imageBuffer = 15;
         
         adjustTwoPoints(E1: number[], E2: number[], elementSize: number): number[][] {
@@ -607,11 +608,12 @@ export namespace backendManager {
             }
 
             window.sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram([], []));
-
+            window.sketchDiagram.diagramType = this.sketchType;
             DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
                 ...window.sketchDiagram.listToIDObjects([].concat(window.sketchDiagram.selectedElements).concat(window.sketchDiagram.selectedBonds)), false);
 
             let sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram((Array.from(elements.values()) as SystemDiagramElement[]), edges));
+            sketchDiagram.diagramType = this.sketchType;
             sketchDiagram.draggingElement = null;
             window.sketchDiagram = sketchDiagram;
             sketchDiagram.updateGraph();
@@ -619,6 +621,32 @@ export namespace backendManager {
             let bounds = (sketchDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
             sketchDiagram.initWidth = bounds.width;
             sketchDiagram.initHeight = bounds.height;
+        }
+
+        public updateSketchBondType(selection: string) {
+            if (window.sketchDiagram) {
+                let typeValue = "sketch"; // Default for 'Simplified' or 'Causal'
+
+                switch (selection) {
+                    case "Unsimplified":
+                        typeValue = "unsimp";
+                        break;
+                    case "Simplified":
+                        typeValue = "simp";
+                        break;
+                    case "Causal":
+                        typeValue = "causal";
+                        break;
+                }
+
+                // Update the diagram instance and the manager's state
+                this.sketchType = typeValue;
+                window.sketchDiagram.diagramType = typeValue;
+
+                // Force the graph to re-render to apply the marker changes
+                window.sketchDiagram.updateGraph();
+                window.sketchDiagram.updateMenus();
+            }
         }
 
         // get the current system diagram as a JSON string

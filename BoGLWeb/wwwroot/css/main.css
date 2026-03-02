@@ -255,6 +255,12 @@ h2 {
     max-width: 45px
 }
 
+.sketchImage {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
 .ant-collapse-content-box {
     padding: 0 16px 5px !important
 }
