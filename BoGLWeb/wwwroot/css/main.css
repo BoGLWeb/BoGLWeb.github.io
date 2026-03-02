@@ -921,7 +921,7 @@ input[type="file"] {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    background-color: rgba(0, 0, 0, 0.5); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -929,23 +929,80 @@ input[type="file"] {
 
 .resolution-modal-content {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 400px;
+    width: 500px;
+    padding: 20px 24px;
     text-align: center;
     position: relative;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-.resolution-modal-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
+.resolution-modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
 }
+
+.resolution-modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.resolution-modal-close {
+  position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: lighter;
+    
+    
+    
+   /* background-color: ##0652ff;   
+    border: 1px solid #1677ff;
+    color: #fff;
+    font-size: 14px;
+    height: 32px;
+    padding: 4px 15px;
+    border-radius: 6px;
+    
+    
+    */
+    
+}
+
+.resolution-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 20px;
+}
+
+.resolution-modal-footer button:first-child {
+    background-color: #5890F7;
+    
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    height: 32px;
+    padding: 4px 15px;
+    border-radius: 3px;
+}
+.resolution-modal-footer button:first-child:hover {
+    background-color: #4096ff;
+    border-color: #4096ff;
+}
+
+.resolution-modal-footer button:last-child {
+    background-color: white;
+    border: 1px solid #d6d6d6;
+    height: 32px;
+    padding: 4px 15px;
+}
+    
 
 .hidden {
     display: none !important;
