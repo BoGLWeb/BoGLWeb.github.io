@@ -1088,6 +1088,11 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
+        public setSketchBondGraphType(graphType: string) {
+            window.sketchDiagram.sketchBondGraphType = graphType;
+            window.sketchDiagram.updateGraph();
+        }
+
         // get the graph display object for a given tab ID (1 to 4)
         public getGraphByIndex(i: string) {
             if (i == "1") {

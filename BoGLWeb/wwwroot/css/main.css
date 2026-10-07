@@ -240,6 +240,18 @@ h2 {
     margin: 2px;
     width: fit-content
 }
+path.link {
+    fill: none;
+    stroke: #333;
+    stroke-width: 4px
+}
+
+path.sketchBondTick {
+    fill: none;
+    stroke: #333;
+    stroke-width: 4px;
+    pointer-events: none
+}
 
 .box {
     align-items: center;
@@ -523,7 +535,9 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
     display: block;
     position: absolute;
     right: 10px;
-    width: 120px
+    top: 10px;
+    width: 120px;
+    z-index: 9999;
 }
 
 #modifierMenu > .ant-collapse {
@@ -546,6 +560,69 @@ g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
 
 #BGTypePanelWrapper > .ant-checkbox-wrapper {
     margin-left: 0
+}
+
+#BGTypePanelMenu {
+    display: block;
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 175px;
+    z-index: 9999;
+}
+
+.sketchTypeCard {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #c9e6fa;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(30, 80, 120, 0.16);
+    padding: 12px;
+}
+
+.sketchTypeTitle {
+    color: #1f2933;
+    font: bold 13px "Segoe UI", "SegoeUIBold" !important;
+    margin-bottom: 1px;
+}
+
+.sketchTypeSubtitle {
+    color: #6b7280;
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+
+.sketchTypeOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sketchTypeOptions .ant-radio-wrapper {
+    align-items: center;
+    background: #f5fbff;
+    border: 1px solid #d7edfc;
+    border-radius: 8px;
+    color: #263238;
+    display: flex;
+    font-size: 12px;
+    margin: 0;
+    padding: 6px 8px;
+    transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.sketchTypeOptions .ant-radio-wrapper:hover {
+    background: #e9f6ff;
+    border-color: #9fd4f5;
+}
+
+.sketchTypeOptions .ant-radio-wrapper-checked {
+    background: #d6eeff;
+    border-color: #65b9ee;
+    box-shadow: inset 3px 0 0 #1890ff;
+}
+
+.sketchTypeOptions .ant-radio {
+    margin-right: 4px;
 }
 
 .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
@@ -841,6 +918,10 @@ hr:not([size]) {
 
 #modifierCheckboxWrapper > label, #BGTypePanelMenu .ant-collapse-header, #zoomMenu .ant-collapse-header {
     font-size: 12px
+}
+
+#BGTypePanelMenu .ant-collapse-header {
+    font-size: 14px;
 }
 
 #ruleLoadProgressText, #generateProgressText {

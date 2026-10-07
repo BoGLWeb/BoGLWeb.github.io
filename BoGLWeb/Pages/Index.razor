@@ -11,6 +11,60 @@
 
 <PageTitle>BoGL Web</PageTitle>
 
+<style>
+#modifierMenu {
+    display: block;
+    position: absolute;
+    right: 10px;
+    width: 120px;
+}
+
+#BGTypePanelMenu {
+    display: block;
+    position: absolute;
+    right: 10px;
+    width: 140px;
+    z-index: 9999;
+}
+
+#modifierMenu > .ant-collapse {
+    height: 100%;
+    overflow: clip !important;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#BGTypePanelMenu > .ant-collapse {
+    height: 100%;
+    overflow: clip !important;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#modifierCheckboxWrapper > .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+#BGTypePanelWrapper .ant-radio-wrapper {
+    display: block;
+    font-size: 12px;
+    margin-left: 0;
+    margin-bottom: 5px;
+}
+
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+    margin-left: 5px;
+}
+
+#modifierPanel > div > .ant-collapse-content-box {
+    padding: 0 10px 5px !important;
+}
+
+#BGTypePanel > div > .ant-collapse-content-box {
+    padding: 0 10px 5px !important;
+}
+</style>
+
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
 <body oncontextmenu="return false;">
@@ -332,32 +386,27 @@
                     <div id="systemDiagram"></div>
                 </TabPane>
                 <TabPane Key="2" Tab="Sketch" ForceRender=true>
-                    <div></div>
-                    @* <div id="BGTypePanelMenu"> *@
-                    @*     <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })"> *@
-                    @*         <ChildContent> *@
-                    @*             <Panel Header="Bond Graph Type" Key="1" Id="BGTypePanel"> *@
-                    @*                 <div id="BGTypePanelWrapper"> *@
-                    @*                     @{ *@
-                    @*                         RenderFragment settingsIcon = @<Button Class="settingButton" Size="small"><Icon Type="setting" Theme="fill" Style="color: #5A5A5A"/></Button>; *@
-                    @*                     } *@
-                    @*                     <Checkbox Style="padding-right: 0px" Checked="@checkValues[0]" Indeterminate="@checkIndeterminate[0]" Disabled="@disabledValues[0]" OnChange="b => { CheckChange(b, 0); }"> *@
-                    @*                         <div style="display: flex; align-items: center;">@("Simplified")</div> *@
-                    @*                     </Checkbox> *@
-                    @*                     <Checkbox Style="padding-right: 0px" Checked="@checkValues[1]" Indeterminate="@checkIndeterminate[1]" Disabled="@disabledValues[1]" OnChange="b => { CheckChange(b, 1); }"> *@
-                    @*                         <div style="display: flex; align-items: center;">@("Unsimplified")</div> *@
-                    @*                     </Checkbox> *@
-                    @*                     <Checkbox Style="padding-right: 0px" Checked="@checkValues[2]" Indeterminate="@checkIndeterminate[2]" Disabled="@disabledValues[2]" OnChange="b => { CheckChange(b, 2); }"> *@
-                    @*                         <div style="display: flex; align-items: center;">@("Causal")</div> *@
-                    @*                     </Checkbox> *@
-                    @*                 </div> *@
-                    @*             </Panel> *@
-                    @*         </ChildContent> *@
-                    @*         <ExpandIconTemplate> *@
-                    @*             <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/> *@
-                    @*         </ExpandIconTemplate> *@
-                    @*     </Collapse> *@
-                    @* </div> *@
+                    <div id="BGTypePanelMenu">
+                        <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
+                            <ChildContent>
+                                <Panel Header="Bond Graph Type" Key="1" Id="BGTypePanel">
+                                    <div id="BGTypePanelWrapper">
+                                        <RadioGroup Value="@selectedSketchBondGraphType"
+                                                    TValue="string"
+                                                    OnChange="ChangeSketchBondGraphType">
+                                            <Radio Value="@("unsimplified")">Unsimplified</Radio>
+                                            <Radio Value="@("simplified")">Simplified</Radio>
+                                            <Radio Value="@("causal")">Causal</Radio>
+                                        </RadioGroup>
+                                    </div>
+                                </Panel>
+                            </ChildContent>
+                            <ExpandIconTemplate>
+                                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                            </ExpandIconTemplate>
+                        </Collapse>
+                    </div>
+                    <div id="sketch"></div>
                 </TabPane>
                 <TabPane Disabled="tabsDisabled" Key="3" Tab="Unsimplified BG" ForceRender=true>
                     <div id="unsimpBG"></div>
@@ -396,7 +445,7 @@
         <p>Felice Mancini</p>
         <p>Corey Alicchio</p>
         <p>Justin Vitiello</p>
-        <p>Terry Hearst</p>
+        <p>Tammy Hearst</p>
         <p>Talal Jaber</p>
         <p>Corrin Courville</p>
         <p>Brendon Peters</p>
@@ -454,6 +503,7 @@
     static bool hasCopiedSelection = false;
     static bool showEquations = false;
     string[] stateEquationsStored = new string[] { };
+    string selectedSketchBondGraphType = "unsimplified";
 
     public Index() {
         app = this;
@@ -809,6 +859,13 @@
             disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
             base.StateHasChanged();
         }
+    }
+    
+    private async void ChangeSketchBondGraphType(string graphType) {
+        selectedSketchBondGraphType = graphType;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setSketchBondGraphType", graphType);
+        base.StateHasChanged();
     }
 
     // changes which state equation is being displayed in the causal bond graph tab

@@ -84,11 +84,14 @@ export namespace ElementNamespace {
         let mrCompatible = mrCompatibilityGroup.has(e1.type) && mrCompatibilityGroup.has(e2.type);
         let eCompatible = eCompatibilityGroup.has(e1.type) && eCompatibilityGroup.has(e2.type);
         let oCompatible = oCompatibilityGroup.has(e1.type) && oCompatibilityGroup.has(e2.type);
-        let maxSourceBonds = ElementNamespace.elementTypes[e1.type].maxConnections;
-        let maxTargetBonds = ElementNamespace.elementTypes[e2.type].maxConnections;
+        let e1Type = ElementNamespace.elementTypes[e1.type];
+        let e2Type = ElementNamespace.elementTypes[e2.type];
+        let sketchCompatible = e1Type.category >= 5 && e1Type.category <= 12 && e2Type.category >= 5 && e2Type.category <= 12;
+        let maxSourceBonds = e1Type.maxConnections;
+        let maxTargetBonds = e2Type.maxConnections;
         let numTargetBonds = graph.bonds.filter(b => b.target.id == e2.id || b.source.id == e2.id).length;
         let numSourceBonds = graph.bonds.filter(b => b.target.id == e1.id || b.source.id == e1.id).length;
         let edgesLikeThisCount = graph.bonds.filter(b => (b.target.id == e1.id && b.source.id == e2.id) || (b.target.id == e2.id && b.source.id == e1.id)).length;
-        return (mtCompatible || mrCompatible || eCompatible || oCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
+        return (mtCompatible || mrCompatible || eCompatible || oCompatible || sketchCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
     }
 }
