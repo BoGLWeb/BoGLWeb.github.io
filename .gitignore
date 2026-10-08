@@ -377,3 +377,157 @@ BoGLWeb/obj/Debug/net6.0/BoGLWeb.GeneratedMSBuildEditorConfig.editorconfig
 BoGLWeb/obj/*
 BoGLWeb/.idea/*
 *.cache
+
+################################################################################
+# JetBrains Rider / IntelliJ IDEA
+################################################################################
+
+# Rider IDE configuration
+.idea/
+
+# Rider workspace-specific files
+workspace.xml
+**/workspace.xml
+*.iws
+
+# Rider user-specific settings
+*.DotSettings.user
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+.idea/**/dataSources.local.xml
+
+# Rider caches and logs
+.idea/**/caches/
+.idea/**/httpRequests/
+.idea/**/sonarlint/
+.idea/**/indexLayout.xml
+
+# Rider plugins
+.idea/**/copilot/
+.idea/**/ai-assistant.xml
+
+################################################################################
+# Visual Studio Code
+################################################################################
+
+# User-specific workspace settings
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# VS Code workspace files
+*.code-workspace
+
+################################################################################
+# .NET / ASP.NET Core / Blazor
+################################################################################
+
+# Build and intermediate output
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+# Generated frontend assets
+**/wwwroot/build/
+**/wwwroot/dist/
+**/wwwroot/node_modules/
+
+# ASP.NET Core local development settings
+**/Properties/PublishProfiles/
+**/appsettings.Development.local.json
+**/appsettings.Local.json
+
+# Local development secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local certificates
+*.pfx
+*.p12
+*.key
+
+# Test artifacts
+**/TestResults/
+**/playwright-report/
+**/test-results/
+**/coverage/
+**/coverage-report/
+
+################################################################################
+# JavaScript / TypeScript / Node.js
+################################################################################
+
+# Dependencies
+**/node_modules/
+
+# Bundler caches
+.parcel-cache/
+.vite/
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+################################################################################
+# Operating System
+################################################################################
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+.directory
+.Trash-*/
+.nfs*
+
+################################################################################
+# Temporary / Local Files
+################################################################################
+
+# Editor swap files
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
+# Local scratch files
+*.temp
+*.local.tmp
+
+# Python virtual environments
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local SQLite databases
+*.sqlite
+*.sqlite3
+################################################################################
+# Kate / KDE Text Editor
+################################################################################
+*.kate-swp
+*.kate-swp.*
+*.kate-autosave

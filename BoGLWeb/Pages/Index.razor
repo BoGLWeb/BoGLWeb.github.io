@@ -11,6 +11,60 @@
 
 <PageTitle>Bond Graph Lab</PageTitle>
 
+<style>
+#modifierMenu {
+    display: block;
+    position: absolute;
+    right: 10px;
+    width: 120px;
+}
+
+#BGTypePanelMenu {
+    display: block;
+    position: absolute;
+    right: 10px;
+    width: 140px;
+    z-index: 9999;
+}
+
+#modifierMenu > .ant-collapse {
+    height: 100%;
+    overflow: clip !important;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#BGTypePanelMenu > .ant-collapse {
+    height: 100%;
+    overflow: clip !important;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#modifierCheckboxWrapper > .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+
+#BGTypePanelWrapper .ant-radio-wrapper {
+    display: block;
+    font-size: 12px;
+    margin-left: 0;
+    margin-bottom: 5px;
+}
+
+.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+    margin-left: 5px;
+}
+
+#modifierPanel > div > .ant-collapse-content-box {
+    padding: 0 10px 5px !important;
+}
+
+#BGTypePanel > div > .ant-collapse-content-box {
+    padding: 0 10px 5px !important;
+}
+</style>
+
 <script suppress-error="BL9992" type="module" src="/build/build.js"></script>
 
 <body oncontextmenu="return false;">
@@ -88,13 +142,13 @@
         <Button Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="save">
             <Icon Component="SaveSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Cut" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CutSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Copy" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="CopySvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !hasCopiedSelection' OnClick="Paste" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="PasteSvg"/>
         </Button>
         <Button Shape="Square" Disabled="@disableUndo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Undo">
@@ -103,17 +157,17 @@
         <Button Shape="Square" Disabled="@disableRedo" Type="@ButtonType.Text" Size="@ButtonSize.Small" OnClick="Redo">
             <Icon Component="RedoSvg"/>
         </Button>
-        <Button Disabled='currTab != "1" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2" || !isSelecting' OnClick="Delete" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="TrashSvg"/>
         </Button>
-        <Button Disabled='currTab != "1"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
+        <Button Disabled='currTab != "1" && currTab != "2"' OnClick="Clear" Shape="Square" Type="@ButtonType.Text" Size="@ButtonSize.Small">
             <Icon Component="ClearSvg"/>
         </Button>
     </li>
 </Menu>
 <div class="pageContainer">
     <div id="graphMenu">
-        <div id="blankMenu" style="@("display: " + (currTab == "2" || currTab == "3" ? "block" : "none"))"></div>
+        <div id="blankMenu" style="@("display: " + (currTab == "3" || currTab == "4" ? "block" : "none"))"></div>
         <Collapse Id="elementMenus" style="@("display: " + (currTab == "1" ? "block" : "none"))" Bordered="false">
             <ExpandIconTemplate>
                 <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
@@ -139,6 +193,64 @@
                 </Panel>
             </ChildContent>
         </Collapse>
+        <Collapse Id="sketchMenus" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+            <ExpandIconTemplate>
+                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+            </ExpandIconTemplate>
+            <ChildContent>
+                <Panel Header="Elements" Key="1">
+                    <Collapse Id="sketchElements" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+                        </ExpandIconTemplate>
+                        <ChildContent>
+                            <Panel Header="Mechanical Translation" Key="1">
+                                <div id="mechTransElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Mechanical Rotation" Key="2">
+                                <div id="mechRotElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Electrical" Key="3">
+                                <div id="elecElem" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Hydraulic" Key="3">
+                                <div id="hydraulicElem" class="elementHolder"></div>
+                            </Panel>
+                        </ChildContent>
+                    </Collapse>
+                </Panel>
+                <Panel Header="Sources" Key="2">
+                    <Collapse Id="sketchSources" style="@("display: " + (currTab == "2" ? "block" : "none"))" Bordered="false">
+                        <ExpandIconTemplate>
+                            <Icon Type="down-circle" Rotate="@(context ? 180 : 0)"/>
+                        </ExpandIconTemplate>
+                        <ChildContent>
+                            <Panel Header="Mechanical Translation" Key="1">
+                                <div id="mechTransSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Mechanical Rotation" Key="2">
+                                <div id="mechRotSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Electrical" Key="3">
+                                <div id="elecSrc" class="elementHolder"></div>
+                            </Panel>
+                            <Panel Header="Hydraulic" Key="3">
+                                <div id="hydraulicSrc" class="elementHolder"></div>
+                            </Panel>
+                        </ChildContent>
+                    </Collapse>
+                </Panel>
+                <Panel Header="Junctions" Key="3">
+                    <div id="transElemSymbols" class="elementHolder"></div>
+                </Panel>
+                @* <Panel Header="Electrical Symbols" Key="3"> *@
+                @*     <div id="electricalSymbols" class="elementHolder"></div> *@
+                @* </Panel> *@
+                @* <Panel Header="Actuator Symbols" Key="3"> *@
+                @*     <div id="actuatorsSymbols" class="elementHolder"></div> *@
+                @* </Panel> *@
+            </ChildContent>
+        </Collapse>
         <div id="diffeqMenu" style="@("display: " + (currTab == "4" && showEquations ? "flex" : "none"))">
             <Button Class="bogl_button_large" OnClick="@(() => { showEquations = false; })">Show State Variables</Button>
             <h2>Differential Equation @(diffIndex + 1)</h2>
@@ -162,7 +274,7 @@
             }
             <div id="latexTest"></div>
         </div>
-        <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
+        <div id="stateVarMenu"  style="@("display: " + (currTab == "5" && !showEquations ? "flex" : "none"))">
             <Button Class="bogl_button_large" OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
             <h2>State Variables</h2>
             <div style="display: flex; flex-direction: column">
@@ -276,13 +388,36 @@
                     }
                     <div id="systemDiagram"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="2" Tab="Unsimplified BG" ForceRender=true>
+                <TabPane Key="2" Tab="Sketch" ForceRender=true>
+                    <div id="BGTypePanelMenu">
+                        <Collapse Bordered="false" ExpandIconPosition="right" DefaultActiveKey="@(new[] { "1" })">
+                            <ChildContent>
+                                <Panel Header="Bond Graph Type" Key="1" Id="BGTypePanel">
+                                    <div id="BGTypePanelWrapper">
+                                        <RadioGroup Value="@selectedSketchBondGraphType"
+                                                    TValue="string"
+                                                    OnChange="ChangeSketchBondGraphType">
+                                            <Radio Value="@("unsimplified")">Unsimplified</Radio>
+                                            <Radio Value="@("simplified")">Simplified</Radio>
+                                            <Radio Value="@("causal")">Causal</Radio>
+                                        </RadioGroup>
+                                    </div>
+                                </Panel>
+                            </ChildContent>
+                            <ExpandIconTemplate>
+                                <Icon Type="down-circle" Rotate="@(context ? 180 : 0)" Style="margin-top: 0; margin-right: 2px"/>
+                            </ExpandIconTemplate>
+                        </Collapse>
+                    </div>
+                    <div id="sketch"></div>
+                </TabPane>
+                <TabPane Disabled="tabsDisabled" Key="3" Tab="Unsimplified BG" ForceRender=true>
                     <div id="unsimpBG"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="3" Tab="Simplified BG" ForceRender=true>
+                <TabPane Disabled="tabsDisabled" Key="4" Tab="Simplified BG" ForceRender=true>
                     <div id="simpBG"></div>
                 </TabPane>
-                <TabPane Disabled="tabsDisabled" Key="4" Tab="Causal BG" ForceRender=true>
+                <TabPane Disabled="tabsDisabled" Key="5" Tab="Causal BG" ForceRender=true>
                     <Select Id="causalSelect"
                             TItem="Option"
                             TItemValue="int"
@@ -313,9 +448,10 @@
         <p>Felice Mancini</p>
         <p>Corey Alicchio</p>
         <p>Justin Vitiello</p>
-        <p>Terry Hearst</p>
+        <p>Tammy Hearst</p>
         <p>Talal Jaber</p>
         <p>Corrin Courville</p>
+        <p>Brendon Peters</p>
         <p>Advisors:</p>
         <p>Prof. David Brown</p>
         <p>Prof. Pradeep Radhakrishan</p>
@@ -370,6 +506,7 @@
     static bool hasCopiedSelection = false;
     static bool showEquations = false;
     string[] stateEquationsStored = new string[] { };
+    string selectedSketchBondGraphType = "unsimplified";
 
     public Index() {
         app = this;
@@ -717,7 +854,7 @@
 
     // propegate a tab change to the front-end
     private async void TabChange(string key) {
-        if (!tabsDisabled) {
+        if (!tabsDisabled || key == "1" || key == "2") {
             this.currTab = key;
             var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
             await module.InvokeVoidAsync("setTab", key);
@@ -725,6 +862,13 @@
             disableUndo = !EditStackHandler.undoRedoHandler.CanDo(Int32.Parse(key), true);
             base.StateHasChanged();
         }
+    }
+    
+    private async void ChangeSketchBondGraphType(string graphType) {
+        selectedSketchBondGraphType = graphType;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setSketchBondGraphType", graphType);
+        base.StateHasChanged();
     }
 
     // changes which state equation is being displayed in the causal bond graph tab
@@ -860,7 +1004,7 @@
         // TODO: find global variable storing equations in Index and replace with StateEquationSet object/methods.
         EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
         try {
-            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
+            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(5)).GetFinalEquations()).ToArray();
         } catch(Exception e) {
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);

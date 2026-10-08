@@ -30,6 +30,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     rejectX: SVGSelection;
     edgeOrigin: SystemDiagramElement = null;
     justClickedEdge: boolean = false;
+    sketchBondGraphType: string = "unsimplified";
 
     // element and edge variables
     selectedElements: SystemDiagramElement[] = [];
@@ -159,7 +160,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // adds the image representing the element
         let image = hoverBox.append("image");
-        image.attr("href", function (d) { return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg"; })
+        image.attr("href", function (d) {
+            console.log("adding");
+            if((<SystemDiagramElement>d).type <= 30) {
+                return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
+            } else {
+                return "/images/sketch/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
+            }
+        })
             .classed("hoverImg", true)
             .attr("x", "-25px")
             .attr("y", "-25px")
@@ -245,6 +253,12 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         paths.classed("hoverablePath", true);
 
+        if (this === window.sketchDiagram && this.sketchBondGraphType !== "unsimplified") {
+            paths.each(function (bond: GraphBond) {
+                graph.drawSketchBondTick.call(graph, d3.select(this.parentNode), bond);
+            });
+        }
+
         // removes velocity arrows because they're not generated directly through d3 and are therefore not removed on update
         // if we can find a way to do this through D3 this removal would no longer be needed, which would be cool, but haven't found that yet
         this.svgG.selectAll("g:not(.boglElem) > g > .velocityArrow").remove()
@@ -286,6 +300,40 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                         (e.target.y - e.source.y) / 2 + e.source.y + yOffset);
             }
         });
+    }
+
+    drawSketchBondTick(pathGroup: SVGSelection, bond: GraphBond) {
+        let sourceEnd = this.getEdgePosition(bond.source, bond.target);
+        let targetEnd = this.getEdgePosition(bond.target, bond.source);
+
+        let x1 = bond.source.x + sourceEnd[0];
+        let y1 = bond.source.y + sourceEnd[1];
+        let x2 = bond.target.x + targetEnd[0];
+        let y2 = bond.target.y + targetEnd[1];
+
+        let tickCenterX = x2 - ((x2 - x1) * 0.18);
+        let tickCenterY = y2 - ((y2 - y1) * 0.18);
+
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let length = Math.sqrt(dx * dx + dy * dy);
+
+        if (length === 0) {
+            return;
+        }
+
+        let unitX = dx / length;
+        let unitY = dy / length;
+        let tickLength = 14;
+
+        let tickX1 = tickCenterX - unitY * tickLength / 2;
+        let tickY1 = tickCenterY + unitX * tickLength / 2;
+        let tickX2 = tickCenterX + unitY * tickLength / 2;
+        let tickY2 = tickCenterY - unitX * tickLength / 2;
+
+        pathGroup.append("path")
+            .classed("sketchBondTick", true)
+            .attr("d", "M" + tickX1 + "," + tickY1 + "L" + tickX2 + "," + tickY2);
     }
 
     // updates the modifier menu

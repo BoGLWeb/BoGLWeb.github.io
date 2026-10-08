@@ -1,5 +1,5 @@
 ﻿import { SVGSelection } from "./d3-selection";
-import { backendManager } from "./../backendManager";
+import { backendManager } from "../backendManager";
 import { SystemDiagramDisplay } from "../types/display/SystemDiagramDisplay";
 import { BondGraphDisplay } from "../types/display/BondGraphDisplay";
 
@@ -7,8 +7,10 @@ import { BondGraphDisplay } from "../types/display/BondGraphDisplay";
 declare global {
     interface Window {
         systemDiagramSVG: SVGSelection;
+        sketchDiagramSVG: SVGSelection;
         backendManager: typeof backendManager;
         systemDiagram: SystemDiagramDisplay;
+        sketchDiagram: SystemDiagramDisplay;
         tabNum: string;
         unsimpBGSVG: SVGSelection;
         simpBGSVG: SVGSelection;

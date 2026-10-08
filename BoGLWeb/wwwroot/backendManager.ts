@@ -87,6 +87,10 @@ export namespace backendManager {
                     let n1: number = elementLocations[i][0];
                     let n2: number = elementLocations[i][1];
                     let arr: number[] = [n1, n2];
+                    /*console.log('arr:', arr);
+                    console.log('elementSize:', elementSize);
+                    console.log('screenSizeX:', screenSizeX);
+                    console.log('screenSizeY:', screenSizeY);*/
                     let x = Math.abs((arr[0] - minX) / elementSize);
                     let y = Math.abs((arr[1] - minY) / elementSize);
                     let roundedDownX: number = Math.floor(x);
@@ -97,9 +101,18 @@ export namespace backendManager {
                     roundedUpX = Math.min(roundedUpX, generalElementLocations.length - 1);
                     roundedDownY = Math.min(roundedDownY, generalElementLocations[0].length - 1);
                     roundedUpY = Math.min(roundedUpY, generalElementLocations[0].length - 1);
+                    /*console.log('x = (', arr[0], ' - ', minX, ') / ', elementSize);
+                    console.log('y = (', arr[1], ' - ', minY, ') / ', elementSize);
+                    console.log('X: ', x);
+                    console.log('Y: ', y);
+                    console.log(`generalElementLocations length: ${generalElementLocations.length}`);
+                    console.log('generalElementLocations:', generalElementLocations);
+                    console.log('generalElementLocations X:', generalElementLocations.length);
+                    console.log('generalElementLocations Y:', generalElementLocations[0].length);*/
                     if(roundedUpX != roundedDownX && roundedUpY != roundedDownY){
                         generalElementLocations[roundedUpX][roundedUpY].push(i);
                     }
+                    //console.log('elementSize:', elementSize);
                     generalElementLocations[roundedDownX][roundedDownY].push(i);
                 }
 
@@ -146,6 +159,17 @@ export namespace backendManager {
                     // getting the absolute value of the difference between the x and y axis of the two points
                     let firstElement: number[] = elementLocations[offendingElements[i][0]];
                     let secondElement: number[] = elementLocations[offendingElements[i][1]];
+                    //TODO: fix
+                    /*console.log('elementLocations', elementLocations);
+                    console.log('f1: ',firstElement);
+                    console.log('f2: ',secondElement);
+                    console.log('i: ', i);
+                    console.log('FE: ', elementLocations[offendingElements[i][0]]);
+                    console.log('SE: ', elementLocations[offendingElements[i][1]]);
+                    console.log('absX', Math.abs(firstElement[0] - secondElement[0]));
+                    console.log('absY', Math.abs(firstElement[1] - secondElement[1]));*/
+                    //let absX: number = Math.abs(firstElement[0] - secondElement[0]);
+                    //let absY: number = Math.abs(firstElement[1] - secondElement[1]);
                     let newLocations: number[][] = [];
                     // checking if the first element is further away from 0
                     newLocations = this.adjustTwoPoints(firstElement, secondElement, elementSize);
@@ -176,7 +200,7 @@ export namespace backendManager {
                     elementLocations[offendingElements[i][1]] = newLocations[1];
                 }
             }
-            console.log("Completed Successfully");
+            
             return elementLocations; // returns all of the locations for every element adjusted
         }
         
@@ -484,6 +508,10 @@ export namespace backendManager {
             return this.getGraphByIndex("1") as SystemDiagramDisplay;
         }
 
+        getSketchDiagramDisplay() {
+            return this.getGraphByIndex("2") as SystemDiagramDisplay;
+        }
+
         // converts all SVG images in the system diagram display into inline form
         // as a note, this will break if additional image types besides SVGs are used for system diagram elements
         async convertImages(query) {
@@ -567,6 +595,32 @@ export namespace backendManager {
             systemDiagram.initHeight = bounds.height;
         }
 
+        public loadSketchDiagram(jsonString: string) {
+            let edges = [];
+            let parsedJson = JSON.parse(jsonString);
+            let elements = this.centerElements(parsedJson.elements, false);
+
+            for (let edge of parsedJson.edges) {
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
+                bond.velocity = edge.velocity ?? 0;
+                edges.push(bond);
+            }
+
+            window.sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram([], []));
+
+            DotNet.invokeMethodAsync("BoGLWeb", "URAddSelection", Array.from(elements.values()).map(e => JSON.stringify(e)).concat(edges.map(e => JSON.stringify(e))),
+                ...window.sketchDiagram.listToIDObjects([].concat(window.sketchDiagram.selectedElements).concat(window.sketchDiagram.selectedBonds)), false);
+
+            let sketchDiagram = new SystemDiagramDisplay(window.sketchDiagramSVG, new SystemDiagram((Array.from(elements.values()) as SystemDiagramElement[]), edges));
+            sketchDiagram.draggingElement = null;
+            window.sketchDiagram = sketchDiagram;
+            sketchDiagram.updateGraph();
+            this.zoomCenterGraph("1");
+            let bounds = (sketchDiagram.svg.select("g").node() as HTMLElement).getBoundingClientRect();
+            sketchDiagram.initWidth = bounds.width;
+            sketchDiagram.initHeight = bounds.height;
+        }
+
         // get the current system diagram as a JSON string
         public getSystemDiagram() {
             return JSON.stringify({
@@ -575,26 +629,70 @@ export namespace backendManager {
             });
         }
 
+        public getSketchDiagram() {
+            return JSON.stringify({
+                elements: window.sketchDiagram.elements,
+                bonds: window.sketchDiagram.bonds
+            });
+        }
+
         // zooms and centers a particular graph by finding the center of the current display and centering the graph there
         // scales the graph to 80% of the screen height or width, whichever is smaller, so that the graph has a margin of empty space around it
+        // public zoomCenterGraph(index: string) {
+        //     let graph = this.getGraphByIndex(index);
+        //     let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
+        //     graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+        //     let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
+        //     let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
+        //     let scale = 1;
+        //     // choose which dimension to scale to 80% in
+        //     if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
+        //         scale = (0.8 * windowDim.width) / svgDim.width;
+        //     } else {
+        //         scale = (0.8 * windowDim.height) / svgDim.height;
+        //     }
+        //     scale = Math.min(Math.max(scale, 0.25), 1.75);
+        //     let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
+        //     let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
+        //     graph.changeScale(xTrans, yTrans, scale);
+        //     graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
+        // }
+
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
-            let prevDisplay = graph.svgG.node().parentElement.parentElement.parentElement.style.display;
-            graph.svgG.node().parentElement.parentElement.parentElement.style.display = "block";
+            // If the graph or its core elements don't exist yet, do nothing.
+            if (!graph || !graph.svg || !graph.svg.node()) {
+                return;
+            }
+
+            // --- Start of Fix ---
+            // Get the container of the SVG element directly, which is more robust.
+            const svgContainer = graph.svg.node().parentElement;
+            if (!svgContainer) return; // Exit if the container isn't found
+
+            let prevDisplay = svgContainer.style.display;
+            svgContainer.style.display = "block";
+            // --- End of Fix ---
+
             let svgDim = (graph.svgG.node() as SVGSVGElement).getBBox();
-            let windowDim = graph.svgG.node().parentElement.getBoundingClientRect();
+            let windowDim = svgContainer.getBoundingClientRect(); // Use the container for dimensions
             let scale = 1;
-            // choose which dimension to scale to 80% in
-            if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
+
+            // Prevent division by zero if diagram is empty
+            if (svgDim.width === 0 || svgDim.height === 0) {
+                scale = 1;
+            } else if (svgDim.width / svgDim.height > windowDim.width / windowDim.height) {
                 scale = (0.8 * windowDim.width) / svgDim.width;
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
+
             scale = Math.min(Math.max(scale, 0.25), 1.75);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
             graph.changeScale(xTrans, yTrans, scale);
-            graph.svgG.node().parentElement.parentElement.parentElement.style.display = prevDisplay;
+
+            svgContainer.style.display = prevDisplay; // Restore the original display property
         }
 
         // converts a contentStreamReference to a blob and saves the blob to a file
@@ -879,30 +977,52 @@ export namespace backendManager {
 
         // copy then delete the current selection
         public cut() {
-            this.getSystemDiagramDisplay().copySelection();
-            this.getSystemDiagramDisplay().deleteSelection();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().copySelection();
+                this.getSystemDiagramDisplay().deleteSelection();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().copySelection();
+                this.getSketchDiagramDisplay().deleteSelection();
+            }
         }
 
         // copy the current selection
         public copy() {
-            this.getSystemDiagramDisplay().copySelection();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().copySelection();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().copySelection();
+            }
         }
 
         // paste the current selection
         public paste() {
-            this.getSystemDiagramDisplay().paste();
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().paste();
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().paste();
+            }
         }
 
         // delete the current selection, bringing up the confirmation modal if needsConfirmation is true and multiple
         // elements/edges are being deleted
         public delete(needsConfirmation = true) {
-            this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().deleteSelection(needsConfirmation);
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().deleteSelection(needsConfirmation);
+            }
         }
 
         // selects all elements/edges in the canvas and deletes them without confirmation
         public clear() {
-            this.getSystemDiagramDisplay().selectAll();
-            this.getSystemDiagramDisplay().deleteSelection(false);
+            if(this.getTabNum() == 1) {
+                this.getSystemDiagramDisplay().selectAll();
+                this.getSystemDiagramDisplay().deleteSelection(false);
+            } else if (this.getTabNum() == 2) {
+                this.getSketchDiagramDisplay().selectAll();
+                this.getSketchDiagramDisplay().deleteSelection(false);
+            }
         }
 
         // set a modifier to a value for a given element without doing any undo/redo
@@ -968,13 +1088,20 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
+        public setSketchBondGraphType(graphType: string) {
+            window.sketchDiagram.sketchBondGraphType = graphType;
+            window.sketchDiagram.updateGraph();
+        }
+
         // get the graph display object for a given tab ID (1 to 4)
         public getGraphByIndex(i: string) {
             if (i == "1") {
                 return window.systemDiagram;
             } else if (i == "2") {
-                return window.unsimpBG;
+                return window.sketchDiagram;
             } else if (i == "3") {
+                return window.unsimpBG;
+            } else if (i == "4") {
                 return window.simpBG;
             } else {
                 return window.causalBG;
