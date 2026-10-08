@@ -11,47 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/0-E.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/0-H.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/0-MR.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/0-MT.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/1-E.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/1-H.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/1-MR.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/1-MT.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/C-C.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/C-Ch.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/C-K.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/C-Kt.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/GY-MR-E.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/GY.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/I-J.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/I-L.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/I-M.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/I-P.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/R-D.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/R-Dt.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/R-R.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/R-Rh.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Se-E.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Se-F.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Se-P.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Se-T.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Sf-I.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Sf-Q.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Sf-V.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/Sf-w.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/TF-E.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/TF-H.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/TF-MR.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/sketch/TF-MT.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/Pages/Index.razor" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/Pages/Index.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/backendManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/backendManager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/display/SystemDiagramDisplay.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/display/SystemDiagramDisplay.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,12 +36,12 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {}
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/BoGLWeb/BoGLWeb.github.io.git",
-    "accountId": "168bc81d-84a3-4ab6-b7bc-971644ca72f5"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/BoGLWeb/BoGLWeb.github.io.git&quot;,
+    &quot;accountId&quot;: &quot;168bc81d-84a3-4ab6-b7bc-971644ca72f5&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
@@ -101,26 +61,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.BoGLWeb.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "228-bond-graph-type-panel",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers",
-    "ts.external.directory.path": "/home/bpeters/Downloads/Applications/JetBrains Rider-2025.3.2/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;228-bond-graph-type-panel&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.web.browsers&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/bpeters/Downloads/Applications/JetBrains Rider-2025.3.2/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BoGLWeb">
     <configuration name="BoGLWeb" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb/BoGLWeb.csproj" />
