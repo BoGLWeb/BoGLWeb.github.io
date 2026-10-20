@@ -668,7 +668,11 @@
     public static void UpdateBackendWithInitialStackChange(int tab) {
         if(tab == 1) { // system diagram
             EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
-        } else { // bond graph
+        }else if(tab == 2) {
+        // sketch diagram
+        // Sketch is not a bond graph. For now, avoid updating a bond graph model for sketch changes.
+        // This prevents GetBondGraph(2) from throwing "Not a bond graph option".
+        }else { // bond graph
             EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
         }
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);

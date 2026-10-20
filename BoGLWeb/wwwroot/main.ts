@@ -192,13 +192,13 @@ function populateElementMenu() {
                 image.title = e.name;
                 box.appendChild(image);
             } else {
-                image.src = "images/sketch/" + e.image + ".svg";
-                image.draggable = false;
-                image.classList.add("sketchImage");
-                image.title = e.name;
-                box.appendChild(image);
+                const sketchLabel = document.createElement('div');
+                sketchLabel.classList.add("sketchMenuLabel");
+                sketchLabel.innerText = e.image.replace("-", ":");
+                sketchLabel.title = e.name;
+                box.appendChild(sketchLabel);
             }
-            
+
         });
     });
 }

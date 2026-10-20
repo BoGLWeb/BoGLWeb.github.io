@@ -161,11 +161,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // adds the image representing the element
         let image = hoverBox.append("image");
         image.attr("href", function (d) {
-            console.log("adding");
             if((<SystemDiagramElement>d).type <= 30) {
                 return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             } else {
-                return "/images/sketch/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
+                return "";
             }
         })
             .classed("hoverImg", true)
@@ -173,7 +172,27 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("y", "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("height", "50px")
-            .attr("width", "50px");
+            .attr("width", "50px")
+            .style("display", function (d) {
+                return (<SystemDiagramElement>d).type <= 30 ? "block" : "none";
+            });
+
+        let sketchLabel = hoverBox.append("text");
+        sketchLabel
+            .text(function (d) {
+                return ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image.replace("-", ":");
+            })
+            .attr("x", "0")
+            .attr("y", "0")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle")
+            .style("display", function (d) {
+                return (<SystemDiagramElement>d).type > 30 ? "block" : "none";
+            })
+            .style("fill", "#000")
+            .style("font-size", "10px")
+            .style("font-weight", "700")
+            .style("pointer-events", "all");
 
         // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
@@ -230,6 +249,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.setEdgeMarkerVisible.call(graph, e);
             });
 
+        sketchLabel.on("mouseenter", function () {
+            graph.edgeCircle.style("display", "none");
+        })
+            .on("mouseup", function (d) {
+                graph.nodeMouseUp.call(graph, d);
+            })
+            .on("mouseleave", function (e) {
+                graph.setEdgeMarkerVisible.call(graph, e);
+            });
+        
         // initializes mouse events for outline box
         box.on("mousemove", function (e) {
             graph.moveSelectionRect();

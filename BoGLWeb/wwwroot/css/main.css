@@ -267,6 +267,27 @@ path.sketchBondTick {
     max-width: 45px
 }
 
+.sketchImage {
+    max-height: 45px;
+    max-width: 45px;
+    object-fit: contain;
+}
+
+.sketchMenuLabel {
+    align-items: center;
+    color: #000;
+    display: flex;
+    font: bold 18px "Segoe UI", "SegoeUIBold" !important;
+    height: 45px;
+    justify-content: center;
+    line-height: 1;
+    max-height: 45px;
+    max-width: 45px;
+    overflow: hidden;
+    text-align: center;
+    width: 45px;
+}
+
 .ant-collapse-content-box {
     padding: 0 16px 5px !important
 }
