@@ -340,9 +340,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let x2 = bond.target.x + targetEnd[0];
         let y2 = bond.target.y + targetEnd[1];
 
-        let tickCenterX = x2 - ((x2 - x1) * 0.18);
-        let tickCenterY = y2 - ((y2 - y1) * 0.18);
-
         let dx = x2 - x1;
         let dy = y2 - y1;
         let length = Math.sqrt(dx * dx + dy * dy);
@@ -353,16 +350,31 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         let unitX = dx / length;
         let unitY = dy / length;
-        let tickLength = 14;
 
-        let tickX1 = tickCenterX - unitY * tickLength / 2;
-        let tickY1 = tickCenterY + unitX * tickLength / 2;
-        let tickX2 = tickCenterX + unitY * tickLength / 2;
-        let tickY2 = tickCenterY - unitX * tickLength / 2;
+        let tickLength = 16;
+
+        let angle = -135 * Math.PI / 180;
+
+        let tickDirX =
+            unitX * Math.cos(angle) -
+            unitY * Math.sin(angle);
+
+        let tickDirY =
+            unitX * Math.sin(angle) +
+            unitY * Math.cos(angle);
+
+        let tickX1 = x2;
+        let tickY1 = y2;
+
+        let tickX2 = x2 + tickDirX * tickLength;
+        let tickY2 = y2 + tickDirY * tickLength;
 
         pathGroup.append("path")
             .classed("sketchBondTick", true)
-            .attr("d", "M" + tickX1 + "," + tickY1 + "L" + tickX2 + "," + tickY2);
+            .attr(
+                "d",
+                `M${tickX1},${tickY1} L${tickX2},${tickY2}`
+            );
     }
 
     // updates the modifier menu
