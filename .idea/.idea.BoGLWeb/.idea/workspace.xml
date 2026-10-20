@@ -9,11 +9,17 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/images/elements/pulley.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,18 +39,84 @@
     &quot;assignee&quot;: &quot;bjpeters2027&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/BoGLWeb/BoGLWeb.github.io.git&quot;,
-    &quot;accountId&quot;: &quot;825f8be4-8d27-44fc-a16b-775ccb2d8ed1&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/BoGLWeb/BoGLWeb.github.io.git",
+    "accountId": "db392023-739e-468e-9d7c-3b5cb991441f"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BoGLWeb/wwwroot/build/build.js.map" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000077358973372" />
+      <entry key="MS500" value="1.0983537272994814" />
+      <entry key="S2" value="1.7959014444970034" />
+      <entry key="S5" value="2.3559960417973964" />
+      <entry key="S10" value="2.641120546856295" />
+      <entry key="S30" value="2.8864708810239375" />
+      <entry key="S60" value="3.1458333488631176" />
+      <entry key="M2" value="4.461674735639207" />
+      <entry key="M5" value="30.05690201754243" />
+      <entry key="M10" value="100.12482393341934" />
+      <entry key="M15" value="158.44926396099365" />
+      <entry key="M30" value="259.0822730818544" />
+      <entry key="H1" value="335.69442609386755" />
+      <entry key="H2" value="383.4379437219595" />
+      <entry key="H4" value="410.15847096779936" />
+      <entry key="D1" value="434.03810461431755" />
+      <entry key="W1" value="438.2872578517902" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="5.15106985855407E-279" />
+      <entry key="S5" value="6.964617871545511E-112" />
+      <entry key="S10" value="3.6969362563620574E-56" />
+      <entry key="S30" value="5.27677211297211E-19" />
+      <entry key="S60" value="1.0270277010143497E-9" />
+      <entry key="M2" value="4.531863395459716E-5" />
+      <entry key="M5" value="0.02774097345681662" />
+      <entry key="M10" value="0.2355454261158624" />
+      <entry key="M15" value="0.48053628731323567" />
+      <entry key="M30" value="0.9803427966023851" />
+      <entry key="H1" value="1.400244728447151" />
+      <entry key="H2" value="1.6734662685676671" />
+      <entry key="H4" value="1.8294623543011097" />
+      <entry key="D1" value="1.970511206004252" />
+      <entry key="W1" value="1.9957604494784984" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="3.9268692096242516E-5" />
+      <entry key="MS500" value="0.1718134665200077" />
+      <entry key="S2" value="1.1968426231691873" />
+      <entry key="S5" value="2.006342009368263" />
+      <entry key="S10" value="2.4369479415410407" />
+      <entry key="S30" value="2.8101180814070164" />
+      <entry key="S60" value="3.1055257046355935" />
+      <entry key="M2" value="4.439881862378571" />
+      <entry key="M5" value="30.074383748609577" />
+      <entry key="M10" value="100.3536918550054" />
+      <entry key="M15" value="158.92437742128143" />
+      <entry key="M30" value="260.0589831319432" />
+      <entry key="H1" value="337.0924799783317" />
+      <entry key="H2" value="385.1101941543284" />
+      <entry key="H4" value="411.98729119143263" />
+      <entry key="D1" value="436.00850365598245" />
+      <entry key="W1" value="440.2830021464459" />
+    </decayedShown>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 4
@@ -54,34 +126,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;remove-element-from-namespace&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\JetBrains Rider 2024.3.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.BoGLWeb.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "finding-fix-for-generation",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "rider.unittesting.toolwindow.stripe.button.shown": "true",
+    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2026.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BoGLWeb">
     <configuration name="BoGLWeb" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb/BoGLWeb.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net6.0" />
       <option name="LAUNCH_PROFILE_NAME" value="BoGLWeb" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
       <option name="ADDITIONAL_IIS_EXPRESS_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -90,13 +174,14 @@
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb/BoGLWeb.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net6.0" />
       <option name="LAUNCH_PROFILE_NAME" value="IIS Express" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
       <option name="ADDITIONAL_IIS_EXPRESS_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -166,5 +251,27 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="New spring images" />
     <option name="LAST_COMMIT_MESSAGE" value="New spring images" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

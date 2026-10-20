@@ -86,6 +86,7 @@ namespace BoGLWeb {
             typeBuilder.Add("System_O_PM_Motor", 27);
             typeBuilder.Add("System_O_VC_Transducer", 28);
             typeBuilder.Add("System_MR_Pulley_Grounded", 29);
+            typeBuilder.Add("System_H_Hydraulic_Pump", 30);
 
             typeIDDict = typeBuilder.ToImmutable();
 
@@ -121,6 +122,7 @@ namespace BoGLWeb {
             typeBuilderReverse.Add(27, "System_O_PM_Motor");
             typeBuilderReverse.Add(28, "System_O_VC_Transducer");
             typeBuilderReverse.Add(29, "System_MR_Pulley_Grounded");
+            typeBuilderReverse.Add(30, "System_H_Hydraulic_Pump");
 
             typeIDDictReverse = typeBuilderReverse.ToImmutable();
         }
@@ -304,7 +306,7 @@ namespace BoGLWeb {
                     name = tokenQueue.Dequeue();
                     type = typeIDDict.GetValueOrDefault(name);
                     name = name.Replace("System_MR_", "").Replace("System_MT_", "").Replace("System_E_", "")
-                        .Replace("System_O_", "") + elementId;
+                        .Replace("System_O_", "").Replace("System_H_", "") + elementId;
                 } else {
                     // The grammar is not being followed for the .bogl file
                     Console.WriteLine("Name was missing. Got: <" + tok + "> instead");

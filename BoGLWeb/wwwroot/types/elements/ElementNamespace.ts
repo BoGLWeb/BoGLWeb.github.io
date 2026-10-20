@@ -68,6 +68,7 @@ export namespace ElementNamespace {
     export const mrCompatibilityGroup = new Set([8, 9, 7, 12, 14, 13, 10, 12, 11, 15, 17, 27]);
     export const eCompatibilityGroup = new Set([20, 21, 24, 23, 22, 19, 26, 25, 27]);
     export const oCompatibilityGroup = new Set([28, 27]);
+    export const hCompatibilityGroup = new Set([30]);
 
     // checks whether two system diagram elements can be connected
     export function isCompatible(e1: SystemDiagramElement, e2: SystemDiagramElement, graph: SystemDiagramDisplay) {
@@ -76,11 +77,12 @@ export namespace ElementNamespace {
         let mrCompatible = mrCompatibilityGroup.has(e1.type) && mrCompatibilityGroup.has(e2.type);
         let eCompatible = eCompatibilityGroup.has(e1.type) && eCompatibilityGroup.has(e2.type);
         let oCompatible = oCompatibilityGroup.has(e1.type) && oCompatibilityGroup.has(e2.type);
+        let hCompatible = hCompatibilityGroup.has(e1.type) && oCompatibilityGroup.has(e2.type);
         let maxSourceBonds = ElementNamespace.elementTypes[e1.type].maxConnections;
         let maxTargetBonds = ElementNamespace.elementTypes[e2.type].maxConnections;
         let numTargetBonds = graph.bonds.filter(b => b.target.id == e2.id || b.source.id == e2.id).length;
         let numSourceBonds = graph.bonds.filter(b => b.target.id == e1.id || b.source.id == e1.id).length;
         let edgesLikeThisCount = graph.bonds.filter(b => (b.target.id == e1.id && b.source.id == e2.id) || (b.target.id == e2.id && b.source.id == e1.id)).length;
-        return (mtCompatible || mrCompatible || eCompatible || oCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
+        return (mtCompatible || mrCompatible || eCompatible || oCompatible || hCompatible) && (numSourceBonds < maxSourceBonds) && (numTargetBonds < maxTargetBonds) && (edgesLikeThisCount === 0);
     }
 }
