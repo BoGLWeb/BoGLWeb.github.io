@@ -100,6 +100,7 @@ export class BaseGraphDisplay {
     // functions defined by subclasses
     svgMouseMove() { }
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) { }
+    pathContextMenu(bond: GraphBond) { }
     renderElements(newElements: GraphElementSelection) { }
 
     // returns the selection
@@ -491,7 +492,17 @@ export class BaseGraphDisplay {
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
+                if (d3.event.button === 2) {
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                    return;
+                }
                 graph.pathMouseDown.call(graph, d);
+            })
+            .on("contextmenu", function (d) {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                graph.pathContextMenu.call(graph, d);
             });
 
         // update existing bondSelection

@@ -102,6 +102,10 @@ p {
     stroke-width: 2
 }
 
+.outline.sketchOutline {
+    stroke: none !important;
+}
+
 .selectable {
     fill: #fff
 }
@@ -518,8 +522,12 @@ text {
     width: 100%
 }
 
-g.selected > g > g > .outline, path.link.selected, path.link.selected:hover {
+g.selected > g > g > .outline:not(.sketchOutline), path.link.selected, path.link.selected:hover, path.sketchBondTick.selected {
     stroke: #0652ff
+}
+
+g.selected > g > g > .sketchLabel {
+    fill: #0652ff !important;
 }
 
 .ant-tabs-top > .ant-tabs-nav::before, .ant-tabs-bottom > .ant-tabs-nav::before, .ant-tabs-top > div > .ant-tabs-nav::before, .ant-tabs-bottom > div > .ant-tabs-nav::before, .ant-menu-submenu:hover:after, .ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {

@@ -153,6 +153,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // creates the outline of the element
         let box = hoverBox.append("rect");
         box.classed("outline", true)
+            .classed("sketchOutline", d => (<SystemDiagramElement>d).type > 30)
             .attr("width", "60px")
             .attr("height", "60px")
             .attr("x", "-30px")
@@ -164,7 +165,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             if((<SystemDiagramElement>d).type <= 30) {
                 return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             } else {
-                return "";
+                return "/images/sketch/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             }
         })
             .classed("hoverImg", true)
@@ -172,27 +173,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("y", "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("height", "50px")
-            .attr("width", "50px")
-            .style("display", function (d) {
-                return (<SystemDiagramElement>d).type <= 30 ? "block" : "none";
-            });
-
-        let sketchLabel = hoverBox.append("text");
-        sketchLabel
-            .text(function (d) {
-                return ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image.replace("-", ":");
-            })
-            .attr("x", "0")
-            .attr("y", "0")
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "middle")
-            .style("display", function (d) {
-                return (<SystemDiagramElement>d).type > 30 ? "block" : "none";
-            })
-            .style("fill", "#000")
-            .style("font-size", "10px")
-            .style("font-weight", "700")
-            .style("pointer-events", "all");
+            .attr("width", "50px");
 
         // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
@@ -240,16 +221,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // initializes mouse events for image
         image.on("mouseenter", function () {
-            graph.edgeCircle.style("display", "none");
-        })
-            .on("mouseup", function (d) {
-                graph.nodeMouseUp.call(graph, d);
-            })
-            .on("mouseleave", function (e) {
-                graph.setEdgeMarkerVisible.call(graph, e);
-            });
-
-        sketchLabel.on("mouseenter", function () {
             graph.edgeCircle.style("display", "none");
         })
             .on("mouseup", function (d) {
@@ -369,12 +340,38 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let tickX2 = x2 + tickDirX * tickLength;
         let tickY2 = y2 + tickDirY * tickLength;
 
+        let isSelected = this.selectedBonds.includes(bond);
+
         pathGroup.append("path")
             .classed("sketchBondTick", true)
+            .classed(this.selectedClass, isSelected)
             .attr(
                 "d",
                 `M${tickX1},${tickY1} L${tickX2},${tickY2}`
             );
+
+        if (this.sketchBondGraphType === "causal") {
+            let isAtSource = bond.causalStrokeDirection ?? true;
+            let cx = isAtSource ? x1 : x2;
+            let cy = isAtSource ? y1 : y2;
+
+            let perpX = -unitY;
+            let perpY = unitX;
+            let causalHalfLength = 10;
+
+            let causalX1 = cx - perpX * causalHalfLength;
+            let causalY1 = cy - perpY * causalHalfLength;
+            let causalX2 = cx + perpX * causalHalfLength;
+            let causalY2 = cy + perpY * causalHalfLength;
+
+            pathGroup.append("path")
+                .classed("sketchBondTick", true)
+                .classed(this.selectedClass, isSelected)
+                .attr(
+                    "d",
+                    `M${causalX1},${causalY1} L${causalX2},${causalY2}`
+                );
+        }
     }
 
     // updates the modifier menu
@@ -425,6 +422,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathMouseDown(bond: GraphBond) {
         this.justClickedEdge = true;
         super.pathMouseDown(bond);
+    }
+
+    // handles right-clicking on an edge (toggles causal stroke direction in sketch tab)
+    pathContextMenu(bond: GraphBond) {
+        if (this === window.sketchDiagram) {
+            bond.causalStrokeDirection = !(bond.causalStrokeDirection ?? true);
+            this.updateGraph();
+        }
     }
 
     // handles clicking on the edge of an element, in the invisible border around it, starts edge creation
