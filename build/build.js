@@ -2749,5 +2749,23 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
         }
     }
     pollDOM();
+    const min_width = 800;
+    const min_height = 800;
+    const modal = document.getElementById("resolution-warning-modal");
+    const closeBtn = document.querySelector(".resolution-modal-close");
+    function checkWindowSize() {
+        const isTooSmall = window.innerWidth < min_width || window.innerHeight < min_height;
+        if (isTooSmall) {
+            modal.classList.remove("hidden");
+        }
+        else {
+            modal.classList.add("hidden");
+        }
+    }
+    closeBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
+    window.addEventListener("resize", checkWindowSize);
+    checkWindowSize();
 });
 //# sourceMappingURL=build.js.map

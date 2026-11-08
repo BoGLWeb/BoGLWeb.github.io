@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-vzx+WUem1FDJzFFF75cZzSRMw0BIdITEhfu0f0+WNZk=",
+      "hash": "sha256-VHiGZDc4q6CuswtFeRZzEZiUoXOU93GfHriu43r6rKk=",
       "url": "css\/main.css"
     },
     {
@@ -357,7 +357,7 @@
       "url": "images\/tutorial\/ZoomGif-Edited.gif"
     },
     {
-      "hash": "sha256-XF53g8jtuBIRYGmgoszCd0Dxo4W+12X2qiE\/blrjW1I=",
+      "hash": "sha256-rPaLREUbpltwruFr6vUY1YWUnEkRH0Var2Poma1AXdc=",
       "url": "index.html"
     },
     {
@@ -3373,7 +3373,7 @@
       "url": "sample-data\/weather.json"
     },
     {
-      "hash": "sha256-VIWYMaqtVzJSG2DQZVOd9uUI0FqzQWjs8pjBArDwS0w=",
+      "hash": "sha256-qQ0UpkmUBaG49UAHoKDXtghYhViwWW84sJoQgWZPFfw=",
       "url": "tsconfig.json"
     },
     {
@@ -5637,5 +5637,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "oToZ2wiU"
+  "version": "\/DNc7mS2"
 };
