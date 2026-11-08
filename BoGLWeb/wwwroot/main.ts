@@ -320,7 +320,7 @@ const min_width = 800;
 const min_height = 800;
 
 const modal = document.getElementById("resolution-warning-modal")!;
-const closeBtnElements = document.querySelector(".resolution-modal-close, .resolution-modal-footer button")!;
+const closeBtn = document.querySelector(".resolution-modal-close")!;
 
 function checkWindowSize() {
     const isTooSmall = window.innerWidth < min_width || window.innerHeight < min_height;
@@ -332,7 +332,7 @@ function checkWindowSize() {
 }
 
 // Hide modal when "X" is clicked
-closeBtnElements.addEventListener("click", () => {
+closeBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
 });
 
