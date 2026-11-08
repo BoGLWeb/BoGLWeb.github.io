@@ -7,6 +7,10 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TypeScriptConfigDir>wwwroot</TypeScriptConfigDir>
+  </PropertyGroup>
+
 	<PropertyGroup>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	</PropertyGroup>
@@ -877,10 +881,6 @@
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <TypeScriptCompile Include="wwwroot\types\elements\MultiElementType.ts" />
 	</ItemGroup>
 
 </Project>
