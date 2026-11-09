@@ -1,4 +1,4 @@
-﻿/*************************************************************************
+/*************************************************************************
  *     This ErrorLogger file & interface is part of the GraphSynth.BaseClasses 
  *     Project which is the foundation of the GraphSynth Application.
  *     GraphSynth.BaseClasses is protected and copyright under the MIT
@@ -90,7 +90,9 @@ namespace BoGLWeb.Logistics {
                 if (includeComputerData) {
                     sw.WriteLine("Date		: " + DateTime.Now.ToLongTimeString());
                     sw.WriteLine("Time		: " + DateTime.Now.ToShortDateString());
+#pragma warning disable CA1416
                     sw.WriteLine("Computer	: " + Dns.GetHostName());
+#pragma warning restore CA1416
                 }
                 sw.WriteLine("Error		: " + Exc.Message.Trim());
                 sw.WriteLine("Stack Trace	: " + Exc.StackTrace.Trim());

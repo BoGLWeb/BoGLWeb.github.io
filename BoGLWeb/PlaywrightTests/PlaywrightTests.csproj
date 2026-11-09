@@ -17,4 +17,10 @@
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="BoGLWeb">
+      <HintPath>..\bin\Debug\net6.0\BoGLWeb.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

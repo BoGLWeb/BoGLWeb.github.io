@@ -1,4 +1,4 @@
-﻿using BoGLWeb.BaseClasses;
+using BoGLWeb.BaseClasses;
 using BoGLWeb.EditorHelper;
 using GraphSynth.Representation;
 using Newtonsoft.Json;
@@ -508,6 +508,13 @@ namespace BoGLWeb {
             /// of the bond), else <c>false</c>.</returns>
             public bool GetCausalDirection() {
                 return this.causalStrokeDirection;
+            }
+
+            /// <summary>
+            /// Returns true if this bond has a causal stroke.
+            /// </summary>
+            public bool HasCausalStroke() {
+                return this.causalStroke;
             }
 
             /// <summary>

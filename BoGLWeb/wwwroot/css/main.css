@@ -979,3 +979,37 @@ input[type="file"] {
 .hidden {
     display: none !important;
 }
+
+/* ===================================================================================================
+   BOND GRAPH STANDARDIZED TYPOGRAPHY HIERARCHY
+   Enforces consistent, crisp typography across all viewport resolutions and prevents viewBox distortions:
+   - Elements & Junctions: 13px (10pt equivalent), semi-bold 600, primary slate #0f172a
+   - Element Subscripts: 9.5px, baseline-shift sub
+   - Effort & Flow Variables: 11px (8.5pt equivalent), medium 500, secondary slate #1e293b
+   - Variable Subscripts: 8.5px, baseline-shift sub
+   =================================================================================================== */
+.bondGraphText,
+.bondGraphElementText {
+    font-family: 'Segoe UI', Arial, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    fill: #0f172a;
+    user-select: none;
+}
+
+.bondGraphElementSubscript {
+    font-size: 9.5px !important;
+    baseline-shift: sub !important;
+}
+
+.bondGraphVariableText {
+    font-family: 'Segoe UI', Arial, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    user-select: none;
+}
+
+.bondGraphVariableSubscript {
+    font-size: 8.5px !important;
+    baseline-shift: sub !important;
+}
