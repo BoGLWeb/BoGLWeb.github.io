@@ -428,6 +428,9 @@ export namespace backendManager {
             svg.selectAll(".outline")
                 .style("stroke", function () {
                     return (this as Element).classList.contains("sketchOutline") ? "none" : "black";
+                })
+                .style("fill", function () {
+                    return (this as Element).classList.contains("sketchOutline") ? "none" : "white";
                 });
             svg.selectAll(".sketchLabel")
                 .style("fill", "black")

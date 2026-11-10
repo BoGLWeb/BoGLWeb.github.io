@@ -185,7 +185,7 @@ function populateElementMenu() {
             group.appendChild(box);
 
             var image = document.createElement('img');
-            if(e.category <= 4) {
+            if(!e.isSketch) {
                 image.src = "images/elements/" + e.image + ".svg";
                 image.draggable = false;
                 image.classList.add("elemImage");

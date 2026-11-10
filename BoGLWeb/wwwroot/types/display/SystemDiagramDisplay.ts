@@ -47,11 +47,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
-            .attr("style", "cursor: pointer; display: none;");
+            .attr("style", "cursor: pointer; display: none;")
+            .style("pointer-events", "none");
         this.rejectX = this.svgG.append("path");
         this.rejectX
             .attr("d", d3.svg.symbol().type("cross").size(100))
             .style("fill", "red")
+            .style("pointer-events", "none")
             .style("display", "none");
     }
 
@@ -60,7 +62,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         return ([] as (SystemDiagramElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
     }
 
-    // moves a green circle or red X around the perimeter of the element being hovered over
+    // moves a green circle or red X around the perimeter of the hovered element
     moveIndicator(e: SystemDiagramElement) {
         d3.event.stopPropagation();
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
@@ -68,7 +70,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let y = coordinates[1];
         let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
         let fourth = 1 / 4 * Math.PI;
-        let s = 30;
+        let s = ElementNamespace.elementTypes[e.type].isSketch ? 45 : 30;
         let coords = [];
         // handles quads 1, 2, 3, and 4
         if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
@@ -91,7 +93,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // hide edge if there is no source
             this.dragBond.classed("hidden", true);
         } else {
-            this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            let mouse = d3.mouse(this.svgG.node());
+            let sourceEnd = this.getEdgePosition(sourceNode, { x: mouse[0], y: mouse[1] } as GraphElement);
+            this.dragBond.attr("d", "M" + (sourceNode.x + sourceEnd[0]) + "," + (sourceNode.y + sourceEnd[1]) + "L" + mouse[0] + "," + mouse[1]);
             this.dragBond.classed("hidden", false);
         }
     }
@@ -125,10 +129,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // creates the invisible outer boundary that shows the edge indicator when hovered over
         let edgeHover = group.append("rect");
-        edgeHover.attr("width", "80px")
-            .attr("height", "80px")
-            .attr("x", "-40px")
-            .attr("y", "-40px")
+        edgeHover.attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
+            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
+            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
+            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
+            .style("pointer-events", "all")
             .classed("edgeHover", true)
             .on("mousemove", function (e) {
                 graph.moveSelectionRect();
@@ -153,7 +158,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // creates the outline of the element
         let box = hoverBox.append("rect");
         box.classed("outline", true)
-            .classed("sketchOutline", d => (<SystemDiagramElement>d).type > 30)
+            .classed("sketchOutline", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch)
             .attr("width", "60px")
             .attr("height", "60px")
             .attr("x", "-30px")
@@ -162,18 +167,18 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // adds the image representing the element
         let image = hoverBox.append("image");
         image.attr("href", function (d) {
-            if((<SystemDiagramElement>d).type <= 30) {
+            if(!ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch) {
                 return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             } else {
                 return "/images/sketch/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             }
         })
             .classed("hoverImg", true)
-            .attr("x", "-25px")
-            .attr("y", "-25px")
+            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
+            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
-            .attr("height", "50px")
-            .attr("width", "50px");
+            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px")
+            .attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px");
 
         // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
@@ -737,6 +742,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     svgMouseMove() {
         this.edgeCircle.style("display", "none");
         this.rejectX.style("display", "none");
+        if (this.edgeOrigin) {
+            this.dragmoveEdge();
+        }
     }
 
     // record whether we're in the middle of a CTRL combo
@@ -762,7 +770,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     // draws an edge that follows the mouse from a source node if the source node is not null
     dragmoveEdge() {
         if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            let mouse = d3.mouse(this.svgG.node());
+            let sourceEnd = this.getEdgePosition(this.edgeOrigin, { x: mouse[0], y: mouse[1] } as GraphElement);
+            this.dragBond.attr("d", "M" + (this.edgeOrigin.x + sourceEnd[0]) + "," + (this.edgeOrigin.y + sourceEnd[1]) + "L" + mouse[0] + "," + mouse[1]);
         }
     }
 

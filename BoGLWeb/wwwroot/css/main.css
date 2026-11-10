@@ -104,6 +104,7 @@ p {
 
 .outline.sketchOutline {
     stroke: none !important;
+    fill: none !important;
 }
 
 .selectable {
@@ -281,15 +282,15 @@ path.sketchBondTick {
     align-items: center;
     color: #000;
     display: flex;
-    font: bold 18px "Segoe UI", "SegoeUIBold" !important;
-    height: 45px;
+    font: bold 22px "Segoe UI", "SegoeUIBold" !important;
+    height: 48px;
     justify-content: center;
     line-height: 1;
-    max-height: 45px;
-    max-width: 45px;
+    max-height: 48px;
+    max-width: 48px;
     overflow: hidden;
     text-align: center;
-    width: 45px;
+    width: 48px;
 }
 
 .ant-collapse-content-box {

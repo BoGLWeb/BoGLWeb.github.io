@@ -8,8 +8,8 @@ export class MultiElementType extends ElementType {
     subElementEdges: number[][];
     // x and y offsets for each element in the multi-element
     offsets: number[][];
-    constructor(id: number, name: string, category: number, image: string, allowedModifiers: number[], velocityAllowed: boolean, subElements: number[], subElementEdges: number[][], offsets: number[][], maxConnections: number = Number.MAX_SAFE_INTEGER) {
-        super(id, name, category, image, allowedModifiers, velocityAllowed, maxConnections, true);
+    constructor(id: number, name: string, category: number, image: string, allowedModifiers: number[], velocityAllowed: boolean, subElements: number[], subElementEdges: number[][], offsets: number[][], maxConnections: number = Number.MAX_SAFE_INTEGER, isSketch: boolean = false) {
+        super(id, name, category, image, allowedModifiers, velocityAllowed, maxConnections, true, isSketch);
         this.subElements = subElements;
         this.subElementEdges = subElementEdges;
         this.offsets = offsets;
