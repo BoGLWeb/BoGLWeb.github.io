@@ -1042,3 +1042,31 @@ input[type="file"] {
     min-width: 630px !important;
     max-width: 630px !important;
 }
+
+.sketchBondMenu {
+    position: fixed;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    max-width: 100vw;
+    padding: 4px;
+    background: white;
+    border: 1px solid #bfbfbf;
+    border-radius: 4px;
+    box-shadow: 0 3px 10px #0003;
+}
+
+.sketchBondMenu button {
+    padding: 8px 12px;
+    border: none;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sketchBondMenu button:hover,
+.sketchBondMenu button:focus-visible {
+    background: #e6f7ff;
+    outline: 2px solid #1890ff;
+    outline-offset: -2px;
+}

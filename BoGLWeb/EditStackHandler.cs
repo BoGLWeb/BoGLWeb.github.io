@@ -99,7 +99,7 @@
                     CanvasChange? change = edits.Get();
                     if (canvasTab == CanvasTab.SYSTEM_DIAGRAM) {
                         change?.ExecuteUpdate(this.systemDiagram, isUndo);
-                    } else {
+                    } else if (canvasTab != CanvasTab.SKETCH) {
                         change?.ExecuteUpdate(GetBondGraph(canvasTab), isUndo);
                     }
                     if (isUndo) {

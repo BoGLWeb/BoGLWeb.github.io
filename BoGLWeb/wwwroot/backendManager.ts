@@ -1091,6 +1091,7 @@ export namespace backendManager {
 
         // change the recorded tab number and set the zoom slider to the new graph's zoom value
         public setTab(key: string) {
+            window.sketchDiagram?.closeBondMenu();
             window.tabNum = key;
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
@@ -1098,6 +1099,10 @@ export namespace backendManager {
         public setSketchBondGraphType(graphType: string) {
             window.sketchDiagram.sketchBondGraphType = graphType;
             window.sketchDiagram.updateGraph();
+        }
+
+        public urDoChangeSketchBond(state: string) {
+            window.sketchDiagram.restoreSketchBond(state);
         }
 
         // get the graph display object for a given tab ID (1 to 4)

@@ -521,6 +521,10 @@
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
         switch(cc?.GetType().Name) {
+            case nameof(CanvasChange.ChangeSketchBond):
+                var sketchBond = (CanvasChange.ChangeSketchBond) cc;
+                if (app != null) await app.URDoChangeSketchBond(isUndo ? sketchBond.Before : sketchBond.After);
+                break;
             case nameof(CanvasChange.AddSelection):
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
                 app?.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), addS.GetHighlight(), isUndo);
@@ -549,6 +553,17 @@
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
         disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
         app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSketchBond(string before, string after) {
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSketchBond(before, after), 2);
+        UpdateBackendWithInitialStackChange(2);
+    }
+
+    public async Task URDoChangeSketchBond(string state) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSketchBond", state);
     }
 
     // undo command

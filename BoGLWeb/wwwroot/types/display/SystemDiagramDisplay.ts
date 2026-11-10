@@ -11,6 +11,17 @@ import { backendManager } from "../../backendManager";
 
 // describes the specialized functionality needed for a system diagram
 export class SystemDiagramDisplay extends BaseGraphDisplay {
+    private dismissBondMenu: () => void;
+
+    closeBondMenu() {
+        if (this.dismissBondMenu) this.dismissBondMenu();
+    }
+
+    updateGraph(dragmove: boolean = false) {
+        this.closeBondMenu();
+        super.updateGraph(dragmove);
+    }
+
     // velocity constants
     velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
     velocityMap = {
@@ -257,10 +268,33 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
+        const keepContextSelection = () => {
+            if (d3.event.button === 2 && graph === window.sketchDiagram && graph.sketchBondGraphType === "causal") {
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            }
+        };
+        paths.on("mouseup.bondContextMenu", keepContextSelection);
 
         if (this === window.sketchDiagram && this.sketchBondGraphType !== "unsimplified") {
             paths.each(function (bond: GraphBond) {
                 graph.drawSketchBondTick.call(graph, d3.select(this.parentNode), bond);
+                d3.select(this.parentNode).selectAll(".sketchBondTick")
+                    .style("pointer-events", graph.sketchBondGraphType === "causal" ? "stroke" : "none")
+                    .on("mousedown", function () {
+                        if (d3.event.button === 2) {
+                            d3.event.preventDefault();
+                            d3.event.stopPropagation();
+                        } else {
+                            graph.pathMouseDown(bond);
+                        }
+                    })
+                    .on("mouseup", keepContextSelection)
+                    .on("contextmenu", function () {
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
+                        graph.pathContextMenu(bond);
+                    });
             });
         }
 
@@ -429,10 +463,78 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         super.pathMouseDown(bond);
     }
 
-    // handles right-clicking on an edge (toggles causal stroke direction in sketch tab)
+    // Opens editing actions for causal sketch bonds without changing selection.
     pathContextMenu(bond: GraphBond) {
-        if (this === window.sketchDiagram) {
-            bond.causalStrokeDirection = !(bond.causalStrokeDirection ?? true);
+        this.closeBondMenu();
+        if (this !== window.sketchDiagram || this.sketchBondGraphType !== "causal") return;
+        const event = d3.event as MouseEvent;
+        const menu = document.createElement("div");
+        menu.className = "sketchBondMenu";
+        menu.setAttribute("role", "group");
+        menu.setAttribute("aria-label", "Bond actions");
+        const close = () => this.closeBondMenu();
+        const outside = (e: Event) => { if (!menu.contains(e.target as Node)) close(); };
+        const keyboard = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                close();
+            }
+        };
+        this.dismissBondMenu = () => {
+            menu.remove();
+            document.removeEventListener("pointerdown", outside, true);
+            document.removeEventListener("keydown", keyboard, true);
+            window.removeEventListener("scroll", close, true);
+            window.removeEventListener("resize", close);
+            this.dismissBondMenu = null;
+        };
+        const addAction = (label: string, reverse: boolean) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = label;
+            button.addEventListener("click", () => {
+                close();
+                if (!this.bonds.includes(bond) || this !== window.sketchDiagram ||
+                    window.tabNum !== "2" || this.sketchBondGraphType !== "causal") return;
+                const before = this.sketchBondState(bond);
+                if (reverse) [bond.source, bond.target] = [bond.target, bond.source];
+                bond.causalStrokeDirection = !(bond.causalStrokeDirection ?? true);
+                const after = this.sketchBondState(bond);
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSketchBond", before, after);
+                this.updateGraph();
+            });
+            menu.appendChild(button);
+        };
+        addAction("Switch causal tick side", false);
+        addAction("Reverse arrow", true);
+        document.body.appendChild(menu);
+        const bounds = menu.getBoundingClientRect();
+        menu.style.left = Math.max(0, Math.min(event.clientX, window.innerWidth - bounds.width)) + "px";
+        menu.style.top = Math.max(0, Math.min(event.clientY, window.innerHeight - bounds.height)) + "px";
+        document.addEventListener("pointerdown", outside, true);
+        document.addEventListener("keydown", keyboard, true);
+        window.addEventListener("scroll", close, true);
+        window.addEventListener("resize", close);
+        (menu.firstElementChild as HTMLButtonElement).focus({ preventScroll: true });
+    }
+
+    private sketchBondState(bond: GraphBond): string {
+        return JSON.stringify({ source: bond.source.id, target: bond.target.id,
+            causalStrokeDirection: bond.causalStrokeDirection ?? true });
+    }
+
+    restoreSketchBond(state: string) {
+        const saved = JSON.parse(state) as { source: number; target: number; causalStrokeDirection: boolean };
+        const bond = this.bonds.find(b =>
+            (b.source.id === saved.source && b.target.id === saved.target) ||
+            (b.source.id === saved.target && b.target.id === saved.source));
+        const source = this.elements.find(e => e.id === saved.source);
+        const target = this.elements.find(e => e.id === saved.target);
+        if (bond && source && target) {
+            bond.source = source;
+            bond.target = target;
+            bond.causalStrokeDirection = saved.causalStrokeDirection;
             this.updateGraph();
         }
     }
