@@ -17,10 +17,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c9962a9-7be5-402a-9c8d-d9ade5a215b5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BoGLWeb/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/SystemDiagram.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/wwwroot/types/elements/ElementNamespace.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BoGLWeb/BondGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BoGLWeb/BondGraph.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,12 +37,12 @@
     &quot;assignee&quot;: &quot;bjpeters2027&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/BoGLWeb/BoGLWeb.github.io.git",
-    "accountId": "db392023-739e-468e-9d7c-3b5cb991441f"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/BoGLWeb/BoGLWeb.github.io.git&quot;,
+    &quot;accountId&quot;: &quot;db392023-739e-468e-9d7c-3b5cb991441f&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/brend/Downloads/Pradeep/BoGLWeb.github.io/BoGLWeb/BondGraph.cs" root0="SKIP_HIGHLIGHTING" />
@@ -57,61 +55,61 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000077358973372" />
-      <entry key="MS500" value="1.0983537272994814" />
-      <entry key="S2" value="1.7959014444970034" />
-      <entry key="S5" value="2.3559960417973964" />
-      <entry key="S10" value="2.641120546856295" />
-      <entry key="S30" value="2.8864708810239375" />
-      <entry key="S60" value="3.1458333488631176" />
-      <entry key="M2" value="4.461674735639207" />
-      <entry key="M5" value="30.05690201754243" />
-      <entry key="M10" value="100.12482393341934" />
-      <entry key="M15" value="158.44926396099365" />
-      <entry key="M30" value="259.0822730818544" />
-      <entry key="H1" value="335.69442609386755" />
-      <entry key="H2" value="383.4379437219595" />
-      <entry key="H4" value="410.15847096779936" />
-      <entry key="D1" value="434.03810461431755" />
-      <entry key="W1" value="438.2872578517902" />
+      <entry key="MS100" value="1.9183144444314788" />
+      <entry key="MS500" value="4.704210602132159" />
+      <entry key="S2" value="10.766035020786227" />
+      <entry key="S5" value="17.507521403034335" />
+      <entry key="S10" value="22.104814548694225" />
+      <entry key="S30" value="28.094653990986256" />
+      <entry key="S60" value="32.25808140375403" />
+      <entry key="M2" value="39.12964226308331" />
+      <entry key="M5" value="58.97407246203658" />
+      <entry key="M10" value="76.3790546093083" />
+      <entry key="M15" value="84.7118748818468" />
+      <entry key="M30" value="94.79493881242095" />
+      <entry key="H1" value="102.3748196795486" />
+      <entry key="H2" value="139.34026225195063" />
+      <entry key="H4" value="268.69293203644264" />
+      <entry key="D1" value="694.3733570512813" />
+      <entry key="W1" value="839.527615589969" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
-      <entry key="S2" value="5.15106985855407E-279" />
-      <entry key="S5" value="6.964617871545511E-112" />
-      <entry key="S10" value="3.6969362563620574E-56" />
-      <entry key="S30" value="5.27677211297211E-19" />
-      <entry key="S60" value="1.0270277010143497E-9" />
-      <entry key="M2" value="4.531863395459716E-5" />
-      <entry key="M5" value="0.02774097345681662" />
-      <entry key="M10" value="0.2355454261158624" />
-      <entry key="M15" value="0.48053628731323567" />
-      <entry key="M30" value="0.9803427966023851" />
-      <entry key="H1" value="1.400244728447151" />
-      <entry key="H2" value="1.6734662685676671" />
-      <entry key="H4" value="1.8294623543011097" />
-      <entry key="D1" value="1.970511206004252" />
-      <entry key="W1" value="1.9957604494784984" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="3.483943500767273E-172" />
+      <entry key="M2" value="2.639497672200164E-86" />
+      <entry key="M5" value="8.896506204700463E-35" />
+      <entry key="M10" value="1.3339009135766196E-17" />
+      <entry key="M15" value="7.086396553195773E-12" />
+      <entry key="M30" value="3.76467589780382E-6" />
+      <entry key="H1" value="0.002743966229366276" />
+      <entry key="H2" value="0.07408057946077631" />
+      <entry key="H4" value="0.3849170787775287" />
+      <entry key="D1" value="1.5196824904883495" />
+      <entry key="W1" value="1.9230492410242734" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="3.9268692096242516E-5" />
-      <entry key="MS500" value="0.1718134665200077" />
-      <entry key="S2" value="1.1968426231691873" />
-      <entry key="S5" value="2.006342009368263" />
-      <entry key="S10" value="2.4369479415410407" />
-      <entry key="S30" value="2.8101180814070164" />
-      <entry key="S60" value="3.1055257046355935" />
-      <entry key="M2" value="4.439881862378571" />
-      <entry key="M5" value="30.074383748609577" />
-      <entry key="M10" value="100.3536918550054" />
-      <entry key="M15" value="158.92437742128143" />
-      <entry key="M30" value="260.0589831319432" />
-      <entry key="H1" value="337.0924799783317" />
-      <entry key="H2" value="385.1101941543284" />
-      <entry key="H4" value="411.98729119143263" />
-      <entry key="D1" value="436.00850365598245" />
-      <entry key="W1" value="440.2830021464459" />
+      <entry key="MS100" value="1.7685953829761378" />
+      <entry key="MS500" value="4.632748011721886" />
+      <entry key="S2" value="10.724902953728709" />
+      <entry key="S5" value="17.480864122719318" />
+      <entry key="S10" value="22.08800323156337" />
+      <entry key="S30" value="28.087522233110544" />
+      <entry key="S60" value="32.25387721069087" />
+      <entry key="M2" value="39.12531796566537" />
+      <entry key="M5" value="58.966144291749366" />
+      <entry key="M10" value="76.37144456069163" />
+      <entry key="M15" value="84.70551923907503" />
+      <entry key="M30" value="94.79095002524264" />
+      <entry key="H1" value="102.3753158160964" />
+      <entry key="H2" value="139.41306991148795" />
+      <entry key="H4" value="269.07703570225175" />
+      <entry key="D1" value="695.8928117031002" />
+      <entry key="W1" value="841.450627809891" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -126,33 +124,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.BoGLWeb.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "finding-fix-for-generation",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "rider.unittesting.toolwindow.stripe.button.shown": "true",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2026.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.BoGLWeb.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;finding-fix-for-generation&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;rider.unittesting.toolwindow.stripe.button.shown&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\JetBrains Rider 2026.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BoGLWeb">
     <configuration name="BoGLWeb" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BoGLWeb/BoGLWeb.csproj" />

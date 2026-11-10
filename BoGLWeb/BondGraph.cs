@@ -112,7 +112,8 @@ namespace BoGLWeb {
             { "gear", "TF:R" },
             { "_Lever", "TF:D" },
             { "_Transformer", "TF:T" },
-            { "Motor", "GY:K" }
+            { "Motor", "GY:K" },
+            { "_Pump", "Sf:Q"}
         };
 
         /// <summary>
@@ -386,7 +387,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A single character from the label that designates the 
             /// type of <c>Element</c>.</returns>
-            public char GetTypeChar() {
+            public char ++++++GetTypeChar() {
                 return this.label[0] == 'S' ? this.label[1] : this.label[0];
             }
 
@@ -605,27 +606,41 @@ namespace BoGLWeb {
             private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
             private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
             private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "ϕ", "q" };
-            private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
-                {"v", translationLabels },
-                {"F", translationLabels },
-                {"b", translationLabels },
-                {"m", translationLabels },
-                {"K", translationLabels },
-                {"ω", rotLabels },
-                {"τ", rotLabels },
-                {"D", rotLabels },
-                {"I", rotLabels },
-                {"κ", rotLabels },
-                {"i", elecLabels },
-                {"V", elecLabels },
-                {"R", elecLabels },
-                {"L", elecLabels },
-                {"C", elecLabels }
-            };
+            private static List<string> hydraulicLabels   = new List<string>() { "p", "Q", "R", "C", "L", "T", "r", "P", "V" };
+            private readonly Dictionary<string, List<string>> domainLabelDict =
+                new Dictionary<string, List<string>>() {
+
+                    // Translational
+                    {"v", translationLabels},
+                    {"F", translationLabels},
+                    {"b", translationLabels},
+                    {"m", translationLabels},
+                    {"K", translationLabels},
+
+                    // Rotational
+                    {"ω", rotLabels},
+                    {"τ", rotLabels},
+                    {"D", rotLabels},
+                    {"I", rotLabels},
+                    {"κ", rotLabels},
+
+                    // Electrical
+                    {"i", elecLabels},
+                    {"V", elecLabels},
+                    {"R", elecLabels},
+                    {"L", elecLabels},
+                    {"C", elecLabels},
+
+                    // Hydraulic
+                    {"p", hydraulicLabels},
+                    {"Q", hydraulicLabels}
+                };
+            
             private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
                 {"F", new List<string>() { "p'", "x'" } },
                 {"τ", new List<string>() { "L'", "θ'" } },
-                {"V", new List<string>() { "ϕ'", "q'" } }
+                {"V", new List<string>() { "ϕ'", "q'" } },
+                {"p", new List<string>() { "P'", "V'" }}
             };
 
             /// <summary>
