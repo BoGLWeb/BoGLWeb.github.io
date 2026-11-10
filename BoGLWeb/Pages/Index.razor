@@ -521,6 +521,10 @@
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
         switch(cc?.GetType().Name) {
+            case nameof(CanvasChange.ChangeSketchNumber):
+                var sketchNumber = (CanvasChange.ChangeSketchNumber) cc;
+                if (app != null) await app.URDoChangeSketchNumber(isUndo ? sketchNumber.Before : sketchNumber.After);
+                break;
             case nameof(CanvasChange.ChangeSketchBond):
                 var sketchBond = (CanvasChange.ChangeSketchBond) cc;
                 if (app != null) await app.URDoChangeSketchBond(isUndo ? sketchBond.Before : sketchBond.After);
@@ -553,6 +557,17 @@
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
         disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
         app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSketchNumber(string before, string after) {
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSketchNumber(before, after), 2);
+        UpdateBackendWithInitialStackChange(2);
+    }
+
+    public async Task URDoChangeSketchNumber(string state) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSketchNumber", state);
     }
 
     [JSInvokable]
