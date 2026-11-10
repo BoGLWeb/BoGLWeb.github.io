@@ -100,6 +100,7 @@ export class BaseGraphDisplay {
     // functions defined by subclasses
     svgMouseMove() { }
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) { }
+    pathContextMenu(bond: GraphBond) { }
     renderElements(newElements: GraphElementSelection) { }
 
     // returns the selection
@@ -361,16 +362,10 @@ export class BaseGraphDisplay {
 
     // draws a graph bond on the SVG
     drawPath(d: GraphBond) {
-        if (this.startedSelectionDrag && this instanceof SystemDiagramDisplay) {
-            // when a selection is being dragged in a system diagram, draws edges to the center of elements to reduce computation;
-            // does not do this for bond graph because the edge will be visible behind the text
-            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-        } else {
-            // draws a bond to the edge of each element
-            let sourceEnd = this.getEdgePosition(d.source, d.target);
-            let targetEnd = this.getEdgePosition(d.target, d.source);
-            return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
-        }
+        // draws a bond to the edge of each element
+        let sourceEnd = this.getEdgePosition(d.source, d.target);
+        let targetEnd = this.getEdgePosition(d.target, d.source);
+        return "M" + (d.source.x + sourceEnd[0]) + "," + (d.source.y + sourceEnd[1]) + "L" + (d.target.x + targetEnd[0]) + "," + (d.target.y + targetEnd[1]);
     }
 
     // defines drag click event
@@ -491,7 +486,17 @@ export class BaseGraphDisplay {
             .classed("link", true)
             .attr("d", function (d: GraphBond) { return graph.drawPath.call(graph, d); })
             .on("mousedown", function (d) {
+                if (d3.event.button === 2) {
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
+                    return;
+                }
                 graph.pathMouseDown.call(graph, d);
+            })
+            .on("contextmenu", function (d) {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+                graph.pathContextMenu.call(graph, d);
             });
 
         // update existing bondSelection

@@ -11,6 +11,17 @@ import { backendManager } from "../../backendManager";
 
 // describes the specialized functionality needed for a system diagram
 export class SystemDiagramDisplay extends BaseGraphDisplay {
+    private dismissBondMenu: () => void;
+
+    closeBondMenu() {
+        if (this.dismissBondMenu) this.dismissBondMenu();
+    }
+
+    updateGraph(dragmove: boolean = false) {
+        this.closeBondMenu();
+        super.updateGraph(dragmove);
+    }
+
     // velocity constants
     velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
     velocityMap = {
@@ -47,11 +58,13 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.edgeCircle = this.svgG.append("circle");
         this.edgeCircle.attr("r", "5")
             .attr("fill", "green")
-            .attr("style", "cursor: pointer; display: none;");
+            .attr("style", "cursor: pointer; display: none;")
+            .style("pointer-events", "none");
         this.rejectX = this.svgG.append("path");
         this.rejectX
             .attr("d", d3.svg.symbol().type("cross").size(100))
             .style("fill", "red")
+            .style("pointer-events", "none")
             .style("display", "none");
     }
 
@@ -60,7 +73,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         return ([] as (SystemDiagramElement | GraphBond)[]).concat(this.selectedElements).concat(this.selectedBonds);
     }
 
-    // moves a green circle or red X around the perimeter of the element being hovered over
+    // moves a green circle or red X around the perimeter of the hovered element
     moveIndicator(e: SystemDiagramElement) {
         d3.event.stopPropagation();
         let coordinates = d3.mouse(<Event>d3.event.currentTarget);
@@ -68,7 +81,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let y = coordinates[1];
         let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
         let fourth = 1 / 4 * Math.PI;
-        let s = 30;
+        let s = ElementNamespace.elementTypes[e.type].isSketch ? 45 : 30;
         let coords = [];
         // handles quads 1, 2, 3, and 4
         if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
@@ -91,7 +104,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             // hide edge if there is no source
             this.dragBond.classed("hidden", true);
         } else {
-            this.dragBond.attr("d", "M" + sourceNode.x + "," + sourceNode.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            let mouse = d3.mouse(this.svgG.node());
+            let sourceEnd = this.getEdgePosition(sourceNode, { x: mouse[0], y: mouse[1] } as GraphElement);
+            this.dragBond.attr("d", "M" + (sourceNode.x + sourceEnd[0]) + "," + (sourceNode.y + sourceEnd[1]) + "L" + mouse[0] + "," + mouse[1]);
             this.dragBond.classed("hidden", false);
         }
     }
@@ -125,10 +140,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // creates the invisible outer boundary that shows the edge indicator when hovered over
         let edgeHover = group.append("rect");
-        edgeHover.attr("width", "80px")
-            .attr("height", "80px")
-            .attr("x", "-40px")
-            .attr("y", "-40px")
+        edgeHover.attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
+            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
+            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
+            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
+            .style("pointer-events", "all")
             .classed("edgeHover", true)
             .on("mousemove", function (e) {
                 graph.moveSelectionRect();
@@ -153,6 +169,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // creates the outline of the element
         let box = hoverBox.append("rect");
         box.classed("outline", true)
+            .classed("sketchOutline", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch)
             .attr("width", "60px")
             .attr("height", "60px")
             .attr("x", "-30px")
@@ -161,19 +178,18 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         // adds the image representing the element
         let image = hoverBox.append("image");
         image.attr("href", function (d) {
-            console.log("adding");
-            if((<SystemDiagramElement>d).type <= 30) {
+            if(!ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch) {
                 return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             } else {
                 return "/images/sketch/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
             }
         })
             .classed("hoverImg", true)
-            .attr("x", "-25px")
-            .attr("y", "-25px")
+            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
+            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
             .attr("preserveAspectRatio", "xMidYMid meet")
-            .attr("height", "50px")
-            .attr("width", "50px");
+            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px")
+            .attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px");
 
         // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
@@ -229,7 +245,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .on("mouseleave", function (e) {
                 graph.setEdgeMarkerVisible.call(graph, e);
             });
-
+        
         // initializes mouse events for outline box
         box.on("mousemove", function (e) {
             graph.moveSelectionRect();
@@ -252,10 +268,33 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let graph = this;
 
         paths.classed("hoverablePath", true);
+        const keepContextSelection = () => {
+            if (d3.event.button === 2 && graph === window.sketchDiagram && graph.sketchBondGraphType === "causal") {
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+            }
+        };
+        paths.on("mouseup.bondContextMenu", keepContextSelection);
 
         if (this === window.sketchDiagram && this.sketchBondGraphType !== "unsimplified") {
             paths.each(function (bond: GraphBond) {
                 graph.drawSketchBondTick.call(graph, d3.select(this.parentNode), bond);
+                d3.select(this.parentNode).selectAll(".sketchBondTick")
+                    .style("pointer-events", graph.sketchBondGraphType === "causal" ? "stroke" : "none")
+                    .on("mousedown", function () {
+                        if (d3.event.button === 2) {
+                            d3.event.preventDefault();
+                            d3.event.stopPropagation();
+                        } else {
+                            graph.pathMouseDown(bond);
+                        }
+                    })
+                    .on("mouseup", keepContextSelection)
+                    .on("contextmenu", function () {
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
+                        graph.pathContextMenu(bond);
+                    });
             });
         }
 
@@ -311,9 +350,6 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let x2 = bond.target.x + targetEnd[0];
         let y2 = bond.target.y + targetEnd[1];
 
-        let tickCenterX = x2 - ((x2 - x1) * 0.18);
-        let tickCenterY = y2 - ((y2 - y1) * 0.18);
-
         let dx = x2 - x1;
         let dy = y2 - y1;
         let length = Math.sqrt(dx * dx + dy * dy);
@@ -324,16 +360,57 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         let unitX = dx / length;
         let unitY = dy / length;
-        let tickLength = 14;
 
-        let tickX1 = tickCenterX - unitY * tickLength / 2;
-        let tickY1 = tickCenterY + unitX * tickLength / 2;
-        let tickX2 = tickCenterX + unitY * tickLength / 2;
-        let tickY2 = tickCenterY - unitX * tickLength / 2;
+        let tickLength = 16;
+
+        let angle = -135 * Math.PI / 180;
+
+        let tickDirX =
+            unitX * Math.cos(angle) -
+            unitY * Math.sin(angle);
+
+        let tickDirY =
+            unitX * Math.sin(angle) +
+            unitY * Math.cos(angle);
+
+        let tickX1 = x2;
+        let tickY1 = y2;
+
+        let tickX2 = x2 + tickDirX * tickLength;
+        let tickY2 = y2 + tickDirY * tickLength;
+
+        let isSelected = this.selectedBonds.includes(bond);
 
         pathGroup.append("path")
             .classed("sketchBondTick", true)
-            .attr("d", "M" + tickX1 + "," + tickY1 + "L" + tickX2 + "," + tickY2);
+            .classed(this.selectedClass, isSelected)
+            .attr(
+                "d",
+                `M${tickX1},${tickY1} L${tickX2},${tickY2}`
+            );
+
+        if (this.sketchBondGraphType === "causal") {
+            let isAtSource = bond.causalStrokeDirection ?? true;
+            let cx = isAtSource ? x1 : x2;
+            let cy = isAtSource ? y1 : y2;
+
+            let perpX = -unitY;
+            let perpY = unitX;
+            let causalHalfLength = 10;
+
+            let causalX1 = cx - perpX * causalHalfLength;
+            let causalY1 = cy - perpY * causalHalfLength;
+            let causalX2 = cx + perpX * causalHalfLength;
+            let causalY2 = cy + perpY * causalHalfLength;
+
+            pathGroup.append("path")
+                .classed("sketchBondTick", true)
+                .classed(this.selectedClass, isSelected)
+                .attr(
+                    "d",
+                    `M${causalX1},${causalY1} L${causalX2},${causalY2}`
+                );
+        }
     }
 
     // updates the modifier menu
@@ -384,6 +461,82 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathMouseDown(bond: GraphBond) {
         this.justClickedEdge = true;
         super.pathMouseDown(bond);
+    }
+
+    // Opens editing actions for causal sketch bonds without changing selection.
+    pathContextMenu(bond: GraphBond) {
+        this.closeBondMenu();
+        if (this !== window.sketchDiagram || this.sketchBondGraphType !== "causal") return;
+        const event = d3.event as MouseEvent;
+        const menu = document.createElement("div");
+        menu.className = "sketchBondMenu";
+        menu.setAttribute("role", "group");
+        menu.setAttribute("aria-label", "Bond actions");
+        const close = () => this.closeBondMenu();
+        const outside = (e: Event) => { if (!menu.contains(e.target as Node)) close(); };
+        const keyboard = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                close();
+            }
+        };
+        this.dismissBondMenu = () => {
+            menu.remove();
+            document.removeEventListener("pointerdown", outside, true);
+            document.removeEventListener("keydown", keyboard, true);
+            window.removeEventListener("scroll", close, true);
+            window.removeEventListener("resize", close);
+            this.dismissBondMenu = null;
+        };
+        const addAction = (label: string, reverse: boolean) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = label;
+            button.addEventListener("click", () => {
+                close();
+                if (!this.bonds.includes(bond) || this !== window.sketchDiagram ||
+                    window.tabNum !== "2" || this.sketchBondGraphType !== "causal") return;
+                const before = this.sketchBondState(bond);
+                if (reverse) [bond.source, bond.target] = [bond.target, bond.source];
+                bond.causalStrokeDirection = !(bond.causalStrokeDirection ?? true);
+                const after = this.sketchBondState(bond);
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSketchBond", before, after);
+                this.updateGraph();
+            });
+            menu.appendChild(button);
+        };
+        addAction("Switch causal tick side", false);
+        addAction("Reverse arrow", true);
+        document.body.appendChild(menu);
+        const bounds = menu.getBoundingClientRect();
+        menu.style.left = Math.max(0, Math.min(event.clientX, window.innerWidth - bounds.width)) + "px";
+        menu.style.top = Math.max(0, Math.min(event.clientY, window.innerHeight - bounds.height)) + "px";
+        document.addEventListener("pointerdown", outside, true);
+        document.addEventListener("keydown", keyboard, true);
+        window.addEventListener("scroll", close, true);
+        window.addEventListener("resize", close);
+        (menu.firstElementChild as HTMLButtonElement).focus({ preventScroll: true });
+    }
+
+    private sketchBondState(bond: GraphBond): string {
+        return JSON.stringify({ source: bond.source.id, target: bond.target.id,
+            causalStrokeDirection: bond.causalStrokeDirection ?? true });
+    }
+
+    restoreSketchBond(state: string) {
+        const saved = JSON.parse(state) as { source: number; target: number; causalStrokeDirection: boolean };
+        const bond = this.bonds.find(b =>
+            (b.source.id === saved.source && b.target.id === saved.target) ||
+            (b.source.id === saved.target && b.target.id === saved.source));
+        const source = this.elements.find(e => e.id === saved.source);
+        const target = this.elements.find(e => e.id === saved.target);
+        if (bond && source && target) {
+            bond.source = source;
+            bond.target = target;
+            bond.causalStrokeDirection = saved.causalStrokeDirection;
+            this.updateGraph();
+        }
     }
 
     // handles clicking on the edge of an element, in the invisible border around it, starts edge creation
@@ -691,6 +844,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     svgMouseMove() {
         this.edgeCircle.style("display", "none");
         this.rejectX.style("display", "none");
+        if (this.edgeOrigin) {
+            this.dragmoveEdge();
+        }
     }
 
     // record whether we're in the middle of a CTRL combo
@@ -716,7 +872,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     // draws an edge that follows the mouse from a source node if the source node is not null
     dragmoveEdge() {
         if (this.edgeOrigin) {
-            this.dragBond.attr("d", "M" + this.edgeOrigin.x + "," + this.edgeOrigin.y + "L" + d3.mouse(this.svgG.node())[0] + "," + d3.mouse(this.svgG.node())[1]);
+            let mouse = d3.mouse(this.svgG.node());
+            let sourceEnd = this.getEdgePosition(this.edgeOrigin, { x: mouse[0], y: mouse[1] } as GraphElement);
+            this.dragBond.attr("d", "M" + (this.edgeOrigin.x + sourceEnd[0]) + "," + (this.edgeOrigin.y + sourceEnd[1]) + "L" + mouse[0] + "," + mouse[1]);
         }
     }
 

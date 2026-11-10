@@ -9,7 +9,7 @@
 @using BoGLWeb.Json
 @using Newtonsoft.Json
 
-<PageTitle>BoGL Web</PageTitle>
+<PageTitle>Bond Graph Lab</PageTitle>
 
 <style>
 #modifierMenu {
@@ -187,6 +187,9 @@
                 </Panel>
                 <Panel Header="Actuators" Key="3">
                     <div id="actuators" class="elementHolder"></div>
+                </Panel>
+                <Panel Header="Hydraulics" Key="3">
+                    <div id="hydraulics" class="elementHolder"></div>
                 </Panel>
             </ChildContent>
         </Collapse>
@@ -518,6 +521,10 @@
     public static async void UndoRedoHandler(int tab, bool isUndo) {
         CanvasChange? cc = EditStackHandler.undoRedoHandler.Do(tab, isUndo);
         switch(cc?.GetType().Name) {
+            case nameof(CanvasChange.ChangeSketchBond):
+                var sketchBond = (CanvasChange.ChangeSketchBond) cc;
+                if (app != null) await app.URDoChangeSketchBond(isUndo ? sketchBond.Before : sketchBond.After);
+                break;
             case nameof(CanvasChange.AddSelection):
                 CanvasChange.AddSelection addS = (CanvasChange.AddSelection) cc;
                 app?.URDoAddSelection(addS.GetNewObjects(), addS.GetIDs(), addS.GetPrevSelectedEdges(), addS.GetHighlight(), isUndo);
@@ -546,6 +553,17 @@
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);
         disableUndo = !EditStackHandler.undoRedoHandler.CanDo(tab, true);
         app?.StateHasChanged();
+    }
+
+    [JSInvokable]
+    public static void URChangeSketchBond(string before, string after) {
+        EditStackHandler.undoRedoHandler.AddEdit(new CanvasChange.ChangeSketchBond(before, after), 2);
+        UpdateBackendWithInitialStackChange(2);
+    }
+
+    public async Task URDoChangeSketchBond(string state) {
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("urDoChangeSketchBond", state);
     }
 
     // undo command
@@ -665,7 +683,11 @@
     public static void UpdateBackendWithInitialStackChange(int tab) {
         if(tab == 1) { // system diagram
             EditStackHandler.undoRedoHandler.GetChange(1)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetSystemDiagram(), false);
-        } else { // bond graph
+        }else if(tab == 2) {
+        // sketch diagram
+        // Sketch is not a bond graph. For now, avoid updating a bond graph model for sketch changes.
+        // This prevents GetBondGraph(2) from throwing "Not a bond graph option".
+        }else { // bond graph
             EditStackHandler.undoRedoHandler.GetChange(tab)?.ExecuteUpdate(EditStackHandler.undoRedoHandler.GetBondGraph(tab), false);
         }
         disableRedo = !EditStackHandler.undoRedoHandler.CanDo(tab, false);

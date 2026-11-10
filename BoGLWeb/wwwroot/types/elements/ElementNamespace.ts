@@ -68,7 +68,7 @@ export namespace ElementNamespace {
         new ElementType(28, "PM Motor", 4, "pm_motor", [], false),
         new ElementType(29, "VC Transducer", 4, "vc_transducer", [], false),
         new ElementType(30, "Grounded Pulley", 2, "pulley_grounded", [3, 1], true),
-        new ElementType(31, "I:M", 5, "I-M", [], false)
+        new ElementType(31, "I:M", 5, "I-M", [], false, Number.MAX_SAFE_INTEGER, false, true)
     ];
 
     // compatibility groups with element IDs showing which elements can connect to each other
@@ -86,7 +86,7 @@ export namespace ElementNamespace {
         let oCompatible = oCompatibilityGroup.has(e1.type) && oCompatibilityGroup.has(e2.type);
         let e1Type = ElementNamespace.elementTypes[e1.type];
         let e2Type = ElementNamespace.elementTypes[e2.type];
-        let sketchCompatible = e1Type.category >= 5 && e1Type.category <= 12 && e2Type.category >= 5 && e2Type.category <= 12;
+        let sketchCompatible = e1Type.isSketch && e2Type.isSketch;
         let maxSourceBonds = e1Type.maxConnections;
         let maxTargetBonds = e2Type.maxConnections;
         let numTargetBonds = graph.bonds.filter(b => b.target.id == e2.id || b.source.id == e2.id).length;

@@ -531,3 +531,9 @@ env/
 *.kate-swp
 *.kate-swp.*
 *.kate-autosave
+
+.junie/
+.ai/
+.idea/
+Agent.md
+Agents.md

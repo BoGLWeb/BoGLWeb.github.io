@@ -288,7 +288,7 @@ export namespace backendManager {
                 if (json.hasOwnProperty("id")) {
                     elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
                 } else {
-                    bonds.push(new GraphBond(json.source, json.target, json.velocity));
+                    bonds.push(new GraphBond(json.source, json.target, json.velocity, json.causalStrokeDirection ?? true));
                 }
             }
             return [elements, bonds];
@@ -426,7 +426,16 @@ export namespace backendManager {
             svg.selectAll(".boglElem")
                 .style("fill-opacity", "0");
             svg.selectAll(".outline")
-                .style("stroke", "black");
+                .style("stroke", function () {
+                    return (this as Element).classList.contains("sketchOutline") ? "none" : "black";
+                })
+                .style("fill", function () {
+                    return (this as Element).classList.contains("sketchOutline") ? "none" : "white";
+                });
+            svg.selectAll(".sketchLabel")
+                .style("fill", "black")
+                .style("font-size", "10px")
+                .style("font-weight", "700");
             svg.selectAll("text")
                 .style("fill", "black")
                 .style("font-size", "30px")
@@ -575,8 +584,7 @@ export namespace backendManager {
             let elements = this.centerElements(parsedJson.elements, false);
 
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
-                bond.velocity = edge.velocity ?? 0;
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true);
                 edges.push(bond);
             }
 
@@ -601,8 +609,7 @@ export namespace backendManager {
             let elements = this.centerElements(parsedJson.elements, false);
 
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target));
-                bond.velocity = edge.velocity ?? 0;
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true);
                 edges.push(bond);
             }
 
@@ -1084,6 +1091,7 @@ export namespace backendManager {
 
         // change the recorded tab number and set the zoom slider to the new graph's zoom value
         public setTab(key: string) {
+            window.sketchDiagram?.closeBondMenu();
             window.tabNum = key;
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
@@ -1091,6 +1099,10 @@ export namespace backendManager {
         public setSketchBondGraphType(graphType: string) {
             window.sketchDiagram.sketchBondGraphType = graphType;
             window.sketchDiagram.updateGraph();
+        }
+
+        public urDoChangeSketchBond(state: string) {
+            window.sketchDiagram.restoreSketchBond(state);
         }
 
         // get the graph display object for a given tab ID (1 to 4)

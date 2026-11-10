@@ -13,6 +13,17 @@ namespace BoGLWeb {
         /// Keeps track of changes made to the canvas.
         /// </summary>
         public class CanvasChange {
+            // Sketch state is replayed on the frontend; there is no backend sketch model.
+            public class ChangeSketchBond : CanvasChange {
+                public string Before { get; }
+                public string After { get; }
+
+                public ChangeSketchBond(string before, string after) : base(Array.Empty<int>()) {
+                    Before = before;
+                    After = after;
+                }
+            }
+
             // Stores the IDs of the respective selected elements.
             private readonly int[] IDs;
 

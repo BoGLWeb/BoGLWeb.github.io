@@ -5,14 +5,16 @@ export class GraphBond {
     source: GraphElement;
     target: GraphElement;
     velocity: number; // set to 0 for bond graph bonds
+    causalStrokeDirection: boolean; // true if stroke is at source, false if at target
 
-    constructor(source: GraphElement, target: GraphElement, velocity = 0) {
+    constructor(source: GraphElement, target: GraphElement, velocity = 0, causalStrokeDirection: boolean = true) {
         this.source = source;
         this.target = target;
         this.velocity = velocity;
+        this.causalStrokeDirection = causalStrokeDirection;
     }
 
     copy(source: GraphElement, target: GraphElement) {
-        return new GraphBond(source, target, this.velocity);
+        return new GraphBond(source, target, this.velocity, this.causalStrokeDirection);
     }
 }
