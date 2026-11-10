@@ -220,7 +220,7 @@ export namespace backendManager {
 
                 let id = e.id ?? i++;
                 elements.set(id, bondGraph ? new BondGraphElement(i, e.ID, e.label, e.x, e.y)
-                    : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers))
+                    : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers, e.sketchNumber))
             }
             
             let normal_ElementSize: number = 64;
@@ -286,7 +286,7 @@ export namespace backendManager {
             for (const object of objects) {
                 let json = JSON.parse(object);
                 if (json.hasOwnProperty("id")) {
-                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers));
+                    elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers, json.sketchNumber));
                 } else {
                     bonds.push(new GraphBond(json.source, json.target, json.velocity, json.causalStrokeDirection ?? true));
                 }
@@ -1099,6 +1099,10 @@ export namespace backendManager {
         public setSketchBondGraphType(graphType: string) {
             window.sketchDiagram.sketchBondGraphType = graphType;
             window.sketchDiagram.updateGraph();
+        }
+
+        public urDoChangeSketchNumber(state: string) {
+            window.sketchDiagram.restoreSketchNumber(state);
         }
 
         public urDoChangeSketchBond(state: string) {

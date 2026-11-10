@@ -24,6 +24,16 @@ namespace BoGLWeb {
                 }
             }
 
+            public class ChangeSketchNumber : CanvasChange {
+                public string Before { get; }
+                public string After { get; }
+
+                public ChangeSketchNumber(string before, string after) : base(Array.Empty<int>()) {
+                    Before = before;
+                    After = after;
+                }
+            }
+
             // Stores the IDs of the respective selected elements.
             private readonly int[] IDs;
 

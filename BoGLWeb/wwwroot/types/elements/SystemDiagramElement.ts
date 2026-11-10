@@ -6,7 +6,7 @@ export class SystemDiagramElement extends GraphElement {
     modifiers: number[]; // modifiers that have been applied to the element
     velocity: number; // velocity of the element
     
-    constructor(id: number, type: number, x: number, y: number, velocity: number, modifiers: number[]) {
+    constructor(id: number, type: number, x: number, y: number, velocity: number, modifiers: number[], public sketchNumber: number = id) {
         super(id, x, y);
         this.modifiers = modifiers;
         this.velocity = velocity;
@@ -15,6 +15,6 @@ export class SystemDiagramElement extends GraphElement {
 
     // copies the element with an optional offset, used when copying a selection to ensure that the selections don't overlap
     copy(id, offset = 0) {
-        return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, [...this.modifiers]);
+        return new SystemDiagramElement(id, this.type, this.x + offset, this.y + offset, this.velocity, [...this.modifiers], this.sketchNumber);
     }
 }

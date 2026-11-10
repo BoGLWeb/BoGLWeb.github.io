@@ -235,6 +235,25 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
         });
 
+        // Keep the number upright and clickable at the bottom-right of sketch images.
+        newElements.filter(d => ElementNamespace.elementTypes[(d as SystemDiagramElement).type].isSketch)
+            .append("text")
+            .attr("x", 40).attr("y", 48)
+            .attr("text-anchor", "end")
+            .style("font-size", "14px").style("fill", "black")
+            .style("stroke", "white").style("stroke-width", "3px")
+            .style("paint-order", "stroke").style("cursor", "text")
+            .style("pointer-events", "all")
+            .text((d: SystemDiagramElement) => String(d.sketchNumber ?? d.id))
+            .on("mousedown", () => d3.event.stopPropagation())
+            .on("mouseup", () => d3.event.stopPropagation())
+            .on("dblclick", () => d3.event.stopPropagation())
+            .on("click", function (d: SystemDiagramElement) {
+                d3.event.stopPropagation();
+                graph.editSketchNumber(d);
+            })
+            .append("title").text("Click to edit number");
+
         // initializes mouse events for image
         image.on("mouseenter", function () {
             graph.edgeCircle.style("display", "none");
@@ -261,6 +280,61 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
                 graph.handleEdgeDown.call(graph, d);
             })
             .call(this.edgeDrag);
+    }
+
+    private editSketchNumber(element: SystemDiagramElement) {
+        const dialog = document.createElement("dialog");
+        dialog.addEventListener("keydown", event => event.stopPropagation());
+        dialog.addEventListener("keyup", event => event.stopPropagation());
+        const form = document.createElement("form");
+        form.method = "dialog";
+        const label = document.createElement("label");
+        label.textContent = "Element number: ";
+        const input = document.createElement("input");
+        input.type = "number";
+        input.step = "any";
+        input.required = true;
+        input.value = String(element.sketchNumber ?? element.id);
+        label.appendChild(input);
+        form.appendChild(label);
+        const save = document.createElement("button");
+        save.textContent = "Save";
+        save.type = "submit";
+        form.appendChild(save);
+        const cancel = document.createElement("button");
+        cancel.textContent = "Cancel";
+        cancel.type = "button";
+        cancel.onclick = () => dialog.close();
+        form.appendChild(cancel);
+        form.onsubmit = event => {
+            event.preventDefault();
+            if (!input.checkValidity() || !Number.isFinite(input.valueAsNumber)) return;
+            const previous = element.sketchNumber ?? element.id;
+            const value = input.valueAsNumber;
+            if (previous !== value) {
+                const before = JSON.stringify({ id: element.id, number: previous });
+                const after = JSON.stringify({ id: element.id, number: value });
+                element.sketchNumber = value;
+                DotNet.invokeMethodAsync("BoGLWeb", "URChangeSketchNumber", before, after);
+                this.updateGraph();
+            }
+            dialog.close();
+        };
+        dialog.appendChild(form);
+        dialog.addEventListener("close", () => dialog.remove());
+        document.body.appendChild(dialog);
+        dialog.showModal();
+        input.focus();
+        input.select();
+    }
+
+    restoreSketchNumber(state: string) {
+        const saved = JSON.parse(state) as { id: number; number: number };
+        const element = this.elements.find(e => e.id === saved.id);
+        if (element) {
+            element.sketchNumber = saved.number;
+            this.updateGraph();
+        }
     }
 
     // completes extra path rendering for system diagram paths
