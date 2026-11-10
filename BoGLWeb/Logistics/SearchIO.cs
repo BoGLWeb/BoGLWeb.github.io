@@ -449,6 +449,7 @@ namespace BoGLWeb.Logistics {
                 iconStr.Replace(':', ' ');
 
             output("**" + iconStr + caption + "**\n" + messageBoxText + "\n");
+#pragma warning disable CA1416
             if (buttonStr.StartsWith("OK")) {
                 output("Hit any key to continue.");
                 Console.ReadKey();
@@ -459,6 +460,7 @@ namespace BoGLWeb.Logistics {
                 output("Please Respond Y/N:");
                 response = Console.ReadKey().Key;
             } while (response != ConsoleKey.N && response != ConsoleKey.Y);
+#pragma warning restore CA1416
             return response == ConsoleKey.Y;
         }
 

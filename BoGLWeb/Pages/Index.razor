@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JS
+@inject IJSRuntime JS
 @inject NavigationManager NavManager
 @inject IMessageService messageService
 @page "/"
@@ -820,9 +820,19 @@
 
         generateProgress = 25.0;
 
-        BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph);
+        // ===================================================================================================
+        // BOND GRAPH GENERATION & LAYOUT PIPELINE
+        // ===================================================================================================
+        // Step 1: Spatial Orientation & Anchor Resolution
+        // Automatically determine principal axis (Horizontal vs. Vertical) and boundary alignment
+        // (Left-to-Right ground-to-source or Bottom-to-Top) based on physical sketch bounding box and anchors.
+        LayoutOrientation orientation = BondGraphEmbedder.ResolveOrientation(sysDiagram);
+        bool flowLeftToRight = BondGraphEmbedder.ResolveFlowLeftToRight(sysDiagram);
+        bool flowBottomToTop = BondGraphEmbedder.ResolveFlowBottomToTop(sysDiagram);
 
-        // lays out the bond graphs
+        // Step 2: Unsimplified Graph Layout
+        // Orthogonal grid embedding preserving symmetric diamond topology for parallel loops.
+        BondGraphEmbedder unsimplifiedEmbedder = new(bondGraph, orientation, flowLeftToRight, flowBottomToTop);
         while (!unsimplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
@@ -831,8 +841,9 @@
         var unsimplified = unsimplifiedEmbedder.getBondGraph();
         generateProgress = 50.0;
 
-        BondGraphEmbedder simplifiedEmbedder = new(item2);
-
+        // Step 3: Simplified Graph Layout
+        // Solves canonical coordinates with compact bond lengths and orthogonal multi-leaf collision avoidance.
+        BondGraphEmbedder simplifiedEmbedder = new(item2, orientation, flowLeftToRight, flowBottomToTop);
         while (!simplifiedEmbedder.isOptimized()) {
             base.StateHasChanged();
             await Task.Delay(1);
@@ -841,18 +852,15 @@
         var simplified = simplifiedEmbedder.getBondGraph();
         generateProgress = 75.0;
 
+        // Step 4: Causal Bond Graph Derivation & Coordinate Inheritance
+        // Directly inherits the (X, Y) coordinates already solved for the simplified graph to prevent
+        // independent force-directed drift or diagonal starbursting, while overlaying causal strokes orthogonally.
         causalOptions.Clear();
         foreach (BondGraph g in causal) {
             BondGraph.BondGraphWrapper wrapper = new(g);
             wrapper.AssignBondLabels();
-            BondGraphEmbedder causalEmbedder = new(g);
-
-            while (!causalEmbedder.isOptimized()) {
-                base.StateHasChanged();
-                await Task.Delay(1);
-                causalEmbedder.embedBondGraph();
-            }
-            causalOptions.Add(causalEmbedder.getBondGraph().convertToJson());
+            BondGraphEmbedder.InheritLayout(g, simplified, orientation, flowLeftToRight, flowBottomToTop);
+            causalOptions.Add(g.convertToJson());
         }
         generateProgress = 100.0;
 
