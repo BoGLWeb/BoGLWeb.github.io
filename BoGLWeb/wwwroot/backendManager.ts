@@ -1096,6 +1096,10 @@ export namespace backendManager {
             DotNet.invokeMethodAsync("BoGLWeb", "SetScale", this.getGraphByIndex(key).prevScale);
         }
 
+        public setSketchBordersVisible(visible: boolean) {
+            window.sketchDiagram.setSketchBordersVisible(visible);
+        }
+
         public setSketchBondGraphType(graphType: string) {
             window.sketchDiagram.sketchBondGraphType = graphType;
             window.sketchDiagram.updateGraph();

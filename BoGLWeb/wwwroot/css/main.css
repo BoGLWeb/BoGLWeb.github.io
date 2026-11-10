@@ -103,8 +103,11 @@ p {
 }
 
 .outline.sketchOutline {
+    fill: none;
+}
+
+.hideSketchBorders .outline.sketchOutline {
     stroke: none !important;
-    fill: none !important;
 }
 
 .selectable {
@@ -523,7 +526,7 @@ text {
     width: 100%
 }
 
-g.selected > g > g > .outline:not(.sketchOutline), path.link.selected, path.link.selected:hover, path.sketchBondTick.selected {
+g.selected > g > g > .outline, path.link.selected, path.link.selected:hover, path.sketchBondTick.selected {
     stroke: #0652ff
 }
 

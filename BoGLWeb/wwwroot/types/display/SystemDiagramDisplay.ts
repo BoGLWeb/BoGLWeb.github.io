@@ -13,6 +13,11 @@ import { backendManager } from "../../backendManager";
 export class SystemDiagramDisplay extends BaseGraphDisplay {
     private dismissBondMenu: () => void;
 
+    setSketchBordersVisible(visible: boolean) {
+        // Keep the preference on the canvas so it survives graph redraws and loads.
+        this.svg.classed("hideSketchBorders", !visible);
+    }
+
     closeBondMenu() {
         if (this.dismissBondMenu) this.dismissBondMenu();
     }
@@ -21,6 +26,9 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         this.closeBondMenu();
         super.updateGraph(dragmove);
     }
+
+    // Increase this to zoom sketch artwork inside its fixed border (for example, 1.5).
+    sketchImageScale: number = 2;
 
     // velocity constants
     velocityOffsets = [[-15, -37], [-5, -37], [30, -5], [30, 7], [18, 40], [3, 40], [-30, 10], [-30, 0]];
@@ -81,7 +89,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         let y = coordinates[1];
         let theta = (Math.atan2(x, y) + (3 * Math.PI / 2)) % (2 * Math.PI);
         let fourth = 1 / 4 * Math.PI;
-        let s = ElementNamespace.elementTypes[e.type].isSketch ? 45 : 30;
+        let s = 30;
         let coords = [];
         // handles quads 1, 2, 3, and 4
         if ((theta >= 0 && theta < fourth) || (theta >= 7 * fourth && theta < 8 * fourth)) {
@@ -140,10 +148,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         // creates the invisible outer boundary that shows the edge indicator when hovered over
         let edgeHover = group.append("rect");
-        edgeHover.attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
-            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "100px" : "80px")
-            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
-            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-50px" : "-40px")
+        edgeHover.attr("width", "80px")
+            .attr("height", "80px")
+            .attr("x", "-40px")
+            .attr("y", "-40px")
             .style("pointer-events", "all")
             .classed("edgeHover", true)
             .on("mousemove", function (e) {
@@ -176,7 +184,14 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             .attr("y", "-30px");
 
         // adds the image representing the element
-        let image = hoverBox.append("image");
+        // A fixed viewport crops enlarged artwork without changing the outline.
+        const imageViewport = hoverBox.append("svg")
+            .attr("x", -25)
+            .attr("y", -25)
+            .attr("width", 50)
+            .attr("height", 50)
+            .style("overflow", "hidden");
+        let image = imageViewport.append("image");
         image.attr("href", function (d) {
             if(!ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch) {
                 return "/images/elements/" + ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].image + ".svg";
@@ -185,11 +200,11 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
         })
             .classed("hoverImg", true)
-            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
-            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "-40px" : "-25px")
+            .attr("x", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? 25 * (1 - graph.sketchImageScale) : 0)
+            .attr("y", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? 25 * (1 - graph.sketchImageScale) : 0)
             .attr("preserveAspectRatio", "xMidYMid meet")
-            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px")
-            .attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? "80px" : "50px");
+            .attr("height", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? 50 * graph.sketchImageScale : 50)
+            .attr("width", d => ElementNamespace.elementTypes[(<SystemDiagramElement>d).type].isSketch ? 50 * graph.sketchImageScale : 50);
 
         // adds an asterisk that is visible when the element has a modifier applied
         let asterisk = newElements.append("text");
@@ -235,10 +250,10 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             }
         });
 
-        // Keep the number upright and clickable at the bottom-right of sketch images.
+        // Keep the editable number inside the bottom-right corner of the border.
         newElements.filter(d => ElementNamespace.elementTypes[(d as SystemDiagramElement).type].isSketch)
             .append("text")
-            .attr("x", 40).attr("y", 48)
+            .attr("x", 23).attr("y", 10)
             .attr("text-anchor", "end")
             .style("font-size", "14px").style("fill", "black")
             .style("stroke", "white").style("stroke-width", "3px")

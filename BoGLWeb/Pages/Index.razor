@@ -401,6 +401,9 @@
                                             <Radio Value="@("simplified")">Simplified</Radio>
                                             <Radio Value="@("causal")">Causal</Radio>
                                         </RadioGroup>
+                                        <div style="margin-top: 12px">
+                                            <Checkbox Checked="@showSketchBorders" OnChange="ChangeSketchBorders">Show element borders</Checkbox>
+                                        </div>
                                     </div>
                                 </Panel>
                             </ChildContent>
@@ -507,6 +510,7 @@
     static bool showEquations = false;
     string[] stateEquationsStored = new string[] { };
     string selectedSketchBondGraphType = "unsimplified";
+    bool showSketchBorders = true;
 
     public Index() {
         app = this;
@@ -898,6 +902,12 @@
         }
     }
     
+    private async Task ChangeSketchBorders(bool visible) {
+        showSketchBorders = visible;
+        var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+        await module.InvokeVoidAsync("setSketchBordersVisible", visible);
+    }
+
     private async void ChangeSketchBondGraphType(string graphType) {
         selectedSketchBondGraphType = graphType;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
