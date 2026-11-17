@@ -387,7 +387,7 @@ namespace BoGLWeb {
             /// </summary>
             /// <returns>A single character from the label that designates the 
             /// type of <c>Element</c>.</returns>
-            public char ++++++GetTypeChar() {
+            public char GetTypeChar() {
                 return this.label[0] == 'S' ? this.label[1] : this.label[0];
             }
 
