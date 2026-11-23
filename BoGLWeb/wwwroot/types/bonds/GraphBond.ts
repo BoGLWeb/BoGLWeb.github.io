@@ -7,7 +7,7 @@ export class GraphBond {
     velocity: number; // set to 0 for bond graph bonds
     causalStrokeDirection: boolean; // true if stroke is at source, false if at target
 
-    constructor(source: GraphElement, target: GraphElement, velocity = 0, causalStrokeDirection: boolean = true) {
+    constructor(source: GraphElement, target: GraphElement, velocity = 0, causalStrokeDirection: boolean = true, public sketchLabels?: Partial<Record<"effort" | "flow", { label: string; subscript: string }>>) {
         this.source = source;
         this.target = target;
         this.velocity = velocity;
@@ -15,6 +15,6 @@ export class GraphBond {
     }
 
     copy(source: GraphElement, target: GraphElement) {
-        return new GraphBond(source, target, this.velocity, this.causalStrokeDirection);
+        return new GraphBond(source, target, this.velocity, this.causalStrokeDirection, { ...this.sketchLabels });
     }
 }

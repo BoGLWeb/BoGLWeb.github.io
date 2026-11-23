@@ -1070,3 +1070,6 @@ input[type="file"] {
     outline: 2px solid #1890ff;
     outline-offset: -2px;
 }
+
+.sketchBondMenu form, .sketchBondMenu label { display: grid; gap: 4px; }
+.sketchBondMenu form { gap: 8px; }
