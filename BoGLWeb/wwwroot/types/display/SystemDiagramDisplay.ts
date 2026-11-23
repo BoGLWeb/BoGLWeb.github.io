@@ -356,6 +356,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
     pathExtraRendering(paths: BGBondSelection, pathGroup: BGBondSelection) {
         let graph = this;
 
+        this.svgG.selectAll(".sketchBondLabel").remove();
         paths.classed("hoverablePath", true);
         const keepContextSelection = () => {
             if (d3.event.button === 2 && graph === window.sketchDiagram && graph.sketchBondGraphType === "causal") {
@@ -367,6 +368,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
 
         if (this === window.sketchDiagram && this.sketchBondGraphType !== "unsimplified") {
             paths.each(function (bond: GraphBond) {
+                if (graph.sketchBondGraphType === "causal") graph.drawBondLabels(d3.select(this.parentNode), bond);
                 graph.drawSketchBondTick.call(graph, d3.select(this.parentNode), bond);
                 d3.select(this.parentNode).selectAll(".sketchBondTick")
                     .style("pointer-events", graph.sketchBondGraphType === "causal" ? "stroke" : "none")
@@ -552,8 +554,44 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         super.pathMouseDown(bond);
     }
 
+    private drawBondLabels(parent: BGBondSelection, bond: GraphBond) {
+        const angle = Math.atan2(bond.target.y - bond.source.y, bond.target.x - bond.source.x);
+        for (const kind of ["effort", "flow"] as const) {
+            const side = kind === "effort" ? -1 : 1;
+            const nx = -Math.sin(angle) * side;
+            const ny = Math.cos(angle) * side;
+            const x = (bond.source.x + bond.target.x) / 2 + nx * 18;
+            const y = (bond.source.y + bond.target.y) / 2 + ny * 18;
+            const group = parent.append("g").classed("sketchBondLabel", true)
+                .attr("transform", `translate(${x},${y})`).style("cursor", "pointer")
+                .style("pointer-events", "all")
+                .on("mousedown", () => d3.event.stopPropagation())
+                .on("mouseup", () => d3.event.stopPropagation())
+                .on("click", () => {
+                    d3.event.stopPropagation();
+                    this.openBondMenu(bond, kind);
+                });
+            group.append("title").text("Edit " + kind + " label");
+            const value = bond.sketchLabels?.[kind];
+            if (value) {
+                const text = group.append("text").attr("y", 4)
+                    .attr("text-anchor", Math.abs(nx) < 0.35 ? "middle" : nx > 0 ? "start" : "end")
+                    .style("fill", this.selectedBonds.includes(bond) ? "rgb(6, 82, 255)" : "#333");
+                text.append("tspan").classed("bondGraphText", true).text(value.label);
+                text.append("tspan").style("font-size", "10px").style("baseline-shift", "sub").text(value.subscript);
+            } else {
+                group.append("rect").attr("x", -12).attr("y", -7).attr("width", 24).attr("height", 14)
+                    .style("fill", "transparent").style("stroke", "#777").style("stroke-dasharray", "3 2");
+            }
+        }
+    }
+
     // Opens editing actions for causal sketch bonds without changing selection.
     pathContextMenu(bond: GraphBond) {
+        this.openBondMenu(bond);
+    }
+
+    private openBondMenu(bond: GraphBond, kind?: "effort" | "flow") {
         this.closeBondMenu();
         if (this !== window.sketchDiagram || this.sketchBondGraphType !== "causal") return;
         const event = d3.event as MouseEvent;
@@ -595,8 +633,39 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
             });
             menu.appendChild(button);
         };
-        addAction("Switch causal tick side", false);
-        addAction("Reverse arrow", true);
+        if (kind) {
+            const form = document.createElement("form");
+            const input = (caption: string, value: string) => {
+                const label = document.createElement("label");
+                label.textContent = caption;
+                const field = document.createElement("input");
+                field.value = value;
+                label.appendChild(field);
+                form.appendChild(label);
+                return field;
+            };
+            const value = bond.sketchLabels?.[kind];
+            const label = input(kind === "effort" ? "Effort label" : "Flow label", value?.label ?? "");
+            const subscript = input("Subscript", value?.subscript ?? "");
+            const save = document.createElement("button");
+            save.textContent = "Save";
+            form.appendChild(save);
+            form.onkeydown = e => e.stopPropagation();
+            form.onsubmit = e => {
+                e.preventDefault();
+                const before = this.sketchBondState(bond);
+                bond.sketchLabels = { ...bond.sketchLabels };
+                if (label.value.trim()) bond.sketchLabels[kind] = { label: label.value.trim(), subscript: subscript.value.trim() };
+                else delete bond.sketchLabels[kind];
+                const after = this.sketchBondState(bond);
+                if (after !== before) DotNet.invokeMethodAsync("BoGLWeb", "URChangeSketchBond", before, after);
+                this.updateGraph();
+            };
+            menu.appendChild(form);
+        } else {
+            addAction("Switch causal tick side", false);
+            addAction("Reverse arrow", true);
+        }
         document.body.appendChild(menu);
         const bounds = menu.getBoundingClientRect();
         menu.style.left = Math.max(0, Math.min(event.clientX, window.innerWidth - bounds.width)) + "px";
@@ -605,16 +674,16 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         document.addEventListener("keydown", keyboard, true);
         window.addEventListener("scroll", close, true);
         window.addEventListener("resize", close);
-        (menu.firstElementChild as HTMLButtonElement).focus({ preventScroll: true });
+        (menu.querySelector("input, button") as HTMLElement).focus({ preventScroll: true });
     }
 
     private sketchBondState(bond: GraphBond): string {
         return JSON.stringify({ source: bond.source.id, target: bond.target.id,
-            causalStrokeDirection: bond.causalStrokeDirection ?? true });
+            causalStrokeDirection: bond.causalStrokeDirection ?? true, sketchLabels: bond.sketchLabels });
     }
 
     restoreSketchBond(state: string) {
-        const saved = JSON.parse(state) as { source: number; target: number; causalStrokeDirection: boolean };
+        const saved = JSON.parse(state) as { source: number; target: number; causalStrokeDirection: boolean; sketchLabels?: GraphBond["sketchLabels"] };
         const bond = this.bonds.find(b =>
             (b.source.id === saved.source && b.target.id === saved.target) ||
             (b.source.id === saved.target && b.target.id === saved.source));
@@ -623,6 +692,7 @@ export class SystemDiagramDisplay extends BaseGraphDisplay {
         if (bond && source && target) {
             bond.source = source;
             bond.target = target;
+            bond.sketchLabels = saved.sketchLabels;
             bond.causalStrokeDirection = saved.causalStrokeDirection;
             this.updateGraph();
         }

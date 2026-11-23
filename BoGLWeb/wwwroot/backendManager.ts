@@ -288,7 +288,7 @@ export namespace backendManager {
                 if (json.hasOwnProperty("id")) {
                     elements.push(new SystemDiagramElement(json.id, json.type, json.x, json.y, json.velocity, json.modifiers, json.sketchNumber));
                 } else {
-                    bonds.push(new GraphBond(json.source, json.target, json.velocity, json.causalStrokeDirection ?? true));
+                    bonds.push(new GraphBond(json.source, json.target, json.velocity, json.causalStrokeDirection ?? true, json.sketchLabels));
                 }
             }
             return [elements, bonds];
@@ -584,7 +584,7 @@ export namespace backendManager {
             let elements = this.centerElements(parsedJson.elements, false);
 
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true);
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true, edge.sketchLabels);
                 edges.push(bond);
             }
 
@@ -609,7 +609,7 @@ export namespace backendManager {
             let elements = this.centerElements(parsedJson.elements, false);
 
             for (let edge of parsedJson.edges) {
-                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true);
+                let bond = new GraphBond(elements.get(edge.source), elements.get(edge.target), edge.velocity ?? 0, edge.causalStrokeDirection ?? true, edge.sketchLabels);
                 edges.push(bond);
             }
 
