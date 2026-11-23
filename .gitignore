@@ -377,3 +377,5 @@ BoGLWeb/obj/Debug/net6.0/BoGLWeb.GeneratedMSBuildEditorConfig.editorconfig
 BoGLWeb/obj/*
 BoGLWeb/.idea/*
 *.cache
+
+*.idea/*
