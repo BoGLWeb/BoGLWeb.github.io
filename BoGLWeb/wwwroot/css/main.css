@@ -234,6 +234,19 @@ h2 {
     width: 100%
 }
 
+.elementHolder:empty::after {
+    content: "Loading elements...";
+    color: #8c8c8c;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.elemFallback {
+    font-size: 10px;
+    text-align: center;
+    display: block;
+}
+
 .groupDiv {
     cursor: grab;
     height: fit-content;
