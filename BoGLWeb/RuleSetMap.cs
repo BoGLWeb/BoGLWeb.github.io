@@ -1,4 +1,4 @@
-﻿using GraphSynth.Representation;
+using GraphSynth.Representation;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using BoGLWeb.BaseClasses;
@@ -53,6 +53,27 @@ namespace BoGLWeb {
             }
         }
 
+        private static string? TryGetLocalRulePath(string filename) {
+            string[] candidateDirs = new[] {
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "Rules"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "wwwroot", "Rules"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "BoGLWeb", "wwwroot", "Rules"),
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Rules"),
+                Path.Combine(Directory.GetCurrentDirectory(), "BoGLWeb", "wwwroot", "Rules")
+            };
+            foreach (string dir in candidateDirs) {
+                try {
+                    string full = Path.GetFullPath(Path.Combine(dir, filename));
+                    if (File.Exists(full)) {
+                        return full;
+                    }
+                } catch {
+                    // Ignore path errors and try next
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Loads the ruleset with a given name
         /// </summary>
@@ -65,17 +86,19 @@ namespace BoGLWeb {
                 return;
             }
 
-            //Setup HTTP client that we will use to load the file
-            HttpClient client = new HttpClient();
-
-            //Load the file as plain text from GitHub
-            HttpResponseMessage ruleSetResponse =
-                await client.GetAsync("https://boglweb.github.io/rules-and-examples/Rules/" + name + ".rsxml");
             XmlSerializer ruleDeserializer = new(typeof(ruleSet));
-            Stream ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
-
-            //Deserialize the ruleset
-            this.ruleSetMap.Add(name, (ruleSet) ruleDeserializer.Deserialize(ruleSetFileContent));
+            string? localRsxml = TryGetLocalRulePath(name + ".rsxml");
+            if (localRsxml != null) {
+                using Stream stream = File.OpenRead(localRsxml);
+                this.ruleSetMap.Add(name, (ruleSet) ruleDeserializer.Deserialize(stream)!);
+            } else {
+                //Setup HTTP client that we will use to load the file
+                HttpClient client = new HttpClient();
+                HttpResponseMessage ruleSetResponse =
+                    await client.GetAsync("https://boglweb.github.io/rules-and-examples/Rules/" + name + ".rsxml");
+                Stream ruleSetFileContent = await ruleSetResponse.Content.ReadAsStreamAsync();
+                this.ruleSetMap.Add(name, (ruleSet) ruleDeserializer.Deserialize(ruleSetFileContent)!);
+            }
 
             //Load rules for the ruleset
             List<string> ruleFileNames = this.ruleSetMap[name].ruleFileNames;
@@ -84,12 +107,18 @@ namespace BoGLWeb {
             List<grammarRule> rules = new();
             this.numLoaded = 0;
             while (this.numLoaded < ruleFileNames.Count) {
-                string rulePath = "/Rules/" + ruleFileNames[this.numLoaded];
-
-                //Get the rule files from GitHub 
-                HttpResponseMessage ruleResponse =
-                    await client.GetAsync("https://boglweb.github.io/rules-and-examples/" + rulePath);
-                string ruleText = await ruleResponse.Content.ReadAsStringAsync();
+                string ruleFileName = ruleFileNames[this.numLoaded];
+                string rulePath = "/Rules/" + ruleFileName;
+                string? localRule = TryGetLocalRulePath(ruleFileName);
+                string ruleText;
+                if (localRule != null) {
+                    ruleText = File.ReadAllText(localRule);
+                } else {
+                    HttpClient client = new HttpClient();
+                    HttpResponseMessage ruleResponse =
+                        await client.GetAsync("https://boglweb.github.io/rules-and-examples/" + rulePath);
+                    ruleText = await ruleResponse.Content.ReadAsStringAsync();
+                }
 
                 XElement xeRule = XElement.Parse(ruleText);
                 XElement? temp = xeRule.Element("{ignorableUri}" + "grammarRule");

@@ -1,4 +1,4 @@
-﻿import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
+import { BGBondSelection, GraphElementSelection, SVGSelection } from "../../type_libraries/d3-selection";
 import { BondGraphBond } from "../bonds/BondGraphBond";
 import { GraphBond } from "../bonds/GraphBond";
 import { BondGraphElement } from "../elements/BondGraphElement";
@@ -12,7 +12,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
     testSVG: SVGSelection;
     defs: SVGSelection;
     id: number;
-    buffer: number = 15;
+    buffer: number = 14;
 
     constructor(id: number, svg: SVGSelection, bondGraph: BondGraph) {
         super(svg, bondGraph);
@@ -56,16 +56,24 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         arrowAndFlat.append("path")
             .attr("d", "M10,5L10,15");
 
+        // ===================================================================================================
+        // STEP 5: SVG / CANVAS RENDERING & TYPOGRAPHIC NORMALIZATION
+        // Decouple font sizing and enforce uniform typography hierarchy:
+        // - Primary Element / Junction Labels: 13px bold (#0f172a), subscripts 9.5px
+        // - Secondary Effort / Flow Variable Labels: 11px medium (#1e293b), subscripts 8.5px
+        // ===================================================================================================
+
         // for each element in the bond graph, measure the size of its text
         this.elements.forEach((d: BondGraphElement) => {
             let testText = this.testSVG.append("text");
             testText.attr("text-anchor", "middle")
-                .classed("bondGraphText", true);
+                .classed("bondGraphElementText", true);
             testText.append("tspan")
                 .text(d.label);
             testText.append("tspan")
                 .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
-                .style('font-size', '10px')
+                .classed("bondGraphElementSubscript", true)
+                .style('font-size', '9.5px')
                 .style('baseline-shift', 'sub');
 
             let bb = testText.node().getBBox();
@@ -76,12 +84,13 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         this.bonds.forEach((b: BondGraphBond) => {
             let testText = this.testSVG.append("text");
             testText.attr("text-anchor", "middle")
-                .classed("bondGraphText", true);
+                .classed("bondGraphVariableText", true);
             let l1 = testText.append("tspan")
                 .text(b.effortLabel);
             let l2 = testText.append("tspan")
                 .text(b.id)
-                .style('font-size', '10px')
+                .classed("bondGraphVariableSubscript", true)
+                .style('font-size', '8.5px')
                 .style('baseline-shift', 'sub');
 
             let bb = testText.node().getBBox();
@@ -160,12 +169,13 @@ export class BondGraphDisplay extends BaseGraphDisplay {
         // elements consist of a text label with a subscripted ID number (if label is not 0 or 1, which have no ID subscript)
         let text = newElements.append("text");
         text.attr("text-anchor", "middle")
-            .classed("bondGraphText", true);
+            .classed("bondGraphElementText", true);
         text.append("tspan")
             .text((d: BondGraphElement) => d.label);
         text.append("tspan")
             .text((d: BondGraphElement) => ["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
-            .style('font-size', '10px')
+            .classed("bondGraphElementSubscript", true)
+            .style('font-size', '9.5px')
             .style('baseline-shift', 'sub');
     }
 
@@ -232,7 +242,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label1.append("tspan")
                 .text((d: BondGraphBond) => this.isEffortLabel(d, true) ? d.effortLabel : d.flowLabel)
-                .classed("bondGraphText", true);
+                .classed("bondGraphVariableText", true);
             label1.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => {
@@ -275,7 +285,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                         }
                     }
                 })
-                .style('font-size', '10px')
+                .classed("bondGraphVariableSubscript", true)
+                .style('font-size', '8.5px')
                 .style('baseline-shift', 'sub');
             // looking at the bond from source to target, label1 is the rightmost one
             let label2 = pathGroup.append("text")
@@ -289,7 +300,7 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                 .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
             label2.append("tspan")
                 .text((d: BondGraphBond) => this.isEffortLabel(d, false) ? d.effortLabel : d.flowLabel)
-                .classed("bondGraphText", true);
+                .classed("bondGraphVariableText", true);
             label2.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => {
@@ -329,7 +340,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
                         }
                     }
                 })
-                .style('font-size', '10px')
+                .classed("bondGraphVariableSubscript", true)
+                .style('font-size', '8.5px')
                 .style('baseline-shift', 'sub');
         }
     }

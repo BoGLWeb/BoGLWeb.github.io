@@ -199,6 +199,10 @@ export namespace backendManager {
                     : new SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers))
             }
             
+            if (bondGraph) {
+                return elements;
+            }
+            
             let normal_ElementSize: number = 64;
             let BG_ElementSize: number = 40;
             let elementLocations:number[][] = [];
@@ -428,9 +432,23 @@ export namespace backendManager {
             svg.style("background-color", "white");
             svg.select("circle")
                 .style("display", "none");
-            svg.selectAll(".bondGraphText")
-                .style("font-size", "14px")
-                .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
+            // Typography Normalization (SVG Export):
+            // Inlines font styles so exported SVG images retain identical typographic hierarchy
+            // outside the browser without depending on external stylesheets.
+            svg.selectAll(".bondGraphElementText, .bondGraphText")
+                .style("font-size", "13px")
+                .style("font-family", "'Segoe UI', Arial, sans-serif !important")
+                .style("font-weight", "600");
+            svg.selectAll(".bondGraphElementSubscript")
+                .style("font-size", "9.5px")
+                .style("baseline-shift", "sub");
+            svg.selectAll(".bondGraphVariableText")
+                .style("font-size", "11px")
+                .style("font-family", "'Segoe UI', Arial, sans-serif !important")
+                .style("font-weight", "500");
+            svg.selectAll(".bondGraphVariableSubscript")
+                .style("font-size", "8.5px")
+                .style("baseline-shift", "sub");
             oldSVG.select(".dragline").remove();
             if (graph.bonds.length == 0) {
                 oldSVG.select("#bondGroup").remove();
@@ -576,6 +594,7 @@ export namespace backendManager {
         }
 
         // zooms and centers a particular graph by finding the center of the current display and centering the graph there
+        // Typography Normalization: Clamps scale to [0.60, 1.25] to decouple text legibility from extreme bounding box scaling
         // scales the graph to 80% of the screen height or width, whichever is smaller, so that the graph has a margin of empty space around it
         public zoomCenterGraph(index: string) {
             let graph = this.getGraphByIndex(index);
@@ -590,7 +609,7 @@ export namespace backendManager {
             } else {
                 scale = (0.8 * windowDim.height) / svgDim.height;
             }
-            scale = Math.min(Math.max(scale, 0.25), 1.75);
+            scale = Math.min(Math.max(scale, 0.60), 1.25);
             let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
             let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
             graph.changeScale(xTrans, yTrans, scale);

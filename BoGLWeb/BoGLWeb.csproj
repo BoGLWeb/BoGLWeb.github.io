@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,6 +14,11 @@
 
 	<PropertyGroup>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<NodePath Condition="'$(NodePath)' == '' AND Exists('C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\9.0.22\tools\bin\node.exe')">C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\9.0.22\tools\bin</NodePath>
+		<NodePath Condition="'$(NodePath)' == '' AND Exists('C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.12.Node.win-x64\7.0.20\tools\bin\node.exe')">C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.12.Node.win-x64\7.0.20\tools\bin</NodePath>
+		<NodePath Condition="'$(NodePath)' == '' AND Exists('C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.2.0.23.Node.win-x64\6.0.36\tools\bin\node.exe')">C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.2.0.23.Node.win-x64\6.0.36\tools\bin</NodePath>
+		<NodePath Condition="'$(NodePath)' == '' AND Exists('C:\Program Files\nodejs\node.exe')">C:\Program Files\nodejs</NodePath>
+		<CompileTypeScriptBeforeTargets>$(CompileTypeScriptBeforeTargets);ResolveStaticWebAssetsInputs;BeforeBuild;AssignTargetPaths</CompileTypeScriptBeforeTargets>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -842,6 +848,7 @@
 
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -881,6 +888,10 @@
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ConfigFiles Include="wwwroot\tsconfig.json" />
 	</ItemGroup>
 
 </Project>
