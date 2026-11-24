@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>BoGL Web</title>
+    <base href="/" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    <link href="_content/AntDesign/css/ant-design-blazor.css" rel="stylesheet" />
+    <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
+    <script src="https://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/intro.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/introjs.css">
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="require.js"></script>
+    <script src="build/build.js"></script>
+    <script>require(["main"]);</script>
+</head>
+
+<body>
+    <!-- Loading screen for the application -->
+    <div id="app">
+        <div id="loadingWrapper">
+            <div id="loadingImageWrapper">
+                <img class="bouncingLogo" src="bouncingLogo.png" />
+                <div class="bouncingLogo gearContainer">
+                    <img id="bouncingGear" src="gear.png" />
+                </div>
+            </div>
+            <div id="loadingText">Loading...</div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    <!-- screen-size modal -->
+    <div id="resolution-warning-modal" class="resolution-modal hidden">
+        <div class="resolution-modal-content">
+            <div class="resolution-modal-header">
+                <div class="resolution-modal-title"> 
+                Warning : Resize Window
+                </div>
+                <span class="resolution-modal-close">&times;</span>
+            </div>
+            <div class="resolution-modal-body"> 
+                <p>Your window size is sub-optimal for this application. Please resize for best experience.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

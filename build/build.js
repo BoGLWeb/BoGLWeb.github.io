@@ -2625,26 +2625,40 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
         }
     }
     function populateElementMenu() {
-        ElementNamespace_3.ElementNamespace.categories.map((c, i) => {
-            ElementNamespace_3.ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
-                const group = document.createElement('div');
-                group.classList.add("groupDiv");
-                group.addEventListener("mousedown", function () {
-                    document.body.style.cursor = "grabbing";
-                    window.systemDiagram.draggingElement = e.id;
+        try {
+            ElementNamespace_3.ElementNamespace.categories.forEach((c, i) => {
+                const container = document.getElementById(c.folderName);
+                if (!container) {
+                    console.warn(`Category container not found in DOM: ${c.folderName}`);
+                    return;
+                }
+                container.innerHTML = "";
+                ElementNamespace_3.ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
+                    const group = document.createElement('div');
+                    group.classList.add("groupDiv");
+                    group.addEventListener("mousedown", function () {
+                        document.body.style.cursor = "grabbing";
+                        window.systemDiagram.draggingElement = e.id;
+                    });
+                    var box = document.createElement('div');
+                    box.classList.add("box");
+                    group.appendChild(box);
+                    var image = document.createElement('img');
+                    image.src = "images/elements/" + e.image + ".svg";
+                    image.draggable = false;
+                    image.classList.add("elemImage");
+                    image.title = e.name;
+                    image.onerror = () => {
+                        box.innerHTML = `<span class="elemFallback">${e.name}</span>`;
+                    };
+                    box.appendChild(image);
+                    container.appendChild(group);
                 });
-                document.getElementById(c.folderName).appendChild(group);
-                var box = document.createElement('div');
-                box.classList.add("box");
-                group.appendChild(box);
-                var image = document.createElement('img');
-                image.src = "images/elements/" + e.image + ".svg";
-                image.draggable = false;
-                image.classList.add("elemImage");
-                image.title = e.name;
-                box.appendChild(image);
             });
-        });
+        }
+        catch (err) {
+            console.error("Failed to populate element menu:", err);
+        }
     }
     function loadPage() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -2740,8 +2754,9 @@ define("main", ["require", "exports", "types/elements/ElementNamespace", "types/
         });
     }
     function pollDOM() {
-        const el = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
-        if (el) {
+        const hasMenus = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
+        const hasCategoryContainers = ElementNamespace_3.ElementNamespace.categories.every(c => document.getElementById(c.folderName) !== null);
+        if (hasMenus && hasCategoryContainers) {
             loadPage();
         }
         else {
