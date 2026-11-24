@@ -9,7 +9,7 @@
       "url": "bouncingLogo.png"
     },
     {
-      "hash": "sha256-uD3sE04Diwt7Dn43EXaD8eAsuPGIMAXG9odti3qhm18=",
+      "hash": "sha256-u8BJlMaDSaEH+JxUPbT55S09aFFuO\/+O9VGkOzREFK4=",
       "url": "css\/main.css"
     },
     {
@@ -3409,7 +3409,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-tdLXY1C4CZMWzAisTTN3CIY6L8WgiKl4sAsShI2JvPA=",
+      "hash": "sha256-CVpapG8da0F1T7AXMsUdULp7l4NzCqsMHAJu6DILRHE=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -3417,7 +3417,7 @@
       "url": "_framework\/AntDesign.dll"
     },
     {
-      "hash": "sha256-JJg7Q3Rvh7uF79VCHH1edX3L2QbTkhixOmFKVZGYY3c=",
+      "hash": "sha256-rZ4y1Pcdiicli7O5F3TWTjloYH3nHF6qJP4lOOeD8Ms=",
       "url": "_framework\/BoGLWeb.dll"
     },
     {
@@ -3729,7 +3729,7 @@
       "url": "_framework\/System.IO.MemoryMappedFiles.dll"
     },
     {
-      "hash": "sha256-yDhpDUsaYa7f8s3LcCL1bgGX2MI4diZJh0VWqhHkrwI=",
+      "hash": "sha256-DL9eaD0rH3PBxGnQyZK8yTMmsLMPcv1f9ywcym9+o40=",
       "url": "_framework\/System.Linq.dll"
     },
     {
@@ -3813,7 +3813,7 @@
       "url": "_framework\/System.Runtime.CompilerServices.Unsafe.dll"
     },
     {
-      "hash": "sha256-GhJcA0BT3euguUBRwt8JK95pfDKY0cVh6JdmlT48Ico=",
+      "hash": "sha256-tpOpBUNDMlMS3M1NDMdndaJdNAvfWQ1enZA7iTHgr4A=",
       "url": "_framework\/System.Runtime.dll"
     },
     {
@@ -5637,5 +5637,5 @@
       "url": "_content\/AntDesign\/less\/upload\/style\/rtl.less"
     }
   ],
-  "version": "DKEw05PI"
+  "version": "kfxmoKR0"
 };

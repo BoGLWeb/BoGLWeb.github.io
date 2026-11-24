@@ -1330,7 +1330,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
         constructor(id, svg, bondGraph) {
             super(svg, bondGraph);
             this.dragging = false;
-            this.buffer = 15;
+            this.buffer = 14;
             this.id = id;
             this.testSVG = d3.select("#app").append("svg");
             this.testSVG.style("position", "absolute")
@@ -1362,12 +1362,13 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             this.elements.forEach((d) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
-                    .classed("bondGraphText", true);
+                    .classed("bondGraphElementText", true);
                 testText.append("tspan")
                     .text(d.label);
                 testText.append("tspan")
                     .text(["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
-                    .style('font-size', '10px')
+                    .classed("bondGraphElementSubscript", true)
+                    .style('font-size', '9.5px')
                     .style('baseline-shift', 'sub');
                 let bb = testText.node().getBBox();
                 d.labelSize = { width: bb.width, height: bb.height };
@@ -1375,12 +1376,13 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
             this.bonds.forEach((b) => {
                 let testText = this.testSVG.append("text");
                 testText.attr("text-anchor", "middle")
-                    .classed("bondGraphText", true);
+                    .classed("bondGraphVariableText", true);
                 let l1 = testText.append("tspan")
                     .text(b.effortLabel);
                 let l2 = testText.append("tspan")
                     .text(b.id)
-                    .style('font-size', '10px')
+                    .classed("bondGraphVariableSubscript", true)
+                    .style('font-size', '8.5px')
                     .style('baseline-shift', 'sub');
                 let bb = testText.node().getBBox();
                 b.effortLabelAngle = (Math.PI / 2) - Math.acos(this.buffer / Math.sqrt(Math.pow(bb.width, 2) + Math.pow(bb.height, 2)));
@@ -1446,12 +1448,13 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                 .call(this.drag);
             let text = newElements.append("text");
             text.attr("text-anchor", "middle")
-                .classed("bondGraphText", true);
+                .classed("bondGraphElementText", true);
             text.append("tspan")
                 .text((d) => d.label);
             text.append("tspan")
                 .text((d) => ["0", "1"].indexOf(d.label) == -1 ? d.backendId : "")
-                .style('font-size', '10px')
+                .classed("bondGraphElementSubscript", true)
+                .style('font-size', '9.5px')
                 .style('baseline-shift', 'sub');
         }
         getAngle(d) {
@@ -1499,7 +1502,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
                 label1.append("tspan")
                     .text((d) => this.isEffortLabel(d, true) ? d.effortLabel : d.flowLabel)
-                    .classed("bondGraphText", true);
+                    .classed("bondGraphVariableText", true);
                 label1.append("tspan")
                     .attr("text-anchor", "middle")
                     .text((d) => {
@@ -1548,7 +1551,8 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                         }
                     }
                 })
-                    .style('font-size', '10px')
+                    .classed("bondGraphVariableSubscript", true)
+                    .style('font-size', '8.5px')
                     .style('baseline-shift', 'sub');
                 let label2 = pathGroup.append("text")
                     .attr("x", d => {
@@ -1561,7 +1565,7 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                     .style("fill", d => this.selectedBonds.includes(d) ? "rgb(6, 82, 255)" : "#333");
                 label2.append("tspan")
                     .text((d) => this.isEffortLabel(d, false) ? d.effortLabel : d.flowLabel)
-                    .classed("bondGraphText", true);
+                    .classed("bondGraphVariableText", true);
                 label2.append("tspan")
                     .attr("text-anchor", "middle")
                     .text((d) => {
@@ -1607,7 +1611,8 @@ define("types/display/BondGraphDisplay", ["require", "exports", "types/display/B
                         }
                     }
                 })
-                    .style('font-size', '10px')
+                    .classed("bondGraphVariableSubscript", true)
+                    .style('font-size', '8.5px')
                     .style('baseline-shift', 'sub');
             }
         }
@@ -1788,6 +1793,9 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                     let id = (_a = e.id) !== null && _a !== void 0 ? _a : i++;
                     elements.set(id, bondGraph ? new BondGraphElement_1.BondGraphElement(i, e.ID, e.label, e.x, e.y)
                         : new SystemDiagramElement_2.SystemDiagramElement(id, e.type, e.x, e.y, e.velocity, e.modifiers));
+                }
+                if (bondGraph) {
+                    return elements;
                 }
                 let normal_ElementSize = 64;
                 let BG_ElementSize = 40;
@@ -1982,9 +1990,20 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 svg.style("background-color", "white");
                 svg.select("circle")
                     .style("display", "none");
-                svg.selectAll(".bondGraphText")
-                    .style("font-size", "14px")
-                    .style("font-family", "'Segoe UI', 'SegoeUI', sanserif !important");
+                svg.selectAll(".bondGraphElementText, .bondGraphText")
+                    .style("font-size", "13px")
+                    .style("font-family", "'Segoe UI', Arial, sans-serif !important")
+                    .style("font-weight", "600");
+                svg.selectAll(".bondGraphElementSubscript")
+                    .style("font-size", "9.5px")
+                    .style("baseline-shift", "sub");
+                svg.selectAll(".bondGraphVariableText")
+                    .style("font-size", "11px")
+                    .style("font-family", "'Segoe UI', Arial, sans-serif !important")
+                    .style("font-weight", "500");
+                svg.selectAll(".bondGraphVariableSubscript")
+                    .style("font-size", "8.5px")
+                    .style("baseline-shift", "sub");
                 oldSVG.select(".dragline").remove();
                 if (graph.bonds.length == 0) {
                     oldSVG.select("#bondGroup").remove();
@@ -2119,7 +2138,7 @@ define("backendManager", ["require", "exports", "types/bonds/BondGraphBond", "ty
                 else {
                     scale = (0.8 * windowDim.height) / svgDim.height;
                 }
-                scale = Math.min(Math.max(scale, 0.25), 1.75);
+                scale = Math.min(Math.max(scale, 0.60), 1.25);
                 let xTrans = -svgDim.x * scale + (windowDim.width / 2) - (svgDim.width * scale / 2);
                 let yTrans = -svgDim.y * scale + (windowDim.height / 2) - (svgDim.height * scale / 2);
                 graph.changeScale(xTrans, yTrans, scale);
