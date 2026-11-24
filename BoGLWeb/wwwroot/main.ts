@@ -145,32 +145,46 @@ function clickSubmenus(menuId: number) {
 // populates the element menu with buttons representing each element
 function populateElementMenu() {
     // iterates through element categories and types to dynamically generate the element menu, making it easy to add new elements
-    ElementNamespace.categories.map((c, i) => {
-        ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
-            const group = document.createElement('div');
+    try {
+        ElementNamespace.categories.forEach((c, i) => {
+            const container = document.getElementById(c.folderName);
+            if (!container) {
+                console.warn(`Category container not found in DOM: ${c.folderName}`);
+                return;
+            }
+            container.innerHTML = ""; // Clear existing content / loading state
 
-            group.classList.add("groupDiv");
-            // if the element is dragged, store it in system diagram
-            group.addEventListener("mousedown", function () {
-                document.body.style.cursor = "grabbing";
-                window.systemDiagram.draggingElement = e.id;
+            ElementNamespace.elementTypes.filter(e => e.category === i).forEach(e => {
+                const group = document.createElement('div');
+
+                group.classList.add("groupDiv");
+                // if the element is dragged, store it in system diagram
+                group.addEventListener("mousedown", function () {
+                    document.body.style.cursor = "grabbing";
+                    window.systemDiagram.draggingElement = e.id;
+                });
+
+                // make HTML object for element with box and element image
+                var box = document.createElement('div');
+                box.classList.add("box");
+                group.appendChild(box);
+
+                var image = document.createElement('img');
+                image.src = "images/elements/" + e.image + ".svg";
+                image.draggable = false;
+                image.classList.add("elemImage");
+                image.title = e.name;
+                image.onerror = () => {
+                    box.innerHTML = `<span class="elemFallback">${e.name}</span>`;
+                };
+                box.appendChild(image);
+
+                container.appendChild(group);
             });
-
-            document.getElementById(c.folderName).appendChild(group);
-
-            // make HTML object for element with box and element image
-            var box = document.createElement('div');
-            box.classList.add("box");
-            group.appendChild(box);
-
-            var image = document.createElement('img');
-            image.src = "images/elements/" + e.image + ".svg";
-            image.draggable = false;
-            image.classList.add("elemImage");
-            image.title = e.name;
-            box.appendChild(image);
         });
-    });
+    } catch (err) {
+        console.error("Failed to populate element menu:", err);
+    }
 }
 
 // completes all actions that need to happen before the user interacts with the page
@@ -300,11 +314,12 @@ async function loadPage() {
     }
 }
 
-// poll the DOM until the graph menu and top menu have loaded, then call the load page function
+// poll the DOM until the graph menu, top menu, and element category panels have loaded, then call the load page function
 function pollDOM() {
-    const el = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
+    const hasMenus = document.getElementById('graphMenu') && document.getElementsByClassName('topMenu').length > 0;
+    const hasCategoryContainers = ElementNamespace.categories.every(c => document.getElementById(c.folderName) !== null);
 
-    if (el) {
+    if (hasMenus && hasCategoryContainers) {
         loadPage();
     } else {
         setTimeout(pollDOM, 20);

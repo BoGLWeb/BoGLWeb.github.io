@@ -8,6 +8,10 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TypeScriptConfigDir>wwwroot</TypeScriptConfigDir>
+  </PropertyGroup>
+
 	<PropertyGroup>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<NodePath Condition="'$(NodePath)' == '' AND Exists('C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\9.0.22\tools\bin\node.exe')">C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\9.0.22\tools\bin</NodePath>
