@@ -1,4 +1,4 @@
-﻿using NUnit.Framework.Constraints;
+using NUnit.Framework.Constraints;
 using System.ComponentModel;
 using System.Text;
 
@@ -164,11 +164,17 @@ namespace BoGLWeb {
                 char op = GetCharOperator(fop);
                 char[] chars = fn.ToCharArray();
                 bool proceed = true;
+                int parenDepth = 0;
                 for (int i = 0; i < chars.Length; i++) {
-                    if (chars[i] == op) {
+                    if (chars[i] == '(') {
+                        parenDepth++;
+                    } else if (chars[i] == ')') {
+                        parenDepth--;
+                    } else if (parenDepth == 0 && chars[i] == op) {
                         try {
                             SplitBinaryExpression(fn, i, fop, next);
                             proceed = false;
+                            break;
                         } catch (Exception) { }
                     }
                 }
@@ -1016,6 +1022,34 @@ namespace BoGLWeb {
             }               // is either a constant or a variable
 
             /// <summary>
+            /// Formats a variable or constant identifier into clean LaTeX with subscripts and Greek symbols.
+            /// </summary>
+            public static string FormatLatexIdentifier(string ident) {
+                if (string.IsNullOrEmpty(ident)) {
+                    return ident;
+                }
+                if (ident.All(char.IsDigit)) {
+                    return ident;
+                }
+                int split = ident.Length;
+                while (split > 0 && char.IsDigit(ident[split - 1])) {
+                    split--;
+                }
+                string baseName = ident[..split];
+                string digits = ident[split..];
+                string latexBase = baseName switch {
+                    "τ" => "\\tau",
+                    "ω" => "\\omega",
+                    "θ" => "\\theta",
+                    "ϕ" => "\\phi",
+                    "φ" => "\\phi",
+                    "κ" => "\\kappa",
+                    _ => baseName.Replace("τ", "\\tau").Replace("ω", "\\omega").Replace("θ", "\\theta").Replace("ϕ", "\\phi").Replace("κ", "\\kappa")
+                };
+                return digits.Length > 0 ? $"{latexBase}_{{{digits}}}" : latexBase;
+            }
+
+            /// <summary>
             /// Converts this <c>Expression</c> to a LaTeX string.
             /// </summary>
             /// <returns>This <c>Expression</c> as a <c>String</c> following
@@ -1024,16 +1058,35 @@ namespace BoGLWeb {
                 String fn = this.fn;
                 char op = fn[0];
                 switch ((FunctionOperator) op) {
-                    case FunctionOperator.ADDITION:
-                    case FunctionOperator.MULTIPLICATION:
+                    case FunctionOperator.ADDITION: {
                         StringBuilder builder = new();
-                        string opString = op + "", delimiter = "";
+                        string delimiter = "";
                         foreach (Expression child in this.children) {
-                            builder.Append(delimiter).Append(child.ToLatexString());
-                            delimiter = opString;
+                            string rendered = child.ToLatexString();
+                            if (delimiter == "+" && rendered.StartsWith("-")) {
+                                builder.Append(rendered);
+                            } else {
+                                builder.Append(delimiter).Append(rendered);
+                            }
+                            delimiter = "+";
                         }
                         fn = builder.ToString();
                         break;
+                    }
+                    case FunctionOperator.MULTIPLICATION: {
+                        StringBuilder builder = new();
+                        Expression? prev = null;
+                        foreach (Expression child in this.children) {
+                            string rendered = child.ToLatexString();
+                            if (prev != null) {
+                                builder.Append(prev.IsIntegerConstant() && child.IsIntegerConstant() ? " \\cdot " : " ");
+                            }
+                            builder.Append(rendered);
+                            prev = child;
+                        }
+                        fn = builder.ToString();
+                        break;
+                    }
                     case FunctionOperator.SUBTRACTION:
                         fn = "" + this.children[0].ToLatexString() + '-' + this.children[1].ToLatexString();
                         break;
@@ -1055,6 +1108,9 @@ namespace BoGLWeb {
                         break;
                     case FunctionOperator.NEGATION:
                         fn = "-" + this.children[0].ToLatexString();
+                        break;
+                    default:
+                        fn = FormatLatexIdentifier(fn);
                         break;
                 }
                 return fn;

@@ -1,4 +1,4 @@
-﻿import { GraphBond } from "./GraphBond";
+import { GraphBond } from "./GraphBond";
 import { GraphElement } from "../elements/GraphElement";
 
 // provides information to the UI about a bond in a bond graph
@@ -8,6 +8,8 @@ export class BondGraphBond extends GraphBond {
     hasDirection: boolean; // true if bond should show arrow (source to target), false if bond is bidirectional
     effortLabel: string; // effort label that follows the bond
     flowLabel: string; // flow label that follows the bond
+    effortSubscript: string;
+    flowSubscript: string;
     // Max angles the bond can be at from horozontal while attaching the center of the label to a point off the line
     // instead of attaching the end of the label to this point. This allows the label to look centered on the bond 
     // without allowing it to overap the bond. This is calculated for effort and flow labels on initializing a bond
@@ -19,7 +21,7 @@ export class BondGraphBond extends GraphBond {
     srcID: number = 700;
     tarID : number = 800;
 
-    constructor(id: number, source: GraphElement, target: GraphElement, causalStroke: boolean, causalStrokeDirection: boolean, hasDirection: boolean, effortLabel: string, flowLabel: string, velocity: number = 0, srclbl?:string, tarlbl?:string, srcId?:number, tarID?:number) {
+    constructor(id: number, source: GraphElement, target: GraphElement, causalStroke: boolean, causalStrokeDirection: boolean, hasDirection: boolean, effortLabel: string, flowLabel: string, velocity: number = 0, srclbl?:string, tarlbl?:string, srcId?:number, tarID?:number, effortSubscript: string = "", flowSubscript: string = "") {
         super(source, target, velocity);
         this.id = id;
         this.causalStroke = causalStroke;
@@ -27,6 +29,8 @@ export class BondGraphBond extends GraphBond {
         this.hasDirection = hasDirection;
         this.effortLabel = effortLabel;
         this.flowLabel = flowLabel;
+        this.effortSubscript = effortSubscript;
+        this.flowSubscript = flowSubscript;
         this.srclbl = srclbl;
         this.tarlbl = tarlbl;
         this.srcID = srcId;

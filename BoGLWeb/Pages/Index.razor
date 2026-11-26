@@ -152,20 +152,36 @@
                     Style="width:160px; margin-bottom: 15px"
                     OnSelectedItemChanged="ChangeEquationOption">
             </Select>
-            @if(stateEquationsStored.Length > 0) {
-                <p>Intermediate steps<br />coming soon!</p>
+            @if(stateEquationsStored.Length > 0 && diffIndex >= 0 && diffIndex < currentDerivations.Count) {
+                var deriv = currentDerivations[diffIndex];
+                <div id="diffeqSteps">
+                    @for (int s = 0; s < deriv.Steps.Count; s++) {
+                        var step = deriv.Steps[s];
+                        <div class="diffeq-step">
+                            <div class="diffeq-step-title">@step.Title</div>
+                            @for (int l = 0; l < step.LatexEquations.Count; l++) {
+                                <p id="@($"stepEq_{s}_{l}")" class="diffeq-step-eq"></p>
+                            }
+                        </div>
+                    }
+                </div>
                 <hr id="diffeqHR" />
-                <p id="finalEquation"></p>
-                renderEquations(new string[] { "finalEquation" }, new string[] { stateEquationsStored[diffIndex] });
+                <div id="diffeqAnswer">
+                    <p id="finalEquation"></p>
+                </div>
+            } else if (!string.IsNullOrEmpty(equationErrorMessage)) {
+                <p class="diffeq-empty">@equationErrorMessage</p>
+            } else {
+                <p class="diffeq-empty">No state equations (0 integral-causality storage elements).</p>
             }
             <div id="latexTest"></div>
         </div>
         <div id="stateVarMenu"  style="@("display: " + (currTab == "4" && !showEquations ? "flex" : "none"))">
             <Button Class="bogl_button_large" OnClick="@(() => { showEquations = true; })">Show State Equations</Button>
             <h2>State Variables</h2>
-            <div style="display: flex; flex-direction: column">
-                @foreach (var v in @equationOptions) {
-                    <span>@v</span>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                @for (int v = 0; v < stateVarLatexOptions.Length; v++) {
+                    <span id="@($"stateVar_{v}")"></span>
                 }
             </div>
         </div>
@@ -357,6 +373,7 @@
     List<Option> causalSwitchOptions = new List<Option> { };
     int selectedCausalOption;
     List<string> causalOptions = new();
+    List<BondGraph> causalGraphs = new();
     static string[] equationOptions = new string[] { };
     List<Option> equationSwitchOptions = new List<Option> { };
     int selectedEquation;
@@ -368,6 +385,9 @@
     static bool hasCopiedSelection = false;
     static bool showEquations = false;
     string[] stateEquationsStored = new string[] { };
+    string[] stateVarLatexOptions = new string[] { };
+    IReadOnlyList<EquationDerivation> currentDerivations = Array.Empty<EquationDerivation>();
+    string equationErrorMessage = "";
 
     public Index() {
         app = this;
@@ -609,6 +629,35 @@
         await module.InvokeVoidAsync("renderEquations", ids, eqStrings);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (currTab != "4") {
+            return;
+        }
+        List<string> ids = new();
+        List<string> eqs = new();
+        if (showEquations && stateEquationsStored.Length > 0 && diffIndex >= 0 && diffIndex < currentDerivations.Count) {
+            var deriv = currentDerivations[diffIndex];
+            for (int s = 0; s < deriv.Steps.Count; s++) {
+                var step = deriv.Steps[s];
+                for (int l = 0; l < step.LatexEquations.Count; l++) {
+                    ids.Add($"stepEq_{s}_{l}");
+                    eqs.Add(step.LatexEquations[l]);
+                }
+            }
+            ids.Add("finalEquation");
+            eqs.Add(stateEquationsStored[diffIndex]);
+        } else if (!showEquations && stateVarLatexOptions.Length > 0) {
+            for (int v = 0; v < stateVarLatexOptions.Length; v++) {
+                ids.Add($"stateVar_{v}");
+                eqs.Add(stateVarLatexOptions[v]);
+            }
+        }
+        if (ids.Count > 0) {
+            var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
+            await module.InvokeVoidAsync("renderEquations", ids.ToArray(), eqs.ToArray());
+        }
+    }
+
     [JSInvokable]
     // set whether something in the graph is being selected
     public static void SetIsSelecting(bool value) {
@@ -727,14 +776,20 @@
 
     // changes which state equation is being displayed in the causal bond graph tab
     private async void ChangeEquationOption(Option selection) {
+        if (selection == null) return;
         diffIndex = selection.value;
     }
 
     // changes which causal bond graph is being displayed
     private async void ChangeCausalOption(Option selection) {
+        if (selection == null) return;
         var module = await JS.InvokeAsync<IJSObjectReference>("backendManager.getBackendManager");
         await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, selection.value);
+        if (selection.value >= 0 && selection.value < causalGraphs.Count) {
+            UpdateStateEquations(causalGraphs[selection.value]);
+        }
         showEquations = false;
+        base.StateHasChanged();
     }
 
     private readonly List<string> ruleNames = new();
@@ -854,39 +909,63 @@
         // Directly inherits the (X, Y) coordinates already solved for the simplified graph to prevent
         // independent force-directed drift or diagonal starbursting, while overlaying causal strokes orthogonally.
         causalOptions.Clear();
+        causalGraphs.Clear();
         foreach (BondGraph g in causal) {
             BondGraph.BondGraphWrapper wrapper = new(g);
             wrapper.AssignBondLabels();
             BondGraphEmbedder.InheritLayout(g, simplified, orientation, flowLeftToRight, flowBottomToTop);
+            causalGraphs.Add(g);
             causalOptions.Add(g.convertToJson());
         }
         generateProgress = 100.0;
 
-        // resets backend bond graphs and prints state equations
-        // TODO: find global variable storing equations in Index and replace with StateEquationSet object/methods.
-        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[0]);
-        try {
-            stateEquationsStored = (new string[] { }).Concat(new StateEquationSet(EditStackHandler.undoRedoHandler.GetBondGraph(4)).GetFinalEquations()).ToArray();
-        } catch(Exception e) {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
-            stateEquationsStored = new string[] { };
+        // resets backend bond graphs and computes state equations + step-by-step derivations
+        int defaultCausalIdx = 0;
+        for (int i = 0; i < causalGraphs.Count; i++) {
+            try {
+                _ = new StateEquationSet(causalGraphs[i]);
+                defaultCausalIdx = i;
+                break;
+            } catch { }
         }
-        equationOptions = stateEquationsStored.Select(e => e.Substring(0, e.IndexOf("="))).ToArray();
-        equationSwitchOptions = Enumerable.Range(0, equationOptions.Length).ToList().Select(i => { 
-            return new Option { label = "Equation for " + equationOptions[i], value = i }; 
-        }).ToList();
+        selectedCausalOption = defaultCausalIdx;
+        EditStackHandler.undoRedoHandler.ResetBondGraphs(bondGraph, item2, causal[defaultCausalIdx]);
+        UpdateStateEquations(EditStackHandler.undoRedoHandler.GetBondGraph(4));
 
         // displays the bond graphs on the canvas
         await module.InvokeVoidAsync("displayUnsimplifiedBondGraph", unsimplified.convertToJson());
         await module.InvokeVoidAsync("displaySimplifiedBondGraph", simplified.convertToJson());
-        await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, 0);
+        await module.InvokeVoidAsync("displayCausalBondGraphOption", causalOptions, defaultCausalIdx);
         causalSwitchOptions = Enumerable.Range(0, causalOptions.Count).ToList().Select(i => { return new Option { label = "Option " + (i + 1), value = i }; }).ToList();
         generatingBondGraph = false;
         tabsDisabled = false;
         zoomValue = initZoom;
         base.StateHasChanged();
         await messageService.Success("Bond Graphs Successfully Generated.");
+    }
+
+    private void UpdateStateEquations(BondGraph causalGraph) {
+        diffIndex = 0;
+        selectedEquation = 0;
+        equationErrorMessage = "";
+        try {
+            StateEquationSet set = new(causalGraph);
+            currentDerivations = set.GetDerivations();
+            stateEquationsStored = set.GetFinalEquations();
+            stateVarLatexOptions = set.GetStateVariableLatex().Select(v => v + "'").ToArray();
+            equationOptions = set.GetStateVariableNames().Select(v => v + "'").ToArray();
+        } catch (Exception e) {
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+            currentDerivations = Array.Empty<EquationDerivation>();
+            stateEquationsStored = Array.Empty<string>();
+            stateVarLatexOptions = Array.Empty<string>();
+            equationOptions = Array.Empty<string>();
+            equationErrorMessage = e.Message;
+        }
+        equationSwitchOptions = Enumerable.Range(0, equationOptions.Length).ToList().Select(i => {
+            return new Option { label = "Equation for " + equationOptions[i], value = i };
+        }).ToList();
     }
 
     /// <summary>

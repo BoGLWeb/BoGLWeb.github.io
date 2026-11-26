@@ -57,6 +57,7 @@ namespace BoGLWeb {
             string[] candidateDirs = new[] {
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot", "Rules"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "wwwroot", "Rules"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "wwwroot", "Rules"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "BoGLWeb", "wwwroot", "Rules"),
                 Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Rules"),
                 Path.Combine(Directory.GetCurrentDirectory(), "BoGLWeb", "wwwroot", "Rules")

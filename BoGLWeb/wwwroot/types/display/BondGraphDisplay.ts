@@ -246,6 +246,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             label1.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => {
+                    if (this.isEffortLabel(d, true) && d.effortSubscript) return d.effortSubscript;
+                    if (!this.isEffortLabel(d, true) && d.flowSubscript) return d.flowSubscript;
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);
@@ -304,6 +306,8 @@ export class BondGraphDisplay extends BaseGraphDisplay {
             label2.append("tspan")
                 .attr("text-anchor", "middle")
                 .text((d: BondGraphBond) => {
+                    if (this.isEffortLabel(d, false) && d.effortSubscript) return d.effortSubscript;
+                    if (!this.isEffortLabel(d, false) && d.flowSubscript) return d.flowSubscript;
                     let flow = flows.indexOf(d.flowLabel[0]);
                     let spec = specs.indexOf(d.flowLabel[0]);
                     let eff = effs.indexOf(d.effortLabel[0]);

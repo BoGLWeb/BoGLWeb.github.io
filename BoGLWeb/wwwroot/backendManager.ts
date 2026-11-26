@@ -241,7 +241,7 @@ export namespace backendManager {
 
             // makes BondGraphDisplay
             let bonds = JSON.parse(bg.bonds).map(b => {
-                return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel, 0, elements[b.sourceID].label, elements[b.targetID].label, b.sourceID, b.targetID);
+                return new BondGraphBond(b.ID, elements[b.sourceID], elements[b.targetID], b.causalStroke, b.causalStrokeDirection, !b.hasDirection && id != 0, b.effortLabel, b.flowLabel, 0, elements[b.sourceID].label, elements[b.targetID].label, b.sourceID, b.targetID, b.effortSubscript || "", b.flowSubscript || "");
             }) as BondGraphBond[];
             let bondGraph = new BondGraphDisplay(id, svg, new BondGraph(elements, bonds));
 
@@ -1003,11 +1003,12 @@ export namespace backendManager {
         // render equation strings in DOM elements with particular IDs (match string to ID by list index)
         public renderEquations(ids: string[], eqStrings: string[]) {
             for (let i = 0; i < ids.length; i++) {
+                let parent = document.getElementById(ids[i]);
+                if (!parent) continue;
                 let html = katex.renderToString(eqStrings[i], {
                     throwOnError: false
                 });
                 const parser = new DOMParser();
-                let parent = document.getElementById(ids[i]);
                 parent.innerHTML = "";
                 parent.appendChild(parser.parseFromString(html, "application/xml").children[0].children[0]);
             }
