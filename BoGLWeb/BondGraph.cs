@@ -433,6 +433,10 @@ namespace BoGLWeb {
             public string flowLabel = "f";
             [JsonProperty]
             public string effortLabel = "e";
+            [JsonProperty]
+            public string flowSubscript = "";
+            [JsonProperty]
+            public string effortSubscript = "";
             
             //The arrow will always point at the sink
             /// <summary>
@@ -610,7 +614,7 @@ namespace BoGLWeb {
                 P_INDEX = 7,
                 Q_INDEX = 8;
             private static List<string> translationLabels = new List<string>() { "F", "v", "b", "K", "m", "D", "r", "p", "x" };
-            private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "L", "θ" };
+            private static List<string> rotLabels         = new List<string>() { "τ", "ω", "D", "κ", "J", "R", "r", "h", "θ" };
             private static List<string> elecLabels        = new List<string>() { "V", "i", "R", "C", "L", "T", "r", "ϕ", "q" };
             private readonly Dictionary<string, List<string>> domainLabelDict = new Dictionary<string, List<string>>() {
                 {"v", translationLabels },
@@ -618,20 +622,21 @@ namespace BoGLWeb {
                 {"b", translationLabels },
                 {"m", translationLabels },
                 {"K", translationLabels },
+                {"D", translationLabels },
                 {"ω", rotLabels },
                 {"τ", rotLabels },
-                {"D", rotLabels },
-                {"I", rotLabels },
+                {"J", rotLabels },
                 {"κ", rotLabels },
                 {"i", elecLabels },
                 {"V", elecLabels },
                 {"R", elecLabels },
                 {"L", elecLabels },
-                {"C", elecLabels }
+                {"C", elecLabels },
+                {"T", elecLabels }
             };
             private readonly Dictionary<string, List<string>> stateLabelDict = new Dictionary<string, List<string>>() {
                 {"F", new List<string>() { "p'", "x'" } },
-                {"τ", new List<string>() { "L'", "θ'" } },
+                {"τ", new List<string>() { "h'", "θ'" } },
                 {"V", new List<string>() { "ϕ'", "q'" } }
             };
 
@@ -743,22 +748,203 @@ namespace BoGLWeb {
                     futureLeaves = futureLeaves.FindAll(e => !e.visited);
                 }
 
-                List<Element> iAndCElements = this.elements.Values.ToList().FindAll(e => e.label[0] == 'I' || e.label[0] == 'C' );
-                foreach (Element el in iAndCElements) {
-                    List<Bond> neighbors = this.bondsBySource.ContainsKey(el.GetID()) ? this.bondsBySource[el.GetID()].ToList() : new();
-                    List<Bond> targetBonds = this.bondsByTarget.ContainsKey(el.GetID()) ? this.bondsByTarget[el.GetID()].ToList() : new();
-                    neighbors.AddRange(targetBonds);
-                    if (el.domain != "e") {
-                        List<string> labels = stateLabelDict[el.domain];
-                        neighbors.ForEach(n => {
-                            if (el.label[0].Equals('I')) {
-                                n.effortLabel = labels[0];
-                            } else {
-                                n.flowLabel = labels[1];
+                // Update TF display label to TF:1/<sym> when power flows from translational (v) to rotational (ω)
+                foreach (Element el in this.elements.Values) {
+                    if (el.label.StartsWith("TF:", StringComparison.Ordinal) && !el.label.StartsWith("TF:1/", StringComparison.Ordinal)) {
+                        var inB = this.bondsByTarget.TryGetValue(el.GetID(), out var tList) && tList.Count > 0 ? tList[0] : null;
+                        var outB = this.bondsBySource.TryGetValue(el.GetID(), out var sList) && sList.Count > 0 ? sList[0] : null;
+                        if (inB != null && outB != null) {
+                            string inDom = GetElementDomain(inB.getSource());
+                            string outDom = GetElementDomain(outB.getSink());
+                            if (inDom == "F" && outDom == "τ") {
+                                el.label = "TF:1/" + el.label[3..];
                             }
-                        });
+                        }
                     }
                 }
+
+                // Assign consistent effort/flow labels and subscripts on every bond:
+                // - Around a 1-junction (1 f_j), all bonds share flow f_j (except integral C, which uses x'_j / θ'_j / q'_j).
+                // - Around a 0-junction (0 e_j), all bonds share effort e_j.
+                // - Integral I elements use p'_id / h'_id / ϕ'_id; derivative I elements use F_id / τ_id / V_id.
+                foreach (Bond b in this.bondsBySource.Values.SelectMany(x => x).Distinct()) {
+                    Element src = b.getSource();
+                    Element dst = b.getSink();
+                    char srcType = char.ToUpper(src.GetTypeChar());
+                    char dstType = char.ToUpper(dst.GetTypeChar());
+
+                    Element? j1 = srcType == '1' ? src : (dstType == '1' ? dst : null);
+                    Element? j0 = srcType == '0' ? src : (dstType == '0' ? dst : null);
+                    Element? onePort = IsOnePortChar(srcType) ? src : (IsOnePortChar(dstType) ? dst : null);
+                    Element? twoPort = (srcType == 'T' || srcType == 'G') ? src : ((dstType == 'T' || dstType == 'G') ? dst : null);
+
+                    // 1) Flow label & subscript
+                    if (onePort != null && char.ToUpper(onePort.GetTypeChar()) == 'C' && !IsElementReceivingEffort(b, onePort)) {
+                        // Integral C: state derivative x'_j / θ'_j / q'_j (using junction ID when attached to a junction)
+                        Element? otherJunc = ReferenceEquals(onePort, src) ? dst : src;
+                        int subId = (otherJunc.GetTypeChar() is '0' or '1') ? otherJunc.GetID() : onePort.GetID();
+                        b.flowLabel = GetStateVarPrefix(onePort) + "'";
+                        b.flowSubscript = subId.ToString();
+                    } else if (j1 != null) {
+                        b.flowLabel = GetFlowPrefix(GetElementDomain(j1));
+                        b.flowSubscript = j1.GetID().ToString();
+                    } else if (j0 != null && onePort != null) {
+                        b.flowLabel = GetFlowPrefix(GetElementDomain(onePort));
+                        b.flowSubscript = onePort.GetID().ToString();
+                    } else if (twoPort != null) {
+                        Element jEnd = ReferenceEquals(twoPort, src) ? dst : src;
+                        b.flowLabel = GetFlowPrefix(GetElementDomain(jEnd));
+                        b.flowSubscript = twoPort.GetID().ToString();
+                    } else {
+                        b.flowLabel = GetFlowPrefix(GetElementDomain(src));
+                        b.flowSubscript = $"{src.GetID()},{dst.GetID()}";
+                    }
+
+                    // 2) Effort label & subscript
+                    if (onePort != null && char.ToUpper(onePort.GetTypeChar()) == 'I' && IsElementReceivingEffort(b, onePort)) {
+                        // Integral I: state derivative p'_id / h'_id / ϕ'_id
+                        b.effortLabel = GetStateVarPrefix(onePort) + "'";
+                        b.effortSubscript = onePort.GetID().ToString();
+                    } else if (j0 != null) {
+                        b.effortLabel = GetEffortPrefix(GetElementDomain(j0));
+                        b.effortSubscript = j0.GetID().ToString();
+                    } else if (onePort != null) {
+                        char opType = char.ToUpper(onePort.GetTypeChar());
+                        b.effortLabel = (opType == 'E')
+                            ? GetElementParamSymbol(onePort)
+                            : GetEffortPrefix(GetElementDomain(onePort));
+                        b.effortSubscript = onePort.GetID().ToString();
+                    } else if (twoPort != null) {
+                        Element jEnd = ReferenceEquals(twoPort, src) ? dst : src;
+                        b.effortLabel = GetEffortPrefix(GetElementDomain(jEnd));
+                        b.effortSubscript = twoPort.GetID().ToString();
+                    } else {
+                        b.effortLabel = GetEffortPrefix(GetElementDomain(src));
+                        b.effortSubscript = $"{src.GetID()},{dst.GetID()}";
+                    }
+                }
+            }
+
+            private static bool IsOnePortChar(char t) => t is 'I' or 'C' or 'R' or 'E' or 'F';
+
+            private static bool IsElementReceivingEffort(Bond bond, Element el) {
+                return bond.isSource(el) ? bond.GetCausalDirection() : !bond.GetCausalDirection();
+            }
+
+            /// <summary>
+            /// Infers domain tags on elements without mutating element labels.
+            /// </summary>
+            public void InferDomainsIfNeeded() {
+                if (this.elements.Values.Any(e => !string.IsNullOrEmpty(e.domain))) {
+                    return;
+                }
+                List<Element> leaves = this.elements.Values.ToList().FindAll(e => {
+                    int targetCount = this.bondsByTarget.TryGetValue(e.GetID(), out var tList) ? tList.Count : 0;
+                    int sourceCount = this.bondsBySource.TryGetValue(e.GetID(), out var sList) ? sList.Count : 0;
+                    return (targetCount + sourceCount) == 1;
+                });
+                HashSet<int> visitedIds = new();
+                foreach (Element startEl in leaves) {
+                    if (visitedIds.Contains(startEl.GetID())) {
+                        continue;
+                    }
+                    string domainCheck = startEl.label.Length > 0 ? startEl.label[^1].ToString() : "e";
+                    List<string> labels = domainLabelDict.ContainsKey(domainCheck) ? domainLabelDict[domainCheck] : new() { "e", "f" };
+                    string effortLabel = labels[EFFORT_INDEX];
+
+                    Queue<Element> queue = new();
+                    queue.Enqueue(startEl);
+                    while (queue.Count > 0) {
+                        Element el = queue.Dequeue();
+                        if (!visitedIds.Add(el.GetID())) {
+                            continue;
+                        }
+                        el.domain = effortLabel;
+                        if (el.label.Length > 0 && el.label[0] != 'G' && el.label[0] != 'T') {
+                            if (this.bondsBySource.TryGetValue(el.GetID(), out var sBonds)) {
+                                foreach (Bond b in sBonds) {
+                                    queue.Enqueue(b.getSink());
+                                }
+                            }
+                            if (this.bondsByTarget.TryGetValue(el.GetID(), out var tBonds)) {
+                                foreach (Bond b in tBonds) {
+                                    queue.Enqueue(b.getSource());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Extracts the parameter/source symbol from an element label (e.g. "TF:R" -> "R", "TF:1/R" -> "R", "I:J" -> "J").
+            /// </summary>
+            public static string GetElementParamSymbol(Element el) {
+                string label = el.label ?? "";
+                int colon = label.IndexOf(':');
+                if (colon >= 0 && colon + 1 < label.Length) {
+                    string sym = label[(colon + 1)..].Trim();
+                    if (sym.StartsWith("1/", StringComparison.Ordinal)) {
+                        sym = sym[2..];
+                    }
+                    int space = sym.IndexOf(' ');
+                    return space >= 0 ? sym[..space] : sym;
+                }
+                return el.GetTypeChar().ToString();
+            }
+
+            /// <summary>
+            /// Gets the effort domain key ("F", "τ", "V", or "e") for an element.
+            /// </summary>
+            public string GetElementDomain(Element el) {
+                string sym = GetElementParamSymbol(el);
+                if (sym is "J" or "τ" or "ω" or "κ") {
+                    return "τ";
+                }
+                if (sym is "C" or "V" or "i" or "q" or "ϕ" or "L") {
+                    return "V";
+                }
+                if (sym is "m" or "F" or "v" or "p" or "x") {
+                    return "F";
+                }
+                if (!string.IsNullOrEmpty(el.domain) && el.domain != "e") {
+                    return el.domain;
+                }
+                return "F";
+            }
+
+            /// <summary>Gets the effort variable prefix ("F", "τ", "V", or "e") for a domain key.</summary>
+            public static string GetEffortPrefix(string? domain) => domain switch {
+                "τ" => "τ",
+                "V" => "V",
+                "F" => "F",
+                _ => "e"
+            };
+
+            /// <summary>Gets the flow variable prefix ("v", "ω", "i", or "f") for a domain key.</summary>
+            public static string GetFlowPrefix(string? domain) => domain switch {
+                "τ" => "ω",
+                "V" => "i",
+                "F" => "v",
+                _ => "f"
+            };
+
+            /// <summary>Gets the generalized momentum/displacement state prefix for an I or C element.</summary>
+            public string GetStateVarPrefix(Element el) {
+                char type = char.ToUpper(el.GetTypeChar());
+                string domain = GetElementDomain(el);
+                if (type == 'I') {
+                    return domain switch {
+                        "τ" => "h",
+                        "V" => "ϕ",
+                        _ => "p"
+                    };
+                }
+                return domain switch {
+                    "τ" => "θ",
+                    "V" => "q",
+                    _ => "x"
+                };
             }
 
             /// <summary>
@@ -770,11 +956,14 @@ namespace BoGLWeb {
             /// variable.</returns>
             public char GetDomainVar(string label, char c) {
                 int index = 0;
-                while (label[index] != ' ' && label[index] != ':') {
+                while (index < label.Length && label[index] != ' ' && label[index] != ':') {
                     index++;
                 }
                 index++;
-                return (domainLabelDict.GetValueOrDefault("" + label[index]) ?? new())[GetReplacementIndex(c)][0];
+                if (index < label.Length && domainLabelDict.TryGetValue("" + label[index], out var list)) {
+                    return list[GetReplacementIndex(c)][0];
+                }
+                return c;
             }
 
             /// <summary>
@@ -784,7 +973,7 @@ namespace BoGLWeb {
             /// variable list.</param>
             /// <returns>The replacement index.</returns>
             public int GetReplacementIndex(char c) {
-                return c switch {
+                return char.ToUpper(c) switch {
                     'E' => EFFORT_INDEX,
                     'F' => FLOW_INDEX,
                     'R' => R_INDEX,

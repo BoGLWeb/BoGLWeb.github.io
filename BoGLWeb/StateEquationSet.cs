@@ -1,416 +1,931 @@
-﻿using Microsoft.Playwright;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using NUnit.Framework;
-using System.Diagnostics;
-using System.IO.Pipes;
-using System.Linq;
 using System.Text;
 
 namespace BoGLWeb {
     namespace DifferentialEquationHelper {
+        /// <summary>
+        /// Represents a single named stage in the step-by-step derivation of a state equation.
+        /// </summary>
+        public sealed class DerivationStep {
+            /// <summary>Display heading for this derivation step (e.g., "1. Junction Equation").</summary>
+            public string Title { get; }
+            /// <summary>Ordered list of LaTeX-formatted equations shown under this step.</summary>
+            public List<string> LatexEquations { get; }
+
+            public DerivationStep(string title, List<string> latexEquations) {
+                Title = title;
+                LatexEquations = latexEquations;
+            }
+        }
+
+        /// <summary>
+        /// Stores the complete derivation trace and final isolated LaTeX state equation
+        /// for a single integral-causality storage element.
+        /// </summary>
+        public sealed class EquationDerivation {
+            /// <summary>Internal state variable key (e.g., "P10" or "Q5").</summary>
+            public string StateVarKey { get; }
+            /// <summary>Plain-text state variable name used in dropdown labels (e.g., "h10").</summary>
+            public string StateVarName { get; }
+            /// <summary>LaTeX-formatted state variable name (e.g., "h_{10}").</summary>
+            public string StateVarLatex { get; }
+            /// <summary>LaTeX-formatted state derivative (e.g., "h_{10}'").</summary>
+            public string StateDerivativeLatex { get; }
+            /// <summary>Final isolated state equation in LaTeX.</summary>
+            public string FinalEquationLatex { get; }
+            /// <summary>True if derivative causality affected this equation's derivation.</summary>
+            public bool HasDerivativeCausality { get; }
+            /// <summary>Ordered derivation steps leading to <see cref="FinalEquationLatex"/>.</summary>
+            public List<DerivationStep> Steps { get; }
+
+            public EquationDerivation(
+                string stateVarKey,
+                string stateVarName,
+                string stateVarLatex,
+                string stateDerivativeLatex,
+                string finalEquationLatex,
+                bool hasDerivativeCausality,
+                List<DerivationStep> steps) {
+                StateVarKey = stateVarKey;
+                StateVarName = stateVarName;
+                StateVarLatex = stateVarLatex;
+                StateDerivativeLatex = stateDerivativeLatex;
+                FinalEquationLatex = finalEquationLatex;
+                HasDerivativeCausality = hasDerivativeCausality;
+                Steps = steps;
+            }
+        }
+
         public class StateEquationSet {
-            // Stores the initial equations in <c>String</c> form.
             private readonly string[] initialEquations;
-            // Stores the state equations in <c>String</c> form.
             private readonly string[] finalDifferentialStateEquations;
+            private readonly List<EquationDerivation> derivations;
 
             /// <summary>
-            /// Creates a new <c>StateEquationSet</c>.
+            /// Creates a new <c>StateEquationSet</c> for the given causal bond graph,
+            /// supporting both integral and derivative causality as well as step-by-step derivations.
             /// </summary>
-            /// <param name="graph">The target bond graph.</param>
             public StateEquationSet(BondGraph graph) {
                 BondGraph.BondGraphWrapper graphWrapper = new(graph);
-                this.initialEquations = new string[0];
-                List<CausalGraphWrapper> wrappers = CausalGraphWrapper.GenerateList(graphWrapper);
-                Dictionary<string, Expression> substitutionDictionary = new();
-                HashSet<string> usedSet = new();
-                foreach (CausalGraphWrapper wrapper in wrappers) {
-                    KeyValuePair<string, Expression> pair = wrapper.GetExpression();
-                    substitutionDictionary.Add(pair.Key, pair.Value);
-                }
-                GetRemainingGeneralizedSubstitutes(graph, substitutionDictionary);
-                int prevUsedQuantity;
-                do {
-                    prevUsedQuantity = usedSet.Count;
-                    foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
-                        foreach (string item in pair.Value.SubstituteAllVariables(substitutionDictionary)) {
-                            usedSet.Add(item);
-                        }
-                    }
-                } while (prevUsedQuantity < usedSet.Count);
-                foreach (string key in usedSet) {
-                    substitutionDictionary.Remove(key);
-                }
-                this.finalDifferentialStateEquations = new string[substitutionDictionary.Count];
-                Expression ZERO = new("0");
-                int index = 0;
-                Dictionary<string, Expression> finalSubstitutions = GetDomainVariables(graphWrapper);
-                foreach (KeyValuePair<string, Expression> pair in substitutionDictionary) {
-                    pair.Value.CollapseDifferentials((pair.Key[0] == 'E' ? 'P' : 'Q') + pair.Key[1..]);
-                    pair.Value.Simplify(true);
-                    string key = pair.Key.StartsWith("E") ? "P" : "Q";
-                    Equation equation = new(new(key + pair.Key[1..] + "'"), pair.Value);
-                    equation.SubstituteAllVariables(finalSubstitutions);
-                    this.finalDifferentialStateEquations[index++] = equation.GetDependent() + "=" + equation.GetIndependent().Add(ZERO).ToLatexString();
-                }
+                graphWrapper.InferDomainsIfNeeded();
+
+                SolverContext ctx = new(graph, graphWrapper);
+                ctx.Solve();
+
+                this.derivations = ctx.Derivations;
+                this.initialEquations = ctx.InitialEquations.ToArray();
+                this.finalDifferentialStateEquations = this.derivations
+                    .Select(d => d.FinalEquationLatex)
+                    .ToArray();
             }
 
-            /// <summary>
-            /// Gets the set of initial equations for this bond graph.
-            /// </summary>
-            /// <returns><c>this.initialEquations</c></returns>
-            public string[] GetInitialEquations() {
-                return this.initialEquations;
-            }
+            /// <summary>Gets the Step 1 junction equations in LaTeX.</summary>
+            public string[] GetInitialEquations() => this.initialEquations;
 
-            /// <summary>
-            /// Gets the set of state equations from this <c>StateEquationSet</c>.
-            /// </summary>
-            /// <returns><c>this.finalDifferentialStateEquations</c></returns>
-            public string[] GetFinalEquations() {
-                return this.finalDifferentialStateEquations;
-            }
+            /// <summary>Gets the final isolated state equations in LaTeX.</summary>
+            public string[] GetFinalEquations() => this.finalDifferentialStateEquations;
 
-            /// <summary>
-            /// Converts this <c>StateEquationSet</c> to a printable format.
-            /// </summary>
-            /// <returns>This <c>StateEquationSet</c> as a <c>string</c>.</returns>
+            /// <summary>Gets the full step-by-step derivations for all state equations.</summary>
+            public IReadOnlyList<EquationDerivation> GetDerivations() => this.derivations;
+
+            /// <summary>Gets plain-text state variable names for UI selection lists.</summary>
+            public string[] GetStateVariableNames() =>
+                this.derivations.Select(d => d.StateVarName).ToArray();
+
+            /// <summary>Gets LaTeX-formatted state variable names.</summary>
+            public string[] GetStateVariableLatex() =>
+                this.derivations.Select(d => d.StateVarLatex).ToArray();
+
             public override string ToString() {
                 return '[' + string.Join(", ", this.initialEquations) + "][" + string.Join(", ", this.finalDifferentialStateEquations) + ']';
             }
 
-            /// <summary>
-            /// Creates a causal graphWrapper that moves with or against the causal flow 
-            /// in the graph to create a map for differential equation generation.
-            /// Each <c>CausalGraphWrapper</c> is a transitive tree (directed connected 
-            /// acyclic graph) that radiates outward from the element field.
-            /// </summary>
-            private class CausalGraphWrapper {
-                // Stores the element at this node.
-                private readonly BondGraph.Element element;
-                // Stores the direction of energy flow.
-                private readonly bool isSource, isEffort;
-                // Stores all neighboring elements ahead in the flow.
-                private readonly List<CausalGraphWrapper> neighbors;
-                // Stores the current state equation.
-                private Expression stateEquation;
+            private sealed class StateInfo {
+                public BondGraph.Element Element { get; }
+                public BondGraph.Bond Bond { get; }
+                public bool IsInductor { get; }
+                public string VarKey { get; }
+                public string DerivKey => VarKey + "'";
+                public string PlainName { get; }
+                public string LatexName { get; }
+                public string DerivLatex => LatexName + "'";
 
-                /// <summary>
-                /// Creates a new CausalGraphWrapper with the specified criteria.
-                /// </summary>
-                /// <param name="element">The <c>BondGraph.Element</c> stored in this
-                /// <c>CausalGraphWrapper</c>.</param>
-                /// <param name="isSource"><c>true</c> if this <c>Element</c> is
-                /// the source of the connector <c>Bond</c>, else <c>false</c>.</param>
-                private CausalGraphWrapper(BondGraph.Element element, bool isSource, bool isEffort) {
-                    this.element = element;
-                    this.isSource = isSource;
-                    this.isEffort = isEffort;
-                    this.stateEquation = new(GenerateVariableName());
-                    this.neighbors = new();
-                }
-
-                /// <summary>
-                /// Generates the variable name for the Expression associated with this CausalGraphWrapper.
-                /// </summary>
-                /// <returns></returns>
-                public string GenerateVariableName() {
-                    return (this.isEffort ? "E" : "F") + this.element.GetID();
-                }
-
-                /// <summary>
-                /// Recursively generates a new CausalGraphWrapper.
-                /// </summary>
-                /// <param name="element"></param>
-                /// <param name="isEffort"></param>
-                /// <param name="bondsBySource"></param>
-                /// <param name="bondsByTarget"></param>
-                private static CausalGraphWrapper GenerateWrapper(BondGraph.Element element, bool isEffort, Dictionary<int, List<BondGraph.Bond>> bondsBySource, Dictionary<int, List<BondGraph.Bond>> bondsByTarget) {
-                    CausalGraphWrapper returnValue = new(element, true, isEffort);
-                    Stack<CausalGraphWrapper> wrapperStack = new(new[] { returnValue });
-                    HashSet<int> used = new();
-                    while (wrapperStack.Count > 0) {
-                        CausalGraphWrapper wrapper = wrapperStack.Pop();
-                        int elementID = wrapper.element.GetID();
-                        if (used.Contains(elementID)) {
-                            throw new Exception("State equations cannot be derived in looped causality.");
-                        }
-                        used.Add(elementID);
-                        List<BondGraph.Bond>? bondsToTarget = bondsBySource.GetValueOrDefault(elementID);
-                        if (bondsToTarget != null) {
-                            foreach (BondGraph.Bond bond in bondsToTarget) {
-                                if (isEffort == bond.GetCausalDirection()) {
-                                    CausalGraphWrapper neighborWrapper = new(bond.getSink(), true, isEffort);
-                                    wrapper.neighbors.Add(neighborWrapper);
-                                    wrapperStack.Push(neighborWrapper);
-                                }
-                            }
-                        }
-                        List<BondGraph.Bond>? bondsToSource = bondsByTarget.GetValueOrDefault(elementID);
-                        if (bondsToSource != null) {
-                            foreach (BondGraph.Bond bond in bondsToSource) {
-                                if (isEffort ^ bond.GetCausalDirection()) {
-                                    CausalGraphWrapper neighborWrapper = new(bond.getSource(), false, isEffort);
-                                    wrapper.neighbors.Add(neighborWrapper);
-                                    wrapperStack.Push(neighborWrapper);
-                                }
-                            }
-                        }
-                    }
-                    return returnValue;
-                }
-
-                /// <summary>
-                /// Creates a new <c>CausalGraphWrapper</c> from a <c>BondGraph</c>.
-                /// </summary>
-                /// <param name="wrapper">The model bond graph graphWrapper.</param>
-                public static List<CausalGraphWrapper> GenerateList(BondGraph.BondGraphWrapper wrapper) {
-                    List<CausalGraphWrapper> wrapperList = new();
-                    Dictionary<int, List<BondGraph.Bond>> sourceMap = wrapper.GetBondsBySource();
-                    Dictionary<int, List<BondGraph.Bond>> targetMap = wrapper.GetBondsByTarget();
-                    foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
-                        char indicator = pair.Value.GetTypeChar();
-                        bool isEffort = true;
-                        List<BondGraph.Bond>? sourceList = sourceMap.GetValueOrDefault(pair.Value.GetID());
-                        if (sourceList != null) {
-                            isEffort = sourceList[0].GetCausalDirection();
-                        } else {
-                            List<BondGraph.Bond>? targetList = targetMap.GetValueOrDefault(pair.Value.GetID());
-                            if (targetList != null) {
-                                isEffort = !targetList[0].GetCausalDirection();
-                            }
-                        } // Note that isEffort will experience exactly one of the two rewrites above.
-                        if ("IRC".Contains(indicator)) {
-                            wrapperList.Add(GenerateWrapper(pair.Value, isEffort, sourceMap, targetMap));
-                        } else if (indicator == 'G') {
-                        }
-                    }
-                    return wrapperList;
-                }
-
-                /// <summary>
-                /// Forms an incomplete state equation.
-                /// </summary>
-                /// <returns>A key-value pair with the key a string variable 
-                /// representation of a flow or effort variable and value the
-                /// associated expression formed from the <c>CausalWrapper</c>
-                /// tree.</returns>
-                public KeyValuePair<string, Expression> GetExpression() {
-                    Stack<CausalGraphWrapper> packageStack = new(new[] { this });
-                    Stack<bool> checkStack = new(new[] { false });
-                    while (packageStack.Count > 0) {
-                        CausalGraphWrapper wrapper = packageStack.Pop();
-                        if (checkStack.Pop()) {
-                            if (wrapper.neighbors.Count > 0) {
-                                wrapper.stateEquation = new Expression();
-                                CausalGraphWrapper loneChild = wrapper.neighbors[0];
-                                char typeChar = wrapper.element.GetTypeChar();
-                                switch (typeChar) {
-                                    case '0':
-                                    case '1':
-                                        if (typeChar == '1' == wrapper.isEffort) {
-                                            foreach (CausalGraphWrapper child in wrapper.neighbors) {
-                                                if (wrapper.isSource == child.isSource) {
-                                                    wrapper.stateEquation = wrapper.stateEquation.Add(child.stateEquation);
-                                                } else {
-                                                    wrapper.stateEquation = wrapper.stateEquation.Subtract(child.stateEquation);
-                                                }
-                                                child.stateEquation = new(child.GenerateVariableName());
-                                            }
-                                        } else {
-                                            wrapper.stateEquation = loneChild.stateEquation;
-                                            loneChild.stateEquation = new(loneChild.GenerateVariableName());
-                                        }
-                                        break;
-                                    case 'T':
-                                        Expression expr = new("T" + wrapper.element.GetID());
-                                        if (isEffort == isSource) {
-                                            wrapper.stateEquation = loneChild.stateEquation.Multiply(expr);
-                                        } else {
-                                            wrapper.stateEquation = loneChild.stateEquation.Divide(expr);
-                                        }
-                                        loneChild.stateEquation = new(loneChild.GenerateVariableName());
-                                        break;
-                                    case 'G':
-                                        //
-                                        break;
-                                    default:
-                                        wrapper.stateEquation = loneChild.stateEquation;
-                                        loneChild.stateEquation = new(loneChild.GenerateVariableName());
-                                        break;
-                                }
-                            }
-                        } else {
-                            packageStack.Push(wrapper);
-                            checkStack.Push(true);
-                            foreach (CausalGraphWrapper child in wrapper.neighbors) {
-                                packageStack.Push(child);
-                                checkStack.Push(false);
-                            }
-                        }
-                    }
-                    Expression stateEquation = this.stateEquation;
-                    string varName = GenerateVariableName();
-                    this.stateEquation = new(varName);
-                    return new(varName, stateEquation);
-                }
-
-                /// <summary>
-                /// Converts this <c>CausalGraphWrapper</c> to a printable format.
-                /// </summary>
-                /// <returns>This <c>CausalGraphWrapper</c> as a <c>string</c></returns>
-                public override string ToString() {
-                    StringBuilder print = new();
-                    Stack<CausalGraphWrapper> packageStack = new(new[] {this});
-                    Stack<bool> checkStack = new(new[] {false});
-                    while (packageStack.Count > 0) {
-                        CausalGraphWrapper wrapper = packageStack.Pop();
-                        if (checkStack.Pop()) {
-                            print.Append(']');
-                        } else {
-                            print.Append("[ ").Append(wrapper.element).Append(' ');
-                            packageStack.Push(wrapper);
-                            checkStack.Push(true);
-                            foreach (CausalGraphWrapper neighbor in wrapper.neighbors) {
-                                packageStack.Push(neighbor);
-                                checkStack.Push(false);
-                            }
-                        }
-                    }
-                    return print.ToString();
+                public StateInfo(
+                    BondGraph.Element element,
+                    BondGraph.Bond bond,
+                    bool isInductor,
+                    string varKey,
+                    string plainName,
+                    string latexName) {
+                    Element = element;
+                    Bond = bond;
+                    IsInductor = isInductor;
+                    VarKey = varKey;
+                    PlainName = plainName;
+                    LatexName = latexName;
                 }
             }
 
-            /// <summary>
-            /// Loads the initial equations for this <c>StateEquationSet</c>.
-            /// </summary>
-            /// <param name="wrapper">The graphWrapper containing the information
-            /// for the target bond graph.</param>
-            private static List<Equation> GetInitialEquations(BondGraph.BondGraphWrapper wrapper) {
-                Dictionary<int, List<BondGraph.Bond>> bbs = wrapper.GetBondsBySource();
-                Dictionary<int, List<BondGraph.Bond>> bbt = wrapper.GetBondsByTarget();
-                List<Equation> equations = new();
-                foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
-                    char typeChar = pair.Value.GetTypeChar();
-                    switch (typeChar) {
-                        case '0':
-                        case '1':
-                            bool isOneJunc = typeChar == '1';
-                            String zeroSum = "f", equal = "e";
-                            if (isOneJunc) {
-                                zeroSum = "e";
-                                equal = "f";
+            private sealed class BondVarLabels {
+                public string EffortLatex { get; }
+                public string FlowLatex { get; }
+                public BondVarLabels(string effortLatex, string flowLatex) {
+                    EffortLatex = effortLatex;
+                    FlowLatex = flowLatex;
+                }
+            }
+
+            private sealed class SolverContext {
+                private readonly BondGraph graph;
+                private readonly BondGraph.BondGraphWrapper wrapper;
+                private readonly Dictionary<int, List<BondGraph.Bond>> bondsByElement = new();
+                private readonly Dictionary<BondGraph.Bond, BondVarLabels> bondLabels = new(ReferenceEqualityComparer.Instance);
+                private readonly Dictionary<string, string> varKeyToLatex = new(StringComparer.Ordinal);
+                private readonly List<StateInfo> states = new();
+                private readonly Dictionary<int, string> rLoopPlaceholders = new();
+                private readonly List<(int ElementId, bool WantEffort, LinearForm Rhs)> rEquations = new();
+
+                public List<string> InitialEquations { get; } = new();
+                public List<EquationDerivation> Derivations { get; } = new();
+
+                public SolverContext(BondGraph graph, BondGraph.BondGraphWrapper wrapper) {
+                    this.graph = graph;
+                    this.wrapper = wrapper;
+
+                    foreach (BondGraph.Element el in graph.getElements().Values) {
+                        bondsByElement[el.GetID()] = new List<BondGraph.Bond>();
+                    }
+                    foreach (BondGraph.Bond bond in graph.getBonds()) {
+                        int srcId = bond.getSource().GetID();
+                        int dstId = bond.getSink().GetID();
+                        if (!bondsByElement.TryGetValue(srcId, out var srcList)) {
+                            srcList = new List<BondGraph.Bond>();
+                            bondsByElement[srcId] = srcList;
+                        }
+                        srcList.Add(bond);
+                        if (dstId != srcId) {
+                            if (!bondsByElement.TryGetValue(dstId, out var dstList)) {
+                                dstList = new List<BondGraph.Bond>();
+                                bondsByElement[dstId] = dstList;
                             }
-                            Expression negSum = new("0"), posSum = new("0");
-                            int inwardCausalBondCount = 0, outwardCausalBondCount = 0;
-                            BondGraph.Bond? inwardCausalBond = null, outwardCausalBond = null;
-                            foreach (BondGraph.Bond bond in bbs.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
-                                posSum = posSum.Add(new(zeroSum + bond.GetID()));
-                                if (bond.GetCausalDirection()) {
-                                    outwardCausalBondCount++;
-                                    outwardCausalBond = bond;
+                            dstList.Add(bond);
+                        }
+                    }
+
+                    ClassifyStatesAndSources();
+                    AssignBondDisplayLabels();
+                }
+
+                /// <summary>
+                /// Returns true when the causal stroke directs effort into <paramref name="el"/>
+                /// (causalStrokeDirection == true means stroke is at the bond's source).
+                /// </summary>
+                private static bool ElementReceivesEffort(BondGraph.Bond bond, BondGraph.Element el) {
+                    return bond.isSource(el) ? bond.GetCausalDirection() : !bond.GetCausalDirection();
+                }
+
+                /// <summary>
+                /// Returns true when the power half-arrow points into <paramref name="el"/>.
+                /// </summary>
+                private static bool IsPowerIntoElement(BondGraph.Bond bond, BondGraph.Element el) {
+                    return bond.isSink(el);
+                }
+
+                private static BondGraph.Element GetOtherElement(BondGraph.Bond bond, BondGraph.Element el) {
+                    return bond.isSource(el) ? bond.getSink() : bond.getSource();
+                }
+
+                private string FormatSubscript(string baseSymbol, string subscript) {
+                    string baseLatex = Expression.FormatLatexIdentifier(baseSymbol);
+                    return $"{baseLatex}_{{{subscript}}}";
+                }
+
+                private string GetParamKey(BondGraph.Element el) {
+                    string sym = BondGraph.BondGraphWrapper.GetElementParamSymbol(el);
+                    return sym + el.GetID();
+                }
+
+                private void ClassifyStatesAndSources() {
+                    HashSet<string> usedPlainNames = new(StringComparer.Ordinal);
+                    foreach (BondGraph.Element el in graph.getElements().Values) {
+                        int id = el.GetID();
+                        char type = char.ToUpper(el.GetTypeChar());
+                        if (!bondsByElement.TryGetValue(id, out var elBonds) || elBonds.Count == 0) {
+                            continue;
+                        }
+                        if (type == 'I' || type == 'C') {
+                            BondGraph.Bond bond = elBonds[0];
+                            bool receivesEffort = ElementReceivesEffort(bond, el);
+                            bool isIntegral = (type == 'I') ? receivesEffort : !receivesEffort;
+                            if (isIntegral) {
+                                string prefix = wrapper.GetStateVarPrefix(el);
+                                string varKey = (type == 'I' ? "P" : "Q") + id;
+                                int displaySubId = id;
+                                if (type == 'C') {
+                                    BondGraph.Element other = GetOtherElement(bond, el);
+                                    if (other.GetTypeChar() is '0' or '1') {
+                                        displaySubId = other.GetID();
+                                    }
+                                }
+                                string plainName = prefix + displaySubId;
+                                if (!usedPlainNames.Add(plainName)) {
+                                    displaySubId = id;
+                                    plainName = prefix + displaySubId;
+                                    usedPlainNames.Add(plainName);
+                                }
+                                string latexName = FormatSubscript(prefix, displaySubId.ToString());
+                                varKeyToLatex[varKey] = latexName;
+                                states.Add(new StateInfo(el, bond, type == 'I', varKey, plainName, latexName));
+                            }
+                        } else if (type == 'E' || type == 'F') {
+                            string prefix = BondGraph.BondGraphWrapper.GetElementParamSymbol(el);
+                            string key = (type == 'E' ? "Se" : "Sf") + id;
+                            varKeyToLatex[key] = FormatSubscript(prefix, id.ToString());
+                        }
+                    }
+                }
+
+                private void AssignBondDisplayLabels() {
+                    foreach (BondGraph.Bond bond in graph.getBonds()) {
+                        BondGraph.Element src = bond.getSource();
+                        BondGraph.Element dst = bond.getSink();
+                        char srcType = char.ToUpper(src.GetTypeChar());
+                        char dstType = char.ToUpper(dst.GetTypeChar());
+
+                        BondGraph.Element? j1 = srcType == '1' ? src : (dstType == '1' ? dst : null);
+                        BondGraph.Element? j0 = srcType == '0' ? src : (dstType == '0' ? dst : null);
+                        BondGraph.Element? onePort = IsOnePort(srcType) ? src : (IsOnePort(dstType) ? dst : null);
+                        BondGraph.Element? twoPort = (srcType == 'T' || srcType == 'G') ? src : ((dstType == 'T' || dstType == 'G') ? dst : null);
+
+                        // Flow label matching BondGraph.AssignBondLabels
+                        string flowLatex;
+                        if (onePort != null && char.ToUpper(onePort.GetTypeChar()) == 'C' && !ElementReceivesEffort(bond, onePort)) {
+                            string qKey = "Q" + onePort.GetID();
+                            flowLatex = varKeyToLatex.TryGetValue(qKey, out string? qLatex)
+                                ? qLatex + "'"
+                                : FormatSubscript(wrapper.GetStateVarPrefix(onePort), onePort.GetID().ToString()) + "'";
+                        } else if (j1 != null) {
+                            string flwPre = BondGraph.BondGraphWrapper.GetFlowPrefix(wrapper.GetElementDomain(j1));
+                            flowLatex = FormatSubscript(flwPre, j1.GetID().ToString());
+                        } else if (j0 != null && onePort != null) {
+                            string flwPre = BondGraph.BondGraphWrapper.GetFlowPrefix(wrapper.GetElementDomain(onePort));
+                            flowLatex = FormatSubscript(flwPre, onePort.GetID().ToString());
+                        } else if (twoPort != null) {
+                            BondGraph.Element jEnd = ReferenceEquals(twoPort, src) ? dst : src;
+                            string flwPre = BondGraph.BondGraphWrapper.GetFlowPrefix(wrapper.GetElementDomain(jEnd));
+                            flowLatex = FormatSubscript(flwPre, twoPort.GetID().ToString());
+                        } else {
+                            string flwPre = BondGraph.BondGraphWrapper.GetFlowPrefix(wrapper.GetElementDomain(src));
+                            flowLatex = FormatSubscript(flwPre, $"{src.GetID()},{dst.GetID()}");
+                        }
+
+                        // Effort label matching BondGraph.AssignBondLabels
+                        string effLatex;
+                        if (onePort != null && char.ToUpper(onePort.GetTypeChar()) == 'I' && ElementReceivesEffort(bond, onePort)) {
+                            string pKey = "P" + onePort.GetID();
+                            effLatex = varKeyToLatex.TryGetValue(pKey, out string? pLatex)
+                                ? pLatex + "'"
+                                : FormatSubscript(wrapper.GetStateVarPrefix(onePort), onePort.GetID().ToString()) + "'";
+                        } else if (j0 != null) {
+                            string effPre = BondGraph.BondGraphWrapper.GetEffortPrefix(wrapper.GetElementDomain(j0));
+                            effLatex = FormatSubscript(effPre, j0.GetID().ToString());
+                        } else if (onePort != null) {
+                            char opType = char.ToUpper(onePort.GetTypeChar());
+                            string effPre = (opType == 'E')
+                                ? BondGraph.BondGraphWrapper.GetElementParamSymbol(onePort)
+                                : BondGraph.BondGraphWrapper.GetEffortPrefix(wrapper.GetElementDomain(onePort));
+                            effLatex = FormatSubscript(effPre, onePort.GetID().ToString());
+                        } else if (twoPort != null) {
+                            BondGraph.Element jEnd = ReferenceEquals(twoPort, src) ? dst : src;
+                            string effPre = BondGraph.BondGraphWrapper.GetEffortPrefix(wrapper.GetElementDomain(jEnd));
+                            var tpBonds = bondsByElement[twoPort.GetID()];
+                            bool sameDomainOnBothSides = tpBonds.Count == 2 &&
+                                wrapper.GetElementDomain(GetOtherElement(tpBonds[0], twoPort)) ==
+                                wrapper.GetElementDomain(GetOtherElement(tpBonds[1], twoPort));
+                            string sub = sameDomainOnBothSides
+                                ? $"{twoPort.GetID()},{(bond.isSink(twoPort) ? "1" : "2")}"
+                                : twoPort.GetID().ToString();
+                            effLatex = FormatSubscript(effPre, sub);
+                        } else {
+                            string effPre = BondGraph.BondGraphWrapper.GetEffortPrefix(wrapper.GetElementDomain(src));
+                            effLatex = FormatSubscript(effPre, $"{src.GetID()},{dst.GetID()}");
+                        }
+
+                        bondLabels[bond] = new(effLatex, flowLatex);
+                    }
+                }
+
+                private static bool IsOnePort(char type) => type is 'I' or 'C' or 'R' or 'E' or 'F';
+
+                private string GetBondVarLatex(BondGraph.Bond bond, bool effort) {
+                    BondVarLabels lbl = bondLabels[bond];
+                    return effort ? lbl.EffortLatex : lbl.FlowLatex;
+                }
+
+                private string FormatDynamicVarKey(string varKey) {
+                    if (varKeyToLatex.TryGetValue(varKey, out string? existing)) {
+                        return existing;
+                    }
+                    int primeCount = 0;
+                    string baseKey = varKey;
+                    while (baseKey.EndsWith("'")) {
+                        primeCount++;
+                        baseKey = baseKey[..^1];
+                    }
+                    string baseLatex = varKeyToLatex.TryGetValue(baseKey, out string? mapped)
+                        ? mapped
+                        : Expression.FormatLatexIdentifier(baseKey);
+                    string primes = new string('\'', primeCount);
+                    return baseLatex + primes;
+                }
+
+                /// <summary>
+                /// Evaluates all integral-causality state equations, resolves any R-loop algebraic cycles,
+                /// and isolates state derivatives via direct division (diagonal) or Gaussian elimination (coupled).
+                /// </summary>
+                public void Solve() {
+                    if (states.Count == 0) {
+                        return;
+                    }
+
+                    int n = states.Count;
+                    LinearForm[] rawRhs = new LinearForm[n];
+                    List<List<DerivationStep>> preSteps = new(n);
+                    List<string> step3Latex = new(n);
+
+                    for (int i = 0; i < n; i++) {
+                        StateInfo st = states[i];
+                        bool wantEffort = st.IsInductor;
+                        List<string> branchTraceLines = new();
+                        HashSet<(int, bool, int)> visiting = new();
+                        HashSet<int> visitingR = new();
+
+                        (LinearForm expr, string step1Rhs, string step3Rhs) = EvaluateFromStateRoot(
+                            st, wantEffort, branchTraceLines, visiting, visitingR);
+
+                        List<string> dedupTrace = branchTraceLines.Distinct().ToList();
+                        rawRhs[i] = expr;
+                        step3Latex.Add(step3Rhs);
+                        InitialEquations.Add($"{st.DerivLatex} = {step1Rhs}");
+
+                        List<DerivationStep> steps = new() {
+                            new DerivationStep("1. Junction Equation", new List<string> { $"{st.DerivLatex} = {step1Rhs}" })
+                        };
+                        if (dedupTrace.Count > 0) {
+                            steps.Add(new DerivationStep("2. Constitutive & Causal Expansions", dedupTrace));
+                        }
+                        preSteps.Add(steps);
+                    }
+
+                    // If any R-loop placeholders were created, solve the R linear system and substitute back.
+                    if (rEquations.Count > 0) {
+                        Dictionary<string, LinearForm> solvedRs = SolveRLoopSystem();
+                        for (int i = 0; i < n; i++) {
+                            foreach (var kv in solvedRs) {
+                                rawRhs[i] = rawRhs[i].Substitute(kv.Key, kv.Value);
+                            }
+                        }
+                    }
+
+                    // Build M * x' = b across all integral states
+                    SymbolicRational[,] matrix = new SymbolicRational[n, n];
+                    LinearForm[] rhsVec = new LinearForm[n];
+                    HashSet<string> allStateDerivKeys = new(states.Select(s => s.DerivKey), StringComparer.Ordinal);
+
+                    bool hasAnyOffDiagonalCoupling = false;
+                    for (int i = 0; i < n; i++) {
+                        for (int j = 0; j < n; j++) {
+                            SymbolicRational coeff = rawRhs[i].GetCoeff(states[j].DerivKey);
+                            SymbolicRational mEntry = (i == j)
+                                ? SymbolicRational.One.Subtract(coeff)
+                                : coeff.Negate();
+                            matrix[i, j] = mEntry;
+                            if (i != j && !mEntry.IsZero) {
+                                hasAnyOffDiagonalCoupling = true;
+                            }
+                        }
+                        rhsVec[i] = rawRhs[i].WithoutVars(allStateDerivKeys.Contains);
+                    }
+
+                    LinearForm[]? coupledSolved = hasAnyOffDiagonalCoupling
+                        ? LinearForm.SolveLinearSystem(matrix, rhsVec)
+                        : null;
+
+                    for (int i = 0; i < n; i++) {
+                        StateInfo st = states[i];
+                        List<DerivationStep> steps = preSteps[i];
+                        bool rowHasDeriv = false;
+                        for (int j = 0; j < n; j++) {
+                            if (!rawRhs[i].GetCoeff(states[j].DerivKey).IsZero) {
+                                rowHasDeriv = true;
+                                break;
+                            }
+                        }
+
+                        if (rEquations.Count > 0 || !rowHasDeriv) {
+                            string substEq = $"{st.DerivLatex} = {step3Latex[i]}";
+                            if (steps.Count == 1 || steps[0].LatexEquations[0] != substEq) {
+                                steps.Add(new DerivationStep("3. Substitute into State Equation", new List<string> { substEq }));
+                            }
+                        } else {
+                            steps.Add(new DerivationStep("3. Substitute into State Equation", new List<string> { $"{st.DerivLatex} = {step3Latex[i]}" }));
+                        }
+
+                        string finalEqLatex;
+                        if (!rowHasDeriv) {
+                            finalEqLatex = $"{st.DerivLatex} = {rhsVec[i].ToLatex(FormatDynamicVarKey)}";
+                        } else if (!hasAnyOffDiagonalCoupling) {
+                            SymbolicRational selfCoeffRhs = rawRhs[i].GetCoeff(st.DerivKey);
+                            SymbolicRational lhsExtra = selfCoeffRhs.Negate();
+                            string lhsFactorLatex = lhsExtra.IsNegative
+                                ? $"1 - {lhsExtra.Negate().ToLatex()}"
+                                : $"1 + {lhsExtra.ToLatex()}";
+                            string rhsLatex = rhsVec[i].ToLatex(FormatDynamicVarKey);
+
+                            List<string> step4Lines = new() {
+                                $"{st.DerivLatex} = {rawRhs[i].ToLatex(FormatDynamicVarKey)}",
+                                $"{st.DerivLatex} \\left({lhsFactorLatex}\\right) = {rhsLatex}"
+                            };
+                            steps.Add(new DerivationStep("4. Expand & Collect Derivative Terms", step4Lines));
+                            finalEqLatex = $"{st.DerivLatex} = \\frac{{{rhsLatex}}}{{{lhsFactorLatex}}}";
+                        } else {
+                            StringBuilder lhsBuilder = new();
+                            bool firstTerm = true;
+                            for (int j = 0; j < n; j++) {
+                                SymbolicRational entry = matrix[i, j];
+                                if (entry.IsZero) continue;
+                                bool neg = entry.IsNegative;
+                                SymbolicRational absEntry = neg ? entry.Negate() : entry;
+                                if (!firstTerm) {
+                                    lhsBuilder.Append(neg ? " - " : " + ");
+                                } else if (neg) {
+                                    lhsBuilder.Append('-');
+                                }
+                                firstTerm = false;
+                                if (absEntry.IsOne) {
+                                    lhsBuilder.Append(states[j].DerivLatex);
                                 } else {
-                                    inwardCausalBondCount = 1;
-                                    inwardCausalBond = bond;
+                                    lhsBuilder.Append($"\\left({absEntry.ToLatex()}\\right) {states[j].DerivLatex}");
                                 }
                             }
-                            foreach (BondGraph.Bond bond in bbt.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
-                                negSum = negSum.Add(new(zeroSum + bond.GetID()));
-                                if (bond.GetCausalDirection()) {
-                                    inwardCausalBondCount++;
-                                    inwardCausalBond = bond;
-                                } else {
-                                    outwardCausalBondCount = 1;
-                                    outwardCausalBond = bond;
-                                }
-                            }
-                            equations.Add(new(posSum, negSum));
-                            BondGraph.Bond? equalBond = (inwardCausalBondCount == 1) ? inwardCausalBond : outwardCausalBond;
-                            int equalID = equalBond?.GetID() ?? 0;
-                            Expression firstExp = new(equal + equalID);
-                            foreach (BondGraph.Bond bond in bbs.GetValueOrDefault(pair.Value.GetID()) ?? new()) {
-                                int bondID = bond.GetID();
-                                if (bondID != equalID) {
-                                    equations.Add(new(firstExp, new(equal + bondID)));
-                                }
-                            }
-                            break;
-                        default:
-                            break;
+                            List<string> step4Lines = new() {
+                                $"{st.DerivLatex} = {rawRhs[i].ToLatex(FormatDynamicVarKey)}",
+                                $"{lhsBuilder} = {rhsVec[i].ToLatex(FormatDynamicVarKey)}"
+                            };
+                            steps.Add(new DerivationStep("4. Collect Coupled State Derivatives", step4Lines));
+                            finalEqLatex = $"{st.DerivLatex} = {coupledSolved![i].ToLatex(FormatDynamicVarKey)}";
+                        }
+
+                        Derivations.Add(new EquationDerivation(
+                            st.VarKey,
+                            st.PlainName,
+                            st.LatexName,
+                            st.DerivLatex,
+                            finalEqLatex,
+                            rowHasDeriv,
+                            steps));
                     }
                 }
-                return equations;
-            }
 
-            /// <summary>
-            /// Updates the list of substitutes in the chat with replacements for I, 
-            /// R, and C elements.
-            /// </summary>
-            private static void GetRemainingGeneralizedSubstitutes(BondGraph graph, Dictionary<string, Expression> subs) {
-                foreach (KeyValuePair<string, BondGraph.Element> pair in graph.getElements()) {
-                    int ID = pair.Value.GetID();
-                    char type = pair.Value.GetTypeChar();
-                    string flowVar = "F" + ID, effortVar = "E" + ID;
-                    string cVar = "C" + ID, rVar = "R" + ID, iVar = "I" + ID;
-                    string qVar = "Q" + ID, pVar = "P" + ID;
-                    if (subs.ContainsKey(effortVar)) {
-                        type = char.ToLower(type);
+                private Dictionary<string, LinearForm> SolveRLoopSystem() {
+                    int m = rLoopPlaceholders.Count;
+                    List<(int id, string placeholder)> ordered = rLoopPlaceholders
+                        .OrderBy(kv => kv.Key)
+                        .Select(kv => (kv.Key, kv.Value))
+                        .ToList();
+                    Dictionary<string, int> idxMap = new(StringComparer.Ordinal);
+                    for (int i = 0; i < m; i++) {
+                        idxMap[ordered[i].placeholder] = i;
                     }
-                    switch (type) {
-                        case 'C':
-                            subs.Add(effortVar, new(qVar + "/" + cVar));
-                            break;
-                        case 'c':
-                            subs.Add(flowVar, new(effortVar + "'*" + cVar));
-                            break;
-                        case 'I':
-                            subs.Add(effortVar, new(flowVar + "'*" + iVar));
-                            break;
-                        case 'i':
-                            subs.Add(flowVar, new(pVar + "/" + iVar));
-                            break;
-                        case 'R':
-                            subs.Add(effortVar, new(flowVar + "*" + rVar));
-                            break;
-                        case 'r':
-                            subs.Add(flowVar, new(effortVar + "/" + rVar));
-                            break;
-                        case 'G':
-                            //
-                            break;
+
+                    SymbolicRational[,] a = new SymbolicRational[m, m];
+                    LinearForm[] b = new LinearForm[m];
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < m; j++) {
+                            a[i, j] = (i == j) ? SymbolicRational.One : SymbolicRational.Zero;
+                        }
+                        b[i] = LinearForm.Zero;
                     }
+
+                    foreach (var eq in rEquations) {
+                        string pKey = rLoopPlaceholders[eq.ElementId];
+                        int row = idxMap[pKey];
+                        for (int j = 0; j < m; j++) {
+                            SymbolicRational coeff = eq.Rhs.GetCoeff(ordered[j].placeholder);
+                            a[row, j] = (row == j ? SymbolicRational.One : SymbolicRational.Zero).Subtract(coeff);
+                        }
+                        b[row] = eq.Rhs.WithoutVars(idxMap.ContainsKey);
+                    }
+
+                    LinearForm[] solved = LinearForm.SolveLinearSystem(a, b);
+                    Dictionary<string, LinearForm> result = new(StringComparer.Ordinal);
+                    for (int i = 0; i < m; i++) {
+                        result[ordered[i].placeholder] = solved[i];
+                    }
+                    return result;
                 }
-            }
 
-            /// <summary>
-            /// Gets a mapping for domain variables.
-            /// </summary>
-            /// <param name="wrapper">The <c>BondGraphWrapper</c> containing information on 
-            /// connections between the </param>
-            /// <returns>The <c>Dictionary</c> mapping.</returns>
-            // Note that any replacement mappings determined by the user should be applied here.
-            public static Dictionary<string, Expression> GetDomainVariables(BondGraph.BondGraphWrapper wrapper) {
-                Dictionary<string, Expression> vars = new();
-                foreach (KeyValuePair<string, BondGraph.Element> pair in wrapper.GetElements()) {
-                    int ID = pair.Value.GetID();
-                    string label = pair.Value.label;
-                    char typeChar = char.ToUpper(pair.Value.GetTypeChar());
-                    if (!"01".Contains(typeChar)) {
-                        char domainVar = wrapper.GetDomainVar(label, typeChar);
-                        vars.Add("" + typeChar + ID, new("" + domainVar + ID));
-                        if (typeChar == 'I') {
-                            vars.Add("P" + ID, new("" + wrapper.GetDomainVar(label, 'P') + ID));
-                        } else if (typeChar == 'C') {
-                            vars.Add("Q" + ID, new("" + wrapper.GetDomainVar(label, 'Q') + ID));
-                            if (domainVar == 'K') {
-                                vars["" + typeChar + ID] = new("1/K" + ID);
-                            } else if (domainVar == 'κ') {
-                                vars["" + typeChar + ID] = new("1/Kt" + ID);
+                private (LinearForm Form, string Step1Rhs, string Step3Rhs) EvaluateFromStateRoot(
+                    StateInfo st,
+                    bool wantEffort,
+                    List<string> traceLines,
+                    HashSet<(int, bool, int)> visiting,
+                    HashSet<int> visitingR) {
+                    BondGraph.Element other = GetOtherElement(st.Bond, st.Element);
+                    char otherType = char.ToUpper(other.GetTypeChar());
+
+                    if (otherType is '0' or '1') {
+                        bool isSumming = (otherType == '1' && wantEffort) || (otherType == '0' && !wantEffort);
+                        if (isSumming) {
+                            List<BondGraph.Bond> neighbors = bondsByElement[other.GetID()]
+                                .Where(b => !ReferenceEquals(b, st.Bond))
+                                .ToList();
+                            StringBuilder s1 = new();
+                            StringBuilder s3 = new();
+                            LinearForm sum = LinearForm.Zero;
+                            bool first = true;
+                            foreach (BondGraph.Bond b in neighbors) {
+                                bool neg = IsPowerIntoElement(b, other) == IsPowerIntoElement(st.Bond, other);
+                                string termName = GetBondVarLatex(b, wantEffort);
+                                LinearForm branchForm = EvaluateBranchWithTrace(b, other, wantEffort, traceLines, visiting, visitingR, out string branchInline);
+
+                                sum = neg ? sum.Subtract(branchForm) : sum.Add(branchForm);
+                                AppendSignedTerm(s1, termName, neg, first);
+                                AppendSignedTerm(s3, WrapTermForSubstitution(branchInline, neg && !first ? true : neg), neg, first);
+                                first = false;
                             }
+                            if (first) {
+                                return (LinearForm.Zero, "0", "0");
+                            }
+                            return (sum, s1.ToString(), s3.ToString());
                         }
                     }
+
+                    // Single shared variable (0-junction effort, 1-junction flow, or direct 2-port/1-port)
+                    if (otherType is '0' or '1') {
+                        BondGraph.Bond? drivingBond = FindDrivingBond(other, st.Bond, wantEffort);
+                        if (drivingBond != null) {
+                            string sym = GetBondVarLatex(drivingBond, wantEffort);
+                            LinearForm form = EvaluateBranchWithTrace(drivingBond, other, wantEffort, traceLines, visiting, visitingR, out string inline);
+                            return (form, sym, inline);
+                        }
+                    }
+
+                    string directSym = GetBondVarLatex(st.Bond, wantEffort);
+                    LinearForm directForm = EvaluateBondOutput(st.Bond, st.Element, wantEffort, traceLines, visiting, visitingR, emitTrace: true, out string directInline);
+                    return (directForm, directSym, directInline);
                 }
-                return vars;
+
+                private LinearForm EvaluateBranchWithTrace(
+                    BondGraph.Bond bond,
+                    BondGraph.Element requester,
+                    bool wantEffort,
+                    List<string> traceLines,
+                    HashSet<(int, bool, int)> visiting,
+                    HashSet<int> visitingR,
+                    out string inlineLatex) {
+                    return EvaluateBondOutput(bond, requester, wantEffort, traceLines, visiting, visitingR, emitTrace: true, out inlineLatex);
+                }
+
+                private BondGraph.Bond? FindDrivingBond(BondGraph.Element junction, BondGraph.Bond excludeBond, bool wantEffort) {
+                    foreach (BondGraph.Bond b in bondsByElement[junction.GetID()]) {
+                        if (ReferenceEquals(b, excludeBond)) continue;
+                        bool receivesEffort = ElementReceivesEffort(b, junction);
+                        if (wantEffort ? receivesEffort : !receivesEffort) {
+                            return b;
+                        }
+                    }
+                    return null;
+                }
+
+                private LinearForm EvaluateBondOutput(
+                    BondGraph.Bond bond,
+                    BondGraph.Element requester,
+                    bool wantEffort,
+                    List<string> traceLines,
+                    HashSet<(int, bool, int)> visiting,
+                    HashSet<int> visitingR,
+                    bool emitTrace,
+                    out string inlineLatex) {
+                    BondGraph.Element provider = GetOtherElement(bond, requester);
+                    int pId = provider.GetID();
+                    char type = char.ToUpper(provider.GetTypeChar());
+                    string thisVarLatex = GetBondVarLatex(bond, wantEffort);
+
+                    if (type is '0' or '1') {
+                        var visitKey = (pId, wantEffort, -1);
+                        if (!visiting.Add(visitKey)) {
+                            throw new InvalidOperationException("State equations cannot be derived in looped causality.");
+                        }
+                        try {
+                            bool isSumming = (type == '1' && wantEffort) || (type == '0' && !wantEffort);
+                            if (isSumming) {
+                                List<BondGraph.Bond> others = bondsByElement[pId].Where(b => !ReferenceEquals(b, bond)).ToList();
+                                StringBuilder symSum = new();
+                                LinearForm sum = LinearForm.Zero;
+                                bool first = true;
+                                List<string> subLines = new();
+
+                                foreach (BondGraph.Bond b in others) {
+                                    bool neg = IsPowerIntoElement(b, provider) == IsPowerIntoElement(bond, provider);
+                                    AppendSignedTerm(symSum, GetBondVarLatex(b, wantEffort), neg, first);
+                                    first = false;
+                                }
+                                if (emitTrace) {
+                                    traceLines.Add($"{thisVarLatex} = {symSum}");
+                                }
+
+                                first = true;
+                                StringBuilder expanded = new();
+                                foreach (BondGraph.Bond b in others) {
+                                    bool neg = IsPowerIntoElement(b, provider) == IsPowerIntoElement(bond, provider);
+                                    LinearForm childForm = EvaluateBondOutput(b, provider, wantEffort, subLines, visiting, visitingR, emitTrace, out string childInline);
+                                    sum = neg ? sum.Subtract(childForm) : sum.Add(childForm);
+                                    AppendSignedTerm(expanded, WrapTermForSubstitution(childInline, neg), neg, first);
+                                    first = false;
+                                }
+                                if (emitTrace) {
+                                    traceLines.AddRange(subLines);
+                                    string combined = sum.ToLatex(FormatDynamicVarKey);
+                                    traceLines.Add($"\\Rightarrow {thisVarLatex} = {combined}");
+                                }
+                                inlineLatex = sum.ToLatex(FormatDynamicVarKey);
+                                return sum;
+                            } else {
+                                BondGraph.Bond? driving = FindDrivingBond(provider, bond, wantEffort);
+                                if (driving == null) {
+                                    throw new InvalidOperationException($"Incomplete causality at junction {pId}.");
+                                }
+                                LinearForm res = EvaluateBondOutput(driving, provider, wantEffort, traceLines, visiting, visitingR, emitTrace, out inlineLatex);
+                                return res;
+                            }
+                        } finally {
+                            visiting.Remove(visitKey);
+                        }
+                    }
+
+                    if (type == 'T') {
+                        var tpBonds = bondsByElement[pId];
+                        if (tpBonds.Count != 2) {
+                            throw new InvalidOperationException($"Transformer {pId} must have exactly 2 bonds.");
+                        }
+                        int portIdx = ReferenceEquals(tpBonds[0], bond) ? 0 : 1;
+                        var visitKey = (pId, wantEffort, portIdx);
+                        if (!visiting.Add(visitKey)) {
+                            throw new InvalidOperationException("State equations cannot be derived in looped causality.");
+                        }
+                        try {
+                            BondGraph.Bond otherBond = ReferenceEquals(tpBonds[0], bond) ? tpBonds[1] : tpBonds[0];
+                            BondGraph.Bond inBond = tpBonds.FirstOrDefault(b => b.isSink(provider)) ?? tpBonds[0];
+                            bool isBondIn = ReferenceEquals(bond, inBond);
+                            bool samePowerDir = IsPowerIntoElement(bond, provider) == IsPowerIntoElement(otherBond, provider);
+
+                            string mName = GetParamKey(provider);
+                            SymbolicRational m = SymbolicRational.FromVar(mName);
+                            string mLatex = Expression.FormatLatexIdentifier(mName);
+                            bool multiply = (wantEffort && isBondIn) || (!wantEffort && !isBondIn);
+
+                            // For a rack-and-pinion TF:R connecting translational ("F") and rotational ("τ") domains,
+                            // radius R satisfies v_trans = R * ω_rot and τ_rot = R * F_trans (i.e. effective modulus is 1/R when in=trans, out=rot).
+                            string inDomain = wrapper.GetElementDomain(GetOtherElement(inBond, provider));
+                            string outDomain = wrapper.GetElementDomain(GetOtherElement(ReferenceEquals(tpBonds[0], inBond) ? tpBonds[1] : tpBonds[0], provider));
+                            if (inDomain == "F" && outDomain == "τ") {
+                                multiply = !multiply;
+                            }
+
+                            string otherVarLatex = GetBondVarLatex(otherBond, wantEffort);
+                            string factorLatex = multiply ? mLatex : $"\\frac{{1}}{{{mLatex}}}";
+                            string signStr = samePowerDir ? "-" : "";
+
+                            if (emitTrace) {
+                                traceLines.Add($"{thisVarLatex} = {signStr}{factorLatex} {otherVarLatex}");
+                            }
+
+                            LinearForm inner = EvaluateBondOutput(otherBond, provider, wantEffort, traceLines, visiting, visitingR, emitTrace, out string innerInline);
+                            LinearForm scaled = multiply ? inner.Scale(m) : inner.DivideBy(m);
+                            if (samePowerDir) {
+                                scaled = scaled.Negate();
+                            }
+
+                            bool needsParens = inner.Terms.Count > 1 || innerInline.Contains(" + ") || innerInline.Contains(" - ");
+                            string wrappedInner = needsParens ? $"\\left({innerInline}\\right)" : innerInline;
+                            inlineLatex = $"{signStr}{factorLatex} {wrappedInner}";
+
+                            if (emitTrace && !inner.IsZero && needsParens) {
+                                traceLines.Add($"\\Rightarrow {thisVarLatex} = {inlineLatex}");
+                            }
+                            return scaled;
+                        } finally {
+                            visiting.Remove(visitKey);
+                        }
+                    }
+
+                    if (type == 'G') {
+                        var gyBonds = bondsByElement[pId];
+                        if (gyBonds.Count != 2) {
+                            throw new InvalidOperationException($"Gyrator {pId} must have exactly 2 bonds.");
+                        }
+                        int portIdx = ReferenceEquals(gyBonds[0], bond) ? 0 : 1;
+                        var visitKey = (pId, wantEffort, portIdx);
+                        if (!visiting.Add(visitKey)) {
+                            throw new InvalidOperationException("State equations cannot be derived in looped causality.");
+                        }
+                        try {
+                            BondGraph.Bond otherBond = ReferenceEquals(gyBonds[0], bond) ? gyBonds[1] : gyBonds[0];
+                            bool samePowerDir = IsPowerIntoElement(bond, provider) == IsPowerIntoElement(otherBond, provider);
+
+                            string rName = GetParamKey(provider);
+                            SymbolicRational r = SymbolicRational.FromVar(rName);
+                            string rLatex = Expression.FormatLatexIdentifier(rName);
+                            bool multiply = wantEffort;
+
+                            string otherVarLatex = GetBondVarLatex(otherBond, !wantEffort);
+                            string factorLatex = multiply ? rLatex : $"\\frac{{1}}{{{rLatex}}}";
+                            string signStr = samePowerDir ? "-" : "";
+
+                            if (emitTrace) {
+                                traceLines.Add($"{thisVarLatex} = {signStr}{factorLatex} {otherVarLatex}");
+                            }
+
+                            LinearForm inner = EvaluateBondOutput(otherBond, provider, !wantEffort, traceLines, visiting, visitingR, emitTrace, out string innerInline);
+                            LinearForm scaled = multiply ? inner.Scale(r) : inner.DivideBy(r);
+                            if (samePowerDir) {
+                                scaled = scaled.Negate();
+                            }
+
+                            bool needsParens = inner.Terms.Count > 1 || innerInline.Contains(" + ") || innerInline.Contains(" - ");
+                            string wrappedInner = needsParens ? $"\\left({innerInline}\\right)" : innerInline;
+                            inlineLatex = $"{signStr}{factorLatex} {wrappedInner}";
+
+                            if (emitTrace && !inner.IsZero && needsParens) {
+                                traceLines.Add($"\\Rightarrow {thisVarLatex} = {inlineLatex}");
+                            }
+                            return scaled;
+                        } finally {
+                            visiting.Remove(visitKey);
+                        }
+                    }
+
+                    if (type == 'I') {
+                        bool receivesEffort = ElementReceivesEffort(bond, provider);
+                        string iName = GetParamKey(provider);
+                        SymbolicRational iParam = SymbolicRational.FromVar(iName);
+                        string iLatex = Expression.FormatLatexIdentifier(iName);
+
+                        if (receivesEffort && !wantEffort) {
+                            string pKey = "P" + pId;
+                            LinearForm res = LinearForm.FromScaledVar(pKey, SymbolicRational.One.Divide(iParam));
+                            string pLatex = FormatDynamicVarKey(pKey);
+                            inlineLatex = $"\\frac{{{pLatex}}}{{{iLatex}}}";
+                            if (emitTrace) {
+                                string flowSym = GetBondVarLatex(bond, false);
+                                traceLines.Add($"{flowSym} = {inlineLatex}");
+                            }
+                            return res;
+                        }
+                        if (!receivesEffort && wantEffort) {
+                            // Derivative causality on I: e = d/dt(I * f_in) = I * d/dt(f_in)
+                            string flowSym = GetBondVarLatex(bond, false);
+                            List<string> innerTrace = new();
+                            LinearForm fIn = EvaluateBondOutput(bond, provider, false, innerTrace, visiting, visitingR, emitTrace, out string fInInline);
+                            if (emitTrace) {
+                                traceLines.AddRange(innerTrace);
+                            }
+                            LinearForm deriv = fIn.Differentiate().Scale(iParam);
+                            string derivLatex = deriv.ToLatex(FormatDynamicVarKey);
+                            if (emitTrace) {
+                                traceLines.Add($"{thisVarLatex} = \\frac{{d}}{{dt}}\\left({iLatex} {flowSym}\\right) = {iLatex} \\frac{{d}}{{dt}}\\left({fInInline}\\right) = {derivLatex}");
+                            }
+                            inlineLatex = derivLatex;
+                            return deriv;
+                        }
+                        throw new InvalidOperationException($"Causal mismatch on I element {pId}.");
+                    }
+
+                    if (type == 'C') {
+                        bool receivesEffort = ElementReceivesEffort(bond, provider);
+                        string cName = GetParamKey(provider);
+                        bool isStiffnessK = BondGraph.BondGraphWrapper.GetElementParamSymbol(provider) is "K" or "κ";
+                        SymbolicRational cConst = SymbolicRational.FromVar(cName);
+                        string cLatex = Expression.FormatLatexIdentifier(cName);
+
+                        if (!receivesEffort && wantEffort) {
+                            string qKey = "Q" + pId;
+                            LinearForm res = isStiffnessK
+                                ? LinearForm.FromScaledVar(qKey, cConst)
+                                : LinearForm.FromScaledVar(qKey, SymbolicRational.One.Divide(cConst));
+                            string qLatex = FormatDynamicVarKey(qKey);
+                            inlineLatex = isStiffnessK ? $"{cLatex} {qLatex}" : $"\\frac{{{qLatex}}}{{{cLatex}}}";
+                            if (emitTrace) {
+                                traceLines.Add($"{thisVarLatex} = {inlineLatex}");
+                            }
+                            return res;
+                        }
+                        if (receivesEffort && !wantEffort) {
+                            // Derivative causality on C: f = d/dt(e_in / K) or d/dt(C * e_in)
+                            string effSym = GetBondVarLatex(bond, true);
+                            List<string> innerTrace = new();
+                            LinearForm eIn = EvaluateBondOutput(bond, provider, true, innerTrace, visiting, visitingR, emitTrace, out string eInInline);
+                            if (emitTrace) {
+                                traceLines.AddRange(innerTrace);
+                            }
+                            LinearForm deriv = isStiffnessK
+                                ? eIn.Differentiate().DivideBy(cConst)
+                                : eIn.Differentiate().Scale(cConst);
+                            string derivLatex = deriv.ToLatex(FormatDynamicVarKey);
+                            if (emitTrace) {
+                                string body = isStiffnessK
+                                    ? $"\\frac{{{effSym}}}{{{cLatex}}}"
+                                    : $"{cLatex} {effSym}";
+                                string expandedBody = isStiffnessK
+                                    ? $"\\frac{{1}}{{{cLatex}}} \\frac{{d}}{{dt}}\\left({eInInline}\\right)"
+                                    : $"{cLatex} \\frac{{d}}{{dt}}\\left({eInInline}\\right)";
+                                traceLines.Add($"{thisVarLatex} = \\frac{{d}}{{dt}}\\left({body}\\right) = {expandedBody} = {derivLatex}");
+                            }
+                            inlineLatex = derivLatex;
+                            return deriv;
+                        }
+                        throw new InvalidOperationException($"Causal mismatch on C element {pId}.");
+                    }
+
+                    if (type == 'R') {
+                        string rName = GetParamKey(provider);
+                        SymbolicRational rParam = SymbolicRational.FromVar(rName);
+                        string rLatex = Expression.FormatLatexIdentifier(rName);
+
+                        if (!visitingR.Add(pId)) {
+                            string placeholder = "__R" + pId;
+                            rLoopPlaceholders[pId] = placeholder;
+                            inlineLatex = thisVarLatex;
+                            return LinearForm.FromVar(placeholder);
+                        }
+                        try {
+                            string conjSym = GetBondVarLatex(bond, !wantEffort);
+                            List<string> innerTrace = new();
+                            // Start a fresh junction/2-port loop check inside R so algebraic loops through R are caught by visitingR.
+                            LinearForm conjForm = EvaluateBondOutput(bond, provider, !wantEffort, innerTrace, new HashSet<(int, bool, int)>(), visitingR, emitTrace, out string conjInline);
+                            LinearForm res = wantEffort ? conjForm.Scale(rParam) : conjForm.DivideBy(rParam);
+
+                            if (rLoopPlaceholders.TryGetValue(pId, out string? loopPlaceholder)) {
+                                if (!rEquations.Any(e => e.ElementId == pId)) {
+                                    rEquations.Add((pId, wantEffort, res));
+                                }
+                                inlineLatex = thisVarLatex;
+                                return LinearForm.FromVar(loopPlaceholder);
+                            }
+
+                            string resLatex = res.ToLatex(FormatDynamicVarKey);
+                            if (emitTrace) {
+                                traceLines.AddRange(innerTrace);
+                                if (wantEffort) {
+                                    traceLines.Add($"{thisVarLatex} = {rLatex} {conjSym} = {rLatex} \\left({conjInline}\\right) = {resLatex}");
+                                } else {
+                                    traceLines.Add($"{thisVarLatex} = \\frac{{{conjSym}}}{{{rLatex}}} = \\frac{{{conjInline}}}{{{rLatex}}} = {resLatex}");
+                                }
+                            }
+                            inlineLatex = resLatex;
+                            return res;
+                        } finally {
+                            visitingR.Remove(pId);
+                        }
+                    }
+
+                    if (type == 'E') {
+                        if (!wantEffort) {
+                            throw new InvalidOperationException($"Causal mismatch: effort source {pId} cannot output flow.");
+                        }
+                        string seKey = "Se" + pId;
+                        inlineLatex = FormatDynamicVarKey(seKey);
+                        return LinearForm.FromVar(seKey);
+                    }
+
+                    if (type == 'F') {
+                        if (wantEffort) {
+                            throw new InvalidOperationException($"Causal mismatch: flow source {pId} cannot output effort.");
+                        }
+                        string sfKey = "Sf" + pId;
+                        inlineLatex = FormatDynamicVarKey(sfKey);
+                        return LinearForm.FromVar(sfKey);
+                    }
+
+                    throw new InvalidOperationException($"Unsupported element type '{provider.label}' in equation generation.");
+                }
+
+                private static string WrapTermForSubstitution(string exprLatex, bool precededByMinus) {
+                    if (precededByMinus && (exprLatex.Contains(" + ") || exprLatex.Contains(" - ") || exprLatex.StartsWith("-"))) {
+                        return $"\\left({exprLatex}\\right)";
+                    }
+                    return exprLatex;
+                }
+
+                private static void AppendSignedTerm(StringBuilder sb, string termLatex, bool neg, bool first) {
+                    if (first) {
+                        if (neg) sb.Append('-');
+                        sb.Append(termLatex);
+                    } else {
+                        sb.Append(neg ? " - " : " + ");
+                        sb.Append(termLatex);
+                    }
+                }
             }
         }
     }
